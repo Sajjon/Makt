@@ -11,7 +11,26 @@
 		481BDF6726C5942000C5E335 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 481BDF6626C5942000C5E335 /* ContentView.swift */; };
 		481BDF6926C5942200C5E335 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 481BDF6826C5942200C5E335 /* Assets.xcassets */; };
 		481BDF6C26C5942200C5E335 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 481BDF6B26C5942200C5E335 /* Preview Assets.xcassets */; };
+		481BDF7726C65A1900C5E335 /* ResourceID.swift in Sources */ = {isa = PBXBuildFile; fileRef = 481BDF7626C65A1900C5E335 /* ResourceID.swift */; };
+		481BDF7926C65CF500C5E335 /* ResourceLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 481BDF7826C65CF500C5E335 /* ResourceLoader.swift */; };
+		481BDF7C26C6687E00C5E335 /* ResourceLoader+Archive.swift in Sources */ = {isa = PBXBuildFile; fileRef = 481BDF7B26C6687E00C5E335 /* ResourceLoader+Archive.swift */; };
+		481BDF7F26C669D400C5E335 /* Config.swift in Sources */ = {isa = PBXBuildFile; fileRef = 481BDF7E26C669D400C5E335 /* Config.swift */; };
+		481BDF8226C6A3B100C5E335 /* Config+OriginalResourceDirectory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 481BDF8126C6A3B100C5E335 /* Config+OriginalResourceDirectory.swift */; };
+		481BDF8426C6A3C500C5E335 /* Config+OriginalResourceDirectory+Data.swift in Sources */ = {isa = PBXBuildFile; fileRef = 481BDF8326C6A3C500C5E335 /* Config+OriginalResourceDirectory+Data.swift */; };
+		481BDF8626C6A3DF00C5E335 /* Config+OriginalResourceDirectory+Maps.swift in Sources */ = {isa = PBXBuildFile; fileRef = 481BDF8526C6A3DF00C5E335 /* Config+OriginalResourceDirectory+Maps.swift */; };
+		481BDF8826C6A3F400C5E335 /* Config+OriginalResourceDirectory+Music.swift in Sources */ = {isa = PBXBuildFile; fileRef = 481BDF8726C6A3F400C5E335 /* Config+OriginalResourceDirectory+Music.swift */; };
+		481BDFA026C6A4F000C5E335 /* Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 481BDF9F26C6A4F000C5E335 /* Tests.swift */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		481BDFA226C6A4F000C5E335 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 481BDF5926C5942000C5E335 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 481BDF6026C5942000C5E335;
+			remoteInfo = HoMM3SwiftUI;
+		};
+/* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
 		481BDF6126C5942000C5E335 /* HoMM3SwiftUI.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HoMM3SwiftUI.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -21,10 +40,28 @@
 		481BDF6B26C5942200C5E335 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		481BDF6D26C5942200C5E335 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		481BDF6E26C5942200C5E335 /* HoMM3SwiftUI.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = HoMM3SwiftUI.entitlements; sourceTree = "<group>"; };
+		481BDF7626C65A1900C5E335 /* ResourceID.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResourceID.swift; sourceTree = "<group>"; };
+		481BDF7826C65CF500C5E335 /* ResourceLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResourceLoader.swift; sourceTree = "<group>"; };
+		481BDF7B26C6687E00C5E335 /* ResourceLoader+Archive.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ResourceLoader+Archive.swift"; sourceTree = "<group>"; };
+		481BDF7E26C669D400C5E335 /* Config.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Config.swift; sourceTree = "<group>"; };
+		481BDF8126C6A3B100C5E335 /* Config+OriginalResourceDirectory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Config+OriginalResourceDirectory.swift"; sourceTree = "<group>"; };
+		481BDF8326C6A3C500C5E335 /* Config+OriginalResourceDirectory+Data.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Config+OriginalResourceDirectory+Data.swift"; sourceTree = "<group>"; };
+		481BDF8526C6A3DF00C5E335 /* Config+OriginalResourceDirectory+Maps.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Config+OriginalResourceDirectory+Maps.swift"; sourceTree = "<group>"; };
+		481BDF8726C6A3F400C5E335 /* Config+OriginalResourceDirectory+Music.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Config+OriginalResourceDirectory+Music.swift"; sourceTree = "<group>"; };
+		481BDF9D26C6A4F000C5E335 /* Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = Tests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		481BDF9F26C6A4F000C5E335 /* Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tests.swift; sourceTree = "<group>"; };
+		481BDFA126C6A4F000C5E335 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		481BDF5E26C5942000C5E335 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		481BDF9A26C6A4F000C5E335 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -37,7 +74,8 @@
 		481BDF5826C5942000C5E335 = {
 			isa = PBXGroup;
 			children = (
-				481BDF6326C5942000C5E335 /* HoMM3SwiftUI */,
+				481BDF6326C5942000C5E335 /* Sources */,
+				481BDF9E26C6A4F000C5E335 /* Tests */,
 				481BDF6226C5942000C5E335 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -46,11 +84,85 @@
 			isa = PBXGroup;
 			children = (
 				481BDF6126C5942000C5E335 /* HoMM3SwiftUI.app */,
+				481BDF9D26C6A4F000C5E335 /* Tests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		481BDF6326C5942000C5E335 /* HoMM3SwiftUI */ = {
+		481BDF6326C5942000C5E335 /* Sources */ = {
+			isa = PBXGroup;
+			children = (
+				481BDFA726C6A54D00C5E335 /* Frontend */,
+				481BDF7426C659EA00C5E335 /* Backend */,
+			);
+			path = Sources;
+			sourceTree = "<group>";
+		};
+		481BDF6A26C5942200C5E335 /* Preview Content */ = {
+			isa = PBXGroup;
+			children = (
+				481BDF6B26C5942200C5E335 /* Preview Assets.xcassets */,
+			);
+			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		481BDF7426C659EA00C5E335 /* Backend */ = {
+			isa = PBXGroup;
+			children = (
+				481BDF8026C6A33800C5E335 /* Config */,
+				481BDF7526C659F800C5E335 /* GameFiles */,
+			);
+			path = Backend;
+			sourceTree = "<group>";
+		};
+		481BDF7526C659F800C5E335 /* GameFiles */ = {
+			isa = PBXGroup;
+			children = (
+				481BDF7D26C6689E00C5E335 /* ResourceLoader */,
+				481BDF7626C65A1900C5E335 /* ResourceID.swift */,
+			);
+			path = GameFiles;
+			sourceTree = "<group>";
+		};
+		481BDF7A26C6686D00C5E335 /* ResourceLoader+Archive */ = {
+			isa = PBXGroup;
+			children = (
+				481BDF7B26C6687E00C5E335 /* ResourceLoader+Archive.swift */,
+			);
+			path = "ResourceLoader+Archive";
+			sourceTree = "<group>";
+		};
+		481BDF7D26C6689E00C5E335 /* ResourceLoader */ = {
+			isa = PBXGroup;
+			children = (
+				481BDF7826C65CF500C5E335 /* ResourceLoader.swift */,
+				481BDF7A26C6686D00C5E335 /* ResourceLoader+Archive */,
+			);
+			path = ResourceLoader;
+			sourceTree = "<group>";
+		};
+		481BDF8026C6A33800C5E335 /* Config */ = {
+			isa = PBXGroup;
+			children = (
+				481BDF7E26C669D400C5E335 /* Config.swift */,
+				481BDF8726C6A3F400C5E335 /* Config+OriginalResourceDirectory+Music.swift */,
+				481BDF8326C6A3C500C5E335 /* Config+OriginalResourceDirectory+Data.swift */,
+				481BDF8526C6A3DF00C5E335 /* Config+OriginalResourceDirectory+Maps.swift */,
+				481BDF8126C6A3B100C5E335 /* Config+OriginalResourceDirectory.swift */,
+			);
+			path = Config;
+			sourceTree = "<group>";
+		};
+		481BDF9E26C6A4F000C5E335 /* Tests */ = {
+			isa = PBXGroup;
+			children = (
+				481BDF9F26C6A4F000C5E335 /* Tests.swift */,
+				481BDFA126C6A4F000C5E335 /* Info.plist */,
+			);
+			path = Tests;
+			sourceTree = "<group>";
+		};
+		481BDFA726C6A54D00C5E335 /* Frontend */ = {
 			isa = PBXGroup;
 			children = (
 				481BDF6426C5942000C5E335 /* HoMM3SwiftUIApp.swift */,
@@ -60,15 +172,7 @@
 				481BDF6E26C5942200C5E335 /* HoMM3SwiftUI.entitlements */,
 				481BDF6A26C5942200C5E335 /* Preview Content */,
 			);
-			path = HoMM3SwiftUI;
-			sourceTree = "<group>";
-		};
-		481BDF6A26C5942200C5E335 /* Preview Content */ = {
-			isa = PBXGroup;
-			children = (
-				481BDF6B26C5942200C5E335 /* Preview Assets.xcassets */,
-			);
-			path = "Preview Content";
+			path = Frontend;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -91,6 +195,24 @@
 			productReference = 481BDF6126C5942000C5E335 /* HoMM3SwiftUI.app */;
 			productType = "com.apple.product-type.application";
 		};
+		481BDF9C26C6A4F000C5E335 /* Tests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 481BDFA426C6A4F000C5E335 /* Build configuration list for PBXNativeTarget "Tests" */;
+			buildPhases = (
+				481BDF9926C6A4F000C5E335 /* Sources */,
+				481BDF9A26C6A4F000C5E335 /* Frameworks */,
+				481BDF9B26C6A4F000C5E335 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				481BDFA326C6A4F000C5E335 /* PBXTargetDependency */,
+			);
+			name = Tests;
+			productName = Tests;
+			productReference = 481BDF9D26C6A4F000C5E335 /* Tests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -102,6 +224,10 @@
 				TargetAttributes = {
 					481BDF6026C5942000C5E335 = {
 						CreatedOnToolsVersion = 12.5;
+					};
+					481BDF9C26C6A4F000C5E335 = {
+						CreatedOnToolsVersion = 12.5;
+						TestTargetID = 481BDF6026C5942000C5E335;
 					};
 				};
 			};
@@ -119,6 +245,7 @@
 			projectRoot = "";
 			targets = (
 				481BDF6026C5942000C5E335 /* HoMM3SwiftUI */,
+				481BDF9C26C6A4F000C5E335 /* Tests */,
 			);
 		};
 /* End PBXProject section */
@@ -133,6 +260,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		481BDF9B26C6A4F000C5E335 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -141,11 +275,35 @@
 			buildActionMask = 2147483647;
 			files = (
 				481BDF6726C5942000C5E335 /* ContentView.swift in Sources */,
+				481BDF8226C6A3B100C5E335 /* Config+OriginalResourceDirectory.swift in Sources */,
 				481BDF6526C5942000C5E335 /* HoMM3SwiftUIApp.swift in Sources */,
+				481BDF7926C65CF500C5E335 /* ResourceLoader.swift in Sources */,
+				481BDF7C26C6687E00C5E335 /* ResourceLoader+Archive.swift in Sources */,
+				481BDF7726C65A1900C5E335 /* ResourceID.swift in Sources */,
+				481BDF8826C6A3F400C5E335 /* Config+OriginalResourceDirectory+Music.swift in Sources */,
+				481BDF8426C6A3C500C5E335 /* Config+OriginalResourceDirectory+Data.swift in Sources */,
+				481BDF7F26C669D400C5E335 /* Config.swift in Sources */,
+				481BDF8626C6A3DF00C5E335 /* Config+OriginalResourceDirectory+Maps.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		481BDF9926C6A4F000C5E335 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				481BDFA026C6A4F000C5E335 /* Tests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		481BDFA326C6A4F000C5E335 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 481BDF6026C5942000C5E335 /* HoMM3SwiftUI */;
+			targetProxy = 481BDFA226C6A4F000C5E335 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		481BDF6F26C5942200C5E335 /* Debug */ = {
@@ -271,9 +429,9 @@
 				CODE_SIGN_ENTITLEMENTS = HoMM3SwiftUI/HoMM3SwiftUI.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				DEVELOPMENT_ASSET_PATHS = "\"HoMM3SwiftUI/Preview Content\"";
+				DEVELOPMENT_ASSET_PATHS = "\"Sources/Frontend/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
-				INFOPLIST_FILE = HoMM3SwiftUI/Info.plist;
+				INFOPLIST_FILE = Sources/Frontend/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
@@ -293,9 +451,9 @@
 				CODE_SIGN_ENTITLEMENTS = HoMM3SwiftUI/HoMM3SwiftUI.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				DEVELOPMENT_ASSET_PATHS = "\"HoMM3SwiftUI/Preview Content\"";
+				DEVELOPMENT_ASSET_PATHS = "\"Sources/Frontend/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
-				INFOPLIST_FILE = HoMM3SwiftUI/Info.plist;
+				INFOPLIST_FILE = Sources/Frontend/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
@@ -304,6 +462,44 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.cyon.HoMM3SwiftUI;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		481BDFA526C6A4F000C5E335 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				INFOPLIST_FILE = Tests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.cyon.Tests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/HoMM3SwiftUI.app/Contents/MacOS/HoMM3SwiftUI";
+			};
+			name = Debug;
+		};
+		481BDFA626C6A4F000C5E335 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				INFOPLIST_FILE = Tests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.cyon.Tests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/HoMM3SwiftUI.app/Contents/MacOS/HoMM3SwiftUI";
 			};
 			name = Release;
 		};
@@ -324,6 +520,15 @@
 			buildConfigurations = (
 				481BDF7226C5942200C5E335 /* Debug */,
 				481BDF7326C5942200C5E335 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		481BDFA426C6A4F000C5E335 /* Build configuration list for PBXNativeTarget "Tests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				481BDFA526C6A4F000C5E335 /* Debug */,
+				481BDFA626C6A4F000C5E335 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
