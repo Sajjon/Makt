@@ -12,9 +12,9 @@ import Foundation
 /// Contains e.g. paths to original game resources.
 public struct Config: Equatable, Hashable {
     
-    private let dataDirectory: DataDirectory
-    private let mapsDirectory: MapsDirectory
-    private let musicDirectory: MusicDirectory
+    public let dataDirectory: DataDirectory
+    public let mapsDirectory: MapsDirectory
+    public let musicDirectory: MusicDirectory
     
     public init(
         absolutePathToGameFiles gameFilesPath: String = "/Users/sajjon/Library/Application Support/HoMM3SwiftUI",
@@ -64,9 +64,18 @@ public extension Config {
     typealias MusicDirectory = OriginalResourceDirectory<OriginalResourceDirectories.Music>
 }
 
-public protocol OriginalResourceDirectoryKind: Hashable {
+public protocol FileNameConvertible {
+    var fileName: String { get }
+}
+
+public extension FileNameConvertible where Self: RawRepresentable, Self.RawValue == String {
+    var fileName: String { rawValue }
+}
+
+public protocol OriginalResourceDirectoryKind: Hashable where Content: RawRepresentable, Content.RawValue == String {
+    associatedtype Content: FileNameConvertible & Hashable
     static var name: String { get }
-    static var requiredDirectoryContents: [String] { get }
+    static var requiredDirectoryContents: [Content] { get }
 }
 public extension OriginalResourceDirectoryKind {
     static var name: String { .init(describing: self) }
@@ -74,4 +83,29 @@ public extension OriginalResourceDirectoryKind {
 
 /// Namespace for OriginalResourceDirectory kinds
 public enum OriginalResourceDirectories {}
+
+
+/// Public access file handlers
+public extension Config.OriginalResourceDirectory {
+    func handleFor(file fileId: Kind.Content) -> File {
+        guard let file = files[fileId] else {
+            fatalError("Expected to find file named: \(fileId.fileName)")
+        }
+        return file
+    }
+}
+
+public extension Config {
+    func map(named fileId: OriginalResourceDirectories.Maps.Content) -> Config.OriginalResourceDirectory<OriginalResourceDirectories.Maps>.File {
+        mapsDirectory.handleFor(file: fileId)
+    }
+    
+    func data(named fileId: OriginalResourceDirectories.Data.Content) -> Config.OriginalResourceDirectory<OriginalResourceDirectories.Data>.File {
+        dataDirectory.handleFor(file: fileId)
+    }
+    
+    func music(named fileId: OriginalResourceDirectories.Music.Content) -> Config.OriginalResourceDirectory<OriginalResourceDirectories.Music>.File {
+        musicDirectory.handleFor(file: fileId)
+    }
+}
 

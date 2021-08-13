@@ -10,9 +10,14 @@ import Foundation
 public extension OriginalResourceDirectories {
 
     enum Maps: OriginalResourceDirectoryKind {
-        public static let requiredDirectoryContents = [
-            "Tutorial.tut",
-            "Titans Winter.h3m"
-        ]
+        public enum Content: String, FileNameConvertible, Equatable, Hashable, CaseIterable {
+            case tutorial = "Tutorial.tut"
+            case titansWinter = "Titans Winter.h3m"
+        }
+      
     }
+}
+
+public extension OriginalResourceDirectoryKind where Content: CaseIterable, Content.AllCases == [Content] {
+    static var requiredDirectoryContents: [Content] { Content.allCases }
 }

@@ -39,11 +39,16 @@ public extension Config {
     /// (I think VCMI recommended me to do it?)), e.g. `"TowerTown.ogg"` or `"SNOW.ogg"`
     ///
     struct OriginalResourceDirectory<Kind>: Equatable, Hashable where Kind: OriginalResourceDirectoryKind {
+        public struct File: Equatable, Hashable {
+            public let fileHandle: FileHandle
+            public let content: Kind.Content
+        }
         public let path: String
-        public let files: [FileHandle]
+        public let files: [Kind.Content: File]
         public init(parentDirectory: String, fileManager: FileManager = .default) throws {
             let path = parentDirectory.appending("/").appending(Kind.name)
-            self.files = try Kind.requiredDirectoryContents.map { fileName in
+            self.files = try Dictionary(uniqueKeysWithValues: Kind.requiredDirectoryContents.map { content in
+                let fileName = content.fileName
                 let filePath = path.appending("/").appending(fileName)
                 guard fileManager.fileExists(atPath: filePath) else {
                     throw Config.Error.gameFiles(directory: Kind.name, doesNotContainRequiredFile: filePath)
@@ -51,9 +56,15 @@ public extension Config {
                 guard let fileHandle = FileHandle(forReadingAtPath: filePath) else {
                     throw Config.Error.failedToOpenFileForReading(filePath: filePath)
                 }
-                return fileHandle
-            }
+                return .init(fileHandle: fileHandle, content: content)
+            }.map({ (key: $0.content, value: $0) }))
             self.path = path
         }
     }
+}
+
+public extension Config.OriginalResourceDirectory.File {
+    var fileName: String { content.fileName }
+    var data: Data { fileHandle.availableData }
+    var fileSize: Int { data.count }
 }
