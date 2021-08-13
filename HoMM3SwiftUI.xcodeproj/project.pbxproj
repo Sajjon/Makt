@@ -7,12 +7,16 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		481462DF26C6F1F200431960 /* ResourceAccessor+OriginalResourceDirectory+Maps.swift in Sources */ = {isa = PBXBuildFile; fileRef = 481462DA26C6F1F200431960 /* ResourceAccessor+OriginalResourceDirectory+Maps.swift */; };
-		481462E026C6F1F200431960 /* ResourceAccessor+OriginalResourceDirectory+Music.swift in Sources */ = {isa = PBXBuildFile; fileRef = 481462DB26C6F1F200431960 /* ResourceAccessor+OriginalResourceDirectory+Music.swift */; };
-		481462E126C6F1F200431960 /* ResourceAccessor+OriginalResourceDirectory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 481462DC26C6F1F200431960 /* ResourceAccessor+OriginalResourceDirectory.swift */; };
-		481462E226C6F1F200431960 /* ResourceAccessor+OriginalResourceDirectory+Data.swift in Sources */ = {isa = PBXBuildFile; fileRef = 481462DD26C6F1F200431960 /* ResourceAccessor+OriginalResourceDirectory+Data.swift */; };
+		481462DF26C6F1F200431960 /* ResourceAccessor+Maps.swift in Sources */ = {isa = PBXBuildFile; fileRef = 481462DA26C6F1F200431960 /* ResourceAccessor+Maps.swift */; };
+		481462E026C6F1F200431960 /* ResourceAccessor+Music.swift in Sources */ = {isa = PBXBuildFile; fileRef = 481462DB26C6F1F200431960 /* ResourceAccessor+Music.swift */; };
+		481462E126C6F1F200431960 /* ResourceAccessor+Directory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 481462DC26C6F1F200431960 /* ResourceAccessor+Directory.swift */; };
+		481462E226C6F1F200431960 /* ResourceAccessor+Data.swift in Sources */ = {isa = PBXBuildFile; fileRef = 481462DD26C6F1F200431960 /* ResourceAccessor+Data.swift */; };
 		481462E326C6F1F200431960 /* ResourceAccessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 481462DE26C6F1F200431960 /* ResourceAccessor.swift */; };
 		481462E826C6F20E00431960 /* Config.swift in Sources */ = {isa = PBXBuildFile; fileRef = 481462E726C6F20E00431960 /* Config.swift */; };
+		481462EA26C6F57900431960 /* ResourceAccessor+File.swift in Sources */ = {isa = PBXBuildFile; fileRef = 481462E926C6F57900431960 /* ResourceAccessor+File.swift */; };
+		481462EC26C6F64000431960 /* ResourceKind.swift in Sources */ = {isa = PBXBuildFile; fileRef = 481462EB26C6F64000431960 /* ResourceKind.swift */; };
+		481462F026C6F7BE00431960 /* ResourceAccessor+Error.swift in Sources */ = {isa = PBXBuildFile; fileRef = 481462EF26C6F7BE00431960 /* ResourceAccessor+Error.swift */; };
+		481462F226C6F7D500431960 /* ResourceAccessor+Access.swift in Sources */ = {isa = PBXBuildFile; fileRef = 481462F126C6F7D500431960 /* ResourceAccessor+Access.swift */; };
 		481BDF6526C5942000C5E335 /* HoMM3SwiftUIApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 481BDF6426C5942000C5E335 /* HoMM3SwiftUIApp.swift */; };
 		481BDF6726C5942000C5E335 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 481BDF6626C5942000C5E335 /* ContentView.swift */; };
 		481BDF6926C5942200C5E335 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 481BDF6826C5942200C5E335 /* Assets.xcassets */; };
@@ -34,12 +38,16 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		481462DA26C6F1F200431960 /* ResourceAccessor+OriginalResourceDirectory+Maps.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ResourceAccessor+OriginalResourceDirectory+Maps.swift"; sourceTree = "<group>"; };
-		481462DB26C6F1F200431960 /* ResourceAccessor+OriginalResourceDirectory+Music.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ResourceAccessor+OriginalResourceDirectory+Music.swift"; sourceTree = "<group>"; };
-		481462DC26C6F1F200431960 /* ResourceAccessor+OriginalResourceDirectory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ResourceAccessor+OriginalResourceDirectory.swift"; sourceTree = "<group>"; };
-		481462DD26C6F1F200431960 /* ResourceAccessor+OriginalResourceDirectory+Data.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ResourceAccessor+OriginalResourceDirectory+Data.swift"; sourceTree = "<group>"; };
+		481462DA26C6F1F200431960 /* ResourceAccessor+Maps.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ResourceAccessor+Maps.swift"; sourceTree = "<group>"; };
+		481462DB26C6F1F200431960 /* ResourceAccessor+Music.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ResourceAccessor+Music.swift"; sourceTree = "<group>"; };
+		481462DC26C6F1F200431960 /* ResourceAccessor+Directory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ResourceAccessor+Directory.swift"; sourceTree = "<group>"; };
+		481462DD26C6F1F200431960 /* ResourceAccessor+Data.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ResourceAccessor+Data.swift"; sourceTree = "<group>"; };
 		481462DE26C6F1F200431960 /* ResourceAccessor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ResourceAccessor.swift; sourceTree = "<group>"; };
 		481462E726C6F20E00431960 /* Config.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Config.swift; sourceTree = "<group>"; };
+		481462E926C6F57900431960 /* ResourceAccessor+File.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ResourceAccessor+File.swift"; sourceTree = "<group>"; };
+		481462EB26C6F64000431960 /* ResourceKind.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResourceKind.swift; sourceTree = "<group>"; };
+		481462EF26C6F7BE00431960 /* ResourceAccessor+Error.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ResourceAccessor+Error.swift"; sourceTree = "<group>"; };
+		481462F126C6F7D500431960 /* ResourceAccessor+Access.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ResourceAccessor+Access.swift"; sourceTree = "<group>"; };
 		481BDF6126C5942000C5E335 /* HoMM3SwiftUI.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HoMM3SwiftUI.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		481BDF6426C5942000C5E335 /* HoMM3SwiftUIApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HoMM3SwiftUIApp.swift; sourceTree = "<group>"; };
 		481BDF6626C5942000C5E335 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -156,10 +164,14 @@
 			isa = PBXGroup;
 			children = (
 				481462DE26C6F1F200431960 /* ResourceAccessor.swift */,
-				481462DC26C6F1F200431960 /* ResourceAccessor+OriginalResourceDirectory.swift */,
-				481462DD26C6F1F200431960 /* ResourceAccessor+OriginalResourceDirectory+Data.swift */,
-				481462DA26C6F1F200431960 /* ResourceAccessor+OriginalResourceDirectory+Maps.swift */,
-				481462DB26C6F1F200431960 /* ResourceAccessor+OriginalResourceDirectory+Music.swift */,
+				481462F126C6F7D500431960 /* ResourceAccessor+Access.swift */,
+				481462DC26C6F1F200431960 /* ResourceAccessor+Directory.swift */,
+				481462DD26C6F1F200431960 /* ResourceAccessor+Data.swift */,
+				481462DA26C6F1F200431960 /* ResourceAccessor+Maps.swift */,
+				481462DB26C6F1F200431960 /* ResourceAccessor+Music.swift */,
+				481462E926C6F57900431960 /* ResourceAccessor+File.swift */,
+				481462EB26C6F64000431960 /* ResourceKind.swift */,
+				481462EF26C6F7BE00431960 /* ResourceAccessor+Error.swift */,
 			);
 			path = ResourceAccessor;
 			sourceTree = "<group>";
@@ -285,16 +297,20 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				481462EA26C6F57900431960 /* ResourceAccessor+File.swift in Sources */,
+				481462F026C6F7BE00431960 /* ResourceAccessor+Error.swift in Sources */,
 				481BDF6726C5942000C5E335 /* ContentView.swift in Sources */,
+				481462EC26C6F64000431960 /* ResourceKind.swift in Sources */,
 				481BDF6526C5942000C5E335 /* HoMM3SwiftUIApp.swift in Sources */,
-				481462DF26C6F1F200431960 /* ResourceAccessor+OriginalResourceDirectory+Maps.swift in Sources */,
-				481462E126C6F1F200431960 /* ResourceAccessor+OriginalResourceDirectory.swift in Sources */,
+				481462DF26C6F1F200431960 /* ResourceAccessor+Maps.swift in Sources */,
+				481462E126C6F1F200431960 /* ResourceAccessor+Directory.swift in Sources */,
 				481462E826C6F20E00431960 /* Config.swift in Sources */,
+				481462F226C6F7D500431960 /* ResourceAccessor+Access.swift in Sources */,
 				481BDF7926C65CF500C5E335 /* ResourceLoader.swift in Sources */,
-				481462E026C6F1F200431960 /* ResourceAccessor+OriginalResourceDirectory+Music.swift in Sources */,
+				481462E026C6F1F200431960 /* ResourceAccessor+Music.swift in Sources */,
 				481462E326C6F1F200431960 /* ResourceAccessor.swift in Sources */,
 				481BDF7C26C6687E00C5E335 /* ResourceLoader+Archive.swift in Sources */,
-				481462E226C6F1F200431960 /* ResourceAccessor+OriginalResourceDirectory+Data.swift in Sources */,
+				481462E226C6F1F200431960 /* ResourceAccessor+Data.swift in Sources */,
 				481BDF7726C65A1900C5E335 /* ResourceID.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

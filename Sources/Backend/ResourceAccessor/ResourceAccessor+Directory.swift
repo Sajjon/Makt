@@ -1,5 +1,5 @@
 //
-//  ResourceAccessor+OriginalResourceDirectory.swift
+//  ResourceAccessor+Directory.swift
 //  HoMM3SwiftUI
 //
 //  Created by Alexander Cyon on 2021-08-13.
@@ -8,6 +8,7 @@
 import Foundation
 
 public extension ResourceAccessor {
+
     
     /// Original resources that you need to buy in order to run this game.
     ///
@@ -38,13 +39,11 @@ public extension ResourceAccessor {
     /// Mp3 files or ogg files (if you have converted them, which I (Cyon) have for some reason
     /// (I think VCMI recommended me to do it?)), e.g. `"TowerTown.ogg"` or `"SNOW.ogg"`
     ///
-    struct OriginalResourceDirectory<Kind>: Equatable, Hashable where Kind: OriginalResourceDirectoryKind {
-        public struct File: Equatable, Hashable {
-            public let fileHandle: FileHandle
-            public let content: Kind.Content
-        }
+    struct Directory<Kind>: Equatable, Hashable where Kind: ResourceKind {
+    
         public let path: String
-        public let files: [Kind.Content: File]
+        public let files: [Kind.Content: File<Kind>]
+        
         public init(parentDirectory: String, fileManager: FileManager = .default) throws {
             let path = parentDirectory.appending("/").appending(Kind.name)
             self.files = try Dictionary(uniqueKeysWithValues: Kind.requiredDirectoryContents.map { content in
@@ -61,10 +60,4 @@ public extension ResourceAccessor {
             self.path = path
         }
     }
-}
-
-public extension ResourceAccessor.OriginalResourceDirectory.File {
-    var fileName: String { content.fileName }
-    var data: Data { fileHandle.availableData }
-    var fileSize: Int { data.count }
 }

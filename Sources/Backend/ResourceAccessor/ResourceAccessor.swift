@@ -26,7 +26,7 @@ public struct ResourceAccessor: Equatable, Hashable {
         }
         
    
-        func create<D>() throws -> OriginalResourceDirectory<D> where D: OriginalResourceDirectoryKind {
+        func create<D>() throws -> Directory<D> where D: ResourceKind {
             let directoryName = D.name
             guard filesAtPath.contains(directoryName) else {
                 throw Error.gameFilesDirectoryDoesNotContain(requiredDirectory: directoryName)
@@ -41,72 +41,10 @@ public struct ResourceAccessor: Equatable, Hashable {
     }
 }
 
-// MARK: Error
+
+// MARK: Public
 public extension ResourceAccessor {
-    enum Error: Swift.Error, Equatable {
-        case directoryNotFound(invalidPath: String, purpose: String)
-        case gameFilesDirectoryDoesNotContain(requiredDirectory: String)
-        case gameFiles(directory: String, doesNotContainRequiredFile: String)
-        case failedToOpenFileForReading(filePath: String)
-    }
+    typealias DataDirectory = Directory<ResourceAccessor.Data>
+    typealias MapsDirectory = Directory<Maps>
+    typealias MusicDirectory = Directory<Music>
 }
-
-public extension ResourceAccessor.Error {
-    static func gameFileDirectoryNotFound(at invalidPath: String) -> Self {
-        .directoryNotFound(invalidPath: invalidPath, purpose: "Game Files")
-    }
-}
-
-
-// MARK: Directory kinds
-public extension ResourceAccessor {
-    typealias DataDirectory = OriginalResourceDirectory<OriginalResourceDirectories.Data>
-    typealias MapsDirectory = OriginalResourceDirectory<OriginalResourceDirectories.Maps>
-    typealias MusicDirectory = OriginalResourceDirectory<OriginalResourceDirectories.Music>
-}
-
-public protocol FileNameConvertible {
-    var fileName: String { get }
-}
-
-public extension FileNameConvertible where Self: RawRepresentable, Self.RawValue == String {
-    var fileName: String { rawValue }
-}
-
-public protocol OriginalResourceDirectoryKind: Hashable where Content: RawRepresentable, Content.RawValue == String {
-    associatedtype Content: FileNameConvertible & Hashable
-    static var name: String { get }
-    static var requiredDirectoryContents: [Content] { get }
-}
-public extension OriginalResourceDirectoryKind {
-    static var name: String { .init(describing: self) }
-}
-
-/// Namespace for OriginalResourceDirectory kinds
-public enum OriginalResourceDirectories {}
-
-
-/// Public access file handlers
-public extension ResourceAccessor.OriginalResourceDirectory {
-    func handleFor(file fileId: Kind.Content) -> File {
-        guard let file = files[fileId] else {
-            fatalError("Expected to find file named: \(fileId.fileName)")
-        }
-        return file
-    }
-}
-
-public extension ResourceAccessor {
-    func map(named fileId: OriginalResourceDirectories.Maps.Content) -> ResourceAccessor.OriginalResourceDirectory<OriginalResourceDirectories.Maps>.File {
-        mapsDirectory.handleFor(file: fileId)
-    }
-    
-    func data(named fileId: OriginalResourceDirectories.Data.Content) -> ResourceAccessor.OriginalResourceDirectory<OriginalResourceDirectories.Data>.File {
-        dataDirectory.handleFor(file: fileId)
-    }
-    
-    func music(named fileId: OriginalResourceDirectories.Music.Content) -> ResourceAccessor.OriginalResourceDirectory<OriginalResourceDirectories.Music>.File {
-        musicDirectory.handleFor(file: fileId)
-    }
-}
-
