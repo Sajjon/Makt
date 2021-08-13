@@ -1,5 +1,5 @@
 //
-//  Config+OriginalResourceDirectory+Data.swift
+//  ResourceAccessor+OriginalResourceDirectory+Data.swift
 //  HoMM3SwiftUI
 //
 //  Created by Alexander Cyon on 2021-08-13.

@@ -1,5 +1,5 @@
 //
-//  Config+OriginalResourceDirectory.swift
+//  ResourceAccessor+OriginalResourceDirectory.swift
 //  HoMM3SwiftUI
 //
 //  Created by Alexander Cyon on 2021-08-13.
@@ -7,7 +7,7 @@
 
 import Foundation
 
-public extension Config {
+public extension ResourceAccessor {
     
     /// Original resources that you need to buy in order to run this game.
     ///
@@ -51,10 +51,10 @@ public extension Config {
                 let fileName = content.fileName
                 let filePath = path.appending("/").appending(fileName)
                 guard fileManager.fileExists(atPath: filePath) else {
-                    throw Config.Error.gameFiles(directory: Kind.name, doesNotContainRequiredFile: filePath)
+                    throw ResourceAccessor.Error.gameFiles(directory: Kind.name, doesNotContainRequiredFile: filePath)
                 }
                 guard let fileHandle = FileHandle(forReadingAtPath: filePath) else {
-                    throw Config.Error.failedToOpenFileForReading(filePath: filePath)
+                    throw ResourceAccessor.Error.failedToOpenFileForReading(filePath: filePath)
                 }
                 return .init(fileHandle: fileHandle, content: content)
             }.map({ (key: $0.content, value: $0) }))
@@ -63,7 +63,7 @@ public extension Config {
     }
 }
 
-public extension Config.OriginalResourceDirectory.File {
+public extension ResourceAccessor.OriginalResourceDirectory.File {
     var fileName: String { content.fileName }
     var data: Data { fileHandle.availableData }
     var fileSize: Int { data.count }

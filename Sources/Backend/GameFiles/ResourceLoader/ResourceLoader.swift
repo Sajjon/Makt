@@ -11,8 +11,8 @@ import Foundation
 ///
 /// VCMI: class: "ISimpleResourceLoader" and namespace: "CResourceHandler"
 public final class ResourceLoader {
-    private let config: Config
-    public init(config: Config) {
+    private let config: ResourceAccessor
+    public init(config: ResourceAccessor) {
         self.config = config
     }
 }

@@ -10,20 +10,20 @@ import HoMM3SwiftUI
 
 final class Tests: XCTestCase {
 
-    func test_assert_can_create_config_without_arguments() throws {
-        XCTAssertNoThrow(try Config())
+    func test_assert_can_create_ResourceAccessor_without_arguments() throws {
+        XCTAssertNoThrow(try ResourceAccessor())
     }
 
-    func test_assert_can_read_known_map_by_known_name() throws {
-        let config = try Config()
-        let mapFile_tutorial = config.map(named: .tutorial)
+    func test_assert_can_access_known_map_by_known_name() throws {
+        let resourceLocator = try ResourceAccessor()
+        let mapFile_tutorial = resourceLocator.map(named: .tutorial)
         XCTAssertEqual(mapFile_tutorial.fileName, "Tutorial.tut")
         XCTAssertEqual(mapFile_tutorial.fileSize, 6152)
     }
     
-    func test_assert_can_read_known_map_by_known_name2() throws {
-        let config = try Config()
-        let mapFile_tutorial = config.map(named: .titansWinter)
+    func test_assert_can_access_known_map_by_known_name2() throws {
+        let resourceLocator = try ResourceAccessor()
+        let mapFile_tutorial = resourceLocator.map(named: .titansWinter)
         XCTAssertEqual(mapFile_tutorial.fileName, "Titans Winter.h3m")
         XCTAssertEqual(mapFile_tutorial.fileSize, 30374)
     }
