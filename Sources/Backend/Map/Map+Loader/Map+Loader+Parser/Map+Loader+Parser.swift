@@ -15,3 +15,9 @@ public extension Map.Loader {
         }
     }
 }
+
+public extension Map.Loader.Parser {
+    func parse(readMap: Map.Loader.ReadMap) throws -> Map {
+        .init(about: .init(id: readMap.id, fileSize: readMap.fileHandle.availableData.count))
+    }
+}

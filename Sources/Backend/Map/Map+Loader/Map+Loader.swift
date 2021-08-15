@@ -12,6 +12,7 @@ public extension Map {
         
         private let config: Config
         private let reader: Reader
+        
         private let parser: Parser
         
         /// A simple cache for maps so that they can be loaded faster
@@ -34,6 +35,7 @@ public extension Map {
     }
 }
 
+// MARK: Init
 public extension Map.Loader {
     
     static let shared = Map.Loader()
@@ -50,33 +52,16 @@ public extension Map.Loader {
     }
 }
 
-// MARK: Private
-private extension Map.Loader {
-    var mapsDirectoryPath: String { config.gamesFilesDirectoryPath.appending("Maps/") }
-    
-    func load(unparsed mapId: Map.ID) throws -> Map {
-        let mapPath = mapsDirectoryPath.appending(mapId.fileName)
-        guard let rawMapData = config.fileManager.contents(atPath: mapPath) else {
-            throw Error.mapFileNotFound(at: mapPath)
-        }
-        return Map(
-            about: .init(
-                id: mapId,
-                fileSize: rawMapData.count
-            )
-        )
-    }
-}
-
 // MARK: Public
 public extension Map.Loader {
     func load(id mapID: Map.ID) throws -> Map {
         if let cachedMap = cache.load(id: mapID) {
             return cachedMap
         }
-        let map = try load(unparsed: mapID)
-        cache.save(map: map)
-        return map
+        let readMap = try reader.read(by: mapID)
+        let parsedMap = try parser.parse(readMap: readMap)
+        cache.save(map: parsedMap)
+        return parsedMap
     }
 }
 
