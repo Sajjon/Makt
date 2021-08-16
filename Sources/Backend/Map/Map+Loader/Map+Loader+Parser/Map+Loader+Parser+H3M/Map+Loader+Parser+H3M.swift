@@ -12,7 +12,7 @@ internal extension Map.Loader.Parser {
         private let readMap: Map.Loader.ReadMap
         private let reader: DataReader
         private let fileSizeCompressed: Int?
-        public init(readMap: Map.Loader.ReadMap, fileSizeCompressed: Int?) {
+        public init(readMap: Map.Loader.ReadMap, fileSizeCompressed: Int? = nil) {
             self.readMap = readMap
             self.reader = DataReader(data: readMap.data)
             self.fileSizeCompressed = fileSizeCompressed
@@ -24,9 +24,11 @@ internal extension Map.Loader.Parser {
 enum Error: Swift.Error {
     case corruptMapFileTooSmall
     case failedToReadHeaderVersion
-    case unsupportedHeaderVersion
+    case unrecognizedFormat(UInt32)
+    case unsupportedFormat(Map.Format)
     case unrecognizedDifficulty(Difficulty.RawValue)
     case unrecognizedAITactic(AITactic.RawValue)
+    case unrecognizedFaction(Faction.RawValue)
 }
 
 
@@ -62,7 +64,7 @@ private extension  Map.Loader.Parser.H3M {
         // Check map for validity
         guard reader.sourceSize >= 50 else { throw Error.corruptMapFileTooSmall }
         // Map version
-        guard let format = try Map.Format(rawValue: reader.readUInt32()) else {
+        guard let format = try Map.Format(id: reader.readUInt32()) else {
             throw Error.failedToReadHeaderVersion
         }
         
@@ -70,9 +72,9 @@ private extension  Map.Loader.Parser.H3M {
             format == .restorationOfErathia ||
                 format == .armageddonsBlade ||
                 format == .shadowOfDeath ||
-                format == .wakeOGods
+                format == .wakeOfGods
         else {
-            throw Error.unsupportedHeaderVersion
+            throw Error.unsupportedFormat(format)
         }
         
         let _ = try reader.readBool() /// VCMI variable name `hasPlayablePlayers` but with comment `"unused"`
@@ -114,7 +116,7 @@ private extension  Map.Loader.Parser.H3M {
             let isPlayableByAI = try reader.readBool()
             guard isPlayableByAI || isPlayableByHuman else {
                 switch format {
-                case .shadowOfDeath, .wakeOGods:
+                case .shadowOfDeath, .wakeOfGods:
                     try reader.skip(byteCount: 13)
                 case .armageddonsBlade:
                     try reader.skip(byteCount: 12)
@@ -125,17 +127,19 @@ private extension  Map.Loader.Parser.H3M {
                 return nil // unsure about this
             }
             
-            /// Unsure about `Int(reader.readUInt8())`, if it ever results in `-1`. In VCMI: `static_cast<EAiTactic::EAiTactic>(reader.readUInt8());` and:
-            ///
-            /// `enum EAiTactic {
-            ///    NONE = -1,
-            ///    RANDOM,
-            ///    WARRIOR,
-            ///    BUILDER,
-            ///    EXPLORER
-            /// };`
-            /// So -1 results in `NONE` which I try to model in swift with code below.
-            func readAITacticsIfAny() throws -> AITactic? {
+     
+            
+            let aiTactic: AITactic? = try {
+                /// Unsure about `Int(reader.readUInt8())`, if it ever results in `-1`. In VCMI: `static_cast<EAiTactic::EAiTactic>(reader.readUInt8());` and:
+                ///
+                /// `enum EAiTactic {
+                ///    NONE = -1,
+                ///    RANDOM,
+                ///    WARRIOR,
+                ///    BUILDER,
+                ///    EXPLORER
+                /// };`
+                /// So -1 results in `NONE` which I try to model in swift with code below.
                 let aiTacticByte = try reader.readUInt8()
                 let aiTacticRaw = Int(aiTacticByte)
                 guard aiTacticRaw != -1 else { return nil }
@@ -143,30 +147,26 @@ private extension  Map.Loader.Parser.H3M {
                     throw Error.unrecognizedAITactic(aiTacticRaw)
                 }
                 return aiTactic
-            }
+            }()
             
-            let aiTactic: AITactic? = try readAITacticsIfAny()
-         
             /// Naming in VCMI: `p7`, with comment `"unknown and unused"`
-            let _: Int? = try format == .shadowOfDeath || format == .wakeOGods ? Int(reader.readUInt8()) : nil
+            let _: Int? = try format == .shadowOfDeath || format == .wakeOfGods ? Int(reader.readUInt8()) : nil
+            
             
             // Factions this player can choose
-            var allowedFactionsForThisPlayerBitmask = try UInt16(reader.readUInt8())
-            var allowedFactionsForThisPlayer = Faction.allCases
-            var totalNumberOfFactionsInMap = Faction.allCases.count
-            
-            if format != .restorationOfErathia {
-                allowedFactionsForThisPlayerBitmask += try 256 * UInt16(reader.readUInt8())
-            } else {
-                totalNumberOfFactionsInMap -= 1 // Exclude `Conflux` from `Restoration Of Erathia`
-            }
-            
-        
-            for factionRaw in 0..<totalNumberOfFactionsInMap {
-                if allowedFactionsForThisPlayerBitmask & (1 << factionRaw) == 0 {
-                    allowedFactionsForThisPlayer.removeAll(where: { $0.rawValue == factionRaw })
+            let allowedFactionsForThisPlayer: [Faction] = try {
+                var allowedFactionsForThisPlayerBitmask = try UInt16(reader.readUInt8())
+                
+                if format != .restorationOfErathia {
+                    allowedFactionsForThisPlayerBitmask += try 256 * UInt16(reader.readUInt8())
                 }
-            }
+                
+                let playableFactions: [Faction] = Faction.playable(in: format)
+            
+                return playableFactions.filter {
+                    allowedFactionsForThisPlayerBitmask & (1 << $0.rawValue) != 0
+                }
+            }()
             
             let isRandomFaction = try reader.readBool()
             let hasMainTown = try reader.readBool()

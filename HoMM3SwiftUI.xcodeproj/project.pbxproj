@@ -27,6 +27,12 @@
 		487C2B8F26CA98DC00031505 /* Map+AllowedHeroes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487C2B8E26CA98DC00031505 /* Map+AllowedHeroes.swift */; };
 		487C2B9226CA9B5900031505 /* DataReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487C2B9126CA9B5900031505 /* DataReader.swift */; };
 		487C2B9526CA9D9200031505 /* Gzip in Frameworks */ = {isa = PBXBuildFile; productRef = 487C2B9426CA9D9200031505 /* Gzip */; };
+		487C2B9726CAD1E400031505 /* Hero.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487C2B9626CAD1E400031505 /* Hero.swift */; };
+		487C2B9926CAD1F800031505 /* Position.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487C2B9826CAD1F800031505 /* Position.swift */; };
+		487C2B9B26CAD21000031505 /* Faction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487C2B9A26CAD20F00031505 /* Faction.swift */; };
+		487C2B9D26CAD21F00031505 /* AITactic.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487C2B9C26CAD21F00031505 /* AITactic.swift */; };
+		487C2B9F26CAD22900031505 /* Difficulty.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487C2B9E26CAD22900031505 /* Difficulty.swift */; };
+		487C2BA126CAD23600031505 /* PlayerColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487C2BA026CAD23600031505 /* PlayerColor.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -64,6 +70,12 @@
 		487C2B8C26CA988E00031505 /* Map+VictoryLossConditions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Map+VictoryLossConditions.swift"; sourceTree = "<group>"; };
 		487C2B8E26CA98DC00031505 /* Map+AllowedHeroes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Map+AllowedHeroes.swift"; sourceTree = "<group>"; };
 		487C2B9126CA9B5900031505 /* DataReader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataReader.swift; sourceTree = "<group>"; };
+		487C2B9626CAD1E400031505 /* Hero.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Hero.swift; sourceTree = "<group>"; };
+		487C2B9826CAD1F800031505 /* Position.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Position.swift; sourceTree = "<group>"; };
+		487C2B9A26CAD20F00031505 /* Faction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Faction.swift; sourceTree = "<group>"; };
+		487C2B9C26CAD21F00031505 /* AITactic.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AITactic.swift; sourceTree = "<group>"; };
+		487C2B9E26CAD22900031505 /* Difficulty.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Difficulty.swift; sourceTree = "<group>"; };
+		487C2BA026CAD23600031505 /* PlayerColor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerColor.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -91,6 +103,12 @@
 				487C2B9026CA9B5000031505 /* DataReader */,
 				481462F626C902BF00431960 /* Map */,
 				481462F926C902D800431960 /* Config.swift */,
+				487C2B9626CAD1E400031505 /* Hero.swift */,
+				487C2B9826CAD1F800031505 /* Position.swift */,
+				487C2B9A26CAD20F00031505 /* Faction.swift */,
+				487C2B9C26CAD21F00031505 /* AITactic.swift */,
+				487C2B9E26CAD22900031505 /* Difficulty.swift */,
+				487C2BA026CAD23600031505 /* PlayerColor.swift */,
 			);
 			path = Backend;
 			sourceTree = "<group>";
@@ -334,13 +352,19 @@
 			files = (
 				4814630626C9054900431960 /* Map+Loader+Reader.swift in Sources */,
 				487C2B8B26CA952700031505 /* Map+Loader+Parser+H3M.swift in Sources */,
+				487C2B9F26CAD22900031505 /* Difficulty.swift in Sources */,
 				4814630226C904D000431960 /* Map+Loader.swift in Sources */,
+				487C2B9726CAD1E400031505 /* Hero.swift in Sources */,
+				487C2BA126CAD23600031505 /* PlayerColor.swift in Sources */,
 				4814630026C9041200431960 /* Map+About.swift in Sources */,
 				487C2B8D26CA988E00031505 /* Map+VictoryLossConditions.swift in Sources */,
 				481BDF6726C5942000C5E335 /* ContentView.swift in Sources */,
+				487C2B9926CAD1F800031505 /* Position.swift in Sources */,
+				487C2B9B26CAD21000031505 /* Faction.swift in Sources */,
 				481462FC26C902E800431960 /* Map+ID.swift in Sources */,
 				487C2B8826CA950100031505 /* Map+Format.swift in Sources */,
 				487C2B9226CA9B5900031505 /* DataReader.swift in Sources */,
+				487C2B9D26CAD21F00031505 /* AITactic.swift in Sources */,
 				481462FA26C902D800431960 /* Config.swift in Sources */,
 				481462F826C902C800431960 /* Map.swift in Sources */,
 				487C2B8026C9066600031505 /* Map+Loader+Cache.swift in Sources */,
