@@ -33,6 +33,7 @@
 		487C2B9D26CAD21F00031505 /* AITactic.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487C2B9C26CAD21F00031505 /* AITactic.swift */; };
 		487C2B9F26CAD22900031505 /* Difficulty.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487C2B9E26CAD22900031505 /* Difficulty.swift */; };
 		487C2BA126CAD23600031505 /* PlayerColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487C2BA026CAD23600031505 /* PlayerColor.swift */; };
+		487C2BA326CAD48900031505 /* Size.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487C2BA226CAD48900031505 /* Size.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -76,6 +77,7 @@
 		487C2B9C26CAD21F00031505 /* AITactic.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AITactic.swift; sourceTree = "<group>"; };
 		487C2B9E26CAD22900031505 /* Difficulty.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Difficulty.swift; sourceTree = "<group>"; };
 		487C2BA026CAD23600031505 /* PlayerColor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerColor.swift; sourceTree = "<group>"; };
+		487C2BA226CAD48900031505 /* Size.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Size.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -109,6 +111,7 @@
 				487C2B9C26CAD21F00031505 /* AITactic.swift */,
 				487C2B9E26CAD22900031505 /* Difficulty.swift */,
 				487C2BA026CAD23600031505 /* PlayerColor.swift */,
+				487C2BA226CAD48900031505 /* Size.swift */,
 			);
 			path = Backend;
 			sourceTree = "<group>";
@@ -350,6 +353,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				487C2BA326CAD48900031505 /* Size.swift in Sources */,
 				4814630626C9054900431960 /* Map+Loader+Reader.swift in Sources */,
 				487C2B8B26CA952700031505 /* Map+Loader+Parser+H3M.swift in Sources */,
 				487C2B9F26CAD22900031505 /* Difficulty.swift in Sources */,

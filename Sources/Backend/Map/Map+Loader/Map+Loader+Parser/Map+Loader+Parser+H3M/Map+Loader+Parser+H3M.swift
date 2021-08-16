@@ -51,11 +51,7 @@ extension Map.Loader.Parser.H3M {
     }
 }
 
-public struct Size: Equatable {
-    public typealias Scalar = Int
-    public let width: Scalar
-    public let height: Scalar
-}
+
  
 // MARK: Parse Map+About
 private extension  Map.Loader.Parser.H3M {

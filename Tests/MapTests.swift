@@ -33,11 +33,13 @@ final class LoadMapTests: XCTestCase {
         XCTAssertEqual(map.about.hasTwoLevels, false)
         XCTAssertEqual(map.about.format, .restorationOfErathia)
         XCTAssertEqual(map.about.difficulty, .hard)
+        XCTAssertEqual(map.about.size, .large)
         XCTAssertEqual(map.playersInfo.players.count, 6)
         XCTAssertEqual(map.playersInfo.players.map { $0.color }, [.red, .blue, .tan, .green, .orange, .purple])
         XCTAssertEqual(map.playersInfo.players[0].isPlayableBothByHumanAndAI, true)
         XCTAssertEqual(map.playersInfo.players[1].isPlayableBothByHumanAndAI, true)
         XCTAssertEqual(map.playersInfo.players[2].isPlayableBothByHumanAndAI, true)
+        
         
         XCTAssertEqual(map.playersInfo.players[0].allowedFactionsForThisPlayer, [.tower])
         XCTAssertEqual(map.playersInfo.players[1].allowedFactionsForThisPlayer, [.tower])
