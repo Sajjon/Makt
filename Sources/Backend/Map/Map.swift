@@ -7,9 +7,13 @@
 
 import Foundation
 
-public struct Map: Hashable, Identifiable {
+public struct Map: Equatable, Identifiable {
 
     public let about: About
+    public let playersInfo: PlayersInfo
+    public let victoryLossConditions: VictoryLossConditions
+    public let teamInfo: TeamInfo
+    public let allowedHeroes: AllowedHeroes
 }
 
 extension Map {

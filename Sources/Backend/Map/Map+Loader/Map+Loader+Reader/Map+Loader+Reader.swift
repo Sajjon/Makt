@@ -11,7 +11,8 @@ public extension Map.Loader {
     
     /// A type resonsible for reading raw data from map files on disc.
     struct ReadMap: Equatable {
-        public let fileHandle: FileHandle
+//        public let fileHandle: FileHandle
+        public let data: Data
         public let filePath: String
         public let id: Map.ID
     }
@@ -41,6 +42,6 @@ public extension Map.Loader.Reader {
             throw Map.Loader.Error.mapFileNotFound(at: mapPath)
         }
         
-        return .init(fileHandle: fileHandle, filePath: mapPath, id: mapId)
+        return .init(data: fileHandle.availableData, filePath: mapPath, id: mapId)
     }
 }

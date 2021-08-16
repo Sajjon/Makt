@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 52;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -21,6 +21,12 @@
 		487C2B8026C9066600031505 /* Map+Loader+Cache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487C2B7D26C9066500031505 /* Map+Loader+Cache.swift */; };
 		487C2B8126C9066600031505 /* Map+Loader+Parser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487C2B7F26C9066600031505 /* Map+Loader+Parser.swift */; };
 		487C2B8426C936D600031505 /* Map+ID+KnownMaps.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487C2B8326C936D600031505 /* Map+ID+KnownMaps.swift */; };
+		487C2B8826CA950100031505 /* Map+Format.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487C2B8726CA950100031505 /* Map+Format.swift */; };
+		487C2B8B26CA952700031505 /* Map+Loader+Parser+H3M.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487C2B8A26CA952700031505 /* Map+Loader+Parser+H3M.swift */; };
+		487C2B8D26CA988E00031505 /* Map+VictoryLossConditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487C2B8C26CA988E00031505 /* Map+VictoryLossConditions.swift */; };
+		487C2B8F26CA98DC00031505 /* Map+AllowedHeroes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487C2B8E26CA98DC00031505 /* Map+AllowedHeroes.swift */; };
+		487C2B9226CA9B5900031505 /* DataReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487C2B9126CA9B5900031505 /* DataReader.swift */; };
+		487C2B9526CA9D9200031505 /* Gzip in Frameworks */ = {isa = PBXBuildFile; productRef = 487C2B9426CA9D9200031505 /* Gzip */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -53,6 +59,11 @@
 		487C2B7D26C9066500031505 /* Map+Loader+Cache.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Map+Loader+Cache.swift"; sourceTree = "<group>"; };
 		487C2B7F26C9066600031505 /* Map+Loader+Parser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Map+Loader+Parser.swift"; sourceTree = "<group>"; };
 		487C2B8326C936D600031505 /* Map+ID+KnownMaps.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Map+ID+KnownMaps.swift"; sourceTree = "<group>"; };
+		487C2B8726CA950100031505 /* Map+Format.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Map+Format.swift"; sourceTree = "<group>"; };
+		487C2B8A26CA952700031505 /* Map+Loader+Parser+H3M.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Map+Loader+Parser+H3M.swift"; sourceTree = "<group>"; };
+		487C2B8C26CA988E00031505 /* Map+VictoryLossConditions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Map+VictoryLossConditions.swift"; sourceTree = "<group>"; };
+		487C2B8E26CA98DC00031505 /* Map+AllowedHeroes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Map+AllowedHeroes.swift"; sourceTree = "<group>"; };
+		487C2B9126CA9B5900031505 /* DataReader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataReader.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -60,6 +71,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				487C2B9526CA9D9200031505 /* Gzip in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -76,6 +88,7 @@
 		481462F526C902B900431960 /* Backend */ = {
 			isa = PBXGroup;
 			children = (
+				487C2B9026CA9B5000031505 /* DataReader */,
 				481462F626C902BF00431960 /* Map */,
 				481462F926C902D800431960 /* Config.swift */,
 			);
@@ -87,6 +100,8 @@
 			children = (
 				4814630326C9053300431960 /* Map+Loader */,
 				481462F726C902C800431960 /* Map.swift */,
+				487C2B8E26CA98DC00031505 /* Map+AllowedHeroes.swift */,
+				487C2B8C26CA988E00031505 /* Map+VictoryLossConditions.swift */,
 				481462FB26C902E800431960 /* Map+ID.swift */,
 				481462FF26C9041200431960 /* Map+About.swift */,
 			);
@@ -181,7 +196,9 @@
 		487C2B7E26C9066500031505 /* Map+Loader+Parser */ = {
 			isa = PBXGroup;
 			children = (
+				487C2B8926CA951300031505 /* Map+Loader+Parser+H3M */,
 				487C2B7F26C9066600031505 /* Map+Loader+Parser.swift */,
+				487C2B8726CA950100031505 /* Map+Format.swift */,
 			);
 			path = "Map+Loader+Parser";
 			sourceTree = "<group>";
@@ -192,6 +209,22 @@
 				487C2B8326C936D600031505 /* Map+ID+KnownMaps.swift */,
 			);
 			path = Extensions;
+			sourceTree = "<group>";
+		};
+		487C2B8926CA951300031505 /* Map+Loader+Parser+H3M */ = {
+			isa = PBXGroup;
+			children = (
+				487C2B8A26CA952700031505 /* Map+Loader+Parser+H3M.swift */,
+			);
+			path = "Map+Loader+Parser+H3M";
+			sourceTree = "<group>";
+		};
+		487C2B9026CA9B5000031505 /* DataReader */ = {
+			isa = PBXGroup;
+			children = (
+				487C2B9126CA9B5900031505 /* DataReader.swift */,
+			);
+			path = DataReader;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -210,6 +243,9 @@
 			dependencies = (
 			);
 			name = HoMM3SwiftUI;
+			packageProductDependencies = (
+				487C2B9426CA9D9200031505 /* Gzip */,
+			);
 			productName = HoMM3SwiftUI;
 			productReference = 481BDF6126C5942000C5E335 /* HoMM3SwiftUI.app */;
 			productType = "com.apple.product-type.application";
@@ -259,6 +295,9 @@
 				Base,
 			);
 			mainGroup = 481BDF5826C5942000C5E335;
+			packageReferences = (
+				487C2B9326CA9D9200031505 /* XCRemoteSwiftPackageReference "GzipSwift" */,
+			);
 			productRefGroup = 481BDF6226C5942000C5E335 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -294,14 +333,19 @@
 			buildActionMask = 2147483647;
 			files = (
 				4814630626C9054900431960 /* Map+Loader+Reader.swift in Sources */,
+				487C2B8B26CA952700031505 /* Map+Loader+Parser+H3M.swift in Sources */,
 				4814630226C904D000431960 /* Map+Loader.swift in Sources */,
 				4814630026C9041200431960 /* Map+About.swift in Sources */,
+				487C2B8D26CA988E00031505 /* Map+VictoryLossConditions.swift in Sources */,
 				481BDF6726C5942000C5E335 /* ContentView.swift in Sources */,
 				481462FC26C902E800431960 /* Map+ID.swift in Sources */,
+				487C2B8826CA950100031505 /* Map+Format.swift in Sources */,
+				487C2B9226CA9B5900031505 /* DataReader.swift in Sources */,
 				481462FA26C902D800431960 /* Config.swift in Sources */,
 				481462F826C902C800431960 /* Map.swift in Sources */,
 				487C2B8026C9066600031505 /* Map+Loader+Cache.swift in Sources */,
 				487C2B8126C9066600031505 /* Map+Loader+Parser.swift in Sources */,
+				487C2B8F26CA98DC00031505 /* Map+AllowedHeroes.swift in Sources */,
 				481BDF6526C5942000C5E335 /* HoMM3SwiftUIApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -554,6 +598,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		487C2B9326CA9D9200031505 /* XCRemoteSwiftPackageReference "GzipSwift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/1024jp/GzipSwift";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.1.1;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		487C2B9426CA9D9200031505 /* Gzip */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 487C2B9326CA9D9200031505 /* XCRemoteSwiftPackageReference "GzipSwift" */;
+			productName = Gzip;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 481BDF5926C5942000C5E335 /* Project object */;
 }
