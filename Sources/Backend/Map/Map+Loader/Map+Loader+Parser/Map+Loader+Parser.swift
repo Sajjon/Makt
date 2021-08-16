@@ -57,13 +57,16 @@ public extension Map.Loader.Parser {
               
                 // gunzip
                 guard readMap.data.isGzipped else { fatalError("Gzip library does not think this data is gzipped") }
-                let    decompressedData = try! readMap.data.gunzipped()
-                return try H3M(readMap: Map.Loader.ReadMap.init(data: decompressedData, filePath: readMap.filePath, id: readMap.id)).parse()
+                let decompressedData = try! readMap.data.gunzipped()
+                return try H3M(
+                    readMap: Map.Loader.ReadMap(data: decompressedData, filePath: readMap.filePath, id: readMap.id),
+                    fileSizeCompressed: readMap.data.count
+                ).parse()
                 
             // Original game
             case .wakeOGods, .armageddonsBlade, .restorationOfErathia,.shadowOfDeath:
                 //                return std::unique_ptr<IMapLoader>(new CMapLoaderH3M(stream.get()));
-                return try H3M(readMap: readMap).parse()
+                return try H3M(readMap: readMap, fileSizeCompressed: nil).parse()
             default: fatalError("Unsupported/unhandled format: \(format)")
             }
             
@@ -105,7 +108,8 @@ public extension Map {
     struct PlayersInfo: Equatable {
         public let players: [PlayerInfo]
         public struct PlayerInfo: Equatable {
-           public let isPlayableByHuman: Bool
+            public let color: PlayerColor
+            public let isPlayableByHuman: Bool
             public let aiTactic: AITactic?
             
             public let allowedFactionsForThisPlayer: [Faction]

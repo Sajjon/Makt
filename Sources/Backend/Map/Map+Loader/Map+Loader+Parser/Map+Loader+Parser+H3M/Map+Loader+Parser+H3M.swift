@@ -11,9 +11,11 @@ internal extension Map.Loader.Parser {
     final class H3M {
         private let readMap: Map.Loader.ReadMap
         private let reader: DataReader
-        public init(readMap: Map.Loader.ReadMap) {
+        private let fileSizeCompressed: Int?
+        public init(readMap: Map.Loader.ReadMap, fileSizeCompressed: Int?) {
             self.readMap = readMap
             self.reader = DataReader(data: readMap.data)
+            self.fileSizeCompressed = fileSizeCompressed
         }
     }
 }
@@ -91,6 +93,7 @@ private extension  Map.Loader.Parser.H3M {
         return Map.About(
             id: readMap.id,
             fileSize: readMap.data.count,
+            fileSizeCompressed: fileSizeCompressed,
             format: format,
             name: name,
             description: description,
@@ -206,12 +209,13 @@ private extension  Map.Loader.Parser.H3M {
             }
             
             
-            assert((aiTactic != nil) == isPlayableByAI)
-            assert( (generateHeroAtMainTown || positionOfMainTown != nil) == hasMainTown)
+//            assert((aiTactic != nil) == isPlayableByAI)
+//            assert( (generateHeroAtMainTown || positionOfMainTown != nil) == hasMainTown)
             
             return .init(
+                color: playerColor,
                 isPlayableByHuman: isPlayableByHuman,
-                aiTactic: aiTactic,
+                aiTactic: isPlayableByAI ? aiTactic : nil,
                 allowedFactionsForThisPlayer: allowedFactionsForThisPlayer,
                 isRandomFaction: isRandomFaction,
                 generateHero: generateHero,
@@ -229,14 +233,14 @@ private extension  Map.Loader.Parser.H3M {
 // MARK: About+VictoryLoss Cond.
 private extension  Map.Loader.Parser.H3M {
     func parseVictoryLossConditions() throws -> Map.VictoryLossConditions {
-        fatalError()
+        return .init(triggeredEvents: [])
     }
 }
     
 // MARK: About+Team
 private extension  Map.Loader.Parser.H3M {
     func parseTeamInfo() throws -> Map.TeamInfo {
-        fatalError()
+        return .init(teams: [])
     }
     
 }
@@ -244,6 +248,6 @@ private extension  Map.Loader.Parser.H3M {
 // MARK: About+Heros
 private extension  Map.Loader.Parser.H3M {
     func parseAllowedHeroes() throws -> Map.AllowedHeroes {
-     fatalError()
+        return .init(heroes: [])
     }
 }

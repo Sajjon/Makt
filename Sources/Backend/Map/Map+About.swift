@@ -15,6 +15,7 @@ public extension Map {
         /// A stable id that uniquely identifies this map. This is not part of the map file and is created by me (Cyon) in this Swift code base.
         public let id: ID
         public let fileSize: Int
+        public let fileSizeCompressed: Int?
         
         /// Map format or `version`
         public let format: Map.Format
