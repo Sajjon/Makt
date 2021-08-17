@@ -15,9 +15,11 @@ public struct Size: Equatable {
 
 private extension Size.Scalar {
     static let large: Self = 108
+    static let extraLarge: Self = 144
 }
 
 public extension Size {
     
     static let large: Self = .init(width: .large, height: .large)
+    static let extraLarge: Self = .init(width: .extraLarge, height: .extraLarge)
 }

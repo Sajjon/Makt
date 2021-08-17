@@ -260,7 +260,7 @@ private extension  Map.Loader.Parser.H3M {
         
         
         switch victoryConditionStripped {
-        case .conquerAllEnemyTownsAndDefeatAllEnemyHeroes:
+        case .defeatAllEnemies:
             fatalError("Should have been handled above")
             
         case .acquireSpecificArtifact:

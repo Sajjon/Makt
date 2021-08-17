@@ -23,7 +23,7 @@ final class LoadMapTests: XCTestCase {
         XCTAssertEqual(map.about.fileSize, 27972)
     }
   
-    func test_assert_can_load_map_by_id__titans_winter_map() throws {
+    func test_assert_can_load_map_by_id__titans_winter() throws {
         // Delete any earlier cached maps.
         Map.loader.cache.__deleteMap(by: .titansWinter)
         let map = try Map.load(.titansWinter)
@@ -77,5 +77,63 @@ final class LoadMapTests: XCTestCase {
         // Should be faster to load cached map.
         XCTAssertLessThan(timeCached, timeNonCached)
         
+    }
+    
+    func test_assert_can_load_map_by_id__vikingWeShallGo() throws {
+        // Delete any earlier cached maps.
+        Map.loader.cache.__deleteMap(by: .vikingWeShallGo)
+        let map = try Map.load(.vikingWeShallGo)
+        XCTAssertEqual(map.about.fileName, "A Viking We Shall Go.h3m")
+        XCTAssertEqual(map.about.name, "Viking We Shall Go!")
+        XCTAssertEqual(map.about.description,
+            """
+            The Place: Europe
+            The Time: The Dark Ages
+            Vikings have begun their raids while the kings of Europe take the opportunity to grab land from their neighbors.
+            """)
+        XCTAssertEqual(map.about.fileSizeCompressed, 47_404 )
+        XCTAssertEqual(map.about.fileSize, 226_324)
+        XCTAssertFalse(map.about.hasTwoLevels)
+        XCTAssertEqual(map.about.format, .shadowOfDeath)
+        XCTAssertEqual(map.about.difficulty, .normal)
+        XCTAssertEqual(map.about.size, .extraLarge)
+        XCTAssertEqual(map.playersInfo.players.count, 6)
+     
+        XCTAssertTrue(map.playersInfo.players.prefix(5).allSatisfy({ $0.isPlayableBothByHumanAndAI }))
+        XCTAssertTrue(map.playersInfo.players[5].isPlayableOnlyByAI)
+        
+        XCTAssertEqual(
+            map.playersInfo.players.flatMap({ $0.allowedFactionsForThisPlayer }),
+            [.stronghold, .necropolis, .castle, .rampart, .castle, .inferno]
+        )
+        
+        XCTAssertEqual(map.victoryLossConditions.victoryConditions.map { $0.kind.stripped }, [.standard])
+        XCTAssertEqual(map.victoryLossConditions.lossConditions.map { $0.kind.stripped }, [.standard])
+    }
+    
+    func test_assert_can_load_map_by_id__unholy_quest() throws {
+        // Delete any earlier cached maps.
+        Map.loader.cache.__deleteMap(by: .unholyQuest)
+        let map = try Map.load(.unholyQuest)
+        XCTAssertEqual(map.about.fileName, "Unholy Quest.h3m")
+        XCTAssertEqual(map.about.name, "Unholy Quest")
+        XCTAssertEqual(map.about.description, "Deep below the surface lurk monsters the likes of which no one has ever seen. Word is that the monsters are preparing to rise from the depths and lay claim to the surface world. Go forth and slay their evil armies before they grow too large. You may be the world's only hope!")
+        XCTAssertEqual(map.about.fileSizeCompressed, 53_956 )
+        XCTAssertEqual(map.about.fileSize, 349_615)
+        XCTAssertEqual(map.about.hasTwoLevels, true)
+        XCTAssertEqual(map.about.format, .restorationOfErathia)
+        XCTAssertEqual(map.about.difficulty, .hard)
+        XCTAssertEqual(map.about.size, .extraLarge)
+        XCTAssertEqual(map.playersInfo.players.count, 2)
+        XCTAssertEqual(map.playersInfo.players.map { $0.color }, [.red, .blue])
+        XCTAssertEqual(map.playersInfo.players[0].isPlayableOnlyByAI, true)
+        XCTAssertEqual(map.playersInfo.players[1].isPlayableBothByHumanAndAI, true)
+        
+        XCTAssertEqual(map.playersInfo.players[0].allowedFactionsForThisPlayer, [.inferno])
+        XCTAssertEqual(map.playersInfo.players[1].allowedFactionsForThisPlayer, [.castle])
+   
+        
+        XCTAssertEqual(map.victoryLossConditions.victoryConditions.map { $0.kind.stripped }, [.defeatSpecificHero])
+        XCTAssertEqual(map.victoryLossConditions.lossConditions.map { $0.kind.stripped }, [.loseSpecificHero])
     }
 }

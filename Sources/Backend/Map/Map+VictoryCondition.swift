@@ -45,7 +45,7 @@ public extension Map.VictoryCondition {
         case buildGrailBuilding(inTownLocatedAt: Position)
         
         /// Defeat a specified hero.
-        case defeatSpecificHero(id: Hero.ID, locatedAt: Position)
+        case defeatSpecificHero(locatedAt: Position)
         
         /// Occupy a specified town.
         case captureSpecificTown(locatedAt: Position)
@@ -63,7 +63,7 @@ public extension Map.VictoryCondition {
         case transportSpecificArtifact(id: Artifact.ID, toTownLocatedAt: Position)
         
         /// Conquer all enemy towns and defeat all enemy heroes.
-        case conquerAllEnemyTownsAndDefeatAllEnemyHeroes
+        case defeatAllEnemies
     }
 }
 
@@ -166,8 +166,9 @@ public extension Map.VictoryCondition.Kind {
             self = .buildGrailBuilding(inTownLocatedAt: townPosition)
             
         case .defeatSpecificHero:
+            assert(parameter1 == nil)
             assert(parameter2 == nil)
-            self = .defeatSpecificHero(id: try ensureHeroID(), locatedAt: try ensureHeroPosition())
+            self = .defeatSpecificHero(locatedAt: try ensureHeroPosition())
             
         case .captureSpecificTown:
             self = .captureSpecificTown(locatedAt: try ensureTownPosition())
@@ -192,11 +193,11 @@ public extension Map.VictoryCondition.Kind {
             assert(parameter2 == nil)
             self = .transportSpecificArtifact(id: try ensureArtifactID(), toTownLocatedAt: try ensureTownPosition())
             
-        case .conquerAllEnemyTownsAndDefeatAllEnemyHeroes:
+        case .defeatAllEnemies:
             assert(parameter1 == nil)
             assert(parameter2 == nil)
             assert(position == nil)
-            self = .conquerAllEnemyTownsAndDefeatAllEnemyHeroes
+            self = .defeatAllEnemies
         }
     }
     
@@ -205,7 +206,7 @@ public extension Map.VictoryCondition.Kind {
 
 public extension Map.VictoryCondition.Kind {
     var victoryIconID: UInt8 {
-        if self == .conquerAllEnemyTownsAndDefeatAllEnemyHeroes {
+        if self == .defeatAllEnemies {
             // https://github.com/vcmi/vcmi/blob/ecaa9f5d0bfa96a68d886e58e05a7cf8b64d1b4f/lib/mapping/MapFormatH3M.cpp#L322
             return 11
         } else {
@@ -216,7 +217,7 @@ public extension Map.VictoryCondition.Kind {
     var stripped: Stripped {
         switch self {
         case .acquireSpecificArtifact: return .acquireSpecificArtifact
-        case .conquerAllEnemyTownsAndDefeatAllEnemyHeroes: return .conquerAllEnemyTownsAndDefeatAllEnemyHeroes
+        case .defeatAllEnemies: return .defeatAllEnemies
         case .accumulateCreatures: return .accumulateCreatures
         case .accumulateResources: return .accumulateResources
         case .captureSpecificTown: return .captureSpecificTown
@@ -230,51 +231,54 @@ public extension Map.VictoryCondition.Kind {
         }
     }
     
-    static let standard: Self = .conquerAllEnemyTownsAndDefeatAllEnemyHeroes
+    static let standard: Self = .defeatAllEnemies
 }
 
 public extension Map.VictoryCondition.Kind {
     enum Stripped: UInt8, Equatable {
+        
         /// You must find a specific artifact. Win by placing the artifact in one of your heroes’ backpacks.
-        case acquireSpecificArtifact
+        case acquireSpecificArtifact = 0
         
         /// Your kingdom must acquire X number of a specific type of creature.
-        case accumulateCreatures
+        case accumulateCreatures = 1
         
         ///  Your kingdom must acquire X amount of a specific resource.
-        case accumulateResources
+        case accumulateResources = 2
         
         /// The hall and castle of a given town must be upgraded to a specified level.
-        case upgradeSpecificTown
+        case upgradeSpecificTown = 3
         
         /// Find the Grail and build a grail building in one of your towns.
-        case buildGrailBuilding
+        case buildGrailBuilding = 4
         
         /// Defeat a specified hero.
-        case defeatSpecificHero
-        
+        case defeatSpecificHero = 5
+   
         /// Occupy a specified town.
-        case captureSpecificTown
+        case captureSpecificTown = 6
         
         /// Defeat a specified wandering monster.
-        case defeatSpecificCreature
+        case defeatSpecificCreature = 7
         
         /// You must control all the creature dwellings/generators on the map.
-        case flagAllCreatureDwellings
+        case flagAllCreatureDwellings = 8
         
         ///  Control all the mines on the map.
-        case flagAllMines
+        case flagAllMines = 9
         
         /// Acquire a specific artifact and transport it to a specified town.
-        case transportSpecificArtifact
+        case transportSpecificArtifact = 10
         
         /// Conquer all enemy towns and defeat all enemy heroes.
-        case conquerAllEnemyTownsAndDefeatAllEnemyHeroes = 255
+        ///
+        /// Standard win condition.
+        case defeatAllEnemies = 255
     }
 }
 
 
 public extension Map.VictoryCondition.Kind.Stripped {
-    static let standard: Self = .conquerAllEnemyTownsAndDefeatAllEnemyHeroes
+    static let standard: Self = .defeatAllEnemies
 }
 

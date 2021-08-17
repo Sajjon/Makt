@@ -39,20 +39,31 @@ public extension Map.LossCondition {
 
 public extension Map.LossCondition.Kind {
     static let standard: Self = .loseAllTownsAndHeroesOrAfterTimeLimitStillControlNoTowns
+    
+    
+    var stripped: Stripped {
+        switch self {
+        case .loseAllTownsAndHeroesOrAfterTimeLimitStillControlNoTowns: return .loseAllTownsAndHeroesOrAfterTimeLimitStillControlNoTowns
+        case .loseSpecificHero: return .loseSpecificHero
+        case .loseSpecificTown: return .loseSpecificTown
+        case .timeLimit: return .timeLimit
+        }
+    }
+    
 }
 
 
 public extension Map.LossCondition.Kind {
     enum Stripped: UInt8, Equatable {
         
-        /// You lose if the specified hero is defeated.
-        case loseSpecificHero = 2
-            
         /// You lose if the specified town is occupied by an enemy.
-        case loseSpecificTown
+        case loseSpecificTown = 0
+        
+        /// You lose if the specified hero is defeated.
+        case loseSpecificHero = 1
 
         /// You lose if you have not won the scenario within the specified number of days.
-        case timeLimit
+        case timeLimit = 2
         
         /// Lose control of all towns for a period (typically seven days) or have the last hero defeated while controlling no towns.
         ///

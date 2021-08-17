@@ -14,5 +14,8 @@ extension Map.ID {
     }
     
     static let tutorial: Self = "Tutorial.tut"
+    
     static let titansWinter: Self = .h3m("Titans Winter")
+    static let unholyQuest: Self = .h3m("Unholy Quest")
+    static let vikingWeShallGo: Self = .h3m("A Viking We Shall Go")
 }
