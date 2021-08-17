@@ -28,6 +28,7 @@ extension Map.ID {
     static let mythAndLegend: Self = .h3m("Myth and Legend")
 
     static let taleOfTwoLandsAllies: Self = .h3m("Tale of two lands (Allies)")
+    static let thousandIslandsAllies: Self = .h3m("Thousand Islands (allies)")
     
     
 

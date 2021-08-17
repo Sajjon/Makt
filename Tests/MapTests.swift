@@ -326,6 +326,33 @@ final class LoadMapTests: XCTestCase {
         XCTAssertEqual(map.victoryLossConditions.lossConditions.map { $0.kind.stripped }, [.standard])
         
         XCTAssertEqual(map.teamInfo.teams?.count, 2)
-        XCTAssertEqual(map.teamInfo, [[PlayerColor.red, .blue], [.tan, .green]])
+        XCTAssertEqual(map.teamInfo, [[.red, .blue], [.tan, .green]])
+    }
+    
+    func test_assert_can_load_map_by_id__thousandIslands_allies() throws {
+        // Delete any earlier cached maps.
+        Map.loader.cache.__deleteMap(by: .thousandIslandsAllies)
+        let map = try Map.load(.thousandIslandsAllies)
+        XCTAssertEqual(map.about.fileName, "Thousand Islands (allies).h3m")
+        XCTAssertEqual(map.about.name, "Thousand Islands (Allies)")
+        XCTAssertEqual(map.about.description, "An evil wizard has cast a spell that has caused volcanoes to erupt on the islands of Norkko. The people are in a state of panic and no one knows who the evil wizard is. These vicious volcanoes destroy entire towns. Someone must find him and destroy him.")
+        XCTAssertEqual(map.about.fileSizeCompressed, 50_765)
+        XCTAssertEqual(map.about.fileSize, 240_048)
+        XCTAssertFalse(map.about.hasTwoLevels)
+        XCTAssertEqual(map.about.format, .armageddonsBlade)
+        XCTAssertEqual(map.about.difficulty, .normal)
+        XCTAssertEqual(map.about.size, .extraLarge)
+        XCTAssertEqual(map.playersInfo.players.count, 7)
+       
+        XCTAssertTrue(map.playersInfo.players.prefix(5).allSatisfy({ $0.isPlayableBothByHumanAndAI }))
+        XCTAssertTrue(map.playersInfo.players[5].isPlayableOnlyByAI)
+        XCTAssertTrue(map.playersInfo.players[6].isPlayableBothByHumanAndAI)
+        
+        XCTAssertTrue(map.playersInfo.players.allSatisfy({ $0.allowedFactionsForThisPlayer == Faction.playable(in: .restorationOfErathia) }))
+
+        XCTAssertEqual(map.victoryLossConditions.victoryConditions.map { $0.kind.stripped }, [.defeatSpecificHero])
+        XCTAssertEqual(map.victoryLossConditions.lossConditions.map { $0.kind.stripped }, [.standard])
+        
+        XCTAssertEqual(map.teamInfo, [[.red, .blue], [.tan, .green], [.orange, .teal], [.purple]])
     }
 }

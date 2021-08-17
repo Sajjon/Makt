@@ -8,9 +8,9 @@
 import Foundation
 
 public extension Map {
-    struct TeamInfo: Equatable {
+    struct TeamInfo: Equatable, CustomStringConvertible {
         public let teams: [Team]?
-        public struct Team: Equatable {
+        public struct Team: Equatable, CustomStringConvertible {
             public let id: Int
             public let players: [PlayerColor]
         }
@@ -24,5 +24,21 @@ extension Map.TeamInfo: ExpressibleByArrayLiteral {
         self.init(teams: elements.enumerated().map({
             Map.TeamInfo.Team.init(id: $0.offset, players: $0.element)
         }))
+    }
+}
+
+public extension Map.TeamInfo.Team {
+    var description: String  {
+        "teamID: \(id), players: \(players)"
+    }
+}
+
+
+public extension Map.TeamInfo {
+    var description: String  {
+        guard let teams = teams else {
+            return "No teams"
+        }
+        return teams.map { $0.description }.joined(separator: ", ")
     }
 }
