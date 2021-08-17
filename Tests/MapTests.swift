@@ -24,6 +24,8 @@ final class LoadMapTests: XCTestCase {
     }
   
     func test_assert_can_load_map_by_id__titans_winter_map() throws {
+        // Delete any earlier cached maps.
+        Map.loader.cache.__deleteMap(by: .titansWinter)
         let map = try Map.load(.titansWinter)
         XCTAssertEqual(map.about.fileName, "Titans Winter.h3m")
         XCTAssertEqual(map.about.name, "Titan's Winter")

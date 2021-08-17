@@ -9,6 +9,7 @@ import Foundation
 
 public extension Map {
     struct VictoryLossConditions: Equatable {
-        public let triggeredEvents: [TriggeredEvent]
+        public let victoryConditions: [VictoryCondition]
+        public let lossConditions: [LossCondition]
     }
 }

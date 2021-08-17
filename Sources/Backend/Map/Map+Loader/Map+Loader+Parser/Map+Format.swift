@@ -26,8 +26,14 @@ public extension Map {
         /// The community expansion "Wake of Gods", aka WOG
         case wakeOfGods
         
-        public init?(id rawValue: UInt32) {
-            guard let rawFormat = RawFormat(rawValue: rawValue) else { return nil }
+        public typealias RawFormatValue = UInt32
+        
+        public enum Error: Swift.Error {
+            case unrecognizedFormat(RawFormatValue)
+        }
+        
+        public init(id rawValue: RawFormatValue) throws {
+            guard let rawFormat = RawFormat(rawValue: rawValue) else { throw Error.unrecognizedFormat(rawValue) }
             switch rawFormat {
             case .restorationOfErathia: self = .restorationOfErathia
             case .armageddonsBlade: self = .armageddonsBlade
@@ -40,7 +46,7 @@ public extension Map {
     }
 }
 
-private enum RawFormat: UInt32, Equatable {
+private enum RawFormat: Map.Format.RawFormatValue, Equatable {
     
     case restorationOfErathia = 0x0e // 14
     

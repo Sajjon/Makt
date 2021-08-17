@@ -34,6 +34,14 @@
 		487C2B9F26CAD22900031505 /* Difficulty.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487C2B9E26CAD22900031505 /* Difficulty.swift */; };
 		487C2BA126CAD23600031505 /* PlayerColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487C2BA026CAD23600031505 /* PlayerColor.swift */; };
 		487C2BA326CAD48900031505 /* Size.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487C2BA226CAD48900031505 /* Size.swift */; };
+		487C2BA526CB8EC700031505 /* Map+VictoryCondition.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487C2BA426CB8EC700031505 /* Map+VictoryCondition.swift */; };
+		487C2BA726CB94CA00031505 /* Resource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487C2BA626CB94CA00031505 /* Resource.swift */; };
+		487C2BA926CB94D900031505 /* Creature.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487C2BA826CB94D900031505 /* Creature.swift */; };
+		487C2BAB26CB94E600031505 /* Artifact.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487C2BAA26CB94E600031505 /* Artifact.swift */; };
+		487C2BAD26CB951500031505 /* Map+LossCondition.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487C2BAC26CB951500031505 /* Map+LossCondition.swift */; };
+		487C2BAF26CB9B5700031505 /* Map+TeamInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487C2BAE26CB9B5700031505 /* Map+TeamInfo.swift */; };
+		487C2BB126CB9B9A00031505 /* Map+PlayersInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487C2BB026CB9B9A00031505 /* Map+PlayersInfo.swift */; };
+		487C2BB326CB9BC500031505 /* Map+Decrompress.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487C2BB226CB9BC500031505 /* Map+Decrompress.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -78,6 +86,14 @@
 		487C2B9E26CAD22900031505 /* Difficulty.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Difficulty.swift; sourceTree = "<group>"; };
 		487C2BA026CAD23600031505 /* PlayerColor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerColor.swift; sourceTree = "<group>"; };
 		487C2BA226CAD48900031505 /* Size.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Size.swift; sourceTree = "<group>"; };
+		487C2BA426CB8EC700031505 /* Map+VictoryCondition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Map+VictoryCondition.swift"; sourceTree = "<group>"; };
+		487C2BA626CB94CA00031505 /* Resource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Resource.swift; sourceTree = "<group>"; };
+		487C2BA826CB94D900031505 /* Creature.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Creature.swift; sourceTree = "<group>"; };
+		487C2BAA26CB94E600031505 /* Artifact.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Artifact.swift; sourceTree = "<group>"; };
+		487C2BAC26CB951500031505 /* Map+LossCondition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Map+LossCondition.swift"; sourceTree = "<group>"; };
+		487C2BAE26CB9B5700031505 /* Map+TeamInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Map+TeamInfo.swift"; sourceTree = "<group>"; };
+		487C2BB026CB9B9A00031505 /* Map+PlayersInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Map+PlayersInfo.swift"; sourceTree = "<group>"; };
+		487C2BB226CB9BC500031505 /* Map+Decrompress.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Map+Decrompress.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -112,6 +128,9 @@
 				487C2B9E26CAD22900031505 /* Difficulty.swift */,
 				487C2BA026CAD23600031505 /* PlayerColor.swift */,
 				487C2BA226CAD48900031505 /* Size.swift */,
+				487C2BA626CB94CA00031505 /* Resource.swift */,
+				487C2BA826CB94D900031505 /* Creature.swift */,
+				487C2BAA26CB94E600031505 /* Artifact.swift */,
 			);
 			path = Backend;
 			sourceTree = "<group>";
@@ -125,6 +144,10 @@
 				487C2B8C26CA988E00031505 /* Map+VictoryLossConditions.swift */,
 				481462FB26C902E800431960 /* Map+ID.swift */,
 				481462FF26C9041200431960 /* Map+About.swift */,
+				487C2BA426CB8EC700031505 /* Map+VictoryCondition.swift */,
+				487C2BAC26CB951500031505 /* Map+LossCondition.swift */,
+				487C2BAE26CB9B5700031505 /* Map+TeamInfo.swift */,
+				487C2BB026CB9B9A00031505 /* Map+PlayersInfo.swift */,
 			);
 			path = Map;
 			sourceTree = "<group>";
@@ -236,6 +259,7 @@
 			isa = PBXGroup;
 			children = (
 				487C2B8A26CA952700031505 /* Map+Loader+Parser+H3M.swift */,
+				487C2BB226CB9BC500031505 /* Map+Decrompress.swift */,
 			);
 			path = "Map+Loader+Parser+H3M";
 			sourceTree = "<group>";
@@ -353,6 +377,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				487C2BA526CB8EC700031505 /* Map+VictoryCondition.swift in Sources */,
 				487C2BA326CAD48900031505 /* Size.swift in Sources */,
 				4814630626C9054900431960 /* Map+Loader+Reader.swift in Sources */,
 				487C2B8B26CA952700031505 /* Map+Loader+Parser+H3M.swift in Sources */,
@@ -361,19 +386,26 @@
 				487C2B9726CAD1E400031505 /* Hero.swift in Sources */,
 				487C2BA126CAD23600031505 /* PlayerColor.swift in Sources */,
 				4814630026C9041200431960 /* Map+About.swift in Sources */,
+				487C2BA726CB94CA00031505 /* Resource.swift in Sources */,
 				487C2B8D26CA988E00031505 /* Map+VictoryLossConditions.swift in Sources */,
+				487C2BAB26CB94E600031505 /* Artifact.swift in Sources */,
 				481BDF6726C5942000C5E335 /* ContentView.swift in Sources */,
 				487C2B9926CAD1F800031505 /* Position.swift in Sources */,
+				487C2BA926CB94D900031505 /* Creature.swift in Sources */,
 				487C2B9B26CAD21000031505 /* Faction.swift in Sources */,
 				481462FC26C902E800431960 /* Map+ID.swift in Sources */,
 				487C2B8826CA950100031505 /* Map+Format.swift in Sources */,
 				487C2B9226CA9B5900031505 /* DataReader.swift in Sources */,
 				487C2B9D26CAD21F00031505 /* AITactic.swift in Sources */,
 				481462FA26C902D800431960 /* Config.swift in Sources */,
+				487C2BB126CB9B9A00031505 /* Map+PlayersInfo.swift in Sources */,
+				487C2BB326CB9BC500031505 /* Map+Decrompress.swift in Sources */,
+				487C2BAF26CB9B5700031505 /* Map+TeamInfo.swift in Sources */,
 				481462F826C902C800431960 /* Map.swift in Sources */,
 				487C2B8026C9066600031505 /* Map+Loader+Cache.swift in Sources */,
 				487C2B8126C9066600031505 /* Map+Loader+Parser.swift in Sources */,
 				487C2B8F26CA98DC00031505 /* Map+AllowedHeroes.swift in Sources */,
+				487C2BAD26CB951500031505 /* Map+LossCondition.swift in Sources */,
 				481BDF6526C5942000C5E335 /* HoMM3SwiftUIApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
