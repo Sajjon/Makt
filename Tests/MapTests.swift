@@ -251,8 +251,6 @@ final class LoadMapTests: XCTestCase {
         XCTAssertEqual(map.victoryLossConditions.lossConditions.map { $0.kind.stripped }, [.standard])
     }
     
-    
-    
     func test_assert_can_load_map_by_id__raceForArdintinny() throws {
         // Delete any earlier cached maps.
         Map.loader.cache.__deleteMap(by: .raceforArdintinny)
@@ -303,5 +301,31 @@ final class LoadMapTests: XCTestCase {
         
         XCTAssertEqual(map.victoryLossConditions.victoryConditions.map { $0.kind.stripped }, [.defeatSpecificHero])
         XCTAssertEqual(map.victoryLossConditions.lossConditions.map { $0.kind.stripped }, [.loseSpecificHero, .standard])
+    }
+    
+    func test_assert_can_load_map_by_id__taleOfTwoLands_allies() throws {
+        // Delete any earlier cached maps.
+        Map.loader.cache.__deleteMap(by: .taleOfTwoLandsAllies)
+        let map = try Map.load(.taleOfTwoLandsAllies)
+        XCTAssertEqual(map.about.fileName, "Tale of two lands (Allies).h3m")
+        XCTAssertEqual(map.about.name, "Tale of Two Lands (Allies)")
+        XCTAssertEqual(map.about.description, "The continents of East and West Varesburg have decided to wage war one last time.  Securing the resources of your continent (with help from your ally) and then moving onto the other as quickly as possible is the best stategy for the battle of the Varesburgs.")
+        XCTAssertEqual(map.about.fileSizeCompressed, 73_233)
+        XCTAssertEqual(map.about.fileSize, 400_340)
+        XCTAssertTrue(map.about.hasTwoLevels)
+        XCTAssertEqual(map.about.format, .armageddonsBlade)
+        XCTAssertEqual(map.about.difficulty, .normal)
+        XCTAssertEqual(map.about.size, .extraLarge)
+        XCTAssertEqual(map.playersInfo.players.count, 4)
+       
+        XCTAssertTrue(map.playersInfo.players.allSatisfy({ $0.isPlayableBothByHumanAndAI }))
+        
+        XCTAssertTrue(map.playersInfo.players.allSatisfy({ $0.allowedFactionsForThisPlayer == Faction.playable(in: .restorationOfErathia) }))
+
+        XCTAssertEqual(map.victoryLossConditions.victoryConditions.map { $0.kind.stripped }, [.standard])
+        XCTAssertEqual(map.victoryLossConditions.lossConditions.map { $0.kind.stripped }, [.standard])
+        
+        XCTAssertEqual(map.teamInfo.teams?.count, 2)
+        XCTAssertEqual(map.teamInfo, [[PlayerColor.red, .blue], [.tan, .green]])
     }
 }

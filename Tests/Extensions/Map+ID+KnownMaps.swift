@@ -26,6 +26,8 @@ extension Map.ID {
     static let noahsArk: Self = .h3m("Noahs Ark")
     static let overthrowThyNeighbour: Self = .h3m("Overthrow Thy Neighbors")
     static let mythAndLegend: Self = .h3m("Myth and Legend")
+
+    static let taleOfTwoLandsAllies: Self = .h3m("Tale of two lands (Allies)")
     
     
 
