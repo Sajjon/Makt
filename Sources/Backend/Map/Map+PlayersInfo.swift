@@ -37,3 +37,30 @@ public extension Map.PlayersInfo.PlayerInfo {
     var isPlayableByAI: Bool { aiTactic != nil }
     var hasMainTown: Bool { mainTown != nil }
 }
+
+extension Map.PlayersInfo: CustomDebugStringConvertible {
+    public var debugDescription: String {
+        players.map({ $0.debugDescription }).joined(separator: "\n\n")
+    }
+}
+
+extension Map.PlayersInfo.PlayerInfo: CustomDebugStringConvertible {
+    
+    public var debugDescription: String {
+        let includeColor = true
+        let colorString = includeColor ? "color: \(color)" : ""
+        let aiTacticString = aiTactic.map({ "ai tactic: \($0)" }) ?? ""
+        return """
+        ************************************************************
+        \(colorString)
+        isPlayableByHuman?: \(isPlayableByHuman)
+        faction choices: \(allowedFactionsForThisPlayer.map({ String(describing: $0) }))
+        \(aiTacticString)
+        hasMainTown?: \(self.hasMainTown)
+        hasRandonHero?: \(self.hasRandomHero)
+        heroSeeds: \(self.heroSeeds)
+        customMainHero: \(self.customMainHero)
+        ************************************************************
+        """
+    }
+}

@@ -54,7 +54,7 @@ public extension Map.LossCondition.Kind {
 
 
 public extension Map.LossCondition.Kind {
-    enum Stripped: UInt8, Equatable {
+    enum Stripped: UInt8, Equatable, CustomStringConvertible {
         
         /// You lose if the specified town is occupied by an enemy.
         case loseSpecificTown = 0
@@ -74,6 +74,15 @@ public extension Map.LossCondition.Kind {
 
 public extension Map.LossCondition.Kind.Stripped {
     static let standard: Self = .loseAllTownsAndHeroesOrAfterTimeLimitStillControlNoTowns
+    
+    var description: String {
+        switch self {
+        case .loseAllTownsAndHeroesOrAfterTimeLimitStillControlNoTowns: return "loseAllTownsAndHeroesOrAfterTimeLimitStillControlNoTowns"
+        case .loseSpecificHero: return "loseSpecificHero"
+        case .loseSpecificTown: return "loseSpecificTown"
+        case .timeLimit: return "timeLimit"
+        }
+    }
 }
 
 

@@ -36,7 +36,9 @@ enum Error: Swift.Error {
 extension Map.Loader.Parser.H3M {
     func parse() throws -> Map {
         let about = try parseAboutMap()
+        print(about.debugDescription)
         let playerInfo = try parsePlayerInfo(format: about.format)
+        print(playerInfo.debugDescription)
         let victoryLossConditions = try parseVictoryLossConditions(format: about.format)
         let teamInfo = try parseTeamInfo()
         let allowedHeroes = try parseAllowedHeroes()
@@ -76,12 +78,12 @@ private extension  Map.Loader.Parser.H3M {
         let sizeValue = try reader.readUInt32()
         let height = sizeValue
         let width = sizeValue
-        let size = Size.init(width: .init(width), height: .init(height))
+        let size = Size(width: .init(width), height: .init(height))
         let hasTwoLevels = try reader.readBool()
         let name = try reader.readString()
         let description = try reader.readString()
         let difficultyRaw = try reader.readInt8()
-        guard let difficulty = Difficulty.init(rawValue: difficultyRaw) else {
+        guard let difficulty = Difficulty(rawValue: difficultyRaw) else {
             throw Error.unrecognizedDifficulty(difficultyRaw)
         }
         
@@ -121,8 +123,6 @@ private extension  Map.Loader.Parser.H3M {
                 }
                 return nil // unsure about this
             }
-            
-     
             
             let aiTactic: AITactic? = try {
                 /// Unsure about `Int(reader.readUInt8())`, if it ever results in `-1`. In VCMI: `static_cast<EAiTactic::EAiTactic>(reader.readUInt8());` and:
@@ -184,8 +184,8 @@ private extension  Map.Loader.Parser.H3M {
                 let heroID = try Int(reader.readUInt8())
                 guard heroID != 0xff else { return nil }
                 let portraitID = try Int(reader.readUInt8())
-                guard portraitID != 0xff else { return nil }
                 let name = try reader.readString()
+                guard portraitID != 0xff else { return nil }
                 guard !name.isEmpty else { return nil }
                 return .init(id: .init(id: heroID), portraitId: .init(id: portraitID), name: name)
             }()
@@ -202,7 +202,6 @@ private extension  Map.Loader.Parser.H3M {
                     return Hero.Seed(id: heroID, name: heroName)
                 }
             }
-            
             
 //            assert((aiTactic != nil) == isPlayableByAI)
 //            assert( (generateHeroAtMainTown || positionOfMainTown != nil) == hasMainTown)
@@ -243,6 +242,7 @@ private extension  Map.Loader.Parser.H3M {
         
         let victoryConditionStrippedRaw = try reader.readUInt8()
         guard let victoryConditionStripped = Map.VictoryCondition.Kind.Stripped(rawValue: victoryConditionStrippedRaw) else {
+            fatalError("Got victoryConditionStrippedRaw: \(victoryConditionStrippedRaw)")
             throw Error.unrecognizedVictoryConditionKind(victoryConditionStrippedRaw)
         }
         
@@ -256,8 +256,6 @@ private extension  Map.Loader.Parser.H3M {
         var parameter1: UInt8?
         var parameter2: UInt32?
         var position: Position?
-        
-        
         
         switch victoryConditionStripped {
         case .defeatAllEnemies:
@@ -305,7 +303,6 @@ private extension  Map.Loader.Parser.H3M {
             parameter2: parameter2 != nil ? .init(parameter2!) : nil,
             position: position
         )
-        
         
         let specialVictory = Map.VictoryCondition(
             kind: specialVictoryKind,

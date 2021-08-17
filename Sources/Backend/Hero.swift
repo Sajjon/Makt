@@ -25,6 +25,10 @@ public extension Hero.Portrait {
     }
 }
 
+public extension Hero.Portrait.ID {
+    static let calid = Self(id: 60)
+}
+
 public extension Hero {
     struct Custom: Equatable {
         let id: Hero.ID

@@ -145,11 +145,7 @@ public extension DataReader {
             return ""
         }
         let data = try read(byteCount: length)
-        if data.allSatisfy({ Unicode.Scalar($0).isASCII }) {
-            return String(bytes: data, encoding: .ascii)!
-        } else {
-            return String(bytes: data, encoding: .utf8)!
-        }
+        return String(bytes: data, encoding: .utf8)!
     }
     
     func readBool() throws -> Bool {

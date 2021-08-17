@@ -25,4 +25,6 @@ public enum Faction: Int, Equatable, CaseIterable {
         case .shadowOfDeath, .hornOfTheAbyss, .wakeOfGods: return Self.playableInShadowOfDeath
         }
     }
+    
+
 }

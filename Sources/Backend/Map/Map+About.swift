@@ -38,3 +38,19 @@ public extension Map.About {
     
     var fileName: String { id.fileName }
 }
+
+// MARK: CustomDebugStringConvertible
+extension Map.About: CustomDebugStringConvertible {
+    public var debugDescription: String {
+        """
+        ======================================
+        name: \(name)
+        description: \(description)
+        game: \(format)
+        size: \(size)
+        difficulty: \(difficulty)
+        has underworld?: \(hasTwoLevels)
+        ======================================
+        """
+    }
+}

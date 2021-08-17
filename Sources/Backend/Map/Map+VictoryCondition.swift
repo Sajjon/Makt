@@ -235,7 +235,7 @@ public extension Map.VictoryCondition.Kind {
 }
 
 public extension Map.VictoryCondition.Kind {
-    enum Stripped: UInt8, Equatable {
+    enum Stripped: UInt8, Equatable, CustomStringConvertible {
         
         /// You must find a specific artifact. Win by placing the artifact in one of your heroes’ backpacks.
         case acquireSpecificArtifact = 0
@@ -280,5 +280,22 @@ public extension Map.VictoryCondition.Kind {
 
 public extension Map.VictoryCondition.Kind.Stripped {
     static let standard: Self = .defeatAllEnemies
+    
+    var description: String {
+        switch self {
+        case .acquireSpecificArtifact: return "acquireSpecificArtifact"
+        case .defeatAllEnemies: return "defeatAllEnemies"
+        case .accumulateCreatures: return "accumulateCreatures"
+        case .accumulateResources: return "accumulateResources"
+        case .captureSpecificTown: return "captureSpecificTown"
+        case .flagAllCreatureDwellings: return "flagAllCreatureDwellings"
+        case .flagAllMines: return "flagAllMines"
+        case .upgradeSpecificTown: return "upgradeSpecificTown"
+        case .buildGrailBuilding: return "buildGrailBuilding"
+        case .defeatSpecificHero: return "defeatSpecificHero"
+        case .defeatSpecificCreature: return "defeatSpecificCreature"
+        case .transportSpecificArtifact: return "transportSpecificArtifact"
+        }
+    }
 }
 
