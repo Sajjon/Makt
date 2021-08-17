@@ -12,15 +12,17 @@ public extension Map {
     
     struct VictoryCondition: Equatable {
         public let kind: Kind
-        
-        public var victoryIconID: UInt8 {
-            kind.victoryIconID
-        }
+        public let appliesToAI: Bool
     }
 }
 
 public extension Map.VictoryCondition {
     
+    static let standard = Self.init(kind: .standard, appliesToAI: true)
+    
+    var victoryIconID: UInt8 {
+        kind.victoryIconID
+    }
     
     enum Kind: Equatable {
         /// You must find a specific artifact. Win by placing the artifact in one of your heroes’ backpacks.
@@ -267,7 +269,7 @@ public extension Map.VictoryCondition.Kind {
         case transportSpecificArtifact
         
         /// Conquer all enemy towns and defeat all enemy heroes.
-        case conquerAllEnemyTownsAndDefeatAllEnemyHeroes
+        case conquerAllEnemyTownsAndDefeatAllEnemyHeroes = 255
     }
 }
 

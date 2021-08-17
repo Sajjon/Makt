@@ -28,7 +28,8 @@ enum Error: Swift.Error {
     case unrecognizedDifficulty(Difficulty.RawValue)
     case unrecognizedAITactic(AITactic.RawValue)
     case unrecognizedFaction(Faction.RawValue)
-    case unrecognizedVictoryConditionType(Map.VictoryCondition.Kind.Stripped.RawValue)
+    case unrecognizedVictoryConditionKind(Map.VictoryCondition.Kind.Stripped.RawValue)
+    case unrecognizedLossConditionKind(Map.VictoryCondition.Kind.Stripped.RawValue)
 }
 
 // MARK: Parse
@@ -224,73 +225,140 @@ private extension  Map.Loader.Parser.H3M {
     }
 }
 
-// MARK: About+VictoryLoss Cond.
+// MARK: VictoryLoss Cond.
 private extension  Map.Loader.Parser.H3M {
     func parseVictoryLossConditions(format: Map.Format) throws -> Map.VictoryLossConditions {
     
-        func parseVictoryConditions() throws -> Map.VictoryCondition {
+        let victories = try parseVictoryConditions(format: format)
+        let losses = try parseLossConditions()
+        
+        return .init(
+            victoryConditions: victories,
+            lossConditions: losses
+        )
+    }
+    
+    // MARK: Victory
+    func parseVictoryConditions(format: Map.Format) throws -> [Map.VictoryCondition] {
+        
+        let victoryConditionStrippedRaw = try reader.readUInt8()
+        guard let victoryConditionStripped = Map.VictoryCondition.Kind.Stripped(rawValue: victoryConditionStrippedRaw) else {
+            throw Error.unrecognizedVictoryConditionKind(victoryConditionStrippedRaw)
+        }
+        
+        if victoryConditionStripped == .standard {
+            return [.standard]
+        }
+        
+        let allowNormalVictory = try reader.readBool()
+        let appliesToAI = try reader.readBool()
+        
+        var parameter1: UInt8?
+        var parameter2: UInt32?
+        var position: Position?
+        
+        
+        
+        switch victoryConditionStripped {
+        case .conquerAllEnemyTownsAndDefeatAllEnemyHeroes:
+            fatalError("Should have been handled above")
             
-            let victoryConditionStrippedRaw = try reader.readUInt8()
-            guard let victoryConditionStripped = Map.VictoryCondition.Kind.Stripped(rawValue: victoryConditionStrippedRaw) else {
-                throw Error.unrecognizedVictoryConditionType(victoryConditionStrippedRaw)
+        case .acquireSpecificArtifact:
+            parameter1 = try reader.readUInt8()
+            
+            if format != .restorationOfErathia {
+                try reader.skip(byteCount: 1)
             }
-            
-            var parameter1: UInt8?
-            var parameter2: UInt32?
-            var position: Position?
-            switch victoryConditionStripped {
-            case .conquerAllEnemyTownsAndDefeatAllEnemyHeroes:
-                return .init(kind: .standard)
-                
-            case .acquireSpecificArtifact:
-                parameter1 = try reader.readUInt8()
-                
-                if format != .restorationOfErathia {
-                    try reader.skip(byteCount: 1)
-                }
-            case .accumulateCreatures:
-                parameter1 = try reader.readUInt8()
-                if format != .restorationOfErathia {
-                    try reader.skip(byteCount: 1)
-                }
-                parameter2 = try reader.readUInt32()
-            case .accumulateResources:
-                parameter1 = try reader.readUInt8()
-                parameter2 = try reader.readUInt32()
-            case .captureSpecificTown:
-                position = try reader.readPosition()
-            case .flagAllCreatureDwellings:
-                break
-            case .flagAllMines:
-                break
-            case .upgradeSpecificTown:
-                position = try reader.readPosition()
-                parameter1 = try reader.readUInt8()
-                parameter2 = try UInt32(reader.readUInt8()) // completely unneccessary to cast this to UInt32, but for basically every other case the `parameter1` is used as a UInt32, thus declaring it having that type makes code (for other cases) safer.
-            case .buildGrailBuilding:
-                position = try reader.readPosition()
-            case .defeatSpecificHero:
-                position = try reader.readPosition()
-            case .defeatSpecificCreature:
-                position = try reader.readPosition()
-            case .transportSpecificArtifact:
-                parameter1 = try reader.readUInt8()
-                position = try reader.readPosition()
+        case .accumulateCreatures:
+            parameter1 = try reader.readUInt8()
+            if format != .restorationOfErathia {
+                try reader.skip(byteCount: 1)
             }
-            
-            let kind = try Map.VictoryCondition.Kind(
-                stripped: victoryConditionStripped,
-                parameter1: parameter1 != nil ? .init(parameter1!) : nil,
-                parameter2: parameter2 != nil ? .init(parameter2!) : nil,
-                position: position
-            )
-            
-            return .init(kind: kind)
+            parameter2 = try reader.readUInt32()
+        case .accumulateResources:
+            parameter1 = try reader.readUInt8()
+            parameter2 = try reader.readUInt32()
+        case .captureSpecificTown:
+            position = try reader.readPosition()
+        case .flagAllCreatureDwellings:
+            break
+        case .flagAllMines:
+            break
+        case .upgradeSpecificTown:
+            position = try reader.readPosition()
+            parameter1 = try reader.readUInt8()
+            parameter2 = try UInt32(reader.readUInt8()) // completely unneccessary to cast this to UInt32, but for basically every other case the `parameter1` is used as a UInt32, thus declaring it having that type makes code (for other cases) safer.
+        case .buildGrailBuilding:
+            position = try reader.readPosition()
+        case .defeatSpecificHero:
+            position = try reader.readPosition()
+        case .defeatSpecificCreature:
+            position = try reader.readPosition()
+        case .transportSpecificArtifact:
+            parameter1 = try reader.readUInt8()
+            position = try reader.readPosition()
+        }
+        
+        let specialVictoryKind = try Map.VictoryCondition.Kind(
+            stripped: victoryConditionStripped,
+            parameter1: parameter1 != nil ? .init(parameter1!) : nil,
+            parameter2: parameter2 != nil ? .init(parameter2!) : nil,
+            position: position
+        )
+        
+        
+        let specialVictory = Map.VictoryCondition(
+            kind: specialVictoryKind,
+            appliesToAI: appliesToAI
+        )
+        
+        var victories: [Map.VictoryCondition] = [specialVictory]
+        
+        if allowNormalVictory {
+            victories.append(.standard)
+        }
+        
+        return victories
+    }
+    
+    
+    
+    
+    // MARK: Loss
+    func parseLossConditions() throws -> [Map.LossCondition] {
+        
+        let lossConditionStrippedRaw = try reader.readUInt8()
+        guard let lossConditionStripped = Map.LossCondition.Kind.Stripped(rawValue: lossConditionStrippedRaw) else {
+            throw Error.unrecognizedLossConditionKind(lossConditionStrippedRaw)
+        }
+        
+        if lossConditionStripped == .standard {
+            return [.standard]
+        }
+        
+        var parameter1: UInt16?
+        var position: Position?
+        
+        switch lossConditionStripped {
+        case .loseAllTownsAndHeroesOrAfterTimeLimitStillControlNoTowns: fatalError("should have been handled above")
+        case .loseSpecificTown, .loseSpecificHero:
+            position = try reader.readPosition()
+        case .timeLimit:
+            parameter1 = try reader.readUInt16()
         }
         
         
-        return .init(victoryConditions: [], lossConditions: [])
+        let specialLossKind = try Map.LossCondition.Kind(
+            stripped: lossConditionStripped,
+            parameter1: parameter1 != nil ? .init(parameter1!) : nil,
+            position: position
+        )
+        
+        let specialLossCondition = Map.LossCondition(kind: specialLossKind)
+        
+        return [specialLossCondition, .standard]
     }
+    
 }
     
 // MARK: About+Team

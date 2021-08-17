@@ -16,6 +16,7 @@ public extension Map {
 
 public extension Map.LossCondition {
     
+    static let standard = Self(kind: .standard)
     
     enum Kind: Equatable {
         /// You lose if the specified hero is defeated.
@@ -42,10 +43,10 @@ public extension Map.LossCondition.Kind {
 
 
 public extension Map.LossCondition.Kind {
-    enum Stripped: Int, Equatable {
+    enum Stripped: UInt8, Equatable {
         
         /// You lose if the specified hero is defeated.
-        case loseSpecificHero
+        case loseSpecificHero = 2
             
         /// You lose if the specified town is occupied by an enemy.
         case loseSpecificTown
@@ -56,7 +57,7 @@ public extension Map.LossCondition.Kind {
         /// Lose control of all towns for a period (typically seven days) or have the last hero defeated while controlling no towns.
         ///
         /// This is considered the "standard" condition.
-        case loseAllTownsAndHeroesOrAfterTimeLimitStillControlNoTowns
+        case loseAllTownsAndHeroesOrAfterTimeLimitStillControlNoTowns = 255
     }
 }
 

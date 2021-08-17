@@ -42,13 +42,15 @@ final class LoadMapTests: XCTestCase {
         XCTAssertEqual(map.playersInfo.players[1].isPlayableBothByHumanAndAI, true)
         XCTAssertEqual(map.playersInfo.players[2].isPlayableBothByHumanAndAI, true)
         
-        
         XCTAssertEqual(map.playersInfo.players[0].allowedFactionsForThisPlayer, [.tower])
         XCTAssertEqual(map.playersInfo.players[1].allowedFactionsForThisPlayer, [.tower])
         XCTAssertEqual(map.playersInfo.players[2].allowedFactionsForThisPlayer, [.tower])
         XCTAssertEqual(map.playersInfo.players[3].allowedFactionsForThisPlayer, [.stronghold])
         XCTAssertEqual(map.playersInfo.players[4].allowedFactionsForThisPlayer, [.dungeon])
         XCTAssertEqual(map.playersInfo.players[5].allowedFactionsForThisPlayer, [.castle])
+        
+        XCTAssertEqual(map.victoryLossConditions.victoryConditions, [.standard])
+        XCTAssertEqual(map.victoryLossConditions.lossConditions, [.standard])
     }
 
     func test_assert_maps_are_lazy_loaded_and_cached() throws {
