@@ -42,6 +42,9 @@
 		487C2BAF26CB9B5700031505 /* Map+TeamInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487C2BAE26CB9B5700031505 /* Map+TeamInfo.swift */; };
 		487C2BB126CB9B9A00031505 /* Map+PlayersInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487C2BB026CB9B9A00031505 /* Map+PlayersInfo.swift */; };
 		487C2BB326CB9BC500031505 /* Map+Decrompress.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487C2BB226CB9BC500031505 /* Map+Decrompress.swift */; };
+		487C2BB526CC2E8500031505 /* HeroIDTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487C2BB426CC2E8500031505 /* HeroIDTests.swift */; };
+		487C2BB926CC2F2600031505 /* Hero+ID.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487C2BB726CC2F2300031505 /* Hero+ID.swift */; };
+		487C2BBE26CC2F6300031505 /* Hero+Custom.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487C2BBD26CC2F6300031505 /* Hero+Custom.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -94,6 +97,9 @@
 		487C2BAE26CB9B5700031505 /* Map+TeamInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Map+TeamInfo.swift"; sourceTree = "<group>"; };
 		487C2BB026CB9B9A00031505 /* Map+PlayersInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Map+PlayersInfo.swift"; sourceTree = "<group>"; };
 		487C2BB226CB9BC500031505 /* Map+Decrompress.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Map+Decrompress.swift"; sourceTree = "<group>"; };
+		487C2BB426CC2E8500031505 /* HeroIDTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeroIDTests.swift; sourceTree = "<group>"; };
+		487C2BB726CC2F2300031505 /* Hero+ID.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Hero+ID.swift"; sourceTree = "<group>"; };
+		487C2BBD26CC2F6300031505 /* Hero+Custom.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Hero+Custom.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -118,10 +124,10 @@
 		481462F526C902B900431960 /* Backend */ = {
 			isa = PBXGroup;
 			children = (
+				487C2BB626CC2F1700031505 /* Hero */,
 				487C2B9026CA9B5000031505 /* DataReader */,
 				481462F626C902BF00431960 /* Map */,
 				481462F926C902D800431960 /* Config.swift */,
-				487C2B9626CAD1E400031505 /* Hero.swift */,
 				487C2B9826CAD1F800031505 /* Position.swift */,
 				487C2B9A26CAD20F00031505 /* Faction.swift */,
 				487C2B9C26CAD21F00031505 /* AITactic.swift */,
@@ -212,6 +218,7 @@
 				487C2B8226C936C900031505 /* Extensions */,
 				481BDF9F26C6A4F000C5E335 /* MapTests.swift */,
 				481BDFA126C6A4F000C5E335 /* Info.plist */,
+				487C2BB426CC2E8500031505 /* HeroIDTests.swift */,
 			);
 			path = Tests;
 			sourceTree = "<group>";
@@ -270,6 +277,16 @@
 				487C2B9126CA9B5900031505 /* DataReader.swift */,
 			);
 			path = DataReader;
+			sourceTree = "<group>";
+		};
+		487C2BB626CC2F1700031505 /* Hero */ = {
+			isa = PBXGroup;
+			children = (
+				487C2B9626CAD1E400031505 /* Hero.swift */,
+				487C2BB726CC2F2300031505 /* Hero+ID.swift */,
+				487C2BBD26CC2F6300031505 /* Hero+Custom.swift */,
+			);
+			path = Hero;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -383,6 +400,7 @@
 				487C2B8B26CA952700031505 /* Map+Loader+Parser+H3M.swift in Sources */,
 				487C2B9F26CAD22900031505 /* Difficulty.swift in Sources */,
 				4814630226C904D000431960 /* Map+Loader.swift in Sources */,
+				487C2BBE26CC2F6300031505 /* Hero+Custom.swift in Sources */,
 				487C2B9726CAD1E400031505 /* Hero.swift in Sources */,
 				487C2BA126CAD23600031505 /* PlayerColor.swift in Sources */,
 				4814630026C9041200431960 /* Map+About.swift in Sources */,
@@ -397,6 +415,7 @@
 				487C2B8826CA950100031505 /* Map+Format.swift in Sources */,
 				487C2B9226CA9B5900031505 /* DataReader.swift in Sources */,
 				487C2B9D26CAD21F00031505 /* AITactic.swift in Sources */,
+				487C2BB926CC2F2600031505 /* Hero+ID.swift in Sources */,
 				481462FA26C902D800431960 /* Config.swift in Sources */,
 				487C2BB126CB9B9A00031505 /* Map+PlayersInfo.swift in Sources */,
 				487C2BB326CB9BC500031505 /* Map+Decrompress.swift in Sources */,
@@ -414,6 +433,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				487C2BB526CC2E8500031505 /* HeroIDTests.swift in Sources */,
 				487C2B8426C936D600031505 /* Map+ID+KnownMaps.swift in Sources */,
 				481BDFA026C6A4F000C5E335 /* MapTests.swift in Sources */,
 			);

@@ -57,13 +57,13 @@ public extension Map.LossCondition.Kind {
     enum Stripped: UInt8, Equatable, CustomStringConvertible {
         
         /// You lose if the specified town is occupied by an enemy.
-        case loseSpecificTown = 0
+        case loseSpecificTown
         
         /// You lose if the specified hero is defeated.
-        case loseSpecificHero = 1
+        case loseSpecificHero
 
         /// You lose if you have not won the scenario within the specified number of days.
-        case timeLimit = 2
+        case timeLimit
         
         /// Lose control of all towns for a period (typically seven days) or have the last hero defeated while controlling no towns.
         ///

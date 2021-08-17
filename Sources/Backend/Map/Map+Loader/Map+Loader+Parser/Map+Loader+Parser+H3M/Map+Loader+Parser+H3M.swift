@@ -28,6 +28,7 @@ enum Error: Swift.Error {
     case unrecognizedDifficulty(Difficulty.RawValue)
     case unrecognizedAITactic(AITactic.RawValue)
     case unrecognizedFaction(Faction.RawValue)
+    case unrecognizedHeroID(Hero.ID.RawValue)
     case unrecognizedVictoryConditionKind(Map.VictoryCondition.Kind.Stripped.RawValue)
     case unrecognizedLossConditionKind(Map.VictoryCondition.Kind.Stripped.RawValue)
 }
@@ -41,7 +42,7 @@ extension Map.Loader.Parser.H3M {
         print(playerInfo.debugDescription)
         let victoryLossConditions = try parseVictoryLossConditions(format: about.format)
         let teamInfo = try parseTeamInfo()
-        let allowedHeroes = try parseAllowedHeroes()
+        let allowedHeroes = try parseAllowedHeroes(format: about.format)
         
         
         return .init(
@@ -74,7 +75,9 @@ private extension  Map.Loader.Parser.H3M {
             throw Error.unsupportedFormat(format)
         }
         
-        let _ = try reader.readBool() /// VCMI variable name `hasPlayablePlayers` but with comment `"unused"`
+        /// VCMI variable name `hasPlayablePlayers` but with comment `"unused"`
+        try reader.skip(byteCount: 1)
+        
         let sizeValue = try reader.readUInt32()
         let height = sizeValue
         let width = sizeValue
@@ -144,9 +147,10 @@ private extension  Map.Loader.Parser.H3M {
                 return aiTactic
             }()
             
-            /// Naming in VCMI: `p7`, with comment `"unknown and unused"`
-            let _: Int? = try format == .shadowOfDeath || format == .wakeOfGods ? Int(reader.readUInt8()) : nil
-            
+            if format == .shadowOfDeath || format == .wakeOfGods {
+                /// Naming in VCMI: `p7`, with comment `"unknown and unused"`
+                try reader.skip(byteCount: 1)
+            }
             
             // Factions this player can choose
             let allowedFactionsForThisPlayer: [Faction] = try {
@@ -166,7 +170,6 @@ private extension  Map.Loader.Parser.H3M {
             let isRandomFaction = try reader.readBool()
             let hasMainTown = try reader.readBool()
             
-            
             var generateHeroAtMainTown = true
             var generateHero = false
             var positionOfMainTown: Position?
@@ -181,30 +184,46 @@ private extension  Map.Loader.Parser.H3M {
             let hasRandomHero = try reader.readBool()
          
             let customMainHero: Hero.Custom? = try {
-                let heroID = try Int(reader.readUInt8())
-                guard heroID != 0xff else { return nil }
-                let portraitID = try Int(reader.readUInt8())
+                let heroIDRaw = try reader.readUInt8()
+                guard heroIDRaw != 0xff else { return nil }
+                guard let heroID = Hero.ID(rawValue: heroIDRaw) else {
+                    throw Error.unrecognizedHeroID(heroIDRaw)
+                }
+                let portraitIDRaw = try reader.readUInt8()
+              
                 let name = try reader.readString()
-                guard portraitID != 0xff else { return nil }
+                guard portraitIDRaw != 0xff else { return nil }
                 guard !name.isEmpty else { return nil }
-                return .init(id: .init(id: heroID), portraitId: .init(id: portraitID), name: name)
+                guard let portraitID = Hero.ID(rawValue: portraitIDRaw) else {
+                    throw Error.unrecognizedHeroID(portraitIDRaw)
+                }
+                return .init(
+                    id: heroID,
+                    portraitId: portraitID,
+                    name: name
+                )
             }()
             
             
             var heroSeeds: [Hero.Seed]?
             if format != .restorationOfErathia {
-                let _ = try reader.readUInt8() // VCMI code: variable name: `powerPlaceholders` with comment 'unknown byte'
+
+                // VCMI code: variable name: `powerPlaceholders` with comment 'unknown byte'
+                try reader.skip(byteCount: 1)
+
                 let heroCount = try Int(reader.readUInt8())
                 try reader.skip(byteCount: 3)
                 heroSeeds = try (0..<heroCount).map { _ in
-                    let heroID = try Hero.ID(id: .init(reader.readUInt8()))
+                    let heroIDRaw = try reader.readUInt8()
+                    guard let heroID = Hero.ID(rawValue: heroIDRaw) else {
+                        throw Error.unrecognizedHeroID(heroIDRaw)
+                    }
                     let heroName = try reader.readString()
                     return Hero.Seed(id: heroID, name: heroName)
                 }
             }
             
-//            assert((aiTactic != nil) == isPlayableByAI)
-//            assert( (generateHeroAtMainTown || positionOfMainTown != nil) == hasMainTown)
+            assert((aiTactic != nil) == isPlayableByAI)
             
             return .init(
                 color: playerColor,
@@ -368,7 +387,9 @@ private extension  Map.Loader.Parser.H3M {
 
 // MARK: About+Heros
 private extension  Map.Loader.Parser.H3M {
-    func parseAllowedHeroes() throws -> Map.AllowedHeroes {
+    func parseAllowedHeroes(format: Map.Format) throws -> Map.AllowedHeroes {
+        let byteCount = format == .restorationOfErathia ? 16 : 20
+        //     const int HEROES_QUANTITY=156;
         return .init(heroes: [])
     }
 }

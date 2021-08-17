@@ -20,11 +20,14 @@ private extension Size.Scalar {
     static let large = Self.small * 3
     static let extraLarge = Self.small * 4
     
-    #if HOTA
+    // MARK: Hota Only
+    
+    /// HotA only
     static let huge = Self.small * 5
+    /// HotA only
     static let extraHuge = Self.small * 6
+    /// HotA only
     static let gigantic = Self.small * 7
-    #endif
 }
 
 private extension Size {

@@ -107,7 +107,11 @@ public extension Map.VictoryCondition.Kind {
             Artifact.ID(id: try ensureParameter1(contents: "Artifact ID"))
         }
         func ensureHeroID() throws -> Hero.ID {
-            Hero.ID(id: try ensureParameter1(contents: "Hero ID"))
+            let purpose = "Hero ID"
+            guard let heroId = Hero.ID(rawValue: try UInt8(ensureParameter1(contents: purpose))) else {
+                throw Error.missingParameter(contents: purpose, for: stripped)
+            }
+            return heroId
         }
         func ensureParameter2(contents: String) throws -> Int {
             guard let parameter = parameter2 else {
@@ -144,7 +148,7 @@ public extension Map.VictoryCondition.Kind {
             )
             
         case .upgradeSpecificTown:
-             let townPosition = try ensureTownPosition()
+            let townPosition = try ensureTownPosition()
             let hallLevel = try ensureParameter1(contents: "Hall level")
             let fortLevel = try ensureParameter2(contents: "Fort/Castle level")
             self = .upgradeSpecificTown(
@@ -238,37 +242,37 @@ public extension Map.VictoryCondition.Kind {
     enum Stripped: UInt8, Equatable, CustomStringConvertible {
         
         /// You must find a specific artifact. Win by placing the artifact in one of your heroes’ backpacks.
-        case acquireSpecificArtifact = 0
+        case acquireSpecificArtifact
         
         /// Your kingdom must acquire X number of a specific type of creature.
-        case accumulateCreatures = 1
+        case accumulateCreatures
         
         ///  Your kingdom must acquire X amount of a specific resource.
-        case accumulateResources = 2
+        case accumulateResources
         
         /// The hall and castle of a given town must be upgraded to a specified level.
-        case upgradeSpecificTown = 3
+        case upgradeSpecificTown
         
         /// Find the Grail and build a grail building in one of your towns.
-        case buildGrailBuilding = 4
+        case buildGrailBuilding
         
         /// Defeat a specified hero.
-        case defeatSpecificHero = 5
-   
+        case defeatSpecificHero
+        
         /// Occupy a specified town.
-        case captureSpecificTown = 6
+        case captureSpecificTown
         
         /// Defeat a specified wandering monster.
-        case defeatSpecificCreature = 7
+        case defeatSpecificCreature
         
         /// You must control all the creature dwellings/generators on the map.
-        case flagAllCreatureDwellings = 8
+        case flagAllCreatureDwellings
         
         ///  Control all the mines on the map.
-        case flagAllMines = 9
+        case flagAllMines
         
         /// Acquire a specific artifact and transport it to a specified town.
-        case transportSpecificArtifact = 10
+        case transportSpecificArtifact
         
         /// Conquer all enemy towns and defeat all enemy heroes.
         ///
