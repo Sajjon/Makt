@@ -261,7 +261,6 @@ private extension  Map.Loader.Parser.H3M {
         
         let victoryConditionStrippedRaw = try reader.readUInt8()
         guard let victoryConditionStripped = Map.VictoryCondition.Kind.Stripped(rawValue: victoryConditionStrippedRaw) else {
-            fatalError("Got victoryConditionStrippedRaw: \(victoryConditionStrippedRaw)")
             throw Error.unrecognizedVictoryConditionKind(victoryConditionStrippedRaw)
         }
         
@@ -337,9 +336,6 @@ private extension  Map.Loader.Parser.H3M {
         return victories
     }
     
-    
-    
-    
     // MARK: Loss
     func parseLossConditions() throws -> [Map.LossCondition] {
         
@@ -356,13 +352,15 @@ private extension  Map.Loader.Parser.H3M {
         var position: Position?
         
         switch lossConditionStripped {
-        case .loseAllTownsAndHeroesOrAfterTimeLimitStillControlNoTowns: fatalError("should have been handled above")
+        
+        case .loseAllTownsAndHeroesOrAfterTimeLimitStillControlNoTowns:
+            fatalError("should have been handled above")
+            
         case .loseSpecificTown, .loseSpecificHero:
             position = try reader.readPosition()
         case .timeLimit:
             parameter1 = try reader.readUInt16()
         }
-        
         
         let specialLossKind = try Map.LossCondition.Kind(
             stripped: lossConditionStripped,
