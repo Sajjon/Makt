@@ -7,10 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		481462F826C902C800431960 /* Map.swift in Sources */ = {isa = PBXBuildFile; fileRef = 481462F726C902C800431960 /* Map.swift */; };
+		481462F826C902C800431960 /* Map+About.swift in Sources */ = {isa = PBXBuildFile; fileRef = 481462F726C902C800431960 /* Map+About.swift */; };
 		481462FA26C902D800431960 /* Config.swift in Sources */ = {isa = PBXBuildFile; fileRef = 481462F926C902D800431960 /* Config.swift */; };
 		481462FC26C902E800431960 /* Map+ID.swift in Sources */ = {isa = PBXBuildFile; fileRef = 481462FB26C902E800431960 /* Map+ID.swift */; };
-		4814630026C9041200431960 /* Map+About.swift in Sources */ = {isa = PBXBuildFile; fileRef = 481462FF26C9041200431960 /* Map+About.swift */; };
+		4814630026C9041200431960 /* Map+About+Summary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 481462FF26C9041200431960 /* Map+About+Summary.swift */; };
 		4814630226C904D000431960 /* Map+Loader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4814630126C904D000431960 /* Map+Loader.swift */; };
 		4814630626C9054900431960 /* Map+Loader+Reader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4814630526C9054900431960 /* Map+Loader+Reader.swift */; };
 		481BDF6526C5942000C5E335 /* HoMM3SwiftUIApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 481BDF6426C5942000C5E335 /* HoMM3SwiftUIApp.swift */; };
@@ -46,6 +46,7 @@
 		487C2BB926CC2F2600031505 /* Hero+ID.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487C2BB726CC2F2300031505 /* Hero+ID.swift */; };
 		487C2BBE26CC2F6300031505 /* Hero+Custom.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487C2BBD26CC2F6300031505 /* Hero+Custom.swift */; };
 		487C2BC226CCCCD900031505 /* BitArray.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487C2BC126CCCCD900031505 /* BitArray.swift */; };
+		487C2BC426CCEDF600031505 /* Map.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487C2BC326CCEDF600031505 /* Map.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -59,10 +60,10 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		481462F726C902C800431960 /* Map.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Map.swift; sourceTree = "<group>"; };
+		481462F726C902C800431960 /* Map+About.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Map+About.swift"; sourceTree = "<group>"; };
 		481462F926C902D800431960 /* Config.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Config.swift; sourceTree = "<group>"; };
 		481462FB26C902E800431960 /* Map+ID.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Map+ID.swift"; sourceTree = "<group>"; };
-		481462FF26C9041200431960 /* Map+About.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Map+About.swift"; sourceTree = "<group>"; };
+		481462FF26C9041200431960 /* Map+About+Summary.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Map+About+Summary.swift"; sourceTree = "<group>"; };
 		4814630126C904D000431960 /* Map+Loader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Map+Loader.swift"; sourceTree = "<group>"; };
 		4814630526C9054900431960 /* Map+Loader+Reader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Map+Loader+Reader.swift"; sourceTree = "<group>"; };
 		481BDF6126C5942000C5E335 /* HoMM3SwiftUI.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HoMM3SwiftUI.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -102,6 +103,7 @@
 		487C2BB726CC2F2300031505 /* Hero+ID.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Hero+ID.swift"; sourceTree = "<group>"; };
 		487C2BBD26CC2F6300031505 /* Hero+Custom.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Hero+Custom.swift"; sourceTree = "<group>"; };
 		487C2BC126CCCCD900031505 /* BitArray.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BitArray.swift; sourceTree = "<group>"; };
+		487C2BC326CCEDF600031505 /* Map.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Map.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -136,11 +138,12 @@
 			isa = PBXGroup;
 			children = (
 				4814630326C9053300431960 /* Map+Loader */,
-				481462F726C902C800431960 /* Map.swift */,
+				481462F726C902C800431960 /* Map+About.swift */,
+				487C2BC326CCEDF600031505 /* Map.swift */,
 				487C2B8E26CA98DC00031505 /* Map+AllowedHeroes.swift */,
 				487C2B8C26CA988E00031505 /* Map+VictoryLossConditions.swift */,
 				481462FB26C902E800431960 /* Map+ID.swift */,
-				481462FF26C9041200431960 /* Map+About.swift */,
+				481462FF26C9041200431960 /* Map+About+Summary.swift */,
 				487C2BA426CB8EC700031505 /* Map+VictoryCondition.swift */,
 				487C2BAC26CB951500031505 /* Map+LossCondition.swift */,
 				487C2BAE26CB9B5700031505 /* Map+TeamInfo.swift */,
@@ -417,12 +420,13 @@
 				487C2BA326CAD48900031505 /* Size.swift in Sources */,
 				4814630626C9054900431960 /* Map+Loader+Reader.swift in Sources */,
 				487C2B8B26CA952700031505 /* Map+Loader+Parser+H3M.swift in Sources */,
+				487C2BC426CCEDF600031505 /* Map.swift in Sources */,
 				487C2B9F26CAD22900031505 /* Difficulty.swift in Sources */,
 				4814630226C904D000431960 /* Map+Loader.swift in Sources */,
 				487C2BBE26CC2F6300031505 /* Hero+Custom.swift in Sources */,
 				487C2B9726CAD1E400031505 /* Hero.swift in Sources */,
 				487C2BA126CAD23600031505 /* PlayerColor.swift in Sources */,
-				4814630026C9041200431960 /* Map+About.swift in Sources */,
+				4814630026C9041200431960 /* Map+About+Summary.swift in Sources */,
 				487C2BA726CB94CA00031505 /* Resource.swift in Sources */,
 				487C2B8D26CA988E00031505 /* Map+VictoryLossConditions.swift in Sources */,
 				487C2BC226CCCCD900031505 /* BitArray.swift in Sources */,
@@ -440,7 +444,7 @@
 				487C2BB126CB9B9A00031505 /* Map+PlayersInfo.swift in Sources */,
 				487C2BB326CB9BC500031505 /* Map+Decrompress.swift in Sources */,
 				487C2BAF26CB9B5700031505 /* Map+TeamInfo.swift in Sources */,
-				481462F826C902C800431960 /* Map.swift in Sources */,
+				481462F826C902C800431960 /* Map+About.swift in Sources */,
 				487C2B8026C9066600031505 /* Map+Loader+Cache.swift in Sources */,
 				487C2B8126C9066600031505 /* Map+Loader+Parser.swift in Sources */,
 				487C2B8F26CA98DC00031505 /* Map+AllowedHeroes.swift in Sources */,

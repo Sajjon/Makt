@@ -1,5 +1,5 @@
 //
-//  Map+About.swift
+//  Map.swift
 //  HoMM3SwiftUI
 //
 //  Created by Alexander Cyon on 2021-08-15.
@@ -8,49 +8,18 @@
 import Foundation
 
 public extension Map {
-    
-    // Information about the map and map file. Stable state independent information.
     struct About: Equatable, Identifiable {
-        
-        /// A stable id that uniquely identifies this map. This is not part of the map file and is created by me (Cyon) in this Swift code base.
-        public let id: ID
-        public let fileSize: Int
-        public let fileSizeCompressed: Int?
-        
-        /// Map format or `version`
-        public let format: Map.Format
-        
-        public let name: String
-        public let description: String
-        
-        public let size: Size
-        public let difficulty: Difficulty
-   
-        public let hasTwoLevels: Bool
-        public let maximumHeroLevel: Int?
+        public let summary: Summary
+        public let playersInfo: PlayersInfo
+        public let victoryLossConditions: VictoryLossConditions
+        public let teamInfo: TeamInfo
+        public let allowedHeroes: AllowedHeroes
     }
-    
 }
 
-// MARK: Public
+// MARK: Identifiable
 public extension Map.About {
     typealias ID = Map.ID
-    
-    var fileName: String { id.fileName }
+    var id: ID { summary.id }
 }
 
-// MARK: CustomDebugStringConvertible
-extension Map.About: CustomDebugStringConvertible {
-    public var debugDescription: String {
-        """
-        ======================================
-        name: \(name)
-        description: \(description)
-        game: \(format)
-        size: \(size)
-        difficulty: \(difficulty)
-        has underworld?: \(hasTwoLevels)
-        ======================================
-        """
-    }
-}

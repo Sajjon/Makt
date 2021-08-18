@@ -33,22 +33,33 @@ enum Error: Swift.Error {
     case unrecognizedLossConditionKind(Map.VictoryCondition.Kind.Stripped.RawValue)
 }
 
-// MARK: Parse
+
+// MARK: Parse Map
 extension Map.Loader.Parser.H3M {
     func parse() throws -> Map {
-        let about = try parseAboutMap()
-        print(about.debugDescription)
-        let playerInfo = try parsePlayerInfo(format: about.format)
+        let about = try parseAbout()
+        return .init(about: about)
+    }
+}
+
+// MARK: Parse About
+extension Map.Loader.Parser.H3M {
+    
+    func parseAbout() throws -> Map.About {
+        let summary = try parseMapSummary()
+        let format = summary.format
+        print(summary.debugDescription)
+        let playerInfo = try parsePlayerInfo(format: format)
 //        print(playerInfo.debugDescription)
-        let victoryLossConditions = try parseVictoryLossConditions(format: about.format)
+        let victoryLossConditions = try parseVictoryLossConditions(format: format)
         
         /// The teams might contain non playble colors
         let teamInfo = try parseTeamInfo(validColors: playerInfo.players.map({ $0.color }))
         
-        let allowedHeroes = try parseAllowedHeroes(format: about.format)
+        let allowedHeroes = try parseAllowedHeroes(format: format)
         
         return .init(
-            about: about,
+            summary: summary,
             playersInfo: playerInfo,
             victoryLossConditions: victoryLossConditions,
             teamInfo: teamInfo,
@@ -59,10 +70,10 @@ extension Map.Loader.Parser.H3M {
 
 
  
-// MARK: Parse Map+About
+// MARK: Parse Map+Summary
 private extension  Map.Loader.Parser.H3M {
 
-    func parseAboutMap() throws -> Map.About {
+    func parseMapSummary() throws -> Map.About.Summary {
         // Check map for validity
         guard reader.sourceSize >= 50 else { throw Error.corruptMapFileTooSmall }
         // Map version
@@ -94,7 +105,7 @@ private extension  Map.Loader.Parser.H3M {
         
         let maximumHeroLevel: Int? = try format != .restorationOfErathia ? Int(reader.readUInt8()) : nil
         
-        return Map.About(
+        return Map.About.Summary(
             id: readMap.id,
             fileSize: readMap.data.count,
             fileSizeCompressed: fileSizeCompressed,
@@ -376,7 +387,7 @@ private extension  Map.Loader.Parser.H3M {
     
 }
     
-// MARK: About+Team
+// MARK: Summary+Team
 private extension  Map.Loader.Parser.H3M {
     private final class TempTeam {
         let teamID: UInt8
@@ -415,7 +426,7 @@ private extension  Map.Loader.Parser.H3M {
     
 }
 
-// MARK: About+Heros
+// MARK: Summary+Heros
 private extension  Map.Loader.Parser.H3M {
     func parseAllowedHeroes(format: Map.Format) throws -> Map.AllowedHeroes {
         let byteCount = format == .restorationOfErathia ? 16 : 20
