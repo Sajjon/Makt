@@ -35,7 +35,7 @@ extension Map.Loader.Parser.H3M {
         let _ = try parseAllowedSpells(format: format)
         let _ = try parseAllowedHeroAbilities(format: format)
         let _ = try parseRumors()
-        let _ = try parsePredefinedHeroes()
+        let _ = try parsePredefinedHeroes(format: format)
         let _ = try parseTerrain()
         let _ = try parseDefInfo()
         let _ = try parseObjects()
@@ -186,13 +186,6 @@ private extension Map.Loader.Parser.H3M {
             let text = try reader.readString()
             return .init(name: name, text: text)
         }
-    }
-}
-
-// MARK: Parse PreDefined Heroes
-private extension Map.Loader.Parser.H3M {
-    func parsePredefinedHeroes() throws -> [Hero.Predefined] {
-        []
     }
 }
 

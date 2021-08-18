@@ -7,6 +7,15 @@
 
 import Foundation
 
+public extension Artifact.ID {
+    var isWarMachine: Bool {
+        switch self {
+        case .catapult, .firstAidTent, .ballista, .ammoCart: return true
+        default: return false
+        }
+    }
+}
+
 public extension Artifact {
     
     /// From: http://heroescommunity.com/viewthread.php3?TID=46589&PID=1529923#focus
