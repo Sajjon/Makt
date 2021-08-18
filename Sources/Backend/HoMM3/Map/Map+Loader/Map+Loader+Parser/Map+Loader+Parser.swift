@@ -31,7 +31,9 @@ public extension Map.Loader.Parser {
         } else {
             let format = try Map.Format(id: formatRawValue)
             switch format {
+            #if HOTA
             case .hornOfTheAbyss: fatalError("Unknown if hota is supported")
+            #endif // HOTA
             case .wakeOfGods, .armageddonsBlade, .restorationOfErathia,.shadowOfDeath:
                 h3mParser = H3M(readMap: readMap)
             }

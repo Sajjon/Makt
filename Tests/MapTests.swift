@@ -355,4 +355,56 @@ final class LoadMapTests: XCTestCase {
         
         XCTAssertEqual(map.teamInfo, [[.red, .blue], [.tan, .green], [.orange, .teal], [.purple]])
     }
+    
+    func test_assert_can_load_map_by_id__reclamation_allies() throws {
+        // Delete any earlier cached maps.
+        Map.loader.cache.__deleteMap(by: .reclamationAllies)
+        let map = try Map.load(.reclamationAllies)
+        XCTAssertEqual(map.about.fileName, "Reclamation Allied.h3m")
+        XCTAssertEqual(map.about.name, "Reclamation (Allies)")
+        XCTAssertEqual(map.about.description, "Eons ago, three nations were defeated by invaders and driven from their ancestral lands.  The victorious nation has since split into several smaller kingdoms. Now, the ancient peoples of the land are returning to seize back their homelands.  However, you refuse to let them take back what you own.")
+        XCTAssertEqual(map.about.fileSizeCompressed, 53_450)
+        XCTAssertEqual(map.about.fileSize, 247_360)
+        XCTAssertFalse(map.about.hasTwoLevels)
+        XCTAssertEqual(map.about.format, .shadowOfDeath)
+        XCTAssertEqual(map.about.difficulty, .normal)
+        XCTAssertEqual(map.about.size, .extraLarge)
+        XCTAssertEqual(map.playersInfo.players.count, 7)
+       
+        XCTAssertTrue(map.playersInfo.players.allSatisfy({ $0.isPlayableBothByHumanAndAI }))
+        
+        XCTAssertTrue(map.playersInfo.players.allSatisfy({ $0.allowedFactionsForThisPlayer == Faction.playable(in: .shadowOfDeath) }))
+
+        XCTAssertEqual(map.victoryLossConditions.victoryConditions.map { $0.kind.stripped }, [.standard])
+        XCTAssertEqual(map.victoryLossConditions.lossConditions.map { $0.kind.stripped }, [.standard])
+        
+        XCTAssertEqual(map.teamInfo.teams?.count, 3)
+        XCTAssertEqual(map.teamInfo, [[.red, .tan], [.blue, .teal], [.green, .orange, .purple]])
+    }
+    
+    func test_assert_can_load_map_by_id__peacefulEnding_allies() throws {
+        // Delete any earlier cached maps.
+        Map.loader.cache.__deleteMap(by: .peacefulEndingAllies)
+        let map = try Map.load(.peacefulEndingAllies)
+        XCTAssertEqual(map.about.fileName, "Peaceful Ending - Allied.h3m")
+        XCTAssertEqual(map.about.name, "Peaceful Ending (Allies)")
+        XCTAssertEqual(map.about.description, "Trade has been the key to peace for as long as everyone can remember.  Everything was going well until one nation stopped trading with the others, their reasons unknown.  War broke out, for nations desperately needed resources, and it has raged ever since.  A peace must be reached. ")
+        XCTAssertEqual(map.about.fileSizeCompressed, 44_116)
+        XCTAssertEqual(map.about.fileSize, 240_257)
+        XCTAssertTrue(map.about.hasTwoLevels)
+        XCTAssertEqual(map.about.format, .shadowOfDeath)
+        XCTAssertEqual(map.about.difficulty, .hard)
+        XCTAssertEqual(map.about.size, .large)
+        XCTAssertEqual(map.playersInfo.players.count, 6)
+       
+        XCTAssertTrue(map.playersInfo.players.allSatisfy({ $0.isPlayableBothByHumanAndAI }))
+        
+        XCTAssertTrue(map.playersInfo.players.allSatisfy({ $0.allowedFactionsForThisPlayer == Faction.playable(in: .shadowOfDeath) }))
+
+        XCTAssertEqual(map.victoryLossConditions.victoryConditions.map { $0.kind.stripped }, [.standard])
+        XCTAssertEqual(map.victoryLossConditions.lossConditions.map { $0.kind.stripped }, [.standard])
+        
+        XCTAssertEqual(map.teamInfo.teams?.count, 3)
+        XCTAssertEqual(map.teamInfo, [[.red, .purple], [.blue, .orange], [.tan, .green]])
+    }
 }

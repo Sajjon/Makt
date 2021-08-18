@@ -55,6 +55,7 @@ final class HeroIDTest: XCTestCase {
         doTest(heroId: .xeron, is: 155)
     }
     
+    #if HOTA
     func testCorkes() {
         doTest(heroId: .corkes, is: 156)
     }
@@ -66,6 +67,7 @@ final class HeroIDTest: XCTestCase {
     func testGiselle() {
         doTest(heroId: .giselle, is: 178)
     }
+    #endif // HOTA
     
     
 }

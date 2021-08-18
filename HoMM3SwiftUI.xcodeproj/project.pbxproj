@@ -45,6 +45,7 @@
 		487C2BB526CC2E8500031505 /* HeroIDTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487C2BB426CC2E8500031505 /* HeroIDTests.swift */; };
 		487C2BB926CC2F2600031505 /* Hero+ID.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487C2BB726CC2F2300031505 /* Hero+ID.swift */; };
 		487C2BBE26CC2F6300031505 /* Hero+Custom.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487C2BBD26CC2F6300031505 /* Hero+Custom.swift */; };
+		487C2BC226CCCCD900031505 /* BitArray.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487C2BC126CCCCD900031505 /* BitArray.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -100,6 +101,7 @@
 		487C2BB426CC2E8500031505 /* HeroIDTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeroIDTests.swift; sourceTree = "<group>"; };
 		487C2BB726CC2F2300031505 /* Hero+ID.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Hero+ID.swift"; sourceTree = "<group>"; };
 		487C2BBD26CC2F6300031505 /* Hero+Custom.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Hero+Custom.swift"; sourceTree = "<group>"; };
+		487C2BC126CCCCD900031505 /* BitArray.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BitArray.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -124,19 +126,8 @@
 		481462F526C902B900431960 /* Backend */ = {
 			isa = PBXGroup;
 			children = (
-				487C2BB626CC2F1700031505 /* Hero */,
-				487C2B9026CA9B5000031505 /* DataReader */,
-				481462F626C902BF00431960 /* Map */,
-				481462F926C902D800431960 /* Config.swift */,
-				487C2B9826CAD1F800031505 /* Position.swift */,
-				487C2B9A26CAD20F00031505 /* Faction.swift */,
-				487C2B9C26CAD21F00031505 /* AITactic.swift */,
-				487C2B9E26CAD22900031505 /* Difficulty.swift */,
-				487C2BA026CAD23600031505 /* PlayerColor.swift */,
-				487C2BA226CAD48900031505 /* Size.swift */,
-				487C2BA626CB94CA00031505 /* Resource.swift */,
-				487C2BA826CB94D900031505 /* Creature.swift */,
-				487C2BAA26CB94E600031505 /* Artifact.swift */,
+				487C2BC026CCCCC700031505 /* HoMM3 */,
+				487C2BBF26CCCCB900031505 /* DataTypes */,
 			);
 			path = Backend;
 			sourceTree = "<group>";
@@ -289,6 +280,34 @@
 			path = Hero;
 			sourceTree = "<group>";
 		};
+		487C2BBF26CCCCB900031505 /* DataTypes */ = {
+			isa = PBXGroup;
+			children = (
+				487C2BC126CCCCD900031505 /* BitArray.swift */,
+			);
+			path = DataTypes;
+			sourceTree = "<group>";
+		};
+		487C2BC026CCCCC700031505 /* HoMM3 */ = {
+			isa = PBXGroup;
+			children = (
+				487C2BB626CC2F1700031505 /* Hero */,
+				487C2B9026CA9B5000031505 /* DataReader */,
+				481462F626C902BF00431960 /* Map */,
+				481462F926C902D800431960 /* Config.swift */,
+				487C2B9826CAD1F800031505 /* Position.swift */,
+				487C2B9A26CAD20F00031505 /* Faction.swift */,
+				487C2B9C26CAD21F00031505 /* AITactic.swift */,
+				487C2B9E26CAD22900031505 /* Difficulty.swift */,
+				487C2BA026CAD23600031505 /* PlayerColor.swift */,
+				487C2BA226CAD48900031505 /* Size.swift */,
+				487C2BA626CB94CA00031505 /* Resource.swift */,
+				487C2BA826CB94D900031505 /* Creature.swift */,
+				487C2BAA26CB94E600031505 /* Artifact.swift */,
+			);
+			path = HoMM3;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -406,6 +425,7 @@
 				4814630026C9041200431960 /* Map+About.swift in Sources */,
 				487C2BA726CB94CA00031505 /* Resource.swift in Sources */,
 				487C2B8D26CA988E00031505 /* Map+VictoryLossConditions.swift in Sources */,
+				487C2BC226CCCCD900031505 /* BitArray.swift in Sources */,
 				487C2BAB26CB94E600031505 /* Artifact.swift in Sources */,
 				481BDF6726C5942000C5E335 /* ContentView.swift in Sources */,
 				487C2B9926CAD1F800031505 /* Position.swift in Sources */,

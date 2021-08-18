@@ -9,6 +9,6 @@ import Foundation
 
 public extension Map {
     struct AllowedHeroes: Equatable {
-        public let heroes: [Hero]
+        public let heroIDs: [Hero.ID]
     }
 }

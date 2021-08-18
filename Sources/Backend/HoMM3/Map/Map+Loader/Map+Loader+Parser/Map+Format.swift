@@ -20,8 +20,10 @@ public extension Map {
         /// The expansion "The Shadow of Death", aka SOD
         case shadowOfDeath
         
+        #if HOTA
         /// The community expansion "Horn of the Abyss", aka HOTA
         case hornOfTheAbyss
+        #endif // HOTA
         
         /// The community expansion "Wake of Gods", aka WOG
         case wakeOfGods
@@ -38,7 +40,9 @@ public extension Map {
             case .restorationOfErathia: self = .restorationOfErathia
             case .armageddonsBlade: self = .armageddonsBlade
             case .shadowOfDeath: self = .shadowOfDeath
+                #if HOTA
             case .hornOfTheAbyss_1, .hornOfTheAbyss_2, .hornOfTheAbyss_3: self = .hornOfTheAbyss
+                #endif // HOTA
             case .wakeOfGods: self = .wakeOfGods
             case .vcmi: fatalError("VCMI not supported")
             }
@@ -54,9 +58,11 @@ private enum RawFormat: Map.Format.RawFormatValue, Equatable {
     
     case shadowOfDeath = 0x1c // 0d28
     
+    #if HOTA
     case hornOfTheAbyss_1 = 0x1e // 0d28
     case hornOfTheAbyss_2 = 0x1f // 0d29
     case hornOfTheAbyss_3 = 0x20 // 0d30
+    #endif // HOTA
     
     case wakeOfGods = 0x33  // 0d51
     case vcmi = 0xF0 // 0d256

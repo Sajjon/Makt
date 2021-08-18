@@ -30,6 +30,9 @@ extension Map.ID {
     static let taleOfTwoLandsAllies: Self = .h3m("Tale of two lands (Allies)")
     static let thousandIslandsAllies: Self = .h3m("Thousand Islands (allies)")
     
+    static let reclamationAllies: Self = .h3m("Reclamation Allied")
+    static let peacefulEndingAllies: Self = .h3m("Peaceful Ending - Allied")
+    
     
 
 }

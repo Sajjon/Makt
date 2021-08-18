@@ -39,14 +39,13 @@ extension Map.Loader.Parser.H3M {
         let about = try parseAboutMap()
         print(about.debugDescription)
         let playerInfo = try parsePlayerInfo(format: about.format)
-        print(playerInfo.debugDescription)
+//        print(playerInfo.debugDescription)
         let victoryLossConditions = try parseVictoryLossConditions(format: about.format)
         
         /// The teams might contain non playble colors
         let teamInfo = try parseTeamInfo(validColors: playerInfo.players.map({ $0.color }))
         
         let allowedHeroes = try parseAllowedHeroes(format: about.format)
-        
         
         return .init(
             about: about,
@@ -125,13 +124,12 @@ private extension  Map.Loader.Parser.H3M {
                     try reader.skip(byteCount: 12)
                 case .restorationOfErathia:
                     try reader.skip(byteCount: 6)
-                default: break // unsure about this
                 }
-                return nil // unsure about this
+                return nil
             }
             
             let aiTactic: AITactic? = try {
-                /// Unsure about `Int(reader.readUInt8())`, if it ever results in `-1`. In VCMI: `static_cast<EAiTactic::EAiTactic>(reader.readUInt8());` and:
+                /// Unsure about `Int(reader.readUInt8())`, if it ever results in `-1`, probably never?. In VCMI: `static_cast<EAiTactic::EAiTactic>(reader.readUInt8());` and:
                 ///
                 /// `enum EAiTactic {
                 ///    NONE = -1,
@@ -421,7 +419,20 @@ private extension  Map.Loader.Parser.H3M {
 private extension  Map.Loader.Parser.H3M {
     func parseAllowedHeroes(format: Map.Format) throws -> Map.AllowedHeroes {
         let byteCount = format == .restorationOfErathia ? 16 : 20
-        //     const int HEROES_QUANTITY=156;
-        return .init(heroes: [])
+        let availableHeroIDs = Hero.ID.playable(in: format)
+        let data = try reader.read(byteCount: byteCount)
+        let bits = BitArray(data: data)
+        
+        let playableHeroIDs: [Hero.ID] = bits.prefix(availableHeroIDs.count).enumerated().compactMap {
+            let heroID = availableHeroIDs[$0.offset]
+            guard $0.element else {
+                return nil
+            }
+            return heroID
+        }
+        
+   
+        
+        return .init(heroIDs: playableHeroIDs)
     }
 }
