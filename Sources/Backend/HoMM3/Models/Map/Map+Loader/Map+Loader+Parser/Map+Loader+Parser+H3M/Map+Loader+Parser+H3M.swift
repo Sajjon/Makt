@@ -32,7 +32,8 @@ extension Map.Loader.Parser.H3M {
         
         let _ = try parseDisposedHeroes(format: format)
         let _ = try parseAllowedArtifacts(format: format)
-        let _ = try parseAllowedSpellsAbilities()
+        let _ = try parseAllowedSpells(format: format)
+        let _ = try parseAllowedHeroAbilities(format: format)
         let _ = try parseRumors()
         let _ = try parsePredefinedHeroes()
         let _ = try parseTerrain()
@@ -52,7 +53,6 @@ public extension Map {
     struct DefInfo: Equatable {}
 }
 
-public struct SpellsAbilities: Equatable {}
 
 public extension Map {
     struct Rumors: Equatable {}
@@ -135,12 +135,86 @@ private extension Map.Loader.Parser.H3M {
     }
 }
 
-// MARK: Parse Allowed Spells/Abilities
+// MARK: Parse Allowed Spells
 private extension Map.Loader.Parser.H3M {
-    func parseAllowedSpellsAbilities() throws -> [SpellsAbilities] {
-        []
+    func parseAllowedSpells(format: Map.Format) throws -> [Spell.ID] {
+        
+        let availableSpellIDs = Spell.ID.allCases
+        var allowedSpellsIDS = availableSpellIDs
+        
+
+        if format >= .shadowOfDeath {
+            allowedSpellsIDS = try Array(reader.readBitArray(byteCount: 9).prefix(availableSpellIDs.count)).enumerated().compactMap { (spellIDIndex, available) in
+                guard available else { return nil }
+                return availableSpellIDs[spellIDIndex]
+            }
+        }
+        
+        return allowedSpellsIDS
     }
 }
+
+public extension Hero {
+    struct SecondarySkill: Equatable {
+        public let kind: Kind
+        public let level: Level
+    }
+}
+public extension Hero.SecondarySkill {
+    enum Kind: UInt8, Hashable, CaseIterable {
+        case pathfinding,
+        archery,
+        logistics,
+        scouting,
+        diplomacy,
+        navigation,
+        leadership,
+        wisdom,
+        mysticism,
+        luck,
+        ballistics,
+        eagleEye,
+        necromancy,
+        estates,
+        fireMagic,
+        airMagic,
+        waterMagic,
+        earthMagic,
+        scholar,
+        tactics,
+        artillery,
+        learning,
+        offence,
+        armorer,
+        intelligence,
+        sorcery,
+        resistance,
+        firstAid
+    }
+    enum Level: Int, Comparable {
+        case basic, advanced, export
+    }
+}
+
+// MARK: Parse Allowed Hero Abilities
+private extension Map.Loader.Parser.H3M {
+    func parseAllowedHeroAbilities(format: Map.Format) throws -> [Hero.SecondarySkill.Kind] {
+        
+        let availableSkillIDs = Hero.SecondarySkill.Kind.allCases
+        var allowedSkillIDs = availableSkillIDs
+        
+
+        if format >= .shadowOfDeath {
+            allowedSkillIDs = try Array(reader.readBitArray(byteCount: 4).prefix(availableSkillIDs.count)).enumerated().compactMap { (skillKindIDIndex, available) in
+                guard available else { return nil }
+                return availableSkillIDs[skillKindIDIndex]
+            }
+        }
+        
+        return allowedSkillIDs
+    }
+}
+
 
 // MARK: Parsed Rumors
 private extension Map.Loader.Parser.H3M {

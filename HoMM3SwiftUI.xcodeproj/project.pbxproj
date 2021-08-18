@@ -58,6 +58,9 @@
 		487C2BDE26CD3D0200031505 /* Artifact+ID.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487C2BDD26CD3D0200031505 /* Artifact+ID.swift */; };
 		487C2BE026CD3D7400031505 /* ArtifactIDTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487C2BDF26CD3D7400031505 /* ArtifactIDTests.swift */; };
 		487C2BE226CD464E00031505 /* Version.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487C2BE126CD464E00031505 /* Version.swift */; };
+		487C2BE526CD49BA00031505 /* Spell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487C2BE426CD49BA00031505 /* Spell.swift */; };
+		487C2BE726CD49CD00031505 /* Spell+ID.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487C2BE626CD49CD00031505 /* Spell+ID.swift */; };
+		487C2BE926CD4A4500031505 /* SpellIDTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487C2BE826CD4A4500031505 /* SpellIDTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -126,6 +129,9 @@
 		487C2BDD26CD3D0200031505 /* Artifact+ID.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Artifact+ID.swift"; sourceTree = "<group>"; };
 		487C2BDF26CD3D7400031505 /* ArtifactIDTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArtifactIDTests.swift; sourceTree = "<group>"; };
 		487C2BE126CD464E00031505 /* Version.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Version.swift; sourceTree = "<group>"; };
+		487C2BE426CD49BA00031505 /* Spell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Spell.swift; sourceTree = "<group>"; };
+		487C2BE626CD49CD00031505 /* Spell+ID.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Spell+ID.swift"; sourceTree = "<group>"; };
+		487C2BE826CD4A4500031505 /* SpellIDTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpellIDTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -333,6 +339,7 @@
 				481BDF9F26C6A4F000C5E335 /* MapTests.swift */,
 				487C2BB426CC2E8500031505 /* HeroIDTests.swift */,
 				487C2BDF26CD3D7400031505 /* ArtifactIDTests.swift */,
+				487C2BE826CD4A4500031505 /* SpellIDTests.swift */,
 			);
 			path = HoMM3Tests;
 			sourceTree = "<group>";
@@ -382,6 +389,7 @@
 		487C2BD126CD32D600031505 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				487C2BE326CD49B200031505 /* Spell */,
 				487C2BDC26CD3CF600031505 /* Artifact */,
 				487C2BB626CC2F1700031505 /* Hero */,
 				481462F626C902BF00431960 /* Map */,
@@ -406,6 +414,15 @@
 				487C2BDD26CD3D0200031505 /* Artifact+ID.swift */,
 			);
 			path = Artifact;
+			sourceTree = "<group>";
+		};
+		487C2BE326CD49B200031505 /* Spell */ = {
+			isa = PBXGroup;
+			children = (
+				487C2BE426CD49BA00031505 /* Spell.swift */,
+				487C2BE626CD49CD00031505 /* Spell+ID.swift */,
+			);
+			path = Spell;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -536,9 +553,11 @@
 				481BDF6726C5942000C5E335 /* ContentView.swift in Sources */,
 				487C2B9926CAD1F800031505 /* Position.swift in Sources */,
 				487C2BD326CD334800031505 /* Map+Loader+Parser+H3M+Error.swift in Sources */,
+				487C2BE726CD49CD00031505 /* Spell+ID.swift in Sources */,
 				487C2BA926CB94D900031505 /* Creature.swift in Sources */,
 				487C2B9B26CAD21000031505 /* Faction.swift in Sources */,
 				481462FC26C902E800431960 /* Map+ID.swift in Sources */,
+				487C2BE526CD49BA00031505 /* Spell.swift in Sources */,
 				487C2BD526CD335D00031505 /* Hero+Disposed.swift in Sources */,
 				487C2B8826CA950100031505 /* Map+Format.swift in Sources */,
 				487C2B9226CA9B5900031505 /* DataReader.swift in Sources */,
@@ -564,6 +583,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				487C2BB526CC2E8500031505 /* HeroIDTests.swift in Sources */,
+				487C2BE926CD4A4500031505 /* SpellIDTests.swift in Sources */,
 				487C2B8426C936D600031505 /* Map+ID+KnownMaps.swift in Sources */,
 				481BDFA026C6A4F000C5E335 /* MapTests.swift in Sources */,
 				487C2BCB26CCF6A600031505 /* CRC32Tests.swift in Sources */,
