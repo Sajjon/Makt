@@ -38,7 +38,79 @@ enum Error: Swift.Error {
 extension Map.Loader.Parser.H3M {
     func parse() throws -> Map {
         let about = try parseAbout()
+        
+        let _ = try parseDisposedHeroes()
+        let _ = try parseAllowedArtifacts()
+        let _ = try parseAllowedSpellsAbilities()
+        let _ = try parseRumors()
+        let _ = try parsePredefinedHeroes()
+        let _ = try parseTerrain()
+        let _ = try parseDefInfo()
+        let _ = try parseObjects()
+        let _ = try parseEvents()
+        
         return .init(about: about)
+    }
+}
+
+public extension Hero {
+    struct Disposed: Equatable {
+        
+    }
+    
+    struct Predefined: Equatable {
+        
+    }
+}
+
+public extension Map {
+    struct DefInfo: Equatable {}
+}
+
+public struct SpellsAbilities: Equatable {}
+
+public extension Map {
+    struct Rumors: Equatable {}
+}
+public extension Map {
+    enum Terrain: Equatable {}
+}
+
+public extension Map {
+    enum Object: Equatable {}
+}
+
+public extension Map {
+    struct Event: Equatable {}
+}
+
+private extension Map.Loader.Parser.H3M {
+    func parseDisposedHeroes() throws -> [Hero.Disposed] {
+        []
+    }
+    func parseAllowedArtifacts() throws -> [Artifact] {
+        []
+    }
+    func parseAllowedSpellsAbilities() throws -> [SpellsAbilities] {
+        []
+    }
+    func parseRumors() throws -> [Map.Rumors] {
+        []
+    }
+    func parsePredefinedHeroes() throws -> [Hero.Predefined] {
+        []
+    }
+    func parseTerrain() throws -> [Map.Terrain] {
+        []
+    }
+    func parseDefInfo() throws -> Map.DefInfo {
+        .init()
+    }
+    func parseObjects() throws -> [Map.Object] {
+        []
+    }
+    func parseEvents() throws -> [Map.Event] {
+        []
     }
 }
 

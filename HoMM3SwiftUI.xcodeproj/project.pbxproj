@@ -47,6 +47,8 @@
 		487C2BBE26CC2F6300031505 /* Hero+Custom.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487C2BBD26CC2F6300031505 /* Hero+Custom.swift */; };
 		487C2BC226CCCCD900031505 /* BitArray.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487C2BC126CCCCD900031505 /* BitArray.swift */; };
 		487C2BC426CCEDF600031505 /* Map.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487C2BC326CCEDF600031505 /* Map.swift */; };
+		487C2BC626CCF5B700031505 /* CRC32Checksum.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487C2BC526CCF5B700031505 /* CRC32Checksum.swift */; };
+		487C2BCB26CCF6A600031505 /* CRC32Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487C2BCA26CCF6A600031505 /* CRC32Tests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -104,6 +106,8 @@
 		487C2BBD26CC2F6300031505 /* Hero+Custom.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Hero+Custom.swift"; sourceTree = "<group>"; };
 		487C2BC126CCCCD900031505 /* BitArray.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BitArray.swift; sourceTree = "<group>"; };
 		487C2BC326CCEDF600031505 /* Map.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Map.swift; sourceTree = "<group>"; };
+		487C2BC526CCF5B700031505 /* CRC32Checksum.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CRC32Checksum.swift; sourceTree = "<group>"; };
+		487C2BCA26CCF6A600031505 /* CRC32Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CRC32Tests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -128,8 +132,10 @@
 		481462F526C902B900431960 /* Backend */ = {
 			isa = PBXGroup;
 			children = (
+				487C2BC726CCF5BB00031505 /* Algorithms */,
 				487C2BC026CCCCC700031505 /* HoMM3 */,
 				487C2BBF26CCCCB900031505 /* DataTypes */,
+				487C2BC526CCF5B700031505 /* CRC32Checksum.swift */,
 			);
 			path = Backend;
 			sourceTree = "<group>";
@@ -209,10 +215,10 @@
 		481BDF9E26C6A4F000C5E335 /* Tests */ = {
 			isa = PBXGroup;
 			children = (
+				487C2BC926CCF69400031505 /* AlgorithmTests */,
+				487C2BC826CCF68A00031505 /* HoMM3Tests */,
 				487C2B8226C936C900031505 /* Extensions */,
-				481BDF9F26C6A4F000C5E335 /* MapTests.swift */,
 				481BDFA126C6A4F000C5E335 /* Info.plist */,
-				487C2BB426CC2E8500031505 /* HeroIDTests.swift */,
 			);
 			path = Tests;
 			sourceTree = "<group>";
@@ -309,6 +315,30 @@
 				487C2BAA26CB94E600031505 /* Artifact.swift */,
 			);
 			path = HoMM3;
+			sourceTree = "<group>";
+		};
+		487C2BC726CCF5BB00031505 /* Algorithms */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Algorithms;
+			sourceTree = "<group>";
+		};
+		487C2BC826CCF68A00031505 /* HoMM3Tests */ = {
+			isa = PBXGroup;
+			children = (
+				481BDF9F26C6A4F000C5E335 /* MapTests.swift */,
+				487C2BB426CC2E8500031505 /* HeroIDTests.swift */,
+			);
+			path = HoMM3Tests;
+			sourceTree = "<group>";
+		};
+		487C2BC926CCF69400031505 /* AlgorithmTests */ = {
+			isa = PBXGroup;
+			children = (
+				487C2BCA26CCF6A600031505 /* CRC32Tests.swift */,
+			);
+			path = AlgorithmTests;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -439,6 +469,7 @@
 				487C2B8826CA950100031505 /* Map+Format.swift in Sources */,
 				487C2B9226CA9B5900031505 /* DataReader.swift in Sources */,
 				487C2B9D26CAD21F00031505 /* AITactic.swift in Sources */,
+				487C2BC626CCF5B700031505 /* CRC32Checksum.swift in Sources */,
 				487C2BB926CC2F2600031505 /* Hero+ID.swift in Sources */,
 				481462FA26C902D800431960 /* Config.swift in Sources */,
 				487C2BB126CB9B9A00031505 /* Map+PlayersInfo.swift in Sources */,
@@ -460,6 +491,7 @@
 				487C2BB526CC2E8500031505 /* HeroIDTests.swift in Sources */,
 				487C2B8426C936D600031505 /* Map+ID+KnownMaps.swift in Sources */,
 				481BDFA026C6A4F000C5E335 /* MapTests.swift in Sources */,
+				487C2BCB26CCF6A600031505 /* CRC32Tests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
