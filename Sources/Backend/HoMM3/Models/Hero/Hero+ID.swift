@@ -260,8 +260,8 @@ public extension Hero {
 }
 
 public extension Hero.ID {
-    static func playable(in format: Map.Format) -> [Self] {
-        switch format {
+    static func playable(in version: Version) -> [Self] {
+        switch version {
         case .restorationOfErathia: return Self.allCases.prefix(while: { $0.rawValue <= Self.tiva.rawValue })
             #if WOG
             case .wakeOfGods: fallthrough

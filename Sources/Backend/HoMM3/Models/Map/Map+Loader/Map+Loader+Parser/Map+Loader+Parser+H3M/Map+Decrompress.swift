@@ -11,7 +11,7 @@ import Foundation
 import Gzip
 
 public protocol Decompressor {
-    func isHeaderCompressed(format: Map.Format.RawFormatValue) -> Bool
+    func isHeaderCompressed(format: Map.Format.RawVersionValue) -> Bool
     func parser(readMap: Map.Loader.ReadMap) throws -> Map.Loader.Parser.H3M
 }
 
@@ -32,7 +32,7 @@ public extension Map.Loader.Parser.GzipDecompressor {
     /// Source4: https://zenhax.com/viewtopic.php?p=62470#p62470
     private static let gzipped: UInt32 = 0x00088b1f
     
-    func isHeaderCompressed(format: Map.Format.RawFormatValue) -> Bool {
+    func isHeaderCompressed(format: Map.Format.RawVersionValue) -> Bool {
         format == Self.gzipped
     }
     

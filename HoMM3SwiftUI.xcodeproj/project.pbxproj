@@ -57,6 +57,7 @@
 		487C2BDB26CD342E00031505 /* Map+Loader+Parser+H3M+DataReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487C2BDA26CD342E00031505 /* Map+Loader+Parser+H3M+DataReader.swift */; };
 		487C2BDE26CD3D0200031505 /* Artifact+ID.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487C2BDD26CD3D0200031505 /* Artifact+ID.swift */; };
 		487C2BE026CD3D7400031505 /* ArtifactIDTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487C2BDF26CD3D7400031505 /* ArtifactIDTests.swift */; };
+		487C2BE226CD464E00031505 /* Version.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487C2BE126CD464E00031505 /* Version.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -124,6 +125,7 @@
 		487C2BDA26CD342E00031505 /* Map+Loader+Parser+H3M+DataReader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Map+Loader+Parser+H3M+DataReader.swift"; sourceTree = "<group>"; };
 		487C2BDD26CD3D0200031505 /* Artifact+ID.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Artifact+ID.swift"; sourceTree = "<group>"; };
 		487C2BDF26CD3D7400031505 /* ArtifactIDTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArtifactIDTests.swift; sourceTree = "<group>"; };
+		487C2BE126CD464E00031505 /* Version.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Version.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -392,6 +394,7 @@
 				487C2BA226CAD48900031505 /* Size.swift */,
 				487C2BA626CB94CA00031505 /* Resource.swift */,
 				487C2BA826CB94D900031505 /* Creature.swift */,
+				487C2BE126CD464E00031505 /* Version.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -510,6 +513,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				487C2BE226CD464E00031505 /* Version.swift in Sources */,
 				487C2BDE26CD3D0200031505 /* Artifact+ID.swift in Sources */,
 				487C2BA526CB8EC700031505 /* Map+VictoryCondition.swift in Sources */,
 				487C2BA326CAD48900031505 /* Size.swift in Sources */,

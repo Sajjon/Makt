@@ -267,8 +267,8 @@ public extension Artifact {
 }
 
 public extension Artifact.ID {
-    static func available(in format: Map.Format) -> [Self] {
-        switch format {
+    static func available(in version: Version) -> [Self] {
+        switch version {
         case .restorationOfErathia: return Array(Self.allCases.prefix(127))
         case .armageddonsBlade: return Array(Self.allCases.prefix(129))
         case .shadowOfDeath: return Array(Self.allCases.prefix(141))
@@ -276,3 +276,4 @@ public extension Artifact.ID {
         }
     }
 }
+
