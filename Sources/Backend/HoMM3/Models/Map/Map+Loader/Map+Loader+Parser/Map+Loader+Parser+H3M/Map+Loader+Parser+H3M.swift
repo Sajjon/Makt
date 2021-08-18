@@ -114,22 +114,24 @@ private extension Map.Loader.Parser.H3M {
 
 // MARK: Parse Artifacts
 private extension Map.Loader.Parser.H3M {
-    func parseAllowedArtifacts(format: Map.Format) throws -> [Artifact] {
+    func parseAllowedArtifacts(format: Map.Format) throws -> [Artifact.ID] {
         
-        var artifactIDs: [Artifact.ID] = []
+        let availableIDS = Artifact.ID.available(in: format)
+        
+        // All allowed by default.
+        var allowedArtifactIDs = availableIDS
         
         if format != .restorationOfErathia {
             let bits = try reader.readBitArray(byteCount: format == .armageddonsBlade ? 17 : 18)
             
-            let availableIDS = Artifact.ID.available(in: format)
-            artifactIDs = bits.prefix(availableIDS.count).enumerated().compactMap { (artifactIDIndex, available) in
+            allowedArtifactIDs = bits.prefix(availableIDS.count).enumerated().compactMap { (artifactIDIndex, available) in
                 guard available else { return nil }
                 return availableIDS[artifactIDIndex]
             }
             
         }
-     
-        return []
+        // TODO VCMI manually bans combination artifacts according to some logic... needed?
+        return allowedArtifactIDs
     }
 }
 
