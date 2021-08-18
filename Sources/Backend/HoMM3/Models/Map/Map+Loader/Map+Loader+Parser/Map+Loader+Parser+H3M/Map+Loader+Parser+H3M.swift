@@ -76,9 +76,7 @@ internal extension Map.Loader.Parser.H3M {
         }
     }
     func parseHeroPortraitID() throws -> Hero.ID? {
-        try reader.readHeroID {
-            Error.unrecognizedHeroID($0)
-        }
+        try parseHeroID()
     }
 }
 
@@ -89,7 +87,7 @@ private extension Map.Loader.Parser.H3M {
         if format >= .shadowOfDeath {
             disposed = try reader.readUInt8().nTimes {
                 let heroID = try parseHeroID()!
-                let portraitID = try parseHeroPortraitID()!
+                let portraitID = try parseHeroPortraitID()
                 let name = try reader.readString()
                 
                 let availableForPlayers: [PlayerColor] = try BitArray(

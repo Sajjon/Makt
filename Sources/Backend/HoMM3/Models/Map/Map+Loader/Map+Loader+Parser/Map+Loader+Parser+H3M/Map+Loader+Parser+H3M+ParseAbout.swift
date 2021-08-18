@@ -398,6 +398,10 @@ private extension  Map.Loader.Parser.H3M {
             return heroID
         }
         
+        if format > .restorationOfErathia {
+            let placeholderQuantity = try Int(reader.readUInt32())
+            try reader.skip(byteCount: placeholderQuantity)
+        }
    
         
         return .init(heroIDs: playableHeroIDs)
