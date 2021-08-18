@@ -382,15 +382,23 @@ private extension  Map.Loader.Parser.H3M {
     
 }
 
+extension DataReader {
+    func readBitArray(byteCount: Int) throws -> BitArray {
+        try BitArray(data: read(byteCount: byteCount))
+    }
+}
+
 // MARK: Summary+Heros
 private extension  Map.Loader.Parser.H3M {
     func parseAllowedHeroes(format: Map.Format) throws -> Map.AllowedHeroes {
-        let byteCount = format == .restorationOfErathia ? 16 : 20
         let availableHeroIDs = Hero.ID.playable(in: format)
-        let data = try reader.read(byteCount: byteCount)
-        let bits = BitArray(data: data)
         
-        let playableHeroIDs: [Hero.ID] = bits.prefix(availableHeroIDs.count).enumerated().compactMap {
+        let playableHeroIDs: [Hero.ID] = try reader.readBitArray(
+            byteCount: format == .restorationOfErathia ? 16 : 20
+        )
+        .prefix(availableHeroIDs.count)
+        .enumerated()
+        .compactMap {
             let heroID = availableHeroIDs[$0.offset]
             guard $0.element else {
                 return nil

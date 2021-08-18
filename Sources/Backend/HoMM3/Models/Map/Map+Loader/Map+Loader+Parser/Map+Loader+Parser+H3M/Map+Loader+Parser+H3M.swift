@@ -31,7 +31,7 @@ extension Map.Loader.Parser.H3M {
         let format = about.summary.format
         
         let _ = try parseDisposedHeroes(format: format)
-        let _ = try parseAllowedArtifacts()
+        let _ = try parseAllowedArtifacts(format: format)
         let _ = try parseAllowedSpellsAbilities()
         let _ = try parseRumors()
         let _ = try parsePredefinedHeroes()
@@ -114,8 +114,11 @@ private extension Map.Loader.Parser.H3M {
 
 // MARK: Parse Artifacts
 private extension Map.Loader.Parser.H3M {
-    func parseAllowedArtifacts() throws -> [Artifact] {
-        []
+    func parseAllowedArtifacts(format: Map.Format) throws -> [Artifact] {
+        if format != .restorationOfErathia {
+            
+        }
+        return []
     }
 }
 

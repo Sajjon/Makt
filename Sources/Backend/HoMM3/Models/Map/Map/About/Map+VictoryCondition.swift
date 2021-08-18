@@ -73,6 +73,7 @@ public extension Map.VictoryCondition.Kind {
         case position(of: String, isRequiredFor: Stripped)
         case missingParameter(contents: String, for: Stripped)
         case unrecognizedResourceKind(Resource.Kind.RawValue)
+        case unrecognizedArtifactID(Artifact.ID.RawValue)
     }
     
     init(
@@ -104,7 +105,11 @@ public extension Map.VictoryCondition.Kind {
             return parameter
         }
         func ensureArtifactID() throws -> Artifact.ID {
-            Artifact.ID(id: try ensureParameter1(contents: "Artifact ID"))
+            let artifactIDRaw = try UInt8(ensureParameter1(contents: "Artifact ID"))
+            guard let artifactID = Artifact.ID(rawValue: artifactIDRaw) else {
+                throw Error.unrecognizedArtifactID(artifactIDRaw)
+            }
+            return artifactID
         }
         func ensureHeroID() throws -> Hero.ID {
             let purpose = "Hero ID"

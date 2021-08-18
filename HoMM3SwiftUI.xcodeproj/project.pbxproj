@@ -55,6 +55,8 @@
 		487C2BD726CD337100031505 /* Hero+Predefined.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487C2BD626CD337100031505 /* Hero+Predefined.swift */; };
 		487C2BD926CD33CC00031505 /* Map+Loader+Parser+H3M+ParseAbout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487C2BD826CD33CC00031505 /* Map+Loader+Parser+H3M+ParseAbout.swift */; };
 		487C2BDB26CD342E00031505 /* Map+Loader+Parser+H3M+DataReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487C2BDA26CD342E00031505 /* Map+Loader+Parser+H3M+DataReader.swift */; };
+		487C2BDE26CD3D0200031505 /* Artifact+ID.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487C2BDD26CD3D0200031505 /* Artifact+ID.swift */; };
+		487C2BE026CD3D7400031505 /* ArtifactIDTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487C2BDF26CD3D7400031505 /* ArtifactIDTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -120,6 +122,8 @@
 		487C2BD626CD337100031505 /* Hero+Predefined.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Hero+Predefined.swift"; sourceTree = "<group>"; };
 		487C2BD826CD33CC00031505 /* Map+Loader+Parser+H3M+ParseAbout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Map+Loader+Parser+H3M+ParseAbout.swift"; sourceTree = "<group>"; };
 		487C2BDA26CD342E00031505 /* Map+Loader+Parser+H3M+DataReader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Map+Loader+Parser+H3M+DataReader.swift"; sourceTree = "<group>"; };
+		487C2BDD26CD3D0200031505 /* Artifact+ID.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Artifact+ID.swift"; sourceTree = "<group>"; };
+		487C2BDF26CD3D7400031505 /* ArtifactIDTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArtifactIDTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -326,6 +330,7 @@
 			children = (
 				481BDF9F26C6A4F000C5E335 /* MapTests.swift */,
 				487C2BB426CC2E8500031505 /* HeroIDTests.swift */,
+				487C2BDF26CD3D7400031505 /* ArtifactIDTests.swift */,
 			);
 			path = HoMM3Tests;
 			sourceTree = "<group>";
@@ -375,6 +380,7 @@
 		487C2BD126CD32D600031505 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				487C2BDC26CD3CF600031505 /* Artifact */,
 				487C2BB626CC2F1700031505 /* Hero */,
 				481462F626C902BF00431960 /* Map */,
 				481462F926C902D800431960 /* Config.swift */,
@@ -386,9 +392,17 @@
 				487C2BA226CAD48900031505 /* Size.swift */,
 				487C2BA626CB94CA00031505 /* Resource.swift */,
 				487C2BA826CB94D900031505 /* Creature.swift */,
-				487C2BAA26CB94E600031505 /* Artifact.swift */,
 			);
 			path = Models;
+			sourceTree = "<group>";
+		};
+		487C2BDC26CD3CF600031505 /* Artifact */ = {
+			isa = PBXGroup;
+			children = (
+				487C2BAA26CB94E600031505 /* Artifact.swift */,
+				487C2BDD26CD3D0200031505 /* Artifact+ID.swift */,
+			);
+			path = Artifact;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -496,6 +510,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				487C2BDE26CD3D0200031505 /* Artifact+ID.swift in Sources */,
 				487C2BA526CB8EC700031505 /* Map+VictoryCondition.swift in Sources */,
 				487C2BA326CAD48900031505 /* Size.swift in Sources */,
 				4814630626C9054900431960 /* Map+Loader+Reader.swift in Sources */,
@@ -548,6 +563,7 @@
 				487C2B8426C936D600031505 /* Map+ID+KnownMaps.swift in Sources */,
 				481BDFA026C6A4F000C5E335 /* MapTests.swift in Sources */,
 				487C2BCB26CCF6A600031505 /* CRC32Tests.swift in Sources */,
+				487C2BE026CD3D7400031505 /* ArtifactIDTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
