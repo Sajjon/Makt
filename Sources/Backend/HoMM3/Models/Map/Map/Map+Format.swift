@@ -29,8 +29,10 @@ public extension Map {
         case hornOfTheAbyss
         #endif // HOTA
         
+        #if WOG
         /// The community expansion "Wake of Gods", aka WOG
         case wakeOfGods
+        #endif // WOG
         
         public typealias RawFormatValue = UInt32
         
@@ -47,8 +49,14 @@ public extension Map {
                 #if HOTA
             case .hornOfTheAbyss_1, .hornOfTheAbyss_2, .hornOfTheAbyss_3: self = .hornOfTheAbyss
                 #endif // HOTA
+            
+            #if WOG
             case .wakeOfGods: self = .wakeOfGods
+            #endif //  WOG
+            
+            #if VCMI
             case .vcmi: fatalError("VCMI not supported")
+            #endif // VCMI
             }
         }
         
@@ -60,7 +68,10 @@ public extension Map {
             #if HOTA
             case .hornOfTheAbyss: return .hornOfTheAbyss_1
             #endif // HOTA
+            
+            #if WOG
             case .wakeOfGods: return .wakeOfGods
+            #endif //  WOG
             }
         }
     }
@@ -80,6 +91,11 @@ private enum RawFormat: Map.Format.RawFormatValue, Comparable {
     case hornOfTheAbyss_3 = 0x20 // 0d30
     #endif // HOTA
     
+    #if WOG
     case wakeOfGods = 0x33  // 0d51
+    #endif // WOG
+    
+    #if VCMI
     case vcmi = 0xF0 // 0d256
+    #endif // VCMI
 }

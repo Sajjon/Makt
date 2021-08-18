@@ -137,20 +137,40 @@ public extension Artifact {
         seaCaptainsHat,
         spellbindersHat,
         shacklesOfWar,
-        orbOfInhibition,
-        vialOfDragonBlood,
-        armageddonsBlade,
-        angelicAlliance,
+        orbOfInhibition, // 126
+        
+        /// AB
+        vialOfDragonBlood, // 127
+        // AB
+        armageddonsBlade, // 128
+        
+        /// SOD
+        angelicAlliance, // 129
+        
+        /// SOD
         cloakOfTheUndeadKing,
+        /// SOD
         elixirOfLife,
+        /// SOD
         armorOfTheDamned,
+        /// SOD
         statueOfLegion,
+        
+        /// SOD
         powerOfTheDragonFather,
+        
+        /// SOD
         titansThunder,
+        
+        /// SOD
         admiralHat,
+        /// SOD
         bowOfTheSharpshooter,
+        /// SOD
         wizardWell,
+        /// SOD
         ringOfTheMagi,
+        /// SOD
         cornucopia // 140
 
         #if WOG
@@ -243,5 +263,16 @@ public extension Artifact {
         /// BLANK (Placeholder?) Artifact
         blankHorn // 170
         #endif // WoG
+    }
+}
+
+public extension Artifact.ID {
+    static func available(in format: Map.Format) -> [Self] {
+        switch format {
+        case .restorationOfErathia: return Array(Self.allCases.prefix(127))
+        case .armageddonsBlade: return Array(Self.allCases.prefix(129))
+        case .shadowOfDeath: return Array(Self.allCases.prefix(141))
+            
+        }
     }
 }

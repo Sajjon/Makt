@@ -263,7 +263,10 @@ public extension Hero.ID {
     static func playable(in format: Map.Format) -> [Self] {
         switch format {
         case .restorationOfErathia: return Self.allCases.prefix(while: { $0.rawValue <= Self.tiva.rawValue })
-        case .armageddonsBlade, .shadowOfDeath, .wakeOfGods: return Self.allCases
+            #if WOG
+            case .wakeOfGods: fallthrough
+            #endif // WOG
+        case .armageddonsBlade, .shadowOfDeath: return Self.allCases
         }
     }
 }

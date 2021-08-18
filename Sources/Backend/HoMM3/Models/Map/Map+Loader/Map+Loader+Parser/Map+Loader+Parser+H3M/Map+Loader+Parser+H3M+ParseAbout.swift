@@ -45,13 +45,19 @@ private extension  Map.Loader.Parser.H3M {
         // Map version
         let format = try Map.Format(id: reader.readUInt32())
         
-        guard
-            format == .restorationOfErathia ||
-                format == .armageddonsBlade ||
-                format == .shadowOfDeath ||
-                format == .wakeOfGods
-        else {
-            throw Error.unsupportedFormat(format)
+        if
+            !(format == .restorationOfErathia || format == .armageddonsBlade || format == .shadowOfDeath)
+
+        {
+            var shouldThrow = true
+                    #if WOG
+                    if format == .wakeOfGods {
+                        shouldThrow = false
+                    }
+                    #endif // WOG
+            if shouldThrow {
+                throw Error.unsupportedFormat(format)
+            }
         }
         
         /// VCMI variable name `hasPlayablePlayers` but with comment `"unused"`
@@ -95,7 +101,10 @@ private extension  Map.Loader.Parser.H3M {
             let isPlayableByAI = try reader.readBool()
             guard isPlayableByAI || isPlayableByHuman else {
                 switch format {
-                case .shadowOfDeath, .wakeOfGods:
+                #if WOG
+                case .wakeOfGods: fallthrough
+                #endif // WOG
+                case .shadowOfDeath:
                     try reader.skip(byteCount: 13)
                 case .armageddonsBlade:
                     try reader.skip(byteCount: 12)
@@ -125,10 +134,20 @@ private extension  Map.Loader.Parser.H3M {
                 return aiTactic
             }()
             
-            if format == .shadowOfDeath || format == .wakeOfGods {
-                /// Naming in VCMI: `p7`, with comment `"unknown and unused"`
+            /// Naming in VCMI: `p7`, with comment `"unknown and unused"`
+            func skipP7() throws {
                 try reader.skip(byteCount: 1)
             }
+            
+            if format == .shadowOfDeath {
+                try skipP7()
+            }
+            #if WOG
+            if format == .wakeOfGods {
+               try skipP7()
+            }
+            #endif // WOG
+           
             
             // Factions this player can choose
             let allowedFactionsForThisPlayer: [Faction] = try {

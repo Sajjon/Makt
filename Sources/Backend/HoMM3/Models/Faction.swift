@@ -36,8 +36,12 @@ public extension Faction {
         #if HOTA
         case .hornOfTheAbyss: fallthrough
         #endif // HOTA
-        case .shadowOfDeath,
-             .wakeOfGods: return Self.playableInShadowOfDeath
+        
+        #if WOG
+        case wakeOfGods: fallthrough
+        #endif // WOG
+        case .shadowOfDeath:
+            return Self.playableInShadowOfDeath
         }
     }
     

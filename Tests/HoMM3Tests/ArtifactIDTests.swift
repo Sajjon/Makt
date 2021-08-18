@@ -19,6 +19,22 @@ final class ArtifactIDTest: XCTestCase {
         doTest(artifactId: .centaurAxe, is: 7)
     }
     
+    func testOrbOfInhibition() {
+        doTest(artifactId: .orbOfInhibition, is: 126)
+    }
+    
+    func testVialOfDragonBlood() {
+        doTest(artifactId: .vialOfDragonBlood, is: 127)
+    }
+    
+    func testArmageddonsBlade() {
+        doTest(artifactId: .armageddonsBlade, is: 128)
+    }
+    
+    func testAngelicAlliance() {
+        doTest(artifactId: .angelicAlliance, is: 129)
+    }
+    
     func testTitansThunder() {
         // https://github.com/vcmi/vcmi/blob/b1db6e2/lib/GameConstants.h#L1066
         doTest(artifactId: .titansThunder, is: 135)

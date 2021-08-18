@@ -34,7 +34,11 @@ public extension Map.Loader.Parser {
             #if HOTA
             case .hornOfTheAbyss: fatalError("Unknown if hota is supported")
             #endif // HOTA
-            case .wakeOfGods, .armageddonsBlade, .restorationOfErathia,.shadowOfDeath:
+            
+            #if WOG
+            case .wakeOfGods: fallthrough
+            #endif // WOG
+            case .armageddonsBlade, .restorationOfErathia,.shadowOfDeath:
                 h3mParser = H3M(readMap: readMap)
             }
         }
