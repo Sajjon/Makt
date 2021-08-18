@@ -8,7 +8,7 @@
 import Foundation
 
 public struct Map: Equatable, Identifiable {
-    
+    public let checksum: UInt32
     public let about: About
 }
 

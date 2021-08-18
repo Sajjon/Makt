@@ -37,9 +37,13 @@ enum Error: Swift.Error {
 // MARK: Parse Map
 extension Map.Loader.Parser.H3M {
     func parse() throws -> Map {
-        let about = try parseAbout()
         
-        let _ = try parseDisposedHeroes()
+        let checksum = CRC32.checksum(readMap.data)
+        
+        let about = try parseAbout()
+        let format = about.summary.format
+        
+        let _ = try parseDisposedHeroes(format: format)
         let _ = try parseAllowedArtifacts()
         let _ = try parseAllowedSpellsAbilities()
         let _ = try parseRumors()
@@ -49,13 +53,19 @@ extension Map.Loader.Parser.H3M {
         let _ = try parseObjects()
         let _ = try parseEvents()
         
-        return .init(about: about)
+        return .init(
+            checksum: checksum,
+            about: about
+        )
     }
 }
 
 public extension Hero {
     struct Disposed: Equatable {
-        
+        let heroID: ID
+        let portraitID: ID
+        let name: String
+        let availableForPlayers: [PlayerColor]
     }
     
     struct Predefined: Equatable {
@@ -84,9 +94,55 @@ public extension Map {
     struct Event: Equatable {}
 }
 
+extension DataReader {
+    func readHeroID<E>(elseThrow error: (Hero.ID.RawValue) -> E) throws -> Hero.ID where E: Swift.Error {
+        throw error(0)
+    }
+}
+
 private extension Map.Loader.Parser.H3M {
-    func parseDisposedHeroes() throws -> [Hero.Disposed] {
-        []
+    func parseHeroID() throws -> Hero.ID {
+        try reader.readHeroID {
+            Error.unrecognizedHeroID($0)
+        }
+    }
+    func parseHeroPortraitID() throws -> Hero.ID {
+        try parseHeroID()
+    }
+}
+
+extension FixedWidthInteger {
+    func nTimes<R>(repeat closure: () throws -> R) rethrows -> [R] {
+        try (0..<Int(self)).map { _ in
+            try closure()
+        }
+    }
+}
+
+
+private extension Map.Loader.Parser.H3M {
+    func parseDisposedHeroes(format: Map.Format) throws -> [Hero.Disposed] {
+        var disposed = [Hero.Disposed]()
+        if format >= .shadowOfDeath {
+            disposed = try reader.readUInt8().nTimes {
+                let heroID = try parseHeroID()
+                let portraitID = try parseHeroPortraitID()
+                let name = try reader.readString()
+                
+                let availableForPlayers: [PlayerColor] = try BitArray(
+                    data: reader.read(byteCount: 1)
+                )
+                .enumerated()
+                .compactMap { (colorIndex, isAvailable) -> PlayerColor? in
+                    guard isAvailable else { return nil }
+                    return PlayerColor.allCases[colorIndex]
+                }
+                
+                return Hero.Disposed(heroID: heroID, portraitID: portraitID, name: name, availableForPlayers: availableForPlayers)
+            }
+        }
+        try reader.skip(byteCount: 31) // skip `nil`s
+        return disposed
     }
     func parseAllowedArtifacts() throws -> [Artifact] {
         []
@@ -297,7 +353,7 @@ private extension  Map.Loader.Parser.H3M {
 
                 let heroCount = try Int(reader.readUInt8())
                 try reader.skip(byteCount: 3)
-                heroSeeds = try (0..<heroCount).map { _ in
+                heroSeeds = try heroCount.nTimes {
                     let heroIDRaw = try reader.readUInt8()
                     guard let heroID = Hero.ID(rawValue: heroIDRaw) else {
                         throw Error.unrecognizedHeroID(heroIDRaw)

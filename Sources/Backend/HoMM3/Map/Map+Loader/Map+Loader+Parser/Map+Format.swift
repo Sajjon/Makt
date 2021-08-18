@@ -9,7 +9,11 @@ import Foundation
 
 public extension Map {
     
-    enum Format: String, Equatable {
+    enum Format: String, Comparable {
+        public static func < (lhs: Self, rhs: Self) -> Bool {
+            lhs.id < rhs.id
+        }
+        
         
         /// The original game, without any expansion pack, aka "ROE"
         case restorationOfErathia
@@ -47,10 +51,22 @@ public extension Map {
             case .vcmi: fatalError("VCMI not supported")
             }
         }
+        
+        private var id: RawFormat {
+            switch self {
+            case .restorationOfErathia: return .restorationOfErathia
+            case .armageddonsBlade: return .armageddonsBlade
+            case .shadowOfDeath: return .shadowOfDeath
+            #if HOTA
+            case .hornOfTheAbyss: return .hornOfTheAbyss_1
+            #endif // HOTA
+            case .wakeOfGods: return .wakeOfGods
+            }
+        }
     }
 }
 
-private enum RawFormat: Map.Format.RawFormatValue, Equatable {
+private enum RawFormat: Map.Format.RawFormatValue, Comparable {
     
     case restorationOfErathia = 0x0e // 14
     
