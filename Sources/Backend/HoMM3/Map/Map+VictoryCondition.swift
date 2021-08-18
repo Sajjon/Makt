@@ -303,3 +303,21 @@ public extension Map.VictoryCondition.Kind.Stripped {
     }
 }
 
+public extension Map.VictoryCondition.Kind {
+    var position: Position? {
+        switch self {
+        case .buildGrailBuilding(let townPosition): return townPosition
+        case .captureSpecificTown(let townPosition): return townPosition
+        case .defeatSpecificCreature(let creaturePosition): return creaturePosition
+        case .defeatSpecificHero(let heroPosition): return heroPosition
+        case .transportSpecificArtifact(_, let townPosition): return townPosition
+        case .upgradeSpecificTown(let townPosition, _,  _): return townPosition
+        case .accumulateCreatures, .accumulateResources, .acquireSpecificArtifact, .defeatAllEnemies, .flagAllCreatureDwellings, .flagAllMines: return nil
+        }
+    }
+}
+
+public extension Map.VictoryCondition {
+    var position: Position? { kind.position }
+}
+

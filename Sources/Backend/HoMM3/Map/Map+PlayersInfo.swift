@@ -47,19 +47,17 @@ extension Map.PlayersInfo: CustomDebugStringConvertible {
 extension Map.PlayersInfo.PlayerInfo: CustomDebugStringConvertible {
     
     public var debugDescription: String {
-        let includeColor = true
-        let colorString = includeColor ? "color: \(color)" : ""
         let aiTacticString = aiTactic.map({ "ai tactic: \($0)" }) ?? ""
         return """
         ************************************************************
-        \(colorString)
+        "color: \(color)",
         isPlayableByHuman?: \(isPlayableByHuman)
         faction choices: \(allowedFactionsForThisPlayer.map({ String(describing: $0) }))
         \(aiTacticString)
         hasMainTown?: \(self.hasMainTown)
         hasRandonHero?: \(self.hasRandomHero)
-        heroSeeds: \(self.heroSeeds)
-        customMainHero: \(self.customMainHero)
+        heroSeeds: \(String(describing: self.heroSeeds))
+        customMainHero: \(String(describing: self.customMainHero))
         ************************************************************
         """
     }

@@ -14,3 +14,14 @@ public struct Position: Equatable {
     public let y: Scalar
     public let z: Scalar
 }
+
+public extension Position {
+    func fitsInMapDescribed(by summary: Map.About.Summary) -> Bool {
+        if !summary.hasTwoLevels && z > 1 {
+            // Cyon: is this correct? Does Z mean underworld or not?
+            return false
+        }
+        
+        return [x, y, z].allSatisfy({ $0 <= summary.size.height && $0 <= summary.size.width })
+    }
+}

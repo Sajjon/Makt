@@ -13,3 +13,9 @@ public extension Map {
         public let lossConditions: [LossCondition]
     }
 }
+
+public extension Map.VictoryLossConditions {
+    var positions: [Position] {
+        victoryConditions.compactMap { $0.position } + lossConditions.compactMap { $0.position }
+    }
+}

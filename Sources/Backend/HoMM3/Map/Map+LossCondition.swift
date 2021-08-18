@@ -129,3 +129,18 @@ public extension Map.LossCondition.Kind {
         }
     }
 }
+
+public extension Map.LossCondition.Kind {
+    var position: Position? {
+        switch self {
+        case .loseAllTownsAndHeroesOrAfterTimeLimitStillControlNoTowns, .timeLimit: return nil
+        case .loseSpecificHero(let heroPosition): return heroPosition
+        case .loseSpecificTown(let townPosition): return townPosition
+        }
+    }
+}
+
+public extension Map.LossCondition {
+    var position: Position? { kind.position }
+}
+
