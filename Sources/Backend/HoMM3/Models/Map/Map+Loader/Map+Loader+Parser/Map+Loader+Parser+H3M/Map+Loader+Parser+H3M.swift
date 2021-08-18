@@ -55,7 +55,10 @@ public extension Map {
 
 
 public extension Map {
-    struct Rumors: Equatable {}
+    struct Rumor: Equatable {
+        public let name: String
+        public let text: String
+    }
 }
 public extension Map {
     enum Terrain: Equatable {}
@@ -154,47 +157,6 @@ private extension Map.Loader.Parser.H3M {
     }
 }
 
-public extension Hero {
-    struct SecondarySkill: Equatable {
-        public let kind: Kind
-        public let level: Level
-    }
-}
-public extension Hero.SecondarySkill {
-    enum Kind: UInt8, Hashable, CaseIterable {
-        case pathfinding,
-        archery,
-        logistics,
-        scouting,
-        diplomacy,
-        navigation,
-        leadership,
-        wisdom,
-        mysticism,
-        luck,
-        ballistics,
-        eagleEye,
-        necromancy,
-        estates,
-        fireMagic,
-        airMagic,
-        waterMagic,
-        earthMagic,
-        scholar,
-        tactics,
-        artillery,
-        learning,
-        offence,
-        armorer,
-        intelligence,
-        sorcery,
-        resistance,
-        firstAid
-    }
-    enum Level: Int, Comparable {
-        case basic, advanced, export
-    }
-}
 
 // MARK: Parse Allowed Hero Abilities
 private extension Map.Loader.Parser.H3M {
@@ -218,8 +180,12 @@ private extension Map.Loader.Parser.H3M {
 
 // MARK: Parsed Rumors
 private extension Map.Loader.Parser.H3M {
-    func parseRumors() throws -> [Map.Rumors] {
-        []
+    func parseRumors() throws -> [Map.Rumor] {
+        try reader.readUInt32().nTimes {
+            let name = try reader.readString()
+            let text = try reader.readString()
+            return .init(name: name, text: text)
+        }
     }
 }
 

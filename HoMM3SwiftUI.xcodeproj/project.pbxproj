@@ -61,6 +61,9 @@
 		487C2BE526CD49BA00031505 /* Spell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487C2BE426CD49BA00031505 /* Spell.swift */; };
 		487C2BE726CD49CD00031505 /* Spell+ID.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487C2BE626CD49CD00031505 /* Spell+ID.swift */; };
 		487C2BE926CD4A4500031505 /* SpellIDTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487C2BE826CD4A4500031505 /* SpellIDTests.swift */; };
+		487C2BEC26CD746800031505 /* Hero+SecondarySkill.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487C2BEB26CD746800031505 /* Hero+SecondarySkill.swift */; };
+		487C2BEE26CD748000031505 /* Hero+SecondarySkill+Kind.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487C2BED26CD748000031505 /* Hero+SecondarySkill+Kind.swift */; };
+		487C2BF026CD748F00031505 /* Hero+SecondarySkill+Level.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487C2BEF26CD748F00031505 /* Hero+SecondarySkill+Level.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -132,6 +135,9 @@
 		487C2BE426CD49BA00031505 /* Spell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Spell.swift; sourceTree = "<group>"; };
 		487C2BE626CD49CD00031505 /* Spell+ID.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Spell+ID.swift"; sourceTree = "<group>"; };
 		487C2BE826CD4A4500031505 /* SpellIDTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpellIDTests.swift; sourceTree = "<group>"; };
+		487C2BEB26CD746800031505 /* Hero+SecondarySkill.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Hero+SecondarySkill.swift"; sourceTree = "<group>"; };
+		487C2BED26CD748000031505 /* Hero+SecondarySkill+Kind.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Hero+SecondarySkill+Kind.swift"; sourceTree = "<group>"; };
+		487C2BEF26CD748F00031505 /* Hero+SecondarySkill+Level.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Hero+SecondarySkill+Level.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -299,6 +305,7 @@
 		487C2BB626CC2F1700031505 /* Hero */ = {
 			isa = PBXGroup;
 			children = (
+				487C2BEA26CD745200031505 /* SecondarySkill */,
 				487C2B9626CAD1E400031505 /* Hero.swift */,
 				487C2BB726CC2F2300031505 /* Hero+ID.swift */,
 				487C2BBD26CC2F6300031505 /* Hero+Custom.swift */,
@@ -425,6 +432,16 @@
 			path = Spell;
 			sourceTree = "<group>";
 		};
+		487C2BEA26CD745200031505 /* SecondarySkill */ = {
+			isa = PBXGroup;
+			children = (
+				487C2BEB26CD746800031505 /* Hero+SecondarySkill.swift */,
+				487C2BED26CD748000031505 /* Hero+SecondarySkill+Kind.swift */,
+				487C2BEF26CD748F00031505 /* Hero+SecondarySkill+Level.swift */,
+			);
+			path = SecondarySkill;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -530,8 +547,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				487C2BEE26CD748000031505 /* Hero+SecondarySkill+Kind.swift in Sources */,
 				487C2BE226CD464E00031505 /* Version.swift in Sources */,
 				487C2BDE26CD3D0200031505 /* Artifact+ID.swift in Sources */,
+				487C2BEC26CD746800031505 /* Hero+SecondarySkill.swift in Sources */,
 				487C2BA526CB8EC700031505 /* Map+VictoryCondition.swift in Sources */,
 				487C2BA326CAD48900031505 /* Size.swift in Sources */,
 				4814630626C9054900431960 /* Map+Loader+Reader.swift in Sources */,
@@ -573,6 +592,7 @@
 				487C2B8026C9066600031505 /* Map+Loader+Cache.swift in Sources */,
 				487C2B8126C9066600031505 /* Map+Loader+Parser.swift in Sources */,
 				487C2B8F26CA98DC00031505 /* Map+AllowedHeroes.swift in Sources */,
+				487C2BF026CD748F00031505 /* Hero+SecondarySkill+Level.swift in Sources */,
 				487C2BAD26CB951500031505 /* Map+LossCondition.swift in Sources */,
 				481BDF6526C5942000C5E335 /* HoMM3SwiftUIApp.swift in Sources */,
 			);
