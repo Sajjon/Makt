@@ -1,174 +1,12 @@
 //
-//  Map+Loader+Parser+H3M.swift
+//  Map+Loader+Parser+H3M+ParseAbout.swift
 //  HoMM3SwiftUI
 //
-//  Created by Alexander Cyon on 2021-08-16.
+//  Created by Alexander Cyon on 2021-08-18.
 //
 
 import Foundation
 
-public extension Map.Loader.Parser {
-    final class H3M {
-        private let readMap: Map.Loader.ReadMap
-        private let reader: DataReader
-        private let fileSizeCompressed: Int?
-        public init(readMap: Map.Loader.ReadMap, fileSizeCompressed: Int? = nil) {
-            self.readMap = readMap
-            self.reader = DataReader(data: readMap.data)
-            self.fileSizeCompressed = fileSizeCompressed
-        }
-    }
-}
-
-// MARK: Error
-enum Error: Swift.Error {
-    case corruptMapFileTooSmall
-    case failedToReadHeaderVersion
-    case unsupportedFormat(Map.Format)
-    case unrecognizedDifficulty(Difficulty.RawValue)
-    case unrecognizedAITactic(AITactic.RawValue)
-    case unrecognizedFaction(Faction.RawValue)
-    case unrecognizedHeroID(Hero.ID.RawValue)
-    case unrecognizedVictoryConditionKind(Map.VictoryCondition.Kind.Stripped.RawValue)
-    case unrecognizedLossConditionKind(Map.VictoryCondition.Kind.Stripped.RawValue)
-}
-
-
-// MARK: Parse Map
-extension Map.Loader.Parser.H3M {
-    func parse() throws -> Map {
-        
-        let checksum = CRC32.checksum(readMap.data)
-        
-        let about = try parseAbout()
-        let format = about.summary.format
-        
-        let _ = try parseDisposedHeroes(format: format)
-        let _ = try parseAllowedArtifacts()
-        let _ = try parseAllowedSpellsAbilities()
-        let _ = try parseRumors()
-        let _ = try parsePredefinedHeroes()
-        let _ = try parseTerrain()
-        let _ = try parseDefInfo()
-        let _ = try parseObjects()
-        let _ = try parseEvents()
-        
-        return .init(
-            checksum: checksum,
-            about: about
-        )
-    }
-}
-
-public extension Hero {
-    struct Disposed: Equatable {
-        let heroID: ID
-        let portraitID: ID
-        let name: String
-        let availableForPlayers: [PlayerColor]
-    }
-    
-    struct Predefined: Equatable {
-        
-    }
-}
-
-public extension Map {
-    struct DefInfo: Equatable {}
-}
-
-public struct SpellsAbilities: Equatable {}
-
-public extension Map {
-    struct Rumors: Equatable {}
-}
-public extension Map {
-    enum Terrain: Equatable {}
-}
-
-public extension Map {
-    enum Object: Equatable {}
-}
-
-public extension Map {
-    struct Event: Equatable {}
-}
-
-extension DataReader {
-    func readHeroID<E>(elseThrow error: (Hero.ID.RawValue) -> E) throws -> Hero.ID where E: Swift.Error {
-        throw error(0)
-    }
-}
-
-private extension Map.Loader.Parser.H3M {
-    func parseHeroID() throws -> Hero.ID {
-        try reader.readHeroID {
-            Error.unrecognizedHeroID($0)
-        }
-    }
-    func parseHeroPortraitID() throws -> Hero.ID {
-        try parseHeroID()
-    }
-}
-
-extension FixedWidthInteger {
-    func nTimes<R>(repeat closure: () throws -> R) rethrows -> [R] {
-        try (0..<Int(self)).map { _ in
-            try closure()
-        }
-    }
-}
-
-
-private extension Map.Loader.Parser.H3M {
-    func parseDisposedHeroes(format: Map.Format) throws -> [Hero.Disposed] {
-        var disposed = [Hero.Disposed]()
-        if format >= .shadowOfDeath {
-            disposed = try reader.readUInt8().nTimes {
-                let heroID = try parseHeroID()
-                let portraitID = try parseHeroPortraitID()
-                let name = try reader.readString()
-                
-                let availableForPlayers: [PlayerColor] = try BitArray(
-                    data: reader.read(byteCount: 1)
-                )
-                .enumerated()
-                .compactMap { (colorIndex, isAvailable) -> PlayerColor? in
-                    guard isAvailable else { return nil }
-                    return PlayerColor.allCases[colorIndex]
-                }
-                
-                return Hero.Disposed(heroID: heroID, portraitID: portraitID, name: name, availableForPlayers: availableForPlayers)
-            }
-        }
-        try reader.skip(byteCount: 31) // skip `nil`s
-        return disposed
-    }
-    func parseAllowedArtifacts() throws -> [Artifact] {
-        []
-    }
-    func parseAllowedSpellsAbilities() throws -> [SpellsAbilities] {
-        []
-    }
-    func parseRumors() throws -> [Map.Rumors] {
-        []
-    }
-    func parsePredefinedHeroes() throws -> [Hero.Predefined] {
-        []
-    }
-    func parseTerrain() throws -> [Map.Terrain] {
-        []
-    }
-    func parseDefInfo() throws -> Map.DefInfo {
-        .init()
-    }
-    func parseObjects() throws -> [Map.Object] {
-        []
-    }
-    func parseEvents() throws -> [Map.Event] {
-        []
-    }
-}
 
 // MARK: Parse About
 extension Map.Loader.Parser.H3M {
@@ -197,7 +35,7 @@ extension Map.Loader.Parser.H3M {
 }
 
 
- 
+
 // MARK: Parse Map+Summary
 private extension  Map.Loader.Parser.H3M {
 
@@ -324,19 +162,12 @@ private extension  Map.Loader.Parser.H3M {
             let hasRandomHero = try reader.readBool()
          
             let customMainHero: Hero.Custom? = try {
-                let heroIDRaw = try reader.readUInt8()
-                guard heroIDRaw != 0xff else { return nil }
-                guard let heroID = Hero.ID(rawValue: heroIDRaw) else {
-                    throw Error.unrecognizedHeroID(heroIDRaw)
-                }
-                let portraitIDRaw = try reader.readUInt8()
-              
+
+                guard let heroID = try parseHeroID() else { return nil }
+                let portraitIDMaybe = try parseHeroPortraitID()
                 let name = try reader.readString()
-                guard portraitIDRaw != 0xff else { return nil }
                 guard !name.isEmpty else { return nil }
-                guard let portraitID = Hero.ID(rawValue: portraitIDRaw) else {
-                    throw Error.unrecognizedHeroID(portraitIDRaw)
-                }
+                guard let portraitID = portraitIDMaybe else { return nil }
                 return .init(
                     id: heroID,
                     portraitId: portraitID,
@@ -354,10 +185,7 @@ private extension  Map.Loader.Parser.H3M {
                 let heroCount = try Int(reader.readUInt8())
                 try reader.skip(byteCount: 3)
                 heroSeeds = try heroCount.nTimes {
-                    let heroIDRaw = try reader.readUInt8()
-                    guard let heroID = Hero.ID(rawValue: heroIDRaw) else {
-                        throw Error.unrecognizedHeroID(heroIDRaw)
-                    }
+                    let heroID = try parseHeroID()!
                     let heroName = try reader.readString()
                     return Hero.Seed(id: heroID, name: heroName)
                 }
