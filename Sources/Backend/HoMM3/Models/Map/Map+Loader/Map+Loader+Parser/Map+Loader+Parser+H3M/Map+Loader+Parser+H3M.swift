@@ -182,7 +182,7 @@ public extension Map.Level.Tile {
     
     /// Not to be confused with `Rotation`
     ///
-    /// TODO figure out what these mean, maybe 2 (underworld/above) * 8 [north, northEast, east, southEast, souuth, southWest, west, northWest] ?
+    /// TODO figure out what these mean, maybe 1 + (CENTER) + 2 (FROM/TO) * 8 [north, northEast, east, southEast, souuth, southWest, west, northWest] ?
     enum Direction: UInt8, Equatable, CaseIterable, CustomDebugStringConvertible {
 //        case north, south, east, west
         
