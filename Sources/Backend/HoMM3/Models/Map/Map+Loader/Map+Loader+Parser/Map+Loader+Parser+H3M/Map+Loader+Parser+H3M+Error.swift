@@ -16,7 +16,7 @@ enum Error: Swift.Error {
     case unrecognizedAITactic(AITactic.RawValue)
     case unrecognizedArtifactID(Artifact.ID.RawValue)
     case unrecognizedFaction(Faction.RawValue)
-    case unrecognizedTerrainKind(Map.Level.Tile.Terrain.Kind.RawValue)
+    case unrecognizedTerrainKind(Map.Tile.Terrain.Kind.RawValue)
     case unrecognizedHeroID(Hero.ID.RawValue)
     case unrecognizedVictoryConditionKind(Map.VictoryCondition.Kind.Stripped.RawValue)
     case unrecognizedLossConditionKind(Map.VictoryCondition.Kind.Stripped.RawValue)
