@@ -184,6 +184,8 @@ private extension  Map.Loader.Parser.H3M {
 
                 guard let heroID = try parseHeroID() else { return nil }
                 let portraitIDMaybe = try parseHeroPortraitID()
+                
+                /// Always read the `name` even though we might not have a portrait id => which results in returnin nil. Otherwise we mess up byte offset.
                 let name = try reader.readString()
                 guard !name.isEmpty else { return nil }
                 guard let portraitID = portraitIDMaybe else { return nil }

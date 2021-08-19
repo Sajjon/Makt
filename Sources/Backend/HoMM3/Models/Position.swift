@@ -7,21 +7,21 @@
 
 import Foundation
 
-/// Position on adventure map, three dimensions (x, y, z)
+/// Position on adventure map, three dimensions (x: Int, y: Int, inUnderworld: Bool)
 public struct Position: Equatable {
     public typealias Scalar = Int32
     public let x: Scalar
     public let y: Scalar
-    public let z: Scalar
+    public let inUnderworld: Bool
 }
 
 public extension Position {
     func fitsInMapDescribed(by summary: Map.About.Summary) -> Bool {
-        if !summary.hasTwoLevels && z > 1 {
+        if !summary.hasTwoLevels && self.inUnderworld {
             // Cyon: is this correct? Does Z mean underworld or not?
             return false
         }
         
-        return [x, y, z].allSatisfy({ $0 <= summary.size.height && $0 <= summary.size.width })
+        return x <= summary.size.width && y <= summary.size.height
     }
 }

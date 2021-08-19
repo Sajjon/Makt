@@ -167,11 +167,6 @@ public extension Map.VictoryCondition.Kind {
             assert(parameter2 == nil)
             let townPosition = try ensureTownPosition()
             
-            // https://github.com/vcmi/vcmi/blob/ecaa9f5d0bfa96a68d886e58e05a7cf8b64d1b4f/lib/mapping/MapFormatH3M.cpp#L407-#L408
-            guard townPosition.z <= 2 else {
-                fatalError("According to VCMI town should not have Z > 2")
-            }
-            
             self = .buildGrailBuilding(inTownLocatedAt: townPosition)
             
         case .defeatSpecificHero:

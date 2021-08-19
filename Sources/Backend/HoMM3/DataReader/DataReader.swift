@@ -156,7 +156,7 @@ public extension DataReader {
         try .init(
             x: .init(readUInt8()),
             y: .init(readUInt8()),
-            z: .init(readUInt8())
+            inUnderworld: readBool()
         )
     }
 }
