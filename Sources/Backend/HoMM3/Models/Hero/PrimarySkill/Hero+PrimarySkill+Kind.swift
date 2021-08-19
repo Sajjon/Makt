@@ -13,10 +13,10 @@ public extension Hero.PrimarySkill {
         
         public init?(rawValue: UInt8) {
             switch rawValue {
-            case 0: self = .attack
-            case 1: self = .defense
-            case 2: self = .power
-            case 3: self = .knowledge
+            case Self.attack.rawValue: self = .attack
+            case Self.defense.rawValue: self = .defense
+            case Self.power.rawValue: self = .power
+            case Self.knowledge.rawValue: self = .knowledge
             case 4:
                 fatalError("Aha! VCMI Did include a fourth case named `case experience = 4` for a reason. With the comment `for some reason changePrimSkill uses it`. ")
             default: return nil

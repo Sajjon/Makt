@@ -10,6 +10,8 @@ import Foundation
 // MARK: Parse PreDefined Heroes
 internal extension Map.Loader.Parser.H3M {
     func parsePredefinedHeroes(format: Map.Format) throws -> [Hero.Predefined] {
+      
+        
         switch format {
         #if WOG
         case .wakeOfGods: fallthrough
@@ -23,11 +25,13 @@ internal extension Map.Loader.Parser.H3M {
                 // Hero is custom?
                 guard try reader.readBool() else { return nil }
                 
+          
+                
                 let heroID: Hero.ID = availableHeroIDs[heroIDIndex]
                 let startsWithExperiencePoints = try reader.readBool()
                 let startingExperiencePoints = try startsWithExperiencePoints ? reader.readUInt32() : 0
                 let startsWithSecondarySkills = try reader.readBool()
-                let startingSecondarySkills: [Hero.SecondarySkill] = try !startsWithSecondarySkills ? [] : {
+                let startingSecondarySkills: [Hero.SecondarySkill]? = try !startsWithSecondarySkills ? nil : {
                     let secondarySkillStartAmount = try reader.readUInt32()
                     return try secondarySkillStartAmount.nTimes {
                         let kindRaw = try reader.readUInt8()
@@ -48,9 +52,8 @@ internal extension Map.Loader.Parser.H3M {
                 let biography: String? = try hasCustomBiographyText ? reader.readString() : nil
                 
                 let genderRaw = try reader.readUInt8()
-                guard let gender = Hero.Gender(rawValue: genderRaw) else {
-                    throw Error.unrecognizedHeroGender(genderRaw)
-                }
+                let customGender: Hero.Gender? = Hero.Gender(rawValue: genderRaw)
+            
                 let hasCustomSpells = try reader.readBool()
                 let customSpells: [Spell.ID]? = !hasCustomSpells ? nil : try parseCustomSpellsOfHero()
                 
@@ -67,7 +70,7 @@ internal extension Map.Loader.Parser.H3M {
                     startingSecondarySkills: startingSecondarySkills,
                     artifacts: artifactsForHero,
                     biography: biography,
-                    gender: gender,
+                    customGender: customGender,
                     customSpells: customSpells,
                     customPrimarySkills: customPrimarySkills
                 )
@@ -82,14 +85,14 @@ internal extension Map.Loader.Parser.H3M {
 }
 internal extension Map.Loader.Parser.H3M {
     
-    func parseArtifactsOfHero(format: Map.Format) throws -> [Hero.Predefined.ArtifactInSlot] {
+    func parseArtifactsOfHero(format: Map.Format) throws -> [Hero.Predefined.ArtifactInSlot]? {
         /// True if artifact set is not default (hero has some artifacts)
         let isArtifactSet = try reader.readBool()
-        guard isArtifactSet else { return [] }
+        guard isArtifactSet else { return nil }
         
-        var artifactInSlots = [Hero.Predefined.ArtifactInSlot]()
+        var artifactInSlots = [Hero.Predefined.ArtifactInSlot?]()
         
-        let artifactsInNonBackpackSlots: [Hero.Predefined.ArtifactInSlot] = try (0..<Artifact.Slot.Body.warMachine4.rawValue).compactMap { slotId in
+        let artifactsInNonBackpackSlots: [Hero.Predefined.ArtifactInSlot?] = try (0..<Artifact.Slot.Body.warMachine4.rawValue).map { slotId in
             let slot = Artifact.Slot.Body(rawValue: slotId)!
             return try parseArtifact(in: .body(slot), format: format)
         }
@@ -107,13 +110,11 @@ internal extension Map.Loader.Parser.H3M {
             }
         }
 
-        // Check if starts with spellbook
-        if let spellBook = try parseArtifact(
-            in: .body(.spellbook),
-            format: format
-        ) {
-            artifactInSlots.append(spellBook)
-        }
+        // Maybe start with spellbook
+            artifactInSlots.append( try parseArtifact(
+                in: .body(.spellbook),
+                format: format
+            ))
 
         // VCMI: "19 //???what is that? gap in file or what? - it's probably fifth slot.."
         if format > .restorationOfErathia {
@@ -130,9 +131,9 @@ internal extension Map.Loader.Parser.H3M {
         // artifacts in bag
         let numberOfArtifactsInBackpack = try UInt8(clamping: reader.readUInt16())
         
-        let artifactsInBackpack: [Hero.Predefined.ArtifactInSlot] = try (0..<numberOfArtifactsInBackpack).compactMap { backpackSlotRawValue in
+        let artifactsInBackpack: [Hero.Predefined.ArtifactInSlot?] = try (0..<numberOfArtifactsInBackpack).map { backpackSlotRawValue in
             guard let backpackSlot = Artifact.Slot.BackpackSlot(backpackSlotRawValue) else {
-                return nil
+               fatalError("expected valid slot")
             }
             guard let artifact = try parseArtifact(
                 in: .backpack(backpackSlot),
@@ -146,7 +147,9 @@ internal extension Map.Loader.Parser.H3M {
         
         artifactInSlots.append(contentsOf: artifactsInBackpack)
         
-        return artifactInSlots
+        let nonNils = artifactInSlots.compactMap({ $0 })
+        guard !nonNils.isEmpty else { return nil }
+        return nonNils
     }
     
     func parseCustomSpellsOfHero() throws -> [Spell.ID] {

@@ -15,7 +15,6 @@ enum Error: Swift.Error {
     case unrecognizedDifficulty(Difficulty.RawValue)
     case unrecognizedAITactic(AITactic.RawValue)
     case unrecognizedArtifactID(Artifact.ID.RawValue)
-    case unrecognizedHeroGender(Hero.Gender.RawValue)
     case unrecognizedFaction(Faction.RawValue)
     case unrecognizedHeroID(Hero.ID.RawValue)
     case unrecognizedVictoryConditionKind(Map.VictoryCondition.Kind.Stripped.RawValue)

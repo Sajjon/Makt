@@ -11,12 +11,23 @@ public extension Hero {
     struct Predefined: Equatable {
         public let heroID: ID
         public let startingExperiencePoints: Int
-        public let startingSecondarySkills: [SecondarySkill]
-        public let artifacts: [ArtifactInSlot]
+        public let startingSecondarySkills: [SecondarySkill]?
+        public let artifacts: [ArtifactInSlot]?
         public let biography: String?
-        public let gender: Gender
+        public let customGender: Gender?
         public let customSpells: [Spell.ID]?
         public let customPrimarySkills: [PrimarySkill]?
+    }
+}
+
+public extension Hero.Predefined {
+    var isCustomized: Bool {
+        startingExperiencePoints > 0 ||
+            startingSecondarySkills != nil ||
+            artifacts != nil ||
+            biography != nil ||
+            customSpells != nil ||
+            customPrimarySkills != nil
     }
 }
 

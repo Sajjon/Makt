@@ -32,6 +32,7 @@ extension Map.ID {
     
     static let reclamationAllies: Self = .h3m("Reclamation Allied")
     static let peacefulEndingAllies: Self = .h3m("Peaceful Ending - Allied")
+    static let heroesOfMightNotMagicAllies: Self = .h3m("Heroes of Might not Magic Allied")
     
     
 

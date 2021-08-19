@@ -398,6 +398,7 @@ final class LoadMapTests: XCTestCase {
         XCTAssertEqual(map.about.playersInfo.players.count, 6)
        
         XCTAssertTrue(map.about.playersInfo.players.allSatisfy({ $0.isPlayableBothByHumanAndAI }))
+        XCTAssertTrue(map.about.playersInfo.players.allSatisfy({ $0.isRandomFaction }))
         
         XCTAssertTrue(map.about.playersInfo.players.allSatisfy({ $0.allowedFactionsForThisPlayer == Faction.playable(in: .shadowOfDeath) }))
 
@@ -406,5 +407,33 @@ final class LoadMapTests: XCTestCase {
         
         XCTAssertEqual(map.about.teamInfo.teams?.count, 3)
         XCTAssertEqual(map.about.teamInfo, [[.red, .purple], [.blue, .orange], [.tan, .green]])
+    }
+    
+    func test_assert_can_load_map_by_id__heroesOffMightNotMagic_allies() throws {
+        // Delete any earlier cached maps.
+        Map.loader.cache.__deleteMap(by: .heroesOfMightNotMagicAllies)
+        let map = try Map.load(.heroesOfMightNotMagicAllies)
+        XCTAssertEqual(map.about.summary.fileName, "Heroes of Might not Magic Allied.h3m")
+        XCTAssertEqual(map.about.summary.name, "Heroes of Might, Not Magic (A)")
+        XCTAssertEqual(map.about.summary.description, "An evil sorcerer has siphoned all the magic from this land into his Vial of Dragon Blood.  The only way to get the magic back is to unite all the towns in battle against him.  However, each town thinks they can rule this land better than the other.")
+        XCTAssertEqual(map.about.summary.fileSizeCompressed, 32_417)
+        XCTAssertEqual(map.about.summary.fileSize, 142_048)
+        XCTAssertTrue(map.about.summary.hasTwoLevels)
+        XCTAssertEqual(map.about.summary.format, .shadowOfDeath)
+        XCTAssertEqual(map.about.summary.difficulty, .normal)
+        XCTAssertEqual(map.about.summary.size, .medium)
+        XCTAssertEqual(map.about.playersInfo.players.count, 6)
+       
+        XCTAssertTrue(map.about.playersInfo.players.allSatisfy({ $0.isPlayableBothByHumanAndAI }))
+        XCTAssertTrue(map.about.playersInfo.players.allSatisfy({ $0.hasRandomHero }))
+        XCTAssertFalse(map.about.playersInfo.players[0].isRandomFaction)
+        XCTAssertTrue(map.about.playersInfo.players[1].isRandomFaction)
+        map.about.playersInfo.players.suffix(4).forEach {
+            XCTAssertFalse($0.isRandomFaction)
+        }
+
+        XCTAssertEqual(map.about.victoryLossConditions.victoryConditions.map { $0.kind.stripped }, [.standard])
+        XCTAssertEqual(map.about.victoryLossConditions.lossConditions.map { $0.kind.stripped }, [.standard])
+        XCTAssertEqual(map.about.teamInfo, [[.red, .orange], [.blue, .green], [.purple, .teal]])
     }
 }
