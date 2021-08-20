@@ -171,14 +171,11 @@ internal extension Map.Loader.Parser.H3M {
 
 private extension  Map.Loader.Parser.H3M {
     func parseArtifact(in slot: Artifact.Slot, format: Map.Format) throws -> Hero.Predefined.ArtifactInSlot? {
-        let artifactIdentifier: UInt16 = try format == .restorationOfErathia ? UInt16(reader.readUInt8()) : reader.readUInt16()
-        let artifactIDUInt8 = UInt8.init(clamping: artifactIdentifier)
-        let slotContainsArtifact = format == .restorationOfErathia ? artifactIDUInt8 == 0xff : artifactIdentifier == 0xffff
+        let artifactIDRaw: UInt16 = try format == .restorationOfErathia ? UInt16(reader.readUInt8()) : reader.readUInt16()
+        let slotContainsArtifact = format == .restorationOfErathia ? artifactIDRaw == 0xff : artifactIDRaw == 0xffff
 
         guard slotContainsArtifact else { return nil }
-        guard let artifactId = Artifact.ID(rawValue: artifactIDUInt8) else {
-            throw Error.unrecognizedArtifactID(artifactIDUInt8)
-        }
+        let artifactId = try Artifact.ID(fittingIn: artifactIDRaw)
         guard !(artifactId.isWarMachine && slot.isBackpack) else {
             throw Error.warmachineFoundInBackback
         }

@@ -10,9 +10,3 @@ import Foundation
 public struct Creature: Equatable, Identifiable {
     public let id: ID
 }
-public extension Creature {
-    struct ID: Hashable {
-        public let id: Int
-    }
-}
-

@@ -17,7 +17,7 @@ internal extension Map.Loader.Parser.H3M {
             for columnIndex in 0..<size.width {
                 for rowIndex in 0..<size.height {
                     
-                    let position = Position(x: .init(columnIndex), y: .init(rowIndex), inUnderworld: inUnderworld)
+                    let position = Position(column: .init(columnIndex), row: .init(rowIndex), inUnderworld: inUnderworld)
                     
                     let terrainKindRaw = try reader.readUInt8()
                     guard let terrainKind = Map.Tile.Terrain.Kind(rawValue: terrainKindRaw) else {

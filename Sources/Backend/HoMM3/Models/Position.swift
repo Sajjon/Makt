@@ -8,11 +8,21 @@
 import Foundation
 
 /// Position on adventure map, three dimensions (x: Int, y: Int, inUnderworld: Bool)
-public struct Position: Equatable {
+public struct Position: Hashable {
     public typealias Scalar = Int32
     public let x: Scalar
     public let y: Scalar
     public let inUnderworld: Bool
+    
+    public init(x: Scalar, y: Scalar, inUnderworld: Bool) {
+        self.x = x
+        self.y = y
+        self.inUnderworld = inUnderworld
+    }
+    
+    public init(column: Scalar, row: Scalar, inUnderworld: Bool) {
+        self.init(x: column, y: row, inUnderworld: inUnderworld)
+    }
 }
 
 public extension Position {

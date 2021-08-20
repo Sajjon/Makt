@@ -73,7 +73,6 @@ public extension Map.VictoryCondition.Kind {
         case position(of: String, isRequiredFor: Stripped)
         case missingParameter(contents: String, for: Stripped)
         case unrecognizedResourceKind(Resource.Kind.RawValue)
-        case unrecognizedArtifactID(Artifact.ID.RawValue)
     }
     
     init(
@@ -105,10 +104,7 @@ public extension Map.VictoryCondition.Kind {
             return parameter
         }
         func ensureArtifactID() throws -> Artifact.ID {
-            let artifactIDRaw = try UInt8(ensureParameter1(contents: "Artifact ID"))
-            guard let artifactID = Artifact.ID(rawValue: artifactIDRaw) else {
-                throw Error.unrecognizedArtifactID(artifactIDRaw)
-            }
+            let artifactID = try Artifact.ID(fittingIn: ensureParameter1(contents: "Artifact ID"))
             return artifactID
         }
         func ensureHeroID() throws -> Hero.ID {
@@ -131,8 +127,7 @@ public extension Map.VictoryCondition.Kind {
             assert(position == nil)
             self = .acquireSpecificArtifact(try ensureArtifactID())
         case .accumulateCreatures:
-            let creatureKindRaw = try ensureParameter1(contents: "Creature kind")
-            let creatureKind = Creature.ID(id: creatureKindRaw)
+            let creatureKind = try Creature.ID(fittingIn: ensureParameter1(contents: "Creature kind"))
             let creatureAmount = try ensureParameter2(contents: "Creature amount")
             assert(position == nil)
             self = .accumulateCreatures(

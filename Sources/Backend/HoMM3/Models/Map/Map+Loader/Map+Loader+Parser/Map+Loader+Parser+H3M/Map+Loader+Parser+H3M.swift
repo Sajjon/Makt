@@ -171,10 +171,114 @@ private extension Map.Loader.Parser.H3M {
 }
 
 
+public typealias Bitmask = BitArray
+
 // MARK: Parse "Definitions
 private extension Map.Loader.Parser.H3M {
+    
+    /// Parse object atributes
+    /// Here are properties of all objects on the map including castles and heroes
+    /// (but not land itself, roads and rivers) and Events, both placed on the map
+    /// and global events (these are set in Map Specifications)
     func parseDefinitions() throws -> Map.Definitions {
-        .init()
+        let definitionCount = try reader.readUInt32()
+        let attributes: [Map.Object.Attributes] = try definitionCount.nTimes {
+            /// aka "Sprite name"
+            let animationFileName = try reader.readString()
+            
+            /// Which squares (of this object) are passable, counted from the bottom right corner
+            /// (bit 1: passable, bit 0: impassable
+            let passabilityBitmask = try reader.readBitArray(byteCount: Map.Object.Attributes.Pathfinding.rowCount)
+            
+            /// Active/visitable squares (overlaid on impassable squares)
+            /// (bit 1: active, bit 0: passive
+            let visitabilityBitmask = try reader.readBitArray(byteCount: Map.Object.Attributes.Pathfinding.rowCount)
+            
+            func boolPerPosition(bitmask: Bitmask) -> [Map.Object.Attributes.Pathfinding.RelativePosition: Bool] {
+                precondition(bitmask.count == Map.Object.Attributes.Pathfinding.rowCount * Map.Object.Attributes.Pathfinding.columnCount)
+                var index = 0
+                var map: [Map.Object.Attributes.Pathfinding.RelativePosition: Bool] = [:]
+                for row in 0..<Map.Object.Attributes.Pathfinding.rowCount {
+                    for column in 0..<Map.Object.Attributes.Pathfinding.columnCount {
+                        defer { index += 1 }
+                        let relativePosition: Map.Object.Attributes.Pathfinding.RelativePosition = .init(column: .init(column), row: .init(row))
+                        map[relativePosition] = bitmask[index]
+                    }
+                }
+                return map
+            }
+            
+            
+            let pathfinding = Map.Object.Attributes.Pathfinding(
+                visitability: .init(visitablilityPerTileRelativePositionMap: boolPerPosition(bitmask: visitabilityBitmask)),
+                passability:  .init(passabilityPerTileRelativePositionMap: boolPerPosition(bitmask: passabilityBitmask))
+            )
+            
+             ///   ├─ 2  bytes.
+             ///   │      bit0 - water
+             ///   │      bit1 - lava
+             ///   │      bit2 - underground
+             ///   │      bit3 - rocks
+             ///   │      bit4 - swamp
+             ///   │      bit5 - snow
+             ///   │      bit6 - grass
+             ///   │      bit7 - sand
+             ///   │      bit8 - dirt
+            func parseLandscapes() throws -> [Map.Tile.Terrain.Kind] {
+                try reader.readBitArray(byteCount: 2).prefix(9).enumerated().compactMap { (bit, supported) in
+                    guard supported else { return nil }
+                    switch bit {
+                    case 0: return .water
+                    case 1: return .lava
+                    case 2: return .subterranean
+                    case 3: return .rock
+                    case 4: return .swamp
+                    case 5: return .snow
+                    case 6: return .grass
+                    case 7: return .sand
+                    case 8: return .dirt
+                    default: fatalError("Should never happen.")
+                    }
+                }
+            }
+            
+            /// what kinds of landscape it can be put on
+            let supportedLandscapes = try parseLandscapes()
+            
+            /// What landscape group the object will be in the editor
+            let mapEditorLandscapeGroup = try parseLandscapes()
+            
+            let objectID = try Map.Object.ID(
+                id: reader.readUInt32(),
+                subId: try reader.readUInt32()
+            )
+
+            /// used by editor
+            let objectGroupRaw = try reader.readUInt8()
+//            guard let group = Map.Object.Attributes.Group(rawValue: objectGroupRaw) else {
+//                throw Error.unrecognizedObjectGroup(objectGroupRaw)
+//            }
+            let group: Map.Object.Attributes.Group? = .init(rawValue: objectGroupRaw)
+            
+            /// Antoshkiv: "whether the object will be over or below object"
+            /// VCMI: `printPriority`
+            let zRenderingPosition = try reader.readUInt8()
+            
+            /// Unknown
+            try reader.skip(byteCount: 16)
+            
+            return .init(
+                animationFileName: animationFileName,
+                supportedLandscapes: supportedLandscapes,
+                mapEditorLandscapeGroup: mapEditorLandscapeGroup,
+                objectID: objectID,
+                group: group,
+                pathfinding: pathfinding,
+                zRenderingPosition: zRenderingPosition
+            )
+
+        }
+        return .init(objectAttributes: attributes)
     }
 }
 

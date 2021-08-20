@@ -9,33 +9,33 @@ import Foundation
 
 public extension Hero.SecondarySkill {
     enum Kind: UInt8, Hashable, CaseIterable {
-        case pathfinding,
-        archery,
-        logistics,
-        scouting,
-        diplomacy,
-        navigation,
-        leadership,
-        wisdom,
-        mysticism,
-        luck,
-        ballistics,
-        eagleEye,
-        necromancy,
-        estates,
-        fireMagic,
-        airMagic,
-        waterMagic,
-        earthMagic,
-        scholar,
-        tactics,
-        artillery,
-        learning,
-        offence,
-        armorer,
-        intelligence,
-        sorcery,
-        resistance,
-        firstAid
+        case pathfinding
+        case archery
+        case logistics
+        case scouting
+        case diplomacy
+        case navigation
+        case leadership
+        case wisdom
+        case mysticism
+        case luck
+        case ballistics
+        case eagleEye
+        case necromancy
+        case estates
+        case fireMagic
+        case airMagic
+        case waterMagic
+        case earthMagic
+        case scholar
+        case tactics
+        case artillery
+        case learning
+        case offence
+        case armorer
+        case intelligence
+        case sorcery
+        case resistance
+        case firstAid
     }
 }

@@ -14,7 +14,6 @@ enum Error: Swift.Error {
     case unsupportedFormat(Map.Format)
     case unrecognizedDifficulty(Difficulty.RawValue)
     case unrecognizedAITactic(AITactic.RawValue)
-    case unrecognizedArtifactID(Artifact.ID.RawValue)
     case unrecognizedFaction(Faction.RawValue)
     case unrecognizedTerrainKind(Map.Tile.Terrain.Kind.RawValue)
     case unrecognizedHeroID(Hero.ID.RawValue)
@@ -22,6 +21,9 @@ enum Error: Swift.Error {
     case unrecognizedLossConditionKind(Map.VictoryCondition.Kind.Stripped.RawValue)
     case unrecognizedSecondarySkillKind(Hero.SecondarySkill.Kind.RawValue)
     case unrecognizedSecondarySkillLevel(Hero.SecondarySkill.Level.RawValue)
+    
+    case unrecognizedObjectGroup(Map.Object.Attributes.Group.RawValue)
+    
     
     case warmachineFoundInBackback
 }

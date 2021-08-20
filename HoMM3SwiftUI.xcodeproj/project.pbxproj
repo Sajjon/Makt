@@ -81,6 +81,14 @@
 		487C2C1126CECEBC00031505 /* Map+Tile+Rotation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487C2C1026CECEBC00031505 /* Map+Tile+Rotation.swift */; };
 		487C2C1426CED24F00031505 /* Map+Object.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487C2C1326CED24F00031505 /* Map+Object.swift */; };
 		487C2C1726CED26300031505 /* Map+Event.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487C2C1626CED26300031505 /* Map+Event.swift */; };
+		487C2C1926CEDD4C00031505 /* Map+Object+ID.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487C2C1826CEDD4C00031505 /* Map+Object+ID.swift */; };
+		487C2C1B26CF741500031505 /* Map+Object+CreatureGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487C2C1A26CF741500031505 /* Map+Object+CreatureGenerator.swift */; };
+		487C2C1D26CF7EA000031505 /* Map+Object+KeyColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487C2C1C26CF7EA000031505 /* Map+Object+KeyColor.swift */; };
+		487C2C1F26CF7EED00031505 /* Map+Object+CreatureBank.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487C2C1E26CF7EED00031505 /* Map+Object+CreatureBank.swift */; };
+		487C2C2226CF8B8000031505 /* Map+Object+ID+ParseFromH3M.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487C2C2126CF8B8000031505 /* Map+Object+ID+ParseFromH3M.swift */; };
+		487C2C2526CF913100031505 /* Creature+ID.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487C2C2426CF913100031505 /* Creature+ID.swift */; };
+		487C2C2726CFC69E00031505 /* Creature+Level.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487C2C2626CFC69E00031505 /* Creature+Level.swift */; };
+		487C2C2926CFCCD200031505 /* UInt8_Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487C2C2826CFCCD200031505 /* UInt8_Extensions.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -172,6 +180,14 @@
 		487C2C1026CECEBC00031505 /* Map+Tile+Rotation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Map+Tile+Rotation.swift"; sourceTree = "<group>"; };
 		487C2C1326CED24F00031505 /* Map+Object.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Map+Object.swift"; sourceTree = "<group>"; };
 		487C2C1626CED26300031505 /* Map+Event.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Map+Event.swift"; sourceTree = "<group>"; };
+		487C2C1826CEDD4C00031505 /* Map+Object+ID.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Map+Object+ID.swift"; sourceTree = "<group>"; };
+		487C2C1A26CF741500031505 /* Map+Object+CreatureGenerator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Map+Object+CreatureGenerator.swift"; sourceTree = "<group>"; };
+		487C2C1C26CF7EA000031505 /* Map+Object+KeyColor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Map+Object+KeyColor.swift"; sourceTree = "<group>"; };
+		487C2C1E26CF7EED00031505 /* Map+Object+CreatureBank.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Map+Object+CreatureBank.swift"; sourceTree = "<group>"; };
+		487C2C2126CF8B8000031505 /* Map+Object+ID+ParseFromH3M.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Map+Object+ID+ParseFromH3M.swift"; sourceTree = "<group>"; };
+		487C2C2426CF913100031505 /* Creature+ID.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Creature+ID.swift"; sourceTree = "<group>"; };
+		487C2C2626CFC69E00031505 /* Creature+Level.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Creature+Level.swift"; sourceTree = "<group>"; };
+		487C2C2826CFCCD200031505 /* UInt8_Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UInt8_Extensions.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -401,6 +417,7 @@
 			isa = PBXGroup;
 			children = (
 				487C2BCD26CD327C00031505 /* Integers+RepeatNTimes.swift */,
+				487C2C2826CFCCD200031505 /* UInt8_Extensions.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -437,6 +454,7 @@
 		487C2BD126CD32D600031505 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				487C2C2326CF912400031505 /* Creature */,
 				487C2BE326CD49B200031505 /* Spell */,
 				487C2BDC26CD3CF600031505 /* Artifact */,
 				487C2BB626CC2F1700031505 /* Hero */,
@@ -449,7 +467,6 @@
 				487C2BA026CAD23600031505 /* PlayerColor.swift */,
 				487C2BA226CAD48900031505 /* Size.swift */,
 				487C2BA626CB94CA00031505 /* Resource.swift */,
-				487C2BA826CB94D900031505 /* Creature.swift */,
 				487C2BE126CD464E00031505 /* Version.swift */,
 			);
 			path = Models;
@@ -520,7 +537,11 @@
 		487C2C1226CED24300031505 /* Map+Object */ = {
 			isa = PBXGroup;
 			children = (
+				487C2C2026CF8B6500031505 /* Map+Object+ID */,
 				487C2C1326CED24F00031505 /* Map+Object.swift */,
+				487C2C1C26CF7EA000031505 /* Map+Object+KeyColor.swift */,
+				487C2C1A26CF741500031505 /* Map+Object+CreatureGenerator.swift */,
+				487C2C1E26CF7EED00031505 /* Map+Object+CreatureBank.swift */,
 			);
 			path = "Map+Object";
 			sourceTree = "<group>";
@@ -531,6 +552,25 @@
 				487C2C1626CED26300031505 /* Map+Event.swift */,
 			);
 			path = "Map+Event";
+			sourceTree = "<group>";
+		};
+		487C2C2026CF8B6500031505 /* Map+Object+ID */ = {
+			isa = PBXGroup;
+			children = (
+				487C2C1826CEDD4C00031505 /* Map+Object+ID.swift */,
+				487C2C2126CF8B8000031505 /* Map+Object+ID+ParseFromH3M.swift */,
+			);
+			path = "Map+Object+ID";
+			sourceTree = "<group>";
+		};
+		487C2C2326CF912400031505 /* Creature */ = {
+			isa = PBXGroup;
+			children = (
+				487C2BA826CB94D900031505 /* Creature.swift */,
+				487C2C2626CFC69E00031505 /* Creature+Level.swift */,
+				487C2C2426CF913100031505 /* Creature+ID.swift */,
+			);
+			path = Creature;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -639,6 +679,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				487C2BEE26CD748000031505 /* Hero+SecondarySkill+Kind.swift in Sources */,
+				487C2C2926CFCCD200031505 /* UInt8_Extensions.swift in Sources */,
 				487C2BE226CD464E00031505 /* Version.swift in Sources */,
 				487C2BDE26CD3D0200031505 /* Artifact+ID.swift in Sources */,
 				487C2BEC26CD746800031505 /* Hero+SecondarySkill.swift in Sources */,
@@ -661,15 +702,20 @@
 				487C2BA126CAD23600031505 /* PlayerColor.swift in Sources */,
 				4814630026C9041200431960 /* Map+About+Summary.swift in Sources */,
 				487C2BA726CB94CA00031505 /* Resource.swift in Sources */,
+				487C2C1D26CF7EA000031505 /* Map+Object+KeyColor.swift in Sources */,
 				487C2C0D26CECE7F00031505 /* Map+Tile+River.swift in Sources */,
 				487C2B8D26CA988E00031505 /* Map+VictoryLossConditions.swift in Sources */,
 				487C2C0F26CECEA600031505 /* Map+Tile+Road.swift in Sources */,
+				487C2C1F26CF7EED00031505 /* Map+Object+CreatureBank.swift in Sources */,
+				487C2C2226CF8B8000031505 /* Map+Object+ID+ParseFromH3M.swift in Sources */,
 				487C2BC226CCCCD900031505 /* BitArray.swift in Sources */,
 				487C2BAB26CB94E600031505 /* Artifact.swift in Sources */,
 				481BDF6726C5942000C5E335 /* ContentView.swift in Sources */,
 				487C2B9926CAD1F800031505 /* Position.swift in Sources */,
 				487C2C1726CED26300031505 /* Map+Event.swift in Sources */,
 				487C2BD326CD334800031505 /* Map+Loader+Parser+H3M+Error.swift in Sources */,
+				487C2C1B26CF741500031505 /* Map+Object+CreatureGenerator.swift in Sources */,
+				487C2C2526CF913100031505 /* Creature+ID.swift in Sources */,
 				487C2BE726CD49CD00031505 /* Spell+ID.swift in Sources */,
 				487C2BFF26CECD8500031505 /* Map+Definitions.swift in Sources */,
 				487C2BA926CB94D900031505 /* Creature.swift in Sources */,
@@ -677,6 +723,8 @@
 				481462FC26C902E800431960 /* Map+ID.swift in Sources */,
 				487C2BE526CD49BA00031505 /* Spell.swift in Sources */,
 				487C2BD526CD335D00031505 /* Hero+Disposed.swift in Sources */,
+				487C2C1926CEDD4C00031505 /* Map+Object+ID.swift in Sources */,
+				487C2C2726CFC69E00031505 /* Creature+Level.swift in Sources */,
 				487C2BF426CD916C00031505 /* Artifact+Slot.swift in Sources */,
 				487C2C1126CECEBC00031505 /* Map+Tile+Rotation.swift in Sources */,
 				487C2C0B26CECE2000031505 /* Map+Tile+Terrain.swift in Sources */,
