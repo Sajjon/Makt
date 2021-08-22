@@ -8,5 +8,18 @@
 import Foundation
 
 public extension Map {
-    enum Object: Equatable {}
+    struct Objects: Hashable {
+        public let objects: [Object]
+    }
+  
+    struct Object: Hashable {
+        public let position: Position
+        public let kind: Kind
+    }
+}
+
+public extension Map.Object {
+    enum Kind: Hashable {
+        case event(Map.Event)
+    }
 }

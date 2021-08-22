@@ -7,6 +7,6 @@
 
 import Foundation
 
-public struct Creature: Equatable, Identifiable {
+public struct Creature: Hashable, Identifiable {
     public let id: ID
 }

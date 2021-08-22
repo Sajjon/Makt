@@ -31,20 +31,7 @@ internal extension Map.Loader.Parser.H3M {
                 let startsWithExperiencePoints = try reader.readBool()
                 let startingExperiencePoints = try startsWithExperiencePoints ? reader.readUInt32() : 0
                 let startsWithSecondarySkills = try reader.readBool()
-                let startingSecondarySkills: [Hero.SecondarySkill]? = try !startsWithSecondarySkills ? nil : {
-                    let secondarySkillStartAmount = try reader.readUInt32()
-                    return try secondarySkillStartAmount.nTimes {
-                        let kindRaw = try reader.readUInt8()
-                        guard let kind = Hero.SecondarySkill.Kind(rawValue: kindRaw) else {
-                            throw Error.unrecognizedSecondarySkillKind(kindRaw)
-                        }
-                        let levelRaw = try reader.readUInt8()
-                        guard let level = Hero.SecondarySkill.Level(rawValue: levelRaw) else {
-                            throw Error.unrecognizedSecondarySkillLevel(levelRaw)
-                        }
-                        return Hero.SecondarySkill(kind: kind, level: level)
-                    }
-                }()
+                let startingSecondarySkills: [Hero.SecondarySkill]? = !startsWithSecondarySkills ? nil : try parseSecondarySkills()
                 
                 let artifactsForHero = try parseArtifactsOfHero(format: format)
                 
@@ -58,11 +45,7 @@ internal extension Map.Loader.Parser.H3M {
                 let customSpells: [Spell.ID]? = !hasCustomSpells ? nil : try parseCustomSpellsOfHero()
                 
                 let hasCustomPrimarySkills = try reader.readBool()
-                let customPrimarySkills: [Hero.PrimarySkill]? = try !hasCustomPrimarySkills ? nil : {
-                    try Hero.PrimarySkill.Kind.allCases.map {
-                        try Hero.PrimarySkill.init(kind: $0, level: .init(reader.readUInt8()))
-                    }
-                }()
+                let customPrimarySkills: [Hero.PrimarySkill]? = !hasCustomPrimarySkills ? nil : try parsePrimarySkills()
                 
                 let predefinedHero = Hero.Predefined(
                     heroID: heroID,
@@ -84,6 +67,27 @@ internal extension Map.Loader.Parser.H3M {
     }
 }
 internal extension Map.Loader.Parser.H3M {
+    
+    func parseSecondarySkills() throws -> [Hero.SecondarySkill] {
+        let secondarySkillStartAmount = try reader.readUInt32()
+        return try secondarySkillStartAmount.nTimes {
+            let kindRaw = try reader.readUInt8()
+            guard let kind = Hero.SecondarySkill.Kind(rawValue: kindRaw) else {
+                throw Error.unrecognizedSecondarySkillKind(kindRaw)
+            }
+            let levelRaw = try reader.readUInt8()
+            guard let level = Hero.SecondarySkill.Level(rawValue: levelRaw) else {
+                throw Error.unrecognizedSecondarySkillLevel(levelRaw)
+            }
+            return Hero.SecondarySkill(kind: kind, level: level)
+        }
+    }
+    
+    func parsePrimarySkills() throws -> [Hero.PrimarySkill] {
+        try Hero.PrimarySkill.Kind.allCases.map { kind in
+            try Hero.PrimarySkill.init(kind: kind, level: .init(reader.readUInt8()))
+        }
+    }
     
     func parseArtifactsOfHero(format: Map.Format) throws -> [Hero.Predefined.ArtifactInSlot]? {
         /// True if artifact set is not default (hero has some artifacts)
@@ -153,8 +157,6 @@ internal extension Map.Loader.Parser.H3M {
     }
     
     func parseCustomSpellsOfHero() throws -> [Spell.ID] {
-        
-        assert(Spell.ID.allCases.count == 70)
         return try Array(
             reader
                 .readBitArray(byteCount: 9)

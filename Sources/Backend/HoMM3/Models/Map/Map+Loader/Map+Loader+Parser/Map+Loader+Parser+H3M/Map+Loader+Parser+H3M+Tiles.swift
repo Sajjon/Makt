@@ -7,8 +7,7 @@
 
 import Foundation
 
-
-// MARK: Parse Terrain
+// MARK: Parse World/Tiles/Terrain
 internal extension Map.Loader.Parser.H3M {
     func parseTerrain(hasUnderworld: Bool, size: Size) throws -> Map.World {
         

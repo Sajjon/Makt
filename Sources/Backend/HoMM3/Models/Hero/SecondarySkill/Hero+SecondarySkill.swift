@@ -8,7 +8,7 @@
 import Foundation
 
 public extension Hero {
-    struct SecondarySkill: Equatable {
+    struct SecondarySkill: Hashable {
         public let kind: Kind
         public let level: Level
     }

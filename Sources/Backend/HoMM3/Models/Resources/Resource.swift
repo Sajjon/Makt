@@ -7,7 +7,7 @@
 
 import Foundation
 
-public struct Resource: Equatable {
+public struct Resource: Hashable {
     public typealias Amount = Int
     public let kind: Kind
     public let amount: Amount

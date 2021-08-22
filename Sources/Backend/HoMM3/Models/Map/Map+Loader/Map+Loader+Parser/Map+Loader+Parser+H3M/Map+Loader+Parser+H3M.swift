@@ -42,8 +42,8 @@ extension Map.Loader.Parser.H3M {
             size: about.summary.size
         )
         
-        let _ = try parseDefinitions()
-        let _ = try parseObjects()
+        let definitions = try parseDefinitions()
+        let _ = try parseObjects(format: format, definitions: definitions)
         let _ = try parseEvents()
         
         return .init(
@@ -62,6 +62,17 @@ internal extension Map.Loader.Parser.H3M {
     func parseHeroPortraitID() throws -> Hero.ID? {
         try parseHeroID()
     }
+    
+    func parseAvailableForPlayers() throws -> [PlayerColor] {
+        try BitArray(
+            data: reader.read(byteCount: 1)
+        )
+        .enumerated()
+        .compactMap { (colorIndex, isAvailable) -> PlayerColor? in
+            guard isAvailable else { return nil }
+            return PlayerColor.allCases[colorIndex]
+        }
+    }
 }
 
 // MARK: Parse Disposed Heros
@@ -74,14 +85,7 @@ private extension Map.Loader.Parser.H3M {
                 let portraitID = try parseHeroPortraitID()
                 let name = try reader.readString()
                 
-                let availableForPlayers: [PlayerColor] = try BitArray(
-                    data: reader.read(byteCount: 1)
-                )
-                .enumerated()
-                .compactMap { (colorIndex, isAvailable) -> PlayerColor? in
-                    guard isAvailable else { return nil }
-                    return PlayerColor.allCases[colorIndex]
-                }
+                let availableForPlayers = try parseAvailableForPlayers()
                 
                 return Hero.Disposed(
                     heroID: heroID,
@@ -285,13 +289,6 @@ private extension Map.Loader.Parser.H3M {
         }
    
         return .init(objectAttributes: attributes)
-    }
-}
-
-// MARK: Parse Objects
-private extension Map.Loader.Parser.H3M {
-    func parseObjects() throws -> [Map.Object] {
-        []
     }
 }
 
