@@ -265,7 +265,10 @@ private extension Map.Loader.Parser.H3M {
             let zRenderingPosition = try reader.readUInt8()
             
             /// Unknown
-            let unknown16Bytes = try reader.read(byteCount: 16)
+            let unknownBytes = try reader.read(byteCount: 16)
+            guard unknownBytes.allSatisfy({ $0 == 0x00 }) else {
+                fatalError("If we hit this fatalError we can probably remove this check. I THINK I've identified behaviour that these 16 unknown bytes are always 16 zeroes. This might not be the case for some custom maps. I've added this assertion as a kind of 'offset check', meaning that it is helpful that we expect these 16 bytes to all be zero as an indicator that we are reading the correct values before at the expected offset in the maps byte blob.")
+            }
             
             let objectAttributes = Map.Object.Attributes(
                 animationFileName: animationFileName,
@@ -274,13 +277,13 @@ private extension Map.Loader.Parser.H3M {
                 objectID: objectID,
                 group: group,
                 pathfinding: pathfinding,
-                zRenderingPosition: zRenderingPosition,
-                unknown16Bytes: unknown16Bytes
+                zRenderingPosition: zRenderingPosition
             )
     
             return objectAttributes
 
         }
+   
         return .init(objectAttributes: attributes)
     }
 }
