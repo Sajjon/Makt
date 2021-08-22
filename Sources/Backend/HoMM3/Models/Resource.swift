@@ -14,7 +14,18 @@ public struct Resource: Equatable {
 }
 
 public extension Resource {
-    enum Kind: Int, Equatable {
+    enum Kind: UInt8, Hashable, CaseIterable {
+
+        case wood
+        case mercury
+        case ore
+        case sulfur
+        case crystal
+        case gems
         case gold
+        
+        #if WOG
+        case mithril
+        #endif // WOG
     }
 }

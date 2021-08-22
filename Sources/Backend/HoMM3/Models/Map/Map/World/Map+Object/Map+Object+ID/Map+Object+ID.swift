@@ -31,17 +31,15 @@ public extension Map.Object {
              
              yellowGlowing
         
-        #if WOG
         case purpleWithWhiteSwirl,
              yellowGlowingSpots,
              redSpiral,
              whiteGlowSphere
-        #endif // WOG
     }
     
     enum TwoWayMonolith: UInt8, Hashable, CaseIterable {
         /// Green (lightning)
-        case green,
+        case greenLighting,
              
         /// Orange (bubbles)
         orange,
@@ -50,25 +48,23 @@ public extension Map.Object {
         purple,
         
         /// Brown(ish)
-        brown
+        brown,
         
-        #if WOG
-        case greenEnergy,
-             explodingLine,
-             glowingSphere,
+        // Green (energry)
+        greenEnergy,
+        
+        explodingLine,
+        glowingSphere,
              
-             /// In case of wog "snow portal"?
-             whirlingShape
-        
-        #endif // WOG
-
+        // In case of wog "snow portal"?
+        whirlingShape
     }
 }
 
 import Foundation
 public extension Map.Object {
     /// From here: https://h3maparchives.celestialheavens.com/tools/wog/erm_help/format/format_ob.htm
-    enum ID: Hashable {
+    enum ID: Hashable, CustomDebugStringConvertible {
         case altarOfSacrifice,
              anchorPoint,
              arena,
@@ -89,9 +85,9 @@ public extension Map.Object {
              swanPond,
              coverOfDarkness,
              
-             creatureBank(CreatureBank),
+             creatureBank(CreatureBank.ID),
              
-             creatureGenerator1(CreatureGenerator),
+             creatureGenerator1(CreatureGenerator.ID),
              
              creatureGenerator2,
              creatureGenerator3,
@@ -171,7 +167,9 @@ public extension Map.Object {
              randomResource,
              randomTown,
              refugeeCamp,
-             resource07FormatR,
+             
+             resource(Resource.Kind),
+             
              sanctuary,
              scholar,
              seaChest,
@@ -292,10 +290,11 @@ public extension Map.Object {
     }
 }
 
+// MARK: Stripped
 public extension Map.Object.ID {
     
     /// From here: https://h3maparchives.celestialheavens.com/tools/wog/erm_help/index.htm
-    enum Stripped: UInt32 {
+    enum Stripped: UInt32, Hashable, CaseIterable {
         case altarOfSacrifice = 2,
              anchorPoint = 3,
              arena = 4,
@@ -414,7 +413,10 @@ public extension Map.Object.ID {
              randomResource = 76,
              randomTown = 77,
              refugeeCamp = 78,
-             resource07FormatR = 79,
+             
+             ///  [0 - 7 - Format R]
+             resource = 79,
+             
              sanctuary = 80,
              scholar = 81,
              seaChest = 82,

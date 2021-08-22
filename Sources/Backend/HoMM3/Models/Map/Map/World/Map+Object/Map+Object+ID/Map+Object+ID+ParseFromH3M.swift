@@ -7,13 +7,35 @@
 
 import Foundation
 
-
-
-public extension Map.Object.ID {
-   
-    enum Error: Swift.Error {
-        case unrecognizedObjectClassIdentifier(Stripped.RawValue)
+public enum IDFromRawValueError<Model>: Swift.Error where Model: RawRepresentable {
+    case genericUnrecognizedRawValue(Model.RawValue, tryingToInit: Model.Type = Model.self)
+    case genericInteger(tooLarge: Int, tryingPassAsRawValueWhenInit: Model.Type = Model.self)
+}
+public extension RawRepresentable where RawValue: FixedWidthInteger {
+    init(id rawValue: RawValue) throws {
+        guard let selfValue = Self(rawValue: rawValue) else {
+            throw IDFromRawValueError<Self>.genericUnrecognizedRawValue(rawValue)
+        }
+        self = selfValue
     }
+}
+public extension RawRepresentable where RawValue == UInt8 {
+    init<I>(integer: I) throws where I: FixedWidthInteger {
+        do {
+            let rawValue = try UInt8(integer: integer)
+            try self.init(id: rawValue)
+        } catch {
+            throw IDFromRawValueError<Self>.genericInteger(tooLarge: Int(integer))
+        }
+    }
+}
+
+extension Map.Object.ID {
+    
+    
+     enum Error: Swift.Error {
+         case unrecognizedObjectClassIdentifier(Stripped.RawValue)
+     }
     
     init(id: UInt32, subId: UInt32) throws {
         guard let stripped = Stripped(rawValue: id) else {
@@ -25,49 +47,215 @@ public extension Map.Object.ID {
 
 private extension Map.Object.ID {
     init(stripped: Stripped, subId: UInt32) throws {
-   
+        
         switch stripped {
         case .artifact:
-            let artifactID = try Artifact.ID(fittingIn: subId)
-            self = .artifact(artifactID)
+            self = try .artifact(.init(integer: subId))
         case .borderguard:
-            fatalError()
+            self = try .borderguard(.init(integer: subId))
         case .keymastersTent:
-            fatalError()
+            self = try .keymastersTent(.init(integer: subId))
         case .creatureBank:
-            fatalError()
+            self = try .creatureBank(.init(integer: subId))
         case .creatureGenerator1:
-            fatalError()
+            self = try .creatureGenerator1(.init(integer: subId))
         case .creatureGenerator4:
-            fatalError()
+            guard subId <= 1 else { fatalError("Expected 0 or 1 for Object.CreatureGenerator4") }
+            self = .creatureGenerator4(unknownBool: subId != 0)
         case .garrison:
-            fatalError()
+            guard subId <= 1 else { fatalError("Expected 0 or 1 for Garrison, where subid tells if it has antiMagic or not.") }
+            self = .garrison(hasAntiMagic: subId != 0)
         case .hero:
-            fatalError()
+            self = try .hero(.init(integer: subId))
         case .monolithOneWayEntrance:
-            fatalError()
+            self = try .monolithOneWayEntrance(.init(integer: subId))
         case .monolithOneWayExit:
-            fatalError()
+            self = try .monolithOneWayExit(.init(integer: subId))
         case .monolithTwoWay:
-            fatalError()
+            self = try .monolithTwoWay(.init(integer: subId))
         case .mine:
-            fatalError()
+            self = try .mine(.init(integer: subId))
         case .monster:
-            fatalError()
+            self = try .monster(.init(integer: subId))
         case .spellScroll:
-            fatalError()
+            self = try .spellScroll(.init(integer: subId))
         case .town:
-            fatalError()
+            self = try .town(.init(integer: subId))
         case .witchHut:
-            fatalError()
+            self = try .witchHut(.init(integer: subId))
         case .borderGate:
-            fatalError()
+            self = try .borderGate(.init(integer: subId))
         case .randomDwellingWithLevel:
-            fatalError()
+            self = try .randomDwellingAtLevel(.init(integer: subId))
         case .randomDwellingFactoion:
-            fatalError()
-        default:
-            fatalError("TODO handle stripped with no sub id")
+            self = try .randomDwellingOfFaction(.init(integer: subId))
+        case .resource:
+            self = try .resource(.init(integer: subId))
+     
+            // MARK: without sub id
+        case .abandonedMine: self = .abandonedMine
+        case .altarOfSacrifice: self = .altarOfSacrifice
+        case .anchorPoint: self = .anchorPoint
+        case .arena: self = .arena
+        case .pandorasBox: self = .pandorasBox
+        case .blackMarket: self = .blackMarket
+        case .boat: self = .boat
+        case .buoy: self = .buoy
+        case .campfire: self = .campfire
+        case .cartographer: self = .cartographer
+        case .swanPond: self = .swanPond
+        case .coverOfDarkness: self = .coverOfDarkness
+        case .creatureGenerator2: self = .creatureGenerator2
+        case .creatureGenerator3: self = .creatureGenerator3
+        case .cursedGround: self = .cursedGround
+        case .corpse: self = .corpse
+        case .marlettoTower: self = .marlettoTower
+        case .derelictShip: self = .derelictShip
+        case .event: self = .event
+        case .eyeOfTheMagi: self = .eyeOfTheMagi
+        case .faerieRing: self = .faerieRing
+        case .flotsam: self = .flotsam
+        case .fountainOfFortune: self = .fountainOfFortune
+        case .fountainOfYouth: self = .fountainOfYouth
+        case .gardenOfRevelation: self = .gardenOfRevelation
+        case .hillFort: self = .hillFort
+        case .grail: self = .grail
+        case .hutOfTheMagi: self = .hutOfTheMagi
+        case .idolOfFortune: self = .idolOfFortune
+        case .leanTo: self = .leanTo
+        case .libraryOfEnlightenment: self = .libraryOfEnlightenment
+        case .lighthouse: self = .lighthouse
+        case .magicPlains: self = .magicPlains
+        case .schoolOfMagic: self = .schoolOfMagic
+        case .magicSpring: self = .magicSpring
+        case .magicWell: self = .magicWell
+        case .mercenaryCamp: self = .mercenaryCamp
+        case .mermaid: self = .mermaid
+        case .mysticalGarden: self = .mysticalGarden
+        case .oasis: self = .oasis
+        case .obelisk: self = .obelisk
+        case .redwoodObservatory: self = .redwoodObservatory
+        case .oceanBottle: self = .oceanBottle
+        case .pillarOfFire: self = .pillarOfFire
+        case .starAxis: self = .starAxis
+        case .prison: self = .prison
+        case .pyramid: self = .pyramid
+        case .rallyFlag: self = .rallyFlag
+            
+        case .randomArtifact: self = .randomArtifact
+        case .randomTreasureArtifact: self = .randomTreasureArtifact
+        case .randomMinorArtifact: self = .randomMinorArtifact
+        case .randomMajorArtifact: self = .randomMajorArtifact
+        case .randomRelic: self = .randomRelic
+            
+        case .randomHero: self = .randomHero
+        case .randomMonster: self = .randomMonster
+        case .randomMonster1: self = .randomMonster1
+        case .randomMonster2: self = .randomMonster2
+        case .randomMonster3: self = .randomMonster3
+        case .randomMonster4: self = .randomMonster4
+            
+        case .randomResource: self = .randomResource
+        case .randomTown: self = .randomTown
+        case .refugeeCamp: self = .refugeeCamp
+        case .sanctuary: self = .sanctuary
+        case .scholar: self = .scholar
+        case .seaChest: self = .seaChest
+        case .seerSHut: self = .seerSHut
+        case .crypt: self = .crypt
+        case .shipwreck: self = .shipwreck
+        case .shipwreckSurvivor: self = .shipwreckSurvivor
+        case .shipyard: self = .shipyard
+        case .shrineOfMagicIncantation: self = .shrineOfMagicIncantation
+        case .shrineOfMagicGesture: self = .shrineOfMagicGesture
+        case .shrineOfMagicThought: self = .shrineOfMagicThought
+        case .sign: self = .sign
+        case .sirens: self = .sirens
+        case .stables: self = .stables
+        case .tavern: self = .tavern
+        case .temple: self = .temple
+        case .denOfThieves: self = .denOfThieves
+        case .tradingPost: self = .tradingPost
+        case .learningStone: self = .learningStone
+        case .treasureChest: self = .treasureChest
+        case .treeofKnowledge: self = .treeofKnowledge
+        case .subterraneanGate: self = .subterraneanGate
+        case .university: self = .university
+        case .wagon: self = .wagon
+        case .warMachineFactory: self = .warMachineFactory
+        case .schooloFWar: self = .schooloFWar
+        case .warriorsTomb: self = .warriorsTomb
+        case .waterWheel: self = .waterWheel
+        case .wateringHole: self = .wateringHole
+        case .whirlpool: self = .whirlpool
+        case .windmill: self = .windmill
+        case .brush: self = .brush
+        case .bush: self = .bush
+        case .cactus: self = .cactus
+        case .canyon: self = .canyon
+        case .crater: self = .crater
+        case .deadVegetation: self = .deadVegetation
+        case .flowers: self = .flowers
+        case .frozenLake: self = .frozenLake
+        case .hedge: self = .hedge
+        case .hill: self = .hill
+        case .hole: self = .hole
+        case .kelp: self = .kelp
+        case .lake: self = .lake
+        case .lavaFlow: self = .lavaFlow
+        case .lavaLake: self = .lavaLake
+        case .mushrooms: self = .mushrooms
+        case .log: self = .log
+        case .mandrake: self = .mandrake
+        case .moss: self = .moss
+        case .mound: self = .mound
+        case .mountain: self = .mountain
+        case .oakTrees: self = .oakTrees
+        case .outcropping: self = .outcropping
+        case .pineTrees: self = .pineTrees
+        case .plant: self = .plant
+        case .riverDelta: self = .riverDelta
+        case .rock: self = .rock
+        case .sandDune: self = .sandDune
+        case .sandPit: self = .sandPit
+        case .shrub: self = .shrub
+        case .skull: self = .skull
+        case .stalagmite: self = .stalagmite
+        case .stump: self = .stump
+        case .tarPit: self = .tarPit
+        case .trees: self = .trees
+        case .vine: self = .vine
+        case .volcanicVent: self = .volcanicVent
+        case .volcano: self = .volcano
+        case .willowTrees: self = .willowTrees
+        case .yuccaTrees: self = .yuccaTrees
+        case .reef: self = .reef
+        case .randomMonster5: self = .randomMonster5
+        case .randomMonster6: self = .randomMonster6
+        case .randomMonster7: self = .randomMonster7
+        case .desertHills: self = .desertHills
+        case .dirtHills: self = .dirtHills
+        case .grassHills: self = .grassHills
+        case .roughHills: self = .roughHills
+        case .subterraneanRocks: self = .subterraneanRocks
+        case .swampFoliage: self = .swampFoliage
+        case .freelancersGuild: self = .freelancersGuild
+        case .heroPlaceholder: self = .heroPlaceholder
+        case .questGuard: self = .questGuard
+        case .randomDwelling: self = .randomDwelling
+        case .garrison2: self = .garrison2
+        case .tradingPostSnow: self = .tradingPostSnow
+        case .cloverField: self = .cloverField
+        case .cursedGround2: self = .cursedGround2
+        case .evilFog: self = .evilFog
+        case .favoredWinds: self = .favoredWinds
+        case .fieryFields: self = .fieryFields
+        case .holyGround: self = .holyGround
+        case .lucidPools: self = .lucidPools
+        case .magicClouds: self = .magicClouds
+        case .magicPlains2: self = .magicPlains2
+        case .rocklands: self = .rocklands
+        case .dragonUtopia: self = .dragonUtopia
         }
     }
 }

@@ -175,7 +175,7 @@ private extension  Map.Loader.Parser.H3M {
         let slotContainsArtifact = format == .restorationOfErathia ? artifactIDRaw == 0xff : artifactIDRaw == 0xffff
 
         guard slotContainsArtifact else { return nil }
-        let artifactId = try Artifact.ID(fittingIn: artifactIDRaw)
+        let artifactId = try Artifact.ID(integer: artifactIDRaw)
         guard !(artifactId.isWarMachine && slot.isBackpack) else {
             throw Error.warmachineFoundInBackback
         }

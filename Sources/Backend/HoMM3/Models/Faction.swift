@@ -6,7 +6,8 @@
 //
 
 import Foundation
-public enum Faction: Int, Equatable, CaseIterable, CustomStringConvertible {
+
+public enum Faction: UInt8, Equatable, CaseIterable, CustomStringConvertible {
     case castle, rampart, tower, inferno, necropolis, dungeon, stronghold, fortress, conflux, neutral
 }
 

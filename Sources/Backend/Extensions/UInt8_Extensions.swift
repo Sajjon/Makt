@@ -14,7 +14,7 @@ public extension UInt8 {
         case integerLargerThan255
     }
     
-    init<I>(fittingIn integer: I) throws where I: FixedWidthInteger {
+    init<I>(integer: I) throws where I: FixedWidthInteger {
         guard integer <= 255 else {
             throw Error.integerLargerThan255
         }

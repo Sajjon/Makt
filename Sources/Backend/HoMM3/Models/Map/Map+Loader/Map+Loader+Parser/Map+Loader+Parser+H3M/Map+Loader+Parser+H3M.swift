@@ -248,10 +248,13 @@ private extension Map.Loader.Parser.H3M {
             /// What landscape group the object will be in the editor
             let mapEditorLandscapeGroup = try parseLandscapes()
             
-            let objectID = try Map.Object.ID(
+            
+            
+            let objectID = try Map.Object.ID.init(
                 id: reader.readUInt32(),
-                subId: try reader.readUInt32()
+                subId: reader.readUInt32()
             )
+
 
             /// used by editor
             let objectGroupRaw = try reader.readUInt8()

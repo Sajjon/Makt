@@ -266,25 +266,6 @@ public extension Artifact {
     }
 }
 
-// MARK: Init Throwing
-public extension Artifact.ID {
-    
-    enum Error: Swift.Error {
-        case unrecognizedArtifactID(Artifact.ID.RawValue)
-    }
-    
-    init<I>(fittingIn integer: I) throws where I: FixedWidthInteger {
-        try self.init(id: UInt8(fittingIn: integer))
-    }
-    
-    init(id raw: RawValue) throws {
-        guard let artifactID = Self.init(rawValue: raw) else {
-            throw Error.unrecognizedArtifactID(raw)
-        }
-        self = artifactID
-    }
-}
-
 public extension Artifact.ID {
     static func available(in version: Version) -> [Self] {
         switch version {

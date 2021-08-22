@@ -7,9 +7,13 @@
 
 import Foundation
 
-
 public extension Map.Object {
-    enum CreatureBank: UInt8, Equatable, CaseIterable {
+    enum CreatureBank: Equatable {}
+}
+
+
+public extension Map.Object.CreatureBank {
+    enum ID: UInt8, Equatable, CaseIterable {
         case cyclopsStockpile = 0,
              dwarvenTreasury,
              griffinConservatory,

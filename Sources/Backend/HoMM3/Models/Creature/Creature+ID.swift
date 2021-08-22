@@ -211,20 +211,3 @@ public extension Creature{
         #endif
     }
 }
-
-public extension Creature.ID {
-    enum Error: Swift.Error, Equatable {
-        case unrecognizedCreatureId(RawValue)
-    }
-    
-    init<I>(fittingIn integer: I) throws where I: FixedWidthInteger {
-        try self.init(id: UInt8(fittingIn: integer))
-    }
-    
-    init(id rawValue: RawValue) throws {
-        guard let creatureID = Self(rawValue: rawValue) else {
-            throw Error.unrecognizedCreatureId(rawValue)
-        }
-        self = creatureID
-    }
-}

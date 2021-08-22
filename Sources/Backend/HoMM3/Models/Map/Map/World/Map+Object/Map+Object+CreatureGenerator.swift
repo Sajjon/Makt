@@ -6,8 +6,13 @@
 //
 
 import Foundation
+
 public extension Map.Object {
-    enum CreatureGenerator: UInt8 {
+    enum CreatureGenerator: Equatable {}
+}
+
+public extension Map.Object.CreatureGenerator {
+    enum ID: UInt8 {
         /// For creature: "basilisk"
         case basiliskPit = 0
 

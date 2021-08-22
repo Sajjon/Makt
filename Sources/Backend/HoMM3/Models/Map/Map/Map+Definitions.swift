@@ -14,11 +14,14 @@ public extension Map {
 }
 
 public extension Map.Object {
-    struct Attributes: Equatable {
+    struct Attributes: Equatable, CustomDebugStringConvertible {
         public let animationFileName: String
         public let supportedLandscapes: [Map.Tile.Terrain.Kind]
         public let mapEditorLandscapeGroup: [Map.Tile.Terrain.Kind]
-        public let objectID: Map.Object.ID
+
+        /// We REALLY dont want this to be optional. But the H3M parser parsed Map.Object.ID.Stripped with rawValue `50` and `199` which don't exist in the list. This is most likely due to incorrect implementation of the parser. But compared to both VCMI and homm3tools it looks correct. Hmm... more debugging is needed! Might be better to not at all initiialize the Map.Object.Attributes, and just skip it all together when objectID is nil?! At least we should debug and have a look at the values of the other properties!
+        public let objectID: Map.Object.ID?
+
         public let group: Group?
         public let pathfinding: Pathfinding
         public let zRenderingPosition: UInt8
@@ -29,18 +32,41 @@ public extension Map.Object {
 
 public extension Map.Object.Attributes {
     
+    var debugDescription: String {
+        """
+        animationFileName: \(animationFileName)
+        objectID: \(objectID.map{ $0.debugDescription } ?? "nil")
+        group: \(group.map{ $0.debugDescription } ?? "nil")
+        supportedLandscapes: \(supportedLandscapes)
+        mapEditorLandscapeGroup: \(mapEditorLandscapeGroup)
+        pathfinding: \(pathfinding)
+        """
+    }
+    
     struct Pathfinding: Equatable {
         public let visitability: Visitability
         public let passability: Passability
     }
 
     
-     enum Group: UInt8, Equatable, CaseIterable {
+     enum Group: UInt8, Equatable, CaseIterable, CustomDebugStringConvertible {
         case towns = 1
         case monsters
         case heroes
         case artifacts
         case treasure
+    }
+}
+
+public extension Map.Object.Attributes.Group {
+    var debugDescription: String {
+        switch self {
+        case .towns: return "towns"
+        case .monsters: return "monsters"
+        case .heroes: return "heroes"
+        case .artifacts: return "artifacts"
+        case .treasure: return "treasure"            
+        }
     }
 }
 

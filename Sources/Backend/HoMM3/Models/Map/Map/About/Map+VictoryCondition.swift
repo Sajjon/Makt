@@ -104,15 +104,10 @@ public extension Map.VictoryCondition.Kind {
             return parameter
         }
         func ensureArtifactID() throws -> Artifact.ID {
-            let artifactID = try Artifact.ID(fittingIn: ensureParameter1(contents: "Artifact ID"))
-            return artifactID
+            try Artifact.ID(integer: ensureParameter1(contents: "Artifact ID"))
         }
         func ensureHeroID() throws -> Hero.ID {
-            let purpose = "Hero ID"
-            guard let heroId = Hero.ID(rawValue: try UInt8(ensureParameter1(contents: purpose))) else {
-                throw Error.missingParameter(contents: purpose, for: stripped)
-            }
-            return heroId
+            try Hero.ID(integer: ensureParameter1(contents: "Hero id"))
         }
         func ensureParameter2(contents: String) throws -> Int {
             guard let parameter = parameter2 else {
@@ -127,7 +122,7 @@ public extension Map.VictoryCondition.Kind {
             assert(position == nil)
             self = .acquireSpecificArtifact(try ensureArtifactID())
         case .accumulateCreatures:
-            let creatureKind = try Creature.ID(fittingIn: ensureParameter1(contents: "Creature kind"))
+            let creatureKind = try Creature.ID(integer: ensureParameter1(contents: "Creature kind"))
             let creatureAmount = try ensureParameter2(contents: "Creature amount")
             assert(position == nil)
             self = .accumulateCreatures(
@@ -136,10 +131,7 @@ public extension Map.VictoryCondition.Kind {
             )
             
         case .accumulateResources:
-            let resourceKindRaw = try ensureParameter1(contents: "Resource kind")
-            guard let resourceKind = Resource.Kind(rawValue: resourceKindRaw) else {
-                throw Error.unrecognizedResourceKind(resourceKindRaw)
-            }
+            let resourceKind = try Resource.Kind(integer: ensureParameter1(contents: "Resource kind"))
             let amount = try ensureParameter2(contents: "Resource amount")
             assert(position == nil)
             self = .accumulateResources(
