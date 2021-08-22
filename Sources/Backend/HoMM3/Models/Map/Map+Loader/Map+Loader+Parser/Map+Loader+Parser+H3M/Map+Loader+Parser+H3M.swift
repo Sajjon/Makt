@@ -250,7 +250,7 @@ private extension Map.Loader.Parser.H3M {
             
             
             
-            let objectID = try Map.Object.ID.init(
+            let objectID = try Map.Object.ID(
                 id: reader.readUInt32(),
                 subId: reader.readUInt32()
             )
@@ -258,9 +258,6 @@ private extension Map.Loader.Parser.H3M {
 
             /// used by editor
             let objectGroupRaw = try reader.readUInt8()
-//            guard let group = Map.Object.Attributes.Group(rawValue: objectGroupRaw) else {
-//                throw Error.unrecognizedObjectGroup(objectGroupRaw)
-//            }
             let group: Map.Object.Attributes.Group? = .init(rawValue: objectGroupRaw)
             
             /// Antoshkiv: "whether the object will be over or below object"
@@ -268,17 +265,20 @@ private extension Map.Loader.Parser.H3M {
             let zRenderingPosition = try reader.readUInt8()
             
             /// Unknown
-            try reader.skip(byteCount: 16)
+            let unknown16Bytes = try reader.read(byteCount: 16)
             
-            return .init(
+            let objectAttributes = Map.Object.Attributes(
                 animationFileName: animationFileName,
                 supportedLandscapes: supportedLandscapes,
                 mapEditorLandscapeGroup: mapEditorLandscapeGroup,
                 objectID: objectID,
                 group: group,
                 pathfinding: pathfinding,
-                zRenderingPosition: zRenderingPosition
+                zRenderingPosition: zRenderingPosition,
+                unknown16Bytes: unknown16Bytes
             )
+    
+            return objectAttributes
 
         }
         return .init(objectAttributes: attributes)

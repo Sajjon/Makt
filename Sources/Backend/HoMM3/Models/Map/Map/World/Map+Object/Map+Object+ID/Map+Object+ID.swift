@@ -65,6 +65,7 @@ import Foundation
 public extension Map.Object {
     /// From here: https://h3maparchives.celestialheavens.com/tools/wog/erm_help/format/format_ob.htm
     enum ID: Hashable, CustomDebugStringConvertible {
+        
         case altarOfSacrifice,
              anchorPoint,
              arena,
@@ -132,6 +133,8 @@ public extension Map.Object {
              schoolOfMagic,
              magicSpring,
              magicWell,
+             
+             marketOfTime, // missing in VCMI - why?
              
              mercenaryCamp,
              mermaid,
@@ -255,6 +258,59 @@ public extension Map.Object {
              randomMonster5,
              randomMonster6,
              randomMonster7,
+             
+             
+             
+             brush2,
+             bush2,
+             cactus2,
+             canyon2,
+             crater2,
+             deadVegetation2,
+             flowers2,
+             frozenLake2,
+             hedge2,
+             hill2,
+             hole2,
+             kelp2,
+             lake2,
+             lavaFlow2,
+             lavaLake2,
+             mushrooms2,
+             log2,
+             mandrake2,
+             moss2,
+             mound2,
+             mountain2,
+             oakTrees2,
+             outcropping2,
+             pineTrees2,
+             plant2,
+             riverDelta2,
+             rock2,
+             sandDune2,
+             sandPit2,
+             shrub2,
+             skull2,
+             stalagmite2,
+             stump2,
+             tarPit2,
+             trees2,
+             vine2,
+             volcanicVent2,
+             volcano2,
+             willowTrees2,
+             yuccaTrees2,
+             reef2,
+             
+             
+             
+             
+             
+             
+             
+             
+             
           
              desertHills,
              dirtHills,
@@ -292,9 +348,11 @@ public extension Map.Object {
 
 // MARK: Stripped
 public extension Map.Object.ID {
+
     
     /// From here: https://h3maparchives.celestialheavens.com/tools/wog/erm_help/index.htm
     enum Stripped: UInt32, Hashable, CaseIterable {
+        
         case altarOfSacrifice = 2,
              anchorPoint = 3,
              arena = 4,
@@ -375,7 +433,11 @@ public extension Map.Object.ID {
              magicSpring = 48,
              magicWell = 49,
              
-             /// case BLANK = 50,
+             /// Source: https://github.com/potmdehex/homm3tools/blob/5687f581a4eb5e7b0e8f48794d7be4e3b0a8cc8b/h3m/h3mlib/h3m_parsing/parse_oa_meta_type.c#L31
+             /// Source 2: explainatino needed, we parsed the object attributes with animation file name `AVXmktt0.def` for Object ID 50
+             /// https://forum.df2.ru/lofiversion/index.php/t24182-1450.html
+             /// See comment by: pHOMM at time 13 Aug 2010, 08:57, use google translate, he corrpobrates that this is market of time: "...and the time market AVXMKTT0.DEF"
+            marketOfTime = 50,
              
              mercenaryCamp = 51,
              mermaid = 52,
@@ -506,47 +568,47 @@ public extension Map.Object.ID {
              randomMonster5 = 162,
              randomMonster6 = 163,
              randomMonster7 = 164,
-             //             brush = 165,
-             //             bush = 166,
-             //             cactus = 167,
-             //             canyon = 168,
-             //             crater = 169,
-             //             deadVegetation = 170,
-             //             flowers = 171,
-             //             frozenLake = 172,
-             //             hedge = 173,
-             //             hill = 174,
-             //             hole = 175,
-             //             kelp = 176,
-             //             lake = 177,
-             //             lavaFlow = 178,
-             //             lavaLake = 179,
-             //             mushrooms = 180,
-             //             log = 181,
-             //             mandrake = 182,
-             //             moss = 183,
-             //             mound = 184,
-             //             mountain = 185,
-             //             oakTrees = 186,
-             //             outcropping = 187,
-             //             pineTrees = 188,
-             //             plant = 189,
-             //             riverDelta = 190,
-             //             rock = 191,
-             //             sandDune = 192,
-             //             sandPit = 193,
-             //             shrub = 194,
-             //             skull = 195,
-             //             stalagmite = 196,
-             //             stump = 197,
-             //             tarPit = 198,
-             //             trees = 199,
-             //             vine = 200,
-             //             volcanicVent = 201,
-             //             volcano = 202,
-             //             willowTrees = 203,
-             //             yuccaTrees = 204,
-             //             reef = 205,
+                          brush2 = 165,
+                          bush2 = 166,
+                          cactus2 = 167,
+                          canyon2 = 168,
+                          crater2 = 169,
+                          deadVegetation2 = 170,
+                          flowers2 = 171,
+                          frozenLake2 = 172,
+                          hedge2 = 173,
+                          hill2 = 174,
+                          hole2 = 175,
+                          kelp2 = 176,
+                          lake2 = 177,
+                          lavaFlow2 = 178,
+                          lavaLake2 = 179,
+                          mushrooms2 = 180,
+                          log2 = 181,
+                          mandrake2 = 182,
+                          moss2 = 183,
+                          mound2 = 184,
+                          mountain2 = 185,
+                          oakTrees2 = 186,
+                          outcropping2 = 187,
+                          pineTrees2 = 188,
+                          plant2 = 189,
+                          riverDelta2 = 190,
+                          rock2 = 191,
+                          sandDune2 = 192,
+                          sandPit2 = 193,
+                          shrub2 = 194,
+                          skull2 = 195,
+                          stalagmite2 = 196,
+                          stump2 = 197,
+                          tarPit2 = 198,
+                          trees2 = 199,
+                          vine2 = 200,
+                          volcanicVent2 = 201,
+                          volcano2 = 202,
+                          willowTrees2 = 203,
+                          yuccaTrees2 = 204,
+                          reef2 = 205,
              desertHills = 206,
              dirtHills = 207,
              grassHills = 208,

@@ -32,6 +32,7 @@ public extension RawRepresentable where RawValue == UInt8 {
 
 extension Map.Object.ID {
     
+ 
     
      enum Error: Swift.Error {
          case unrecognizedObjectClassIdentifier(Stripped.RawValue)
@@ -129,6 +130,8 @@ private extension Map.Object.ID {
         case .schoolOfMagic: self = .schoolOfMagic
         case .magicSpring: self = .magicSpring
         case .magicWell: self = .magicWell
+            
+        case .marketOfTime: self = .marketOfTime
         case .mercenaryCamp: self = .mercenaryCamp
         case .mermaid: self = .mermaid
         case .mysticalGarden: self = .mysticalGarden
@@ -233,6 +236,57 @@ private extension Map.Object.ID {
         case .randomMonster5: self = .randomMonster5
         case .randomMonster6: self = .randomMonster6
         case .randomMonster7: self = .randomMonster7
+            
+            
+            
+        case .brush2: self = .brush2
+        case .bush2: self = .bush2
+        case .cactus2: self = .cactus2
+        case .canyon2: self = .canyon2
+        case .crater2: self = .crater2
+        case .deadVegetation2: self = .deadVegetation2
+        case .flowers2: self = .flowers2
+        case .frozenLake2: self = .frozenLake2
+        case .hedge2: self = .hedge2
+        case .hill2: self = .hill2
+        case .hole2: self = .hole2
+        case .kelp2: self = .kelp2
+        case .lake2: self = .lake2
+        case .lavaFlow2: self = .lavaFlow2
+        case .lavaLake2: self = .lavaLake2
+        case .mushrooms2: self = .mushrooms2
+        case .log2: self = .log2
+        case .mandrake2: self = .mandrake2
+        case .moss2: self = .moss2
+        case .mound2: self = .mound2
+        case .mountain2: self = .mountain2
+        case .oakTrees2: self = .oakTrees2
+        case .outcropping2: self = .outcropping2
+        case .pineTrees2: self = .pineTrees2
+        case .plant2: self = .plant2
+        case .riverDelta2: self = .riverDelta2
+        case .rock2: self = .rock2
+        case .sandDune2: self = .sandDune2
+        case .sandPit2: self = .sandPit2
+        case .shrub2: self = .shrub2
+        case .skull2: self = .skull2
+        case .stalagmite2: self = .stalagmite2
+        case .stump2: self = .stump2
+        case .tarPit2: self = .tarPit2
+        case .trees2: self = .trees2
+        case .vine2: self = .vine2
+        case .volcanicVent2: self = .volcanicVent2
+        case .volcano2: self = .volcano2
+        case .willowTrees2: self = .willowTrees2
+        case .yuccaTrees2: self = .yuccaTrees2
+        case .reef2: self = .reef2
+            
+            
+            
+            
+            
+            
+            
         case .desertHills: self = .desertHills
         case .dirtHills: self = .dirtHills
         case .grassHills: self = .grassHills

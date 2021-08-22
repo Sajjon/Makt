@@ -90,6 +90,7 @@
 		487C2C2726CFC69E00031505 /* Creature+Level.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487C2C2626CFC69E00031505 /* Creature+Level.swift */; };
 		487C2C2926CFCCD200031505 /* UInt8_Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487C2C2826CFCCD200031505 /* UInt8_Extensions.swift */; };
 		487C2C2B26D0EFB800031505 /* Map+Object+ID+CustomDebugStringConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487C2C2A26D0EFB800031505 /* Map+Object+ID+CustomDebugStringConvertible.swift */; };
+		487C2C2E26D2258800031505 /* Data+Hex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487C2C2D26D2258800031505 /* Data+Hex.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -190,6 +191,7 @@
 		487C2C2626CFC69E00031505 /* Creature+Level.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Creature+Level.swift"; sourceTree = "<group>"; };
 		487C2C2826CFCCD200031505 /* UInt8_Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UInt8_Extensions.swift; sourceTree = "<group>"; };
 		487C2C2A26D0EFB800031505 /* Map+Object+ID+CustomDebugStringConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Map+Object+ID+CustomDebugStringConvertible.swift"; sourceTree = "<group>"; };
+		487C2C2D26D2258800031505 /* Data+Hex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Data+Hex.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -418,6 +420,7 @@
 		487C2BCC26CD326200031505 /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
+				487C2C2C26D2257A00031505 /* Data */,
 				487C2BCD26CD327C00031505 /* Integers+RepeatNTimes.swift */,
 				487C2C2826CFCCD200031505 /* UInt8_Extensions.swift */,
 			);
@@ -576,6 +579,14 @@
 			path = Creature;
 			sourceTree = "<group>";
 		};
+		487C2C2C26D2257A00031505 /* Data */ = {
+			isa = PBXGroup;
+			children = (
+				487C2C2D26D2258800031505 /* Data+Hex.swift */,
+			);
+			path = Data;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -732,6 +743,7 @@
 				487C2BF426CD916C00031505 /* Artifact+Slot.swift in Sources */,
 				487C2C1126CECEBC00031505 /* Map+Tile+Rotation.swift in Sources */,
 				487C2C0B26CECE2000031505 /* Map+Tile+Terrain.swift in Sources */,
+				487C2C2E26D2258800031505 /* Data+Hex.swift in Sources */,
 				487C2BF226CD78CF00031505 /* Map+Loader+Parser+H3M+ParsePredefinedHeroes.swift in Sources */,
 				487C2B8826CA950100031505 /* Map+Format.swift in Sources */,
 				487C2B9226CA9B5900031505 /* DataReader.swift in Sources */,

@@ -25,6 +25,7 @@ public extension Map.Object {
         public let group: Group?
         public let pathfinding: Pathfinding
         public let zRenderingPosition: UInt8
+        public let unknown16Bytes: Data
     }
 }
 
@@ -39,7 +40,7 @@ public extension Map.Object.Attributes {
         group: \(group.map{ $0.debugDescription } ?? "nil")
         supportedLandscapes: \(supportedLandscapes)
         mapEditorLandscapeGroup: \(mapEditorLandscapeGroup)
-        pathfinding: \(pathfinding)
+        unknown16Bytes: \(unknown16Bytes.hexEncodedString())
         """
     }
     

@@ -89,6 +89,7 @@ public extension Map.Object.ID {
         case .schoolOfMagic: return "schoolOfMagic"
         case .magicSpring: return "magicSpring"
         case .magicWell: return "magicWell"
+        case .marketOfTime: return "marketOfTime"
         case .mercenaryCamp: return "mercenaryCamp"
         case .mermaid: return "mermaid"
         case .mysticalGarden: return "mysticalGarden"
@@ -193,6 +194,61 @@ public extension Map.Object.ID {
         case .randomMonster5: return "randomMonster5"
         case .randomMonster6: return "randomMonster6"
         case .randomMonster7: return "randomMonster7"
+            
+            
+            
+            
+        case .brush2: return "brush2"
+        case .bush2: return "bush2"
+        case .cactus2: return "cactus2"
+        case .canyon2: return "canyon2"
+        case .crater2: return "crater2"
+        case .deadVegetation2: return "deadVegetation2"
+        case .flowers2: return "flowers2"
+        case .frozenLake2: return "frozenLake2"
+        case .hedge2: return "hedge2"
+        case .hill2: return "hill2"
+        case .hole2: return "hole2"
+        case .kelp2: return "kelp2"
+        case .lake2: return "lake2"
+        case .lavaFlow2: return "lavaFlow2"
+        case .lavaLake2: return "lavaLake2"
+        case .mushrooms2: return "mushrooms2"
+        case .log2: return "log2"
+        case .mandrake2: return "mandrake2"
+        case .moss2: return "moss2"
+        case .mound2: return "mound2"
+        case .mountain2: return "mountain2"
+        case .oakTrees2: return "oakTrees2"
+        case .outcropping2: return "outcropping2"
+        case .pineTrees2: return "pineTrees2"
+        case .plant2: return "plant2"
+        case .riverDelta2: return "riverDelta2"
+        case .rock2: return "rock2"
+        case .sandDune2: return "sandDune2"
+        case .sandPit2: return "sandPit2"
+        case .shrub2: return "shrub2"
+        case .skull2: return "skull2"
+        case .stalagmite2: return "stalagmite2"
+        case .stump2: return "stump2"
+        case .tarPit2: return "tarPit2"
+        case .trees2: return "trees2"
+        case .vine2: return "vine2"
+        case .volcanicVent2: return "volcanicVent2"
+        case .volcano2: return "volcano2"
+        case .willowTrees2: return "willowTrees2"
+        case .yuccaTrees2: return "yuccaTrees2"
+        case .reef2: return "reef2"
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
         case .desertHills: return "desertHills"
         case .dirtHills: return "dirtHills"
         case .grassHills: return "grassHills"
