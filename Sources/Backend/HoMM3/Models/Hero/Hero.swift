@@ -7,8 +7,8 @@
 
 import Foundation
 
-public struct Hero: Hashable, Identifiable {
-    public let id: ID
+public struct Hero: Hashable {
+    public let `class`: Hero.Class
     public let questIdentifier: UInt32?
     public let portraitID: ID
     public let name: String?

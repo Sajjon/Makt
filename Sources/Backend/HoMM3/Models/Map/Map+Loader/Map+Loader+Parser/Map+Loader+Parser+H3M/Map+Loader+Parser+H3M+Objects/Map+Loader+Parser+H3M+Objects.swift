@@ -56,6 +56,13 @@ internal extension Map.Loader.Parser.H3M {
                     )
                 )
                 
+            case .prison: fallthrough
+            case .randomHero:
+                objectKind = try .hero(
+                    parseRandomHero(
+                        format: format
+                    )
+                )
                 
             case .randomTown:
                 objectKind = try .town(
@@ -72,6 +79,7 @@ internal extension Map.Loader.Parser.H3M {
                         allowedSpellsOnMap: allowedSpellsOnMap
                     )
                 )
+                
                 
             default: fatalError("Not yet parsable event id: \(definition.objectID)")
             }

@@ -7,6 +7,7 @@
 
 import Foundation
 
+
 internal extension Map.Loader.Parser.H3M {
     
     func parseHero(
@@ -15,22 +16,34 @@ internal extension Map.Loader.Parser.H3M {
         disposedHeroes: [Hero.Disposed],
         heroID: Hero.ID
     ) throws -> Hero {
+        let predefined: Hero.Predefined? = predefinedHeroes.first(where: { $0.heroID == heroID })
+        let disposed: Hero.Disposed? = disposedHeroes.first(where: { $0.heroID == heroID })
+        
+        return try _parseHero(format: format, predefinedHero: predefined, disposedHero: disposed)
+    }
+    
+    func parseRandomHero(
+        format: Map.Format
+    ) throws -> Hero {
+        try _parseHero(format: format)
+    }
+}
+
+private extension Map.Loader.Parser.H3M {
+    
+    func _parseHero(
+        format: Map.Format,
+        predefinedHero: Hero.Predefined? = nil,
+        disposedHero: Hero.Disposed? = nil
+    ) throws -> Hero {
         let questIdentifier: UInt32? = format > .restorationOfErathia ? try reader.readUInt32() : nil
         let owner = try PlayerColor(integer: reader.readUInt8())
-//        let heroClass = try Hero.Class(integer: reader.readUInt8()) // this is a guess.. in VCMI called `subID`
-        let heroIdToLookup = try Hero.ID(integer: reader.readUInt8())
+        let heroClass = try Hero.Class(integer: reader.readUInt8())
         
-        
-        let predefined: Hero.Predefined? = predefinedHeroes.first(where: { $0.heroID == heroIdToLookup })
-     
-        
+   
         let name: String = try {
-            let defaultName: String? = disposedHeroes.first(where: { $0.heroID == heroIdToLookup }).map({ $0.name }) ?? nil
-            
             let maybeCustomName: String? = try reader.readBool() ? reader.readString() : nil
-            
-            let name = maybeCustomName ?? defaultName
-            
+            let name = maybeCustomName ?? disposedHero?.name
             guard let heroName = name else {
                 fatalError("Expected a name!")
             }
@@ -45,14 +58,11 @@ internal extension Map.Loader.Parser.H3M {
                 guard xp > 0 else { return nil }
                 return xp
             }
-        }() ?? predefined?.startingExperiencePoints
+        }() ?? predefinedHero?.startingExperiencePoints
         
         let portraitID: Hero.ID = try {
             let maybeCustomPortrait: Hero.ID? = try reader.readBool() ? .init(integer: reader.readUInt8()) : nil
-            
-            let defaultPortraitID: Hero.ID? = disposedHeroes.first(where: { $0.heroID == heroIdToLookup }).map({ $0.portraitID }) ?? nil
-            
-            let portraitID = maybeCustomPortrait ?? defaultPortraitID
+            let portraitID = maybeCustomPortrait ?? disposedHero?.portraitID
             
             guard let heroPortraitID = portraitID else {
                 fatalError("Expected a portrait!")
@@ -62,7 +72,7 @@ internal extension Map.Loader.Parser.H3M {
         }()
         
       
-        let startingSecondarySkills: [Hero.SecondarySkill]? = try reader.readBool() ? try parseSecondarySkills() :  predefined?.startingSecondarySkills
+        let startingSecondarySkills: [Hero.SecondarySkill]? = try reader.readBool() ? try parseSecondarySkills() :  predefinedHero?.startingSecondarySkills
         
         let garrison: Army? = try reader.readBool() ? parseArmyOf(parseFormation: false) : nil
         let artifacts = try parseArtifactsOfHero(format: format)
@@ -73,14 +83,14 @@ internal extension Map.Loader.Parser.H3M {
         let customBiography: String? = try {
             guard format > .restorationOfErathia else { return nil }
             return try !reader.readBool() ? nil : reader.readString()
-        }() ?? predefined?.biography
+        }() ?? predefinedHero?.biography
         
         
         let customGender: Hero.Gender? = try {
             guard format > .restorationOfErathia else { return nil }
             guard try reader.readBool() else { /* does NOT have custom gender */ return nil }
             return Hero.Gender(rawValue: try reader.readUInt8())
-        }() ?? predefined?.customGender
+        }() ?? predefinedHero?.customGender
         
         let customSpells: [Spell.ID]? = try {
             guard format >= .armageddonsBlade else { return nil }
@@ -95,18 +105,18 @@ internal extension Map.Loader.Parser.H3M {
                 guard buff < 255 else { return nil } //255 means no spells
                 return [try Spell.ID(integer: buff)]
             }
-        }() ?? predefined?.customSpells
+        }() ?? predefinedHero?.customSpells
         
         let customPrimarySkills: [Hero.PrimarySkill]? = try {
             guard format > .armageddonsBlade else { return nil }
             guard try reader.readBool() else { return nil }
             return try parsePrimarySkills() // TODO replace primary skill with hero specialty if available. VCMI does it, but surely we can do better.
-        }() ?? predefined?.customPrimarySkills
+        }() ?? predefinedHero?.customPrimarySkills
         
         try reader.skip(byteCount: 16)
         
         return .init(
-            id: heroID,
+            class: heroClass,
             questIdentifier: questIdentifier,
             portraitID: portraitID,
             name: name,
