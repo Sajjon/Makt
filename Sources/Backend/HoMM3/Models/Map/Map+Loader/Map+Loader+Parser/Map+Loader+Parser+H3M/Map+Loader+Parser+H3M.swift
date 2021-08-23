@@ -43,6 +43,7 @@ extension Map.Loader.Parser.H3M {
         )
         
         let definitions = try parseDefinitions()
+     
         let _ = try parseObjects(
             format: format,
             definitions: definitions,

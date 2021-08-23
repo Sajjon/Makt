@@ -24,5 +24,35 @@ public extension Map.Object {
         case event(Map.Event)
         case hero(Hero)
         case town(Map.Town)
+        case monster(Map.Monster)
+    }
+}
+
+public extension Map {
+    struct Monster: Hashable {
+        public let creatureStack: CreatureStack
+        /// unique code for this monster (used in missions)
+        public let missionIdentifier: UInt32?
+        
+        public let message: String?
+        public let bounty: Bounty?
+        
+        public let hostility: Hostility
+        public let willNeverFlee: Bool
+        public let doesNotGrowInNumbers: Bool
+    }
+}
+
+public extension Map.Monster {
+    struct Bounty: Hashable {
+        public let artifactID: Artifact.ID?
+        public let resources: Resources?
+    }
+    enum Hostility: UInt8, Hashable, CaseIterable {
+        case compliant,
+             friendly,
+             aggressive,
+             hostile,
+             savage
     }
 }

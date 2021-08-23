@@ -80,6 +80,42 @@ internal extension Map.Loader.Parser.H3M {
                     )
                 )
                 
+            case .monster(let creatureID):
+                objectKind = try .monster(
+                    parseMonster(format: format, creatureID: creatureID)
+                )
+            case .randomMonsterLevel1:
+                objectKind = try .monster(
+                    parseRandomMonster(format: format, level: .one)
+                )
+            case .randomMonsterLevel2:
+                objectKind = try .monster(
+                    parseRandomMonster(format: format, level: .two)
+                )
+            case .randomMonsterLevel3:
+                objectKind = try .monster(
+                    parseRandomMonster(format: format, level: .three)
+                )
+            case .randomMonsterLevel4:
+                objectKind = try .monster(
+                    parseRandomMonster(format: format, level: .four)
+                )
+            case .randomMonsterLevel5:
+                objectKind = try .monster(
+                    parseRandomMonster(format: format, level: .five)
+                )
+            case .randomMonsterLevel6:
+                objectKind = try .monster(
+                    parseRandomMonster(format: format, level: .six)
+                )
+            case .randomMonsterLevel7:
+                objectKind = try .monster(
+                    parseRandomMonster(format: format, level: .seven)
+                )
+            case .randomMonster:
+                objectKind = try .monster(
+                    parseRandomMonster(format: format)
+                )
                 
             default: fatalError("Not yet parsable event id: \(definition.objectID)")
             }

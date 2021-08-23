@@ -111,10 +111,10 @@ public extension Map.Object.ID {
             
         case .randomHero: return "randomHero"
         case .randomMonster: return "randomMonster"
-        case .randomMonster1: return "randomMonster1"
-        case .randomMonster2: return "randomMonster2"
-        case .randomMonster3: return "randomMonster3"
-        case .randomMonster4: return "randomMonster4"
+        case .randomMonsterLevel1: return "randomMonsterLevel1"
+        case .randomMonsterLevel2: return "randomMonsterLevel2"
+        case .randomMonsterLevel3: return "randomMonsterLevel3"
+        case .randomMonsterLevel4: return "randomMonsterLevel4"
             
         case .randomResource: return "randomResource"
         case .randomTown: return "randomTown"
@@ -191,9 +191,9 @@ public extension Map.Object.ID {
         case .willowTrees: return "willowTrees"
         case .yuccaTrees: return "yuccaTrees"
         case .reef: return "reef"
-        case .randomMonster5: return "randomMonster5"
-        case .randomMonster6: return "randomMonster6"
-        case .randomMonster7: return "randomMonster7"
+        case .randomMonsterLevel5: return "randomMonsterLevel5"
+        case .randomMonsterLevel6: return "randomMonsterLevel6"
+        case .randomMonsterLevel7: return "randomMonsterLevel7"
             
             
             

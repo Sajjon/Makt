@@ -153,10 +153,10 @@ private extension Map.Object.ID {
             
         case .randomHero: self = .randomHero
         case .randomMonster: self = .randomMonster
-        case .randomMonster1: self = .randomMonster1
-        case .randomMonster2: self = .randomMonster2
-        case .randomMonster3: self = .randomMonster3
-        case .randomMonster4: self = .randomMonster4
+        case .randomMonsterLevel1: self = .randomMonsterLevel1
+        case .randomMonsterLevel2: self = .randomMonsterLevel2
+        case .randomMonsterLevel3: self = .randomMonsterLevel3
+        case .randomMonsterLevel4: self = .randomMonsterLevel4
             
         case .randomResource: self = .randomResource
         case .randomTown: self = .randomTown
@@ -233,9 +233,9 @@ private extension Map.Object.ID {
         case .willowTrees: self = .willowTrees
         case .yuccaTrees: self = .yuccaTrees
         case .reef: self = .reef
-        case .randomMonster5: self = .randomMonster5
-        case .randomMonster6: self = .randomMonster6
-        case .randomMonster7: self = .randomMonster7
+        case .randomMonsterLevel5: self = .randomMonsterLevel5
+        case .randomMonsterLevel6: self = .randomMonsterLevel6
+        case .randomMonsterLevel7: self = .randomMonsterLevel7
             
             
             

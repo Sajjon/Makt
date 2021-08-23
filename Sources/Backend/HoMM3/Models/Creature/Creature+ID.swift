@@ -38,9 +38,9 @@ public extension Creature.ID {
     static func creatureIDs(
         nonUpgraded: [Self],
         upgraded: [Self],
-        _ upgradedOrNot: UpgradedOrNot = .both, sorting: Sorting = .byLevel
+        _ upgradedOrNot: UpgradedOrNot = .nonUpgradedAndUpgraded, sorting: Sorting = .byLevel
     ) -> [Self] {
-        precondition(upgradedOrNot != .both && sorting == .byUpgradedOrNot)
+        precondition(upgradedOrNot != .nonUpgradedAndUpgraded && sorting == .byUpgradedOrNot)
         var creatureIDs = [Self]()
         if upgradedOrNot.includeNonUpgraded {
             creatureIDs.append(contentsOf: nonUpgraded)
@@ -56,7 +56,7 @@ public extension Creature.ID {
         return creatureIDs
     }
     
-    static func castle(_ upgradedOrNot: UpgradedOrNot = .both, sorting: Sorting = .byLevel) -> [Self] {
+    static func castle(_ upgradedOrNot: UpgradedOrNot = .nonUpgradedAndUpgraded, sorting: Sorting = .byLevel) -> [Self] {
         creatureIDs(
             nonUpgraded: castleNonUpgraded,
             upgraded: castleUpgraded,
@@ -64,7 +64,7 @@ public extension Creature.ID {
         )
     }
     
-    static func rampart(_ upgradedOrNot: UpgradedOrNot = .both, sorting: Sorting = .byLevel) -> [Self] {
+    static func rampart(_ upgradedOrNot: UpgradedOrNot = .nonUpgradedAndUpgraded, sorting: Sorting = .byLevel) -> [Self] {
         creatureIDs(
             nonUpgraded: rampartNonUpgraded,
             upgraded: rampartUpgraded,
@@ -72,7 +72,7 @@ public extension Creature.ID {
         )
     }
     
-    static func tower(_ upgradedOrNot: UpgradedOrNot = .both, sorting: Sorting = .byLevel) -> [Self] {
+    static func tower(_ upgradedOrNot: UpgradedOrNot = .nonUpgradedAndUpgraded, sorting: Sorting = .byLevel) -> [Self] {
         creatureIDs(
             nonUpgraded: towerNonUpgraded,
             upgraded: towerUpgraded,
@@ -80,7 +80,7 @@ public extension Creature.ID {
         )
     }
     
-    static func inferno(_ upgradedOrNot: UpgradedOrNot = .both, sorting: Sorting = .byLevel) -> [Self] {
+    static func inferno(_ upgradedOrNot: UpgradedOrNot = .nonUpgradedAndUpgraded, sorting: Sorting = .byLevel) -> [Self] {
         creatureIDs(
             nonUpgraded: infernoNonUpgraded,
             upgraded: infernoUpgraded,
@@ -88,7 +88,7 @@ public extension Creature.ID {
         )
     }
     
-    static func necropolis(_ upgradedOrNot: UpgradedOrNot = .both, sorting: Sorting = .byLevel) -> [Self] {
+    static func necropolis(_ upgradedOrNot: UpgradedOrNot = .nonUpgradedAndUpgraded, sorting: Sorting = .byLevel) -> [Self] {
         creatureIDs(
             nonUpgraded: necropolisNonUpgraded,
             upgraded: necropolisUpgraded,
@@ -96,7 +96,7 @@ public extension Creature.ID {
         )
     }
     
-    static func dungeon(_ upgradedOrNot: UpgradedOrNot = .both, sorting: Sorting = .byLevel) -> [Self] {
+    static func dungeon(_ upgradedOrNot: UpgradedOrNot = .nonUpgradedAndUpgraded, sorting: Sorting = .byLevel) -> [Self] {
         creatureIDs(
             nonUpgraded: dungeonNonUpgraded,
             upgraded: dungeonUpgraded,
@@ -104,7 +104,7 @@ public extension Creature.ID {
         )
     }
     
-    static func stronghold(_ upgradedOrNot: UpgradedOrNot = .both, sorting: Sorting = .byLevel) -> [Self] {
+    static func stronghold(_ upgradedOrNot: UpgradedOrNot = .nonUpgradedAndUpgraded, sorting: Sorting = .byLevel) -> [Self] {
         creatureIDs(
             nonUpgraded: strongholdNonUpgraded,
             upgraded: strongholdUpgraded,
@@ -113,7 +113,7 @@ public extension Creature.ID {
     }
     
     
-    static func fortress(_ upgradedOrNot: UpgradedOrNot = .both, sorting: Sorting = .byLevel) -> [Self] {
+    static func fortress(_ upgradedOrNot: UpgradedOrNot = .nonUpgradedAndUpgraded, sorting: Sorting = .byLevel) -> [Self] {
         creatureIDs(
             nonUpgraded: fortressNonUpgraded,
             upgraded: fortressUpgraded,
@@ -122,7 +122,7 @@ public extension Creature.ID {
     }
     
     
-    static func conflux(_ upgradedOrNot: UpgradedOrNot = .both, sorting: Sorting = .byLevel) -> [Self] {
+    static func conflux(_ upgradedOrNot: UpgradedOrNot = .nonUpgradedAndUpgraded, sorting: Sorting = .byLevel) -> [Self] {
         // TODO when using sorting `.byLevel` on Conflux things get messed up because of their creature IDs... come up with a good solution here.
         creatureIDs(
             nonUpgraded: confluxNonUpgraded,
@@ -136,7 +136,7 @@ public extension Creature.ID {
         .dwarf,
         .woodElf,
         .pegasus,
-        .sendroidGuard,
+        .dendroidGuard,
         .unicorn,
         .greenDragon
     ]
@@ -147,7 +147,7 @@ public extension Creature.ID {
             .battleDwarf,
             .grandElf,
             .silverPegasus,
-            .sendroidSoldier,
+            .dendroidSoldier,
             .warUnicorn,
             .goldDragon
         ]
@@ -345,17 +345,17 @@ public extension Creature.ID {
     }()
     
     enum UpgradedOrNot: Equatable {
-        case upgradedOnly, nonUpgradedOnly, both
+        case upgradedOnly, nonUpgradedOnly, nonUpgradedAndUpgraded
         var includeUpgraded: Bool {
             switch self {
             case .nonUpgradedOnly: return false
-            case .upgradedOnly, .both: return true
+            case .upgradedOnly, .nonUpgradedAndUpgraded: return true
             }
         }
         var includeNonUpgraded: Bool {
             switch self {
             case .upgradedOnly: return false
-            case .nonUpgradedOnly, .both: return true
+            case .nonUpgradedOnly, .nonUpgradedAndUpgraded: return true
             }
         }
     }
@@ -382,7 +382,7 @@ public extension Creature.ID {
     
     static func of(
         faction: Faction,
-        _ upgradedOrNot: UpgradedOrNot = .both,
+        _ upgradedOrNot: UpgradedOrNot = .nonUpgradedAndUpgraded,
         sorting: Sorting = .byLevel
     ) -> [Self] {
         switch faction {
@@ -398,6 +398,334 @@ public extension Creature.ID {
         case .neutral: return Self.neutral
         }
     }
+    
+    static func at(
+        level: Creature.Level,
+        _ upgradedOrNot: UpgradedOrNot = .nonUpgradedOnly,
+        sorting: Sorting = .byUpgradedOrNot
+    ) -> [Self] {
+        switch level {
+        case .one: return level1(upgradedOrNot, sorting: sorting)
+        case .two: return level2(upgradedOrNot, sorting: sorting)
+        case .three: return level3(upgradedOrNot, sorting: sorting)
+        case .four: return level4(upgradedOrNot, sorting: sorting)
+        case .five: return level5(upgradedOrNot, sorting: sorting)
+        case .six: return level6(upgradedOrNot, sorting: sorting)
+        case .seven: return level7(upgradedOrNot, sorting: sorting)
+            #if WOG
+        case .eight: return level8(upgradedOrNot, sorting: sorting)
+            #endif // WOG
+        }
+    }
+    
+    private static func atLevel(
+        nonUpgradedAtLevel: [Self],
+        upgradedAtLevel: [Self],
+        _ upgradedOrNot: UpgradedOrNot = .nonUpgradedOnly,
+        sorting: Sorting = .byUpgradedOrNot
+    ) -> [Self] {
+        var ids = [Self]()
+        if upgradedOrNot.includeNonUpgraded {
+            ids.append(contentsOf: level1NonUpgraded)
+        }
+        if upgradedOrNot.includeUpgraded {
+            ids.append(contentsOf: level1Upgraded)
+        }
+        
+        switch sorting {
+        case .byUpgradedOrNot: break
+        case .byLevel: ids.sort(by: { $0.rawValue < $1.rawValue })
+        }
+        
+        return ids
+    }
+    
+    static func level1(
+        _ upgradedOrNot: UpgradedOrNot = .nonUpgradedOnly,
+        sorting: Sorting = .byUpgradedOrNot
+    ) -> [Self] {
+        atLevel(
+            nonUpgradedAtLevel: level1NonUpgraded,
+            upgradedAtLevel: level1Upgraded,
+            upgradedOrNot,
+            sorting: sorting
+        )
+    }
+    
+    static func level2(
+        _ upgradedOrNot: UpgradedOrNot = .nonUpgradedOnly,
+        sorting: Sorting = .byUpgradedOrNot
+    ) -> [Self] {
+        atLevel(
+            nonUpgradedAtLevel: level2NonUpgraded,
+            upgradedAtLevel: level2Upgraded,
+            upgradedOrNot,
+            sorting: sorting
+        )
+    }
+    
+    static func level3(
+        _ upgradedOrNot: UpgradedOrNot = .nonUpgradedOnly,
+        sorting: Sorting = .byUpgradedOrNot
+    ) -> [Self] {
+        atLevel(
+            nonUpgradedAtLevel: level3NonUpgraded,
+            upgradedAtLevel: level3Upgraded,
+            upgradedOrNot,
+            sorting: sorting
+        )
+    }
+    
+    
+    static func level4(
+        _ upgradedOrNot: UpgradedOrNot = .nonUpgradedOnly,
+        sorting: Sorting = .byUpgradedOrNot
+    ) -> [Self] {
+        atLevel(
+            nonUpgradedAtLevel: level4NonUpgraded,
+            upgradedAtLevel: level4Upgraded,
+            upgradedOrNot,
+            sorting: sorting
+        )
+    }
+    
+    
+    static func level5(
+        _ upgradedOrNot: UpgradedOrNot = .nonUpgradedOnly,
+        sorting: Sorting = .byUpgradedOrNot
+    ) -> [Self] {
+        atLevel(
+            nonUpgradedAtLevel: level5NonUpgraded,
+            upgradedAtLevel: level5Upgraded,
+            upgradedOrNot,
+            sorting: sorting
+        )
+    }
+    
+    static func level6(
+        _ upgradedOrNot: UpgradedOrNot = .nonUpgradedOnly,
+        sorting: Sorting = .byUpgradedOrNot
+    ) -> [Self] {
+        atLevel(
+            nonUpgradedAtLevel: level6NonUpgraded,
+            upgradedAtLevel: level6Upgraded,
+            upgradedOrNot,
+            sorting: sorting
+        )
+    }
+    
+    
+    static func level7(
+        _ upgradedOrNot: UpgradedOrNot = .nonUpgradedOnly,
+        sorting: Sorting = .byUpgradedOrNot
+    ) -> [Self] {
+        atLevel(
+            nonUpgradedAtLevel: level7NonUpgraded,
+            upgradedAtLevel: level7Upgraded,
+            upgradedOrNot,
+            sorting: sorting
+        )
+    }
+    
+    #if WOG
+    
+    static func level8(
+        _ upgradedOrNot: UpgradedOrNot = .nonUpgradedOnly,
+        sorting: Sorting = .byUpgradedOrNot
+    ) -> [Self] {
+        atLevel(
+            nonUpgradedAtLevel: level8NonUpgraded,
+            upgradedAtLevel: level8Upgraded,
+            upgradedOrNot,
+            sorting: sorting
+        )
+    }
+    #endif // WOG
+    
+    static let level1NonUpgraded: [Self] = [
+        .pikeman,
+        .centaur,
+        .gremlin,
+        .imp,
+        .skeleton,
+        .troglodyte,
+        .goblin,
+        .gnoll,
+        .pixie
+    ]
+    
+    static let level1Upgraded: [Self] = [
+        .halberdier,
+        .centaurCaptain,
+        .masterGremlin,
+        .familiar,
+        .skeletonWarrior,
+        .infernalTroglodyte,
+        .hobgoblin,
+        .gnollMarauder,
+        .sprite
+    ]
+    
+    static let level2NonUpgraded: [Self] = [
+        .archer,
+        .dwarf,
+        .stoneGargoyle,
+        .gog,
+        .walkingDead,
+        .harpy,
+        .wolfRider,
+        .lizardman,
+        .airElemental
+    ]
+    
+    static let level2Upgraded: [Self] = [
+        .marksman,
+        .battleDwarf,
+        .obsidianGargoyle,
+        .magog,
+        .zombie,
+        .harpyHag,
+        .wolfRaider,
+        .lizardWarrior,
+        .stormElemental
+    ]
+    
+    
+    static let level3NonUpgraded: [Self] = [
+        .griffin,
+        .woodElf,
+        .stoneGolem,
+        .hellHound,
+        .wight,
+        .evilEye,
+        .orc,
+        .serpentFly,
+        .waterElemental
+    ]
+    
+    static let level3Upgraded: [Self] = [
+        .royalGriffin,
+        .grandElf,
+        .ironGolem,
+        .cerberus,
+        .wraith,
+        .beholder,
+        .orcChieftain,
+        .dragonFly,
+        .iceElemental
+    ]
+    
+    
+    static let level4NonUpgraded: [Self] = [
+        .swordsman,
+        .pegasus,
+        .mage,
+        .demon,
+        .vampire,
+        .medusa,
+        .ogre,
+        .basilisk,
+        .fireElemental
+    ]
+    
+    static let level4Upgraded: [Self] = [
+        .crusader,
+        .silverPegasus,
+        .archMage,
+        .hornedDemon,
+        .vampireLord,
+        .medusaQueen,
+        .ogreMage,
+        .greaterBasilisk,
+        .energyElemental
+    ]
+    
+    
+    static let level5NonUpgraded: [Self] = [
+        .monk,
+        .dendroidGuard,
+        .genie,
+        .pitFiend,
+        .lich,
+        .minotaur,
+        .roc,
+        .gorgon,
+        .earthElemental
+    ]
+    
+    static let level5Upgraded: [Self] = [
+        .zealot,
+        .dendroidSoldier,
+        .masterGenie,
+        .pitLord,
+        .powerLich,
+        .minotaurKing,
+        .thunderbird,
+        .mightyGorgon,
+        .magmaElemental
+    ]
+    
+    static let level6NonUpgraded: [Self] = [
+        .cavalier,
+        .unicorn,
+        .naga,
+        .efreeti,
+        .blackKnight,
+        .manticore,
+        .cyclops,
+        .wyvern,
+        .psychicElemental
+    ]
+    
+    static let level6Upgraded: [Self] = [
+        .champion,
+        .warUnicorn,
+        .nagaQueen,
+        .efreetSultan,
+        .dreadKnight,
+        .scorpicore,
+        .cyclopsKing,
+        .wyvernMonarch,
+        .magicElemental
+    ]
+    
+    static let level7NonUpgraded: [Self] = [
+        .angel,
+        .greenDragon,
+        .giant,
+        .devil,
+        .boneDragon,
+        .redDragon,
+        .behemoth,
+        .hydra,
+        .firebird
+    ]
+    
+    static let level7Upgraded: [Self] = [
+        .archangel,
+        .goldDragon,
+        .titan,
+        .archDevil,
+        .ghostDragon,
+        .blackDragon,
+        .ancientBehemoth,
+        .chaosHydra,
+        .phoenix
+    ]
+    
+    #if WOG
+    static let level8: [Self] = [
+        .supremeArchangel,
+        .diamondDragon,
+        .lordOfThunder,
+        .antiChrist,
+        .bloodDragon,
+        .darknessDragon,
+        .ghostBehemoth,
+        .hellHydra,
+        .sacredPhoenix
+    ]
+    #endif // WOG
 }
 
 public extension Creature {
@@ -429,8 +757,8 @@ public extension Creature {
         grandElf = 19,
         pegasus = 20,
         silverPegasus = 21,
-        sendroidGuard = 22,
-        sendroidSoldier = 23,
+        dendroidGuard = 22,
+        dendroidSoldier = 23,
         unicorn = 24,
         warUnicorn = 25,
         greenDragon = 26,
