@@ -13,7 +13,7 @@ public extension Comparable where Self: RawRepresentable, Self.RawValue: Compara
     }
 }
 
-public enum PlayerColor: Int, Comparable, CaseIterable, CustomStringConvertible {
+public enum PlayerColor: UInt8, Comparable, CaseIterable, CustomStringConvertible {
 
     
     case red, blue, tan, green, orange, purple, teal, pink

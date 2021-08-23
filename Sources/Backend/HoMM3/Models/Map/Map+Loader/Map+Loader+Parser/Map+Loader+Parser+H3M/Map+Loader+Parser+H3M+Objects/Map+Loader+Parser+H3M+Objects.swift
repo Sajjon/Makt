@@ -9,7 +9,11 @@ import Foundation
 
 internal extension Map.Loader.Parser.H3M {
     
-    func parseObjects(format: Map.Format, definitions: Map.Definitions) throws -> Map.Objects {
+    func parseObjects(
+        format: Map.Format,
+        definitions: Map.Definitions,
+        allowedSpellsOnMap: [Spell.ID]
+    ) throws -> Map.Objects {
         
         let objectCount = try reader.readUInt32()
         
@@ -40,11 +44,16 @@ internal extension Map.Loader.Parser.H3M {
             switch definition.objectID {
             case .event:
                 objectKind = try .event(parseEvent(format: format))
-            case .hero(let heroID):
-                fatalError("todo parse")
-            case .randomHero:
-                fatalError("todo parse")
-            default: fatalError("todo all")
+                
+            case .randomTown:
+                objectKind = try .town(
+                    parseRandomTown(
+                        format: format,
+                        allowedSpellsOnMap: allowedSpellsOnMap
+                    )
+                )
+                
+            default: fatalError("Not yet parsable event id: \(definition.objectID)")
             }
             
             return .init(
@@ -58,9 +67,10 @@ internal extension Map.Loader.Parser.H3M {
 
 public struct CreatureStack: Hashable {
     public typealias Quantity = Int
-    public let creature: Creature
+    public let creatureID: Creature.ID
     public let quantity: Quantity
 }
+
 
 public struct Army: Hashable {
     public enum Slot: UInt8, Hashable, CaseIterable {
@@ -75,13 +85,35 @@ public struct Army: Hashable {
     public enum Formation: UInt8, Hashable, CaseIterable {
         case wide, tight
     }
-    public let creatureStacks: [Slot: CreatureStack]
+    public let creatureStackAtSlot: [Slot: CreatureStack]
+    public let formation: Formation
+}
+
+public struct CreatureStacks: Hashable {
+    public let creatureStacks: [CreatureStack]
 }
 
 // TODO: Extract to separate another (separate?) file?
 internal extension Map.Loader.Parser.H3M {
-    func parseArmyOf(size: Int = Army.Slot.allCases.count) throws -> Army {
+    func parseCreatureStacks(count: Int = Army.Slot.allCases.count) throws -> CreatureStacks {
         fatalError()
+    }
+    
+    func parseCreatureStacks() throws -> CreatureStacks? {
+        let count: Int = try .init(reader.readUInt8())
+        guard count > 0 else { return nil }
+        return try parseCreatureStacks(count: count)
+    }
+    
+    func parseArmyOf(size: Int = Army.Slot.allCases.count) throws -> Army {
+        let creatureStacks = try parseCreatureStacks(count: size)
+        let formation = try Army.Formation(integer: reader.readUInt8())
+        return .init(
+            creatureStackAtSlot: Dictionary(
+                uniqueKeysWithValues: Army.Slot.allCases.enumerated().map({ (key: $0.element, value: creatureStacks.creatureStacks[$0.offset] ) })
+            ),
+            formation: formation
+        )
     }
     
     func parseArmy() throws -> Army? {
@@ -106,65 +138,10 @@ internal extension Map.Loader.Parser.H3M {
         }
     }
     
-    func parseSpellIDs() throws -> [Spell.ID] {
+    func parseSpellCountAndIDs() throws -> [Spell.ID] {
         try reader.readUInt8().nTimes {
             try Spell.ID(integer: reader.readInt8())
         }
     }
 }
 
-
-
-// MARK: Parse Event
-private extension Map.Loader.Parser.H3M {
-    func parseEvent(format: Map.Format) throws -> Map.Event {
-        let hasMessage = try reader.readBool()
-        let message: String? = try !hasMessage ? nil : reader.readString()
-        let guards: Army? = try !hasMessage ? nil : {
-            let hasGuardsAsWell = try reader.readBool()
-            var guards: Army?
-            if hasGuardsAsWell {
-                guards = try parseArmy()
-            }
-            try reader.skip(byteCount: 4) // unknown?
-            return guards
-        }()
-        let experiencePointsToBeGained = try reader.readUInt32()
-        let manaPointsToBeGainedOrDrained = try reader.readUInt32()
-        let moraleToBeGainedOrDrained = try reader.readUInt8()
-        let luckToBeGainedOrDrained = try reader.readUInt8()
-        let resourcesToBeGained = try parseResources()
-        let primarySkills = try parsePrimarySkills()
-        let secondarySkills = try parseSecondarySkills()
-        let artifactIDs = try parseArtifactIDs(format: format)
-        let spellIDSs = try parseSpellIDs()
-        let armyGained = try parseArmy()
-        
-        try reader.skip(byteCount: 8) // unknown?
-        let availableForPlayers = try parseAvailableForPlayers()
-        let canBeActivatedByComputer = try reader.readBool()
-        let shouldBeRemovedAfterVisit = try reader.readBool()
-        try reader.skip(byteCount: 4) // unknown?
-        
-        return .init(
-            message: message,
-            guards: guards,
-            experiencePointsToBeGained: .init(experiencePointsToBeGained),
-            manaPointsToBeGainedOrDrained: .init(manaPointsToBeGainedOrDrained),
-            moraleToBeGainedOrDrained: .init(moraleToBeGainedOrDrained),
-            luckToBeGainedOrDrained: .init(luckToBeGainedOrDrained),
-            resourcesToBeGained: resourcesToBeGained,
-            primarySkills: primarySkills,
-            secondarySkills: secondarySkills,
-            artifactIDs: artifactIDs,
-            spellIDs: spellIDSs,
-            armyGained: armyGained,
-            availableForPlayers: availableForPlayers,
-            canBeActivatedByComputer: canBeActivatedByComputer,
-            shouldBeRemovedAfterVisit: shouldBeRemovedAfterVisit,
-            canBeActivatedByHuman: true // yes hardcoded
-        )
-        
-    }
-    
-}

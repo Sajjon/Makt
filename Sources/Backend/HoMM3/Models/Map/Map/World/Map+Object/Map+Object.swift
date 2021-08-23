@@ -21,5 +21,6 @@ public extension Map {
 public extension Map.Object {
     enum Kind: Hashable {
         case event(Map.Event)
+        case town(Map.Town)
     }
 }

@@ -12,30 +12,40 @@ public extension Map {
         
         
         private let message: String?
-        private let guards: Army?
+        
+        private let firstOccurence: UInt16?
+        private let nextOccurence: UInt8?
+        
+        private let guards: CreatureStacks?
         private let bounty: Bounty?
         private let shouldBeRemovedAfterVisit: Bool
         private let availability: Availability
         
         public init(
             message: String?,
-            guards: Army?,
-            experiencePointsToBeGained: Int,
-            manaPointsToBeGainedOrDrained: Int,
-            moraleToBeGainedOrDrained: Int,
-            luckToBeGainedOrDrained: Int,
+            
+            firstOccurence: UInt16? = nil,
+            nextOccurence: UInt8? = nil,
+            
+            guards: CreatureStacks? = nil,
+            experiencePointsToBeGained: Int = 0,
+            manaPointsToBeGainedOrDrained: Int = 0,
+            moraleToBeGainedOrDrained: Int = 0,
+            luckToBeGainedOrDrained: Int = 0,
             resourcesToBeGained: Resources,
-            primarySkills: [Hero.PrimarySkill],
-            secondarySkills: [Hero.SecondarySkill],
-            artifactIDs: [Artifact.ID],
-            spellIDs: [Spell.ID],
-            armyGained: Army?,
-            availableForPlayers: [PlayerColor],
+            primarySkills: [Hero.PrimarySkill] = [],
+            secondarySkills: [Hero.SecondarySkill] = [],
+            artifactIDs: [Artifact.ID] = [],
+            spellIDs: [Spell.ID] = [],
+            creaturesGained: CreatureStacks? = nil,
+            availableForPlayers: [PlayerColor] = [],
             canBeActivatedByComputer: Bool,
             shouldBeRemovedAfterVisit: Bool,
             canBeActivatedByHuman: Bool
         ) {
             self.message = message
+            self.firstOccurence = firstOccurence
+            self.nextOccurence = nextOccurence
             self.guards = guards
             self.bounty = .init(
                 experiencePointsToBeGained: experiencePointsToBeGained,
@@ -47,7 +57,7 @@ public extension Map {
                 secondarySkills: secondarySkills,
                 artifactIDs: artifactIDs,
                 spellIDs: spellIDs,
-                armyGained: armyGained
+                creaturesGained: creaturesGained
             )
             self.availability = .init(
                 availableForPlayers: availableForPlayers,
@@ -71,7 +81,7 @@ public extension Map.Event {
         private let secondarySkills: [Hero.SecondarySkill]?
         private let artifactIDs: [Artifact.ID]?
         private let spellIDs: [Spell.ID]?
-        private let armyGained: Army?
+        private let creaturesGained: CreatureStacks?
         
         public init?(
             experiencePointsToBeGained: Int,
@@ -83,7 +93,7 @@ public extension Map.Event {
             secondarySkills: [Hero.SecondarySkill],
             artifactIDs: [Artifact.ID],
             spellIDs: [Spell.ID],
-            armyGained: Army?
+            creaturesGained: CreatureStacks?
         ) {
             self.experiencePointsToBeGained = experiencePointsToBeGained == 0 ? nil : experiencePointsToBeGained
             self.manaPointsToBeGainedOrDrained = manaPointsToBeGainedOrDrained == 0 ? nil : manaPointsToBeGainedOrDrained
@@ -94,7 +104,7 @@ public extension Map.Event {
             self.secondarySkills = secondarySkills.count == 0 ? nil : secondarySkills
             self.artifactIDs = artifactIDs.count == 0 ? nil : artifactIDs
             self.spellIDs = spellIDs.count == 0 ? nil : spellIDs
-            self.armyGained = armyGained
+            self.creaturesGained = creaturesGained
             if
                 self.experiencePointsToBeGained == nil &&
                 self.manaPointsToBeGainedOrDrained == nil &&
@@ -105,7 +115,7 @@ public extension Map.Event {
                 self.secondarySkills == nil &&
                 self.artifactIDs == nil &&
                 self.spellIDs == nil &&
-                    self.armyGained == nil {
+                    self.creaturesGained == nil {
                 return nil
             }
         }

@@ -32,7 +32,7 @@ extension Map.Loader.Parser.H3M {
         
         let _ = try parseDisposedHeroes(format: format)
         let _ = try parseAllowedArtifacts(format: format)
-        let _ = try parseAllowedSpells(format: format)
+        let allowedSpells = try parseAllowedSpells(format: format)
         let _ = try parseAllowedHeroAbilities(format: format)
         let _ = try parseRumors()
         let _ = try parsePredefinedHeroes(format: format)
@@ -43,7 +43,11 @@ extension Map.Loader.Parser.H3M {
         )
         
         let definitions = try parseDefinitions()
-        let _ = try parseObjects(format: format, definitions: definitions)
+        let _ = try parseObjects(
+            format: format,
+            definitions: definitions,
+            allowedSpellsOnMap: allowedSpells
+        )
         let _ = try parseEvents()
         
         return .init(
@@ -123,22 +127,25 @@ private extension Map.Loader.Parser.H3M {
     }
 }
 
+internal extension Map.Loader.Parser.H3M {
+    func parseSpellIDs(includeIfBitSet: Bool = true) throws -> [Spell.ID] {
+        try Array(
+            reader.readBitArray(byteCount: 9)
+                .prefix(Spell.ID.allCases.count)
+        ).enumerated()
+        .compactMap { (spellIDIndex, available) in
+            guard available == includeIfBitSet else { return nil }
+            return Spell.ID.allCases[spellIDIndex]
+        }
+    }
+}
+
 // MARK: Parse Allowed Spells
 private extension Map.Loader.Parser.H3M {
+    
     func parseAllowedSpells(format: Map.Format) throws -> [Spell.ID] {
-        
-        let availableSpellIDs = Spell.ID.allCases
-        var allowedSpellsIDS = availableSpellIDs
-        
-
-        if format >= .shadowOfDeath {
-            allowedSpellsIDS = try Array(reader.readBitArray(byteCount: 9).prefix(availableSpellIDs.count)).enumerated().compactMap { (spellIDIndex, available) in
-                guard available else { return nil }
-                return availableSpellIDs[spellIDIndex]
-            }
-        }
-        
-        return allowedSpellsIDS
+        guard format >= .shadowOfDeath else { return Spell.ID.allCases }
+        return try parseSpellIDs()
     }
 }
 
