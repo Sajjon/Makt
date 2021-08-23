@@ -30,12 +30,12 @@ extension Map.Loader.Parser.H3M {
         let about = try parseAbout()
         let format = about.summary.format
         
-        let _ = try parseDisposedHeroes(format: format)
+        let disposedHeroes = try parseDisposedHeroes(format: format)
         let _ = try parseAllowedArtifacts(format: format)
         let allowedSpells = try parseAllowedSpells(format: format)
         let _ = try parseAllowedHeroAbilities(format: format)
         let _ = try parseRumors()
-        let _ = try parsePredefinedHeroes(format: format)
+        let predefinedHeroes = try parsePredefinedHeroes(format: format)
         
         let _ = try parseTerrain(
             hasUnderworld: about.summary.hasTwoLevels,
@@ -46,7 +46,9 @@ extension Map.Loader.Parser.H3M {
         let _ = try parseObjects(
             format: format,
             definitions: definitions,
-            allowedSpellsOnMap: allowedSpells
+            allowedSpellsOnMap: allowedSpells,
+            predefinedHeroes: predefinedHeroes,
+            disposedHeroes: disposedHeroes
         )
         let _ = try parseEvents()
         

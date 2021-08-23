@@ -95,6 +95,7 @@
 		487C2C3626D260DB00031505 /* Resources.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487C2C3526D260DB00031505 /* Resources.swift */; };
 		487C2C3826D26DC700031505 /* Map+Loader+Parser+H3M+Object+Event.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487C2C3726D26DC700031505 /* Map+Loader+Parser+H3M+Object+Event.swift */; };
 		487C2C3A26D26DEC00031505 /* Map+Loader+Parser+H3M+Object+Town.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487C2C3926D26DEC00031505 /* Map+Loader+Parser+H3M+Object+Town.swift */; };
+		487C2C3C26D3BA1200031505 /* Map+Loader+Parser+H3M+Object+Hero.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487C2C3B26D3BA1200031505 /* Map+Loader+Parser+H3M+Object+Hero.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -200,6 +201,7 @@
 		487C2C3526D260DB00031505 /* Resources.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Resources.swift; sourceTree = "<group>"; };
 		487C2C3726D26DC700031505 /* Map+Loader+Parser+H3M+Object+Event.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Map+Loader+Parser+H3M+Object+Event.swift"; sourceTree = "<group>"; };
 		487C2C3926D26DEC00031505 /* Map+Loader+Parser+H3M+Object+Town.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Map+Loader+Parser+H3M+Object+Town.swift"; sourceTree = "<group>"; };
+		487C2C3B26D3BA1200031505 /* Map+Loader+Parser+H3M+Object+Hero.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Map+Loader+Parser+H3M+Object+Hero.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -602,6 +604,7 @@
 				487C2C3226D2368D00031505 /* Map+Loader+Parser+H3M+Objects.swift */,
 				487C2C3726D26DC700031505 /* Map+Loader+Parser+H3M+Object+Event.swift */,
 				487C2C3926D26DEC00031505 /* Map+Loader+Parser+H3M+Object+Town.swift */,
+				487C2C3B26D3BA1200031505 /* Map+Loader+Parser+H3M+Object+Hero.swift */,
 			);
 			path = "Map+Loader+Parser+H3M+Objects";
 			sourceTree = "<group>";
@@ -728,6 +731,7 @@
 				487C2BA526CB8EC700031505 /* Map+VictoryCondition.swift in Sources */,
 				487C2BA326CAD48900031505 /* Size.swift in Sources */,
 				4814630626C9054900431960 /* Map+Loader+Reader.swift in Sources */,
+				487C2C3C26D3BA1200031505 /* Map+Loader+Parser+H3M+Object+Hero.swift in Sources */,
 				487C2BFD26CE4AC400031505 /* Map+Loader+Parser+H3M+Tiles.swift in Sources */,
 				487C2B8B26CA952700031505 /* Map+Loader+Parser+H3M.swift in Sources */,
 				487C2BC426CCEDF600031505 /* Map.swift in Sources */,

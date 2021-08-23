@@ -14,6 +14,7 @@ public extension Map {
   
     struct Object: Hashable {
         public let position: Position
+        public let objectID: Object.ID
         public let kind: Kind
     }
 }
@@ -21,6 +22,7 @@ public extension Map {
 public extension Map.Object {
     enum Kind: Hashable {
         case event(Map.Event)
+        case hero(Hero)
         case town(Map.Town)
     }
 }

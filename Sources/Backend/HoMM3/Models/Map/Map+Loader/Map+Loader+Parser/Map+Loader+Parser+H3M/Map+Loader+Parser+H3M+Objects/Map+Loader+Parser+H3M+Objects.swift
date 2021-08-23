@@ -12,7 +12,9 @@ internal extension Map.Loader.Parser.H3M {
     func parseObjects(
         format: Map.Format,
         definitions: Map.Definitions,
-        allowedSpellsOnMap: [Spell.ID]
+        allowedSpellsOnMap: [Spell.ID],
+        predefinedHeroes: [Hero.Predefined],
+        disposedHeroes: [Hero.Disposed]
     ) throws -> Map.Objects {
         
         let objectCount = try reader.readUInt32()
@@ -44,11 +46,29 @@ internal extension Map.Loader.Parser.H3M {
             switch definition.objectID {
             case .event:
                 objectKind = try .event(parseEvent(format: format))
+            case .hero(let heroID):
+                objectKind = try .hero(
+                    parseHero(
+                        format: format,
+                        predefinedHeroes: predefinedHeroes,
+                        disposedHeroes: disposedHeroes,
+                        heroID: heroID
+                    )
+                )
+                
                 
             case .randomTown:
                 objectKind = try .town(
                     parseRandomTown(
                         format: format,
+                        allowedSpellsOnMap: allowedSpellsOnMap
+                    )
+                )
+            case .town(let faction):
+                objectKind = try .town(
+                    parseTown(
+                        format: format,
+                        faction: faction,
                         allowedSpellsOnMap: allowedSpellsOnMap
                     )
                 )
@@ -58,6 +78,7 @@ internal extension Map.Loader.Parser.H3M {
             
             return .init(
                 position: position,
+                objectID: definition.objectID,
                 kind: objectKind
             )
         }
@@ -86,7 +107,7 @@ public struct Army: Hashable {
         case wide, tight
     }
     public let creatureStackAtSlot: [Slot: CreatureStack]
-    public let formation: Formation
+    public let formation: Formation?
 }
 
 public struct CreatureStacks: Hashable {
@@ -105,9 +126,11 @@ internal extension Map.Loader.Parser.H3M {
         return try parseCreatureStacks(count: count)
     }
     
-    func parseArmyOf(size: Int = Army.Slot.allCases.count) throws -> Army {
+    func parseArmyOf(size: Int = Army.Slot.allCases.count, parseFormation: Bool) throws -> Army {
         let creatureStacks = try parseCreatureStacks(count: size)
-        let formation = try Army.Formation(integer: reader.readUInt8())
+        
+        let formation: Army.Formation? = !parseFormation ? nil : try Army.Formation(integer: reader.readUInt8())
+        
         return .init(
             creatureStackAtSlot: Dictionary(
                 uniqueKeysWithValues: Army.Slot.allCases.enumerated().map({ (key: $0.element, value: creatureStacks.creatureStacks[$0.offset] ) })
@@ -116,10 +139,10 @@ internal extension Map.Loader.Parser.H3M {
         )
     }
     
-    func parseArmy() throws -> Army? {
+    func parseArmy(parseFormation: Bool) throws -> Army? {
         let size: Int = try .init(reader.readUInt8())
         guard size > 0 else { return nil }
-        return try parseArmyOf(size: size)
+        return try parseArmyOf(size: size, parseFormation: parseFormation)
     }
 }
 

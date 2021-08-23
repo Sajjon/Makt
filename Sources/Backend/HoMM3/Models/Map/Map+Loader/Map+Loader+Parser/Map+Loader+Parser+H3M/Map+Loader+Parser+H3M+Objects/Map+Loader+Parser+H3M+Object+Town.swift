@@ -221,13 +221,12 @@ internal extension Map.Loader.Parser.H3M {
         
         let owner = try PlayerColor(integer: reader.readUInt8())
         let name: String? = try reader.readBool() ? reader.readString() : nil
-        let garrison: Army? = try reader.readBool() ? parseArmy() : nil
+        let garrison: Army? = try reader.readBool() ? parseArmyOf(size: 7, parseFormation: true) : nil
         let buildings: Map.Town.Buildings = try reader.readBool() ? parseTownWithCustomBuildings() : parseSimpleTown()
         
         
         let obligatorySpells = try format == .restorationOfErathia ? [] : parseSpellIDs()
         let possibleSpells = try parseSpellIDs(includeIfBitSet: false).filter({ allowedSpellsOnMap.contains($0) })
-        assert(possibleSpells.count == allowedSpellsOnMap.count, "Remove this assert.... but just checking if 'includeIfBitSet: false' is correct above")
         
         // TODO add spells from mods.
         

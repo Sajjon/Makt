@@ -10,7 +10,7 @@ import Foundation
 public extension Hero {
     struct Predefined: Equatable {
         public let heroID: ID
-        public let startingExperiencePoints: Int
+        public let startingExperiencePoints: UInt32
         public let startingSecondarySkills: [SecondarySkill]?
         public let artifacts: [ArtifactInSlot]?
         public let biography: String?
@@ -31,8 +31,8 @@ public extension Hero.Predefined {
     }
 }
 
-public extension Hero.Predefined {
-    struct ArtifactInSlot: Equatable {
+public extension Hero {
+    struct ArtifactInSlot: Hashable {
         public let slot: Artifact.Slot
         public let artifactID: Artifact.ID
     }

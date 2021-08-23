@@ -8,7 +8,7 @@
 import Foundation
 
 public extension Hero {
-    enum Gender: UInt8, Equatable {
+    enum Gender: UInt8, Hashable {
         case male, female
         
         public init?(raw rawValue: UInt8) throws {

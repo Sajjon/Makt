@@ -19,8 +19,7 @@ public extension Map.Object {
         public let supportedLandscapes: [Map.Tile.Terrain.Kind]
         public let mapEditorLandscapeGroup: [Map.Tile.Terrain.Kind]
 
-        /// We REALLY dont want this to be optional. But the H3M parser parsed Map.Object.ID.Stripped with rawValue `50` and `199` which don't exist in the list. This is most likely due to incorrect implementation of the parser. But compared to both VCMI and homm3tools it looks correct. Hmm... more debugging is needed! Might be better to not at all initiialize the Map.Object.Attributes, and just skip it all together when objectID is nil?! At least we should debug and have a look at the values of the other properties!
-        public let objectID: Map.Object.ID?
+       public let objectID: Map.Object.ID
 
         public let group: Group?
         public let pathfinding: Pathfinding
@@ -35,7 +34,7 @@ public extension Map.Object.Attributes {
     var debugDescription: String {
         """
         animationFileName: \(animationFileName)
-        objectID: \(objectID.map{ $0.debugDescription } ?? "nil")
+        objectID: \(objectID)
         group: \(group.map{ $0.debugDescription } ?? "nil")
         supportedLandscapes: \(supportedLandscapes)
         mapEditorLandscapeGroup: \(mapEditorLandscapeGroup)

@@ -24,7 +24,6 @@ internal extension Map.Loader.Parser.H3M {
                 
                 // Hero is custom?
                 guard try reader.readBool() else { return nil }
-                
           
                 
                 let heroID: Hero.ID = availableHeroIDs[heroIDIndex]
@@ -49,7 +48,7 @@ internal extension Map.Loader.Parser.H3M {
                 
                 let predefinedHero = Hero.Predefined(
                     heroID: heroID,
-                    startingExperiencePoints: .init(startingExperiencePoints),
+                    startingExperiencePoints: startingExperiencePoints,
                     startingSecondarySkills: startingSecondarySkills,
                     artifacts: artifactsForHero,
                     biography: biography,
@@ -89,14 +88,14 @@ internal extension Map.Loader.Parser.H3M {
         }
     }
     
-    func parseArtifactsOfHero(format: Map.Format) throws -> [Hero.Predefined.ArtifactInSlot]? {
+    func parseArtifactsOfHero(format: Map.Format) throws -> [Hero.ArtifactInSlot]? {
         /// True if artifact set is not default (hero has some artifacts)
         let isArtifactSet = try reader.readBool()
         guard isArtifactSet else { return nil }
         
-        var artifactInSlots = [Hero.Predefined.ArtifactInSlot?]()
+        var artifactInSlots = [Hero.ArtifactInSlot?]()
         
-        let artifactsInNonBackpackSlots: [Hero.Predefined.ArtifactInSlot?] = try (0..<Artifact.Slot.Body.warMachine4.rawValue).map { slotId in
+        let artifactsInNonBackpackSlots: [Hero.ArtifactInSlot?] = try (0..<Artifact.Slot.Body.warMachine4.rawValue).map { slotId in
             let slot = Artifact.Slot.Body(rawValue: slotId)!
             return try parseArtifact(in: .body(slot), format: format)
         }
@@ -135,7 +134,7 @@ internal extension Map.Loader.Parser.H3M {
         // artifacts in bag
         let numberOfArtifactsInBackpack = try UInt8(clamping: reader.readUInt16())
         
-        let artifactsInBackpack: [Hero.Predefined.ArtifactInSlot?] = try (0..<numberOfArtifactsInBackpack).map { backpackSlotRawValue in
+        let artifactsInBackpack: [Hero.ArtifactInSlot?] = try (0..<numberOfArtifactsInBackpack).map { backpackSlotRawValue in
             guard let backpackSlot = Artifact.Slot.BackpackSlot(backpackSlotRawValue) else {
                fatalError("expected valid slot")
             }
@@ -172,7 +171,7 @@ internal extension Map.Loader.Parser.H3M {
 }
 
 private extension  Map.Loader.Parser.H3M {
-    func parseArtifact(in slot: Artifact.Slot, format: Map.Format) throws -> Hero.Predefined.ArtifactInSlot? {
+    func parseArtifact(in slot: Artifact.Slot, format: Map.Format) throws -> Hero.ArtifactInSlot? {
         let artifactIDRaw: UInt16 = try format == .restorationOfErathia ? UInt16(reader.readUInt8()) : reader.readUInt16()
         let slotContainsArtifact = format == .restorationOfErathia ? artifactIDRaw == 0xff : artifactIDRaw == 0xffff
 

@@ -8,7 +8,7 @@
 import Foundation
 
 public extension Artifact {
-    enum Slot: Equatable {
+    enum Slot: Hashable {
         case body(Body)
         /// Fits 64 unused artifacts
         case backpack(BackpackSlot)
@@ -37,7 +37,7 @@ public extension Artifact.Slot {
         }
     }
     
-    struct BackpackSlot: Equatable {
+    struct BackpackSlot: Hashable {
         public let slot: UInt8
         public init?(_ slot: UInt8) {
             guard slot < 64 else { return nil }
@@ -48,7 +48,7 @@ public extension Artifact.Slot {
 
 public extension Artifact.Slot {
     
-    enum Body: RawValue, Comparable, CaseIterable {
+    enum Body: RawValue, Hashable, Comparable, CaseIterable {
         /// Helmet
         case head
         

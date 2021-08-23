@@ -140,7 +140,7 @@ public extension DataReader {
     
     func readString() throws -> String {
         let length = Int(try readUInt32())
-        assert(length <= 500_000, "This string is unresonably long. Probably some offset error...")
+        assert(length <= 500_000, "This string is unresonably long, lenght: \(length) bytes. Probably some offset error...")
         guard length > 0 else {
             return ""
         }
