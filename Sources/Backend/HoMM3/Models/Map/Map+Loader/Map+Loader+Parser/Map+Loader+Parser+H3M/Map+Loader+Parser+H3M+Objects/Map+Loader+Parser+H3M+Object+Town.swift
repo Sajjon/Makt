@@ -15,7 +15,7 @@ public extension CaseIterable {
 
 
 public extension Map {
-    struct Town: Hashable, Identifiable {
+    struct Town: Hashable, Identifiable, CustomDebugStringConvertible {
         public enum ID: Hashable {
             
             /// Parsed from h3m map file
@@ -27,6 +27,7 @@ public extension Map {
         }
         
         public let id: ID
+        public let faction: Faction
         public let owner: PlayerColor
         public let name: String?
         public let garrison: Army?
@@ -44,6 +45,16 @@ public extension Map {
 }
 
 public extension Map.Town {
+    
+    var debugDescription: String {
+        let nameOrEmpty = name.map({ "name: \($0) "}) ?? ""
+        return """
+        \(faction) town
+        owner: \(owner)
+        \(nameOrEmpty)
+        """
+    }
+    
     struct Buildings: Hashable {
         public let built: [Building]
         public let forbidden: [Building]
@@ -221,17 +232,26 @@ internal extension Map.Loader.Parser.H3M {
         
         let owner = try PlayerColor(integer: reader.readUInt8())
         let name: String? = try reader.readBool() ? reader.readString() : nil
-        let garrison: Army? = try reader.readBool() ? parseArmyOf(size: 7, parseFormation: true) : nil
-        let buildings: Map.Town.Buildings = try reader.readBool() ? parseTownWithCustomBuildings() : parseSimpleTown()
+        print("🏰 town: name='\(name)'")
+        
+        let hasGarrison = try reader.readBool()
+        print("🏰 town: hasGarrison='\(hasGarrison)'")
+        let garrison: Army? = try hasGarrison ? parseArmy(format: format, count: 7, parseFormation: true) : nil
+        let hasCustomBuildings = try reader.readBool()
+        print("🏰 town: hasCustomBuildings='\(hasCustomBuildings)'")
+        let buildings: Map.Town.Buildings = try hasCustomBuildings ? parseTownWithCustomBuildings() : parseSimpleTown()
         
         
-        let obligatorySpells = try format == .restorationOfErathia ? [] : parseSpellIDs()
+        
+        let obligatorySpells = try format > .restorationOfErathia ? parseSpellIDs() : []
         let possibleSpells = try parseSpellIDs(includeIfBitSet: false).filter({ allowedSpellsOnMap.contains($0) })
         
         // TODO add spells from mods.
         
         // Read castle events
-        let events: [Map.Town.Event] = try reader.readUInt32().nTimes {
+        let eventCount = try reader.readUInt32()
+        print("🏰 town: eventCount='\(eventCount)'")
+        let events: [Map.Town.Event] = try eventCount.nTimes {
             let name = try reader.readString()
             let message = try reader.readString()
             let resources = try parseResources()
@@ -278,6 +298,7 @@ internal extension Map.Loader.Parser.H3M {
         
         return Map.Town(
             id: townID,
+            faction: faction,
             owner: owner,
             name: name,
             garrison: garrison,
@@ -320,6 +341,7 @@ private extension Map.Loader.Parser.H3M {
         let forbidden = try parseBuildings()
         return .init(built: built, forbidden: forbidden)
     }
+    
     func parseSimpleTown() throws -> Map.Town.Buildings {
         let hasFort = try reader.readBool()
         let built = Map.Town.Buildings.Building.default(includeFort: hasFort)

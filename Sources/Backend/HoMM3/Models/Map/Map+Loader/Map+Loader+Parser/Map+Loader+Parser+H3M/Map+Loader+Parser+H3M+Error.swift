@@ -24,7 +24,7 @@ enum Error: Swift.Error {
     
     case unrecognizedObjectGroup(Map.Object.Attributes.Group.RawValue)
     
-    case differentNumberOfObjectsAndDefinitions
+    case expectedDefinitionCountToBeLessThanOrEqualToObjectCount
     case unknownObjectDefintion(indexTooLarge: Int, haveOnlyParsedDefinitionArrayOfLength: Int)
     
     case warmachineFoundInBackback

@@ -10,18 +10,24 @@ import Foundation
 
 // MARK: Parse Event
 internal extension Map.Loader.Parser.H3M {
-    func parseEvent(format: Map.Format) throws -> Map.Event {
+    
+    func parseMessageAndGuards(format: Map.Format) throws -> (message: String?, guards: CreatureStacks?) {
         let hasMessage = try reader.readBool()
-        let message: String? = try !hasMessage ? nil : reader.readString()
-        let guards: CreatureStacks? = try !hasMessage ? nil : {
+        let message: String? = try hasMessage ? reader.readString() : nil
+        let guards: CreatureStacks? = try hasMessage ? {
             let hasGuardsAsWell = try reader.readBool()
             var guards: CreatureStacks?
             if hasGuardsAsWell {
-                guards = try parseCreatureStacks()
+                guards = try parseCreatureStacks(format: format, count: 7)
             }
             try reader.skip(byteCount: 4) // unknown?
             return guards
-        }()
+        }() : nil
+        return (message, guards)
+    }
+    
+    func parseEvent(format: Map.Format) throws -> Map.Event {
+        let (message, guards) = try parseMessageAndGuards(format: format)
         let experiencePointsToBeGained = try reader.readUInt32()
         let manaPointsToBeGainedOrDrained = try reader.readUInt32()
         let moraleToBeGainedOrDrained = try reader.readUInt8()
@@ -31,7 +37,7 @@ internal extension Map.Loader.Parser.H3M {
         let secondarySkills = try parseSecondarySkills()
         let artifactIDs = try parseArtifactIDs(format: format)
         let spellIDSs = try parseSpellCountAndIDs()
-        let creaturesGained = try parseCreatureStacks()
+        let creaturesGained = try parseCreatureStacks(format: format, count: reader.readUInt8())
         
         try reader.skip(byteCount: 8) // unknown?
         let availableForPlayers = try parseAvailableForPlayers()

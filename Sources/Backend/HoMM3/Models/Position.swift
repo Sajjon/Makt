@@ -8,7 +8,7 @@
 import Foundation
 
 /// Position on adventure map, three dimensions (x: Int, y: Int, inUnderworld: Bool)
-public struct Position: Hashable {
+public struct Position: Hashable, CustomDebugStringConvertible {
     public typealias Scalar = Int32
     public let x: Scalar
     public let y: Scalar
@@ -26,6 +26,13 @@ public struct Position: Hashable {
 }
 
 public extension Position {
+    var debugDescription: String {
+        let underworldString = inUnderworld ? " ⤵️🌍" : ""
+        return """
+        (\(x), \(y)\(underworldString)
+        """
+    }
+    
     func fitsInMapDescribed(by summary: Map.About.Summary) -> Bool {
         if !summary.hasTwoLevels && self.inUnderworld {
             // Cyon: is this correct? Does Z mean underworld or not?

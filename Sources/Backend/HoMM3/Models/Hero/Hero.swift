@@ -13,7 +13,7 @@ public struct Hero: Hashable {
     public let portraitID: ID
     public let name: String?
     public let owner: PlayerColor
-    public let garrison: Army?
+    public let army: Army?
     public let patrolRadius: Int
     public let isPatroling: Bool
     public let startingExperiencePoints: UInt32

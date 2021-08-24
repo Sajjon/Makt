@@ -164,7 +164,7 @@ private extension Map.Object.ID {
         case .sanctuary: self = .sanctuary
         case .scholar: self = .scholar
         case .seaChest: self = .seaChest
-        case .seerSHut: self = .seerSHut
+        case .seersHut: self = .seersHut
         case .crypt: self = .crypt
         case .shipwreck: self = .shipwreck
         case .shipwreckSurvivor: self = .shipwreckSurvivor
@@ -186,7 +186,7 @@ private extension Map.Object.ID {
         case .university: self = .university
         case .wagon: self = .wagon
         case .warMachineFactory: self = .warMachineFactory
-        case .schooloFWar: self = .schooloFWar
+        case .schoolOfWar: self = .schoolOfWar
         case .warriorsTomb: self = .warriorsTomb
         case .waterWheel: self = .waterWheel
         case .wateringHole: self = .wateringHole
@@ -302,7 +302,7 @@ private extension Map.Object.ID {
         case .cloverField: self = .cloverField
         case .cursedGround2: self = .cursedGround2
         case .evilFog: self = .evilFog
-        case .favoredWinds: self = .favoredWinds
+        case .favorableWinds: self = .favorableWinds
         case .fieryFields: self = .fieryFields
         case .holyGround: self = .holyGround
         case .lucidPools: self = .lucidPools
@@ -310,6 +310,20 @@ private extension Map.Object.ID {
         case .magicPlains2: self = .magicPlains2
         case .rocklands: self = .rocklands
         case .dragonUtopia: self = .dragonUtopia
+        case .decorativeTown:
+            self = .decorativeTown
+        case .passable139:
+            self = .genericPassable(subID: 139)
+        case .passable141:
+            self = .genericPassable(subID: 141)
+        case .passable142:
+            self = .genericPassable(subID: 142)
+        case .passable144:
+            self = .genericPassable(subID: 144)
+        case .passable145:
+            self = .genericPassable(subID: 144)
+        case .passable146:
+            self = .genericPassable(subID: 146)
         }
     }
 }

@@ -12,17 +12,44 @@ public extension Map {
         public let objects: [Object]
     }
   
-    struct Object: Hashable {
+    struct Object: Hashable, CustomDebugStringConvertible {
         public let position: Position
         public let objectID: Object.ID
         public let kind: Kind
     }
+    
+    struct GuardedArtifact: Hashable {
+        public let message: String?
+        public let guards: CreatureStacks?
+        public let artifact: Artifact
+    }
+    
+    struct GuardedResource: Hashable {
+        public let message: String?
+        public let guards: CreatureStacks?
+        public let resource: Resource
+    }
 }
 
 public extension Map.Object {
+
+    var debugDescription: String {
+        """
+        =========================================
+        \(objectID.name) @ \(position)
+        -----------------------------------------
+            \(kind)
+        =========================================
+        """
+    }
+    
     enum Kind: Hashable {
+        case generic
+        case artifact(Map.GuardedArtifact)
+        case resource(Map.GuardedResource)
         case event(Map.Event)
         case hero(Hero)
+        case mine(Map.Mine)
         case town(Map.Town)
         case monster(Map.Monster)
     }

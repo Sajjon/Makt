@@ -15,6 +15,34 @@ extension Map.PlayersInfo.PlayerInfo {
 
 final class LoadMapTests: XCTestCase {
     
+    /// After `goodToGo` and `elbowRoom`: smallest compressed file size
+    func test_assert_a_really_small_map_judgementDay() throws {
+        
+        let map = try Map.load(.judgementDay)
+        XCTAssertEqual(map.about.summary.fileName, "Judgement Day.h3m")
+        XCTAssertEqual(map.about.summary.fileSizeCompressed, 5_059)
+        XCTAssertEqual(map.about.summary.fileSize, 1)
+    }
+    
+    /// After `goodToGo`: smallest compressed file size
+    func test_assert_a_really_small_map_elbowRoom() throws {
+        
+        let map = try Map.load(.elbowRoom)
+        XCTAssertEqual(map.about.summary.fileName, "Elbow Room.h3m")
+        XCTAssertEqual(map.about.summary.fileSizeCompressed, 4_996)
+        XCTAssertEqual(map.about.summary.fileSize, 24_590)
+    }
+    
+    /// Smallest compressed file size
+    func test_assert_a_really_small_map_good_to_go() throws {
+        
+        let map = try Map.load(.goodToGo)
+        XCTAssertEqual(map.about.summary.fileName, "Good to Go.h3m")
+        XCTAssertEqual(map.about.summary.fileSizeCompressed, 4_982)
+        XCTAssertEqual(map.about.summary.fileSize, 23_852)
+    }
+    
+    
 
     func test_assert_can_load_map_by_id__tutorial_map() throws {
         let map = try Map.load(.tutorial)

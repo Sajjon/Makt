@@ -97,6 +97,8 @@
 		487C2C3A26D26DEC00031505 /* Map+Loader+Parser+H3M+Object+Town.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487C2C3926D26DEC00031505 /* Map+Loader+Parser+H3M+Object+Town.swift */; };
 		487C2C3C26D3BA1200031505 /* Map+Loader+Parser+H3M+Object+Hero.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487C2C3B26D3BA1200031505 /* Map+Loader+Parser+H3M+Object+Hero.swift */; };
 		487C2C3E26D3DC9800031505 /* Map+Loader+Parser+H3M+Object+Monster.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487C2C3D26D3DC9800031505 /* Map+Loader+Parser+H3M+Object+Monster.swift */; };
+		487C2C4026D4C08900031505 /* Hero+Placeholder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487C2C3F26D4C08900031505 /* Hero+Placeholder.swift */; };
+		487C2C4226D508E500031505 /* Map+Loader+Parser+H3M+CreatureStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487C2C4126D508E500031505 /* Map+Loader+Parser+H3M+CreatureStack.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -204,6 +206,8 @@
 		487C2C3926D26DEC00031505 /* Map+Loader+Parser+H3M+Object+Town.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Map+Loader+Parser+H3M+Object+Town.swift"; sourceTree = "<group>"; };
 		487C2C3B26D3BA1200031505 /* Map+Loader+Parser+H3M+Object+Hero.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Map+Loader+Parser+H3M+Object+Hero.swift"; sourceTree = "<group>"; };
 		487C2C3D26D3DC9800031505 /* Map+Loader+Parser+H3M+Object+Monster.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Map+Loader+Parser+H3M+Object+Monster.swift"; sourceTree = "<group>"; };
+		487C2C3F26D4C08900031505 /* Hero+Placeholder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Hero+Placeholder.swift"; sourceTree = "<group>"; };
+		487C2C4126D508E500031505 /* Map+Loader+Parser+H3M+CreatureStack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Map+Loader+Parser+H3M+CreatureStack.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -382,6 +386,7 @@
 				487C2BD426CD335D00031505 /* Hero+Disposed.swift */,
 				487C2BD626CD337100031505 /* Hero+Predefined.swift */,
 				487C2BF526CD918300031505 /* Hero+Gender.swift */,
+				487C2C3F26D4C08900031505 /* Hero+Placeholder.swift */,
 			);
 			path = Hero;
 			sourceTree = "<group>";
@@ -608,6 +613,7 @@
 				487C2C3926D26DEC00031505 /* Map+Loader+Parser+H3M+Object+Town.swift */,
 				487C2C3B26D3BA1200031505 /* Map+Loader+Parser+H3M+Object+Hero.swift */,
 				487C2C3D26D3DC9800031505 /* Map+Loader+Parser+H3M+Object+Monster.swift */,
+				487C2C4126D508E500031505 /* Map+Loader+Parser+H3M+CreatureStack.swift */,
 			);
 			path = "Map+Loader+Parser+H3M+Objects";
 			sourceTree = "<group>";
@@ -765,6 +771,7 @@
 				481BDF6726C5942000C5E335 /* ContentView.swift in Sources */,
 				487C2C3826D26DC700031505 /* Map+Loader+Parser+H3M+Object+Event.swift in Sources */,
 				487C2B9926CAD1F800031505 /* Position.swift in Sources */,
+				487C2C4226D508E500031505 /* Map+Loader+Parser+H3M+CreatureStack.swift in Sources */,
 				487C2C1726CED26300031505 /* Map+Event.swift in Sources */,
 				487C2BD326CD334800031505 /* Map+Loader+Parser+H3M+Error.swift in Sources */,
 				487C2C1B26CF741500031505 /* Map+Object+CreatureGenerator.swift in Sources */,
@@ -789,6 +796,7 @@
 				487C2B9D26CAD21F00031505 /* AITactic.swift in Sources */,
 				487C2C0126CECDA600031505 /* Map+Rumor.swift in Sources */,
 				487C2BC626CCF5B700031505 /* CRC32Checksum.swift in Sources */,
+				487C2C4026D4C08900031505 /* Hero+Placeholder.swift in Sources */,
 				487C2BB926CC2F2600031505 /* Hero+ID.swift in Sources */,
 				487C2C0626CECDCE00031505 /* Map+Level.swift in Sources */,
 				481462FA26C902D800431960 /* Config.swift in Sources */,

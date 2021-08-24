@@ -15,6 +15,15 @@ extension Map.ID {
     }
     
 
+    /// ROE, .small, smallest file size
+    static let goodToGo: Self = .h3m("Good to Go")
+    
+    /// AB, .small, after `goodToGo` and `elbowRoom`: smallest file size
+    static let judgementDay: Self = .h3m("Judgement Day")
+    
+    /// AB, .small, after `goodToGo`: smallest file size
+    static let elbowRoom: Self = .h3m("Elbow Room")
+    
     static let titansWinter: Self = .h3m("Titans Winter")
     static let unholyQuest: Self = .h3m("Unholy Quest")
     static let theMandateOfHeaven: Self = .h3m("The Mandate of Heaven")

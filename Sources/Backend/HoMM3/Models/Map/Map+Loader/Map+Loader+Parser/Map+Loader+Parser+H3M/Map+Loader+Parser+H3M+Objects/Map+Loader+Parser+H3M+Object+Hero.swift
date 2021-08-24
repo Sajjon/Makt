@@ -74,7 +74,7 @@ private extension Map.Loader.Parser.H3M {
       
         let startingSecondarySkills: [Hero.SecondarySkill]? = try reader.readBool() ? try parseSecondarySkills() :  predefinedHero?.startingSecondarySkills
         
-        let garrison: Army? = try reader.readBool() ? parseArmyOf(parseFormation: false) : nil
+        let garrison: CreatureStacks? = try reader.readBool() ? parseCreatureStacks(format: format, count: 7) : nil
         let artifacts = try parseArtifactsOfHero(format: format)
         let patrolRadius = try reader.readUInt8()
         let isPatrolling = patrolRadius != 0xff
@@ -121,7 +121,7 @@ private extension Map.Loader.Parser.H3M {
             portraitID: portraitID,
             name: name,
             owner: owner,
-            garrison: garrison,
+            army: garrison.map({ Army.init(creatureStacks: $0, formation: nil) }),
             patrolRadius: .init(patrolRadius),
             isPatroling: isPatrolling,
             startingExperiencePoints: experiencePoints ?? 0,

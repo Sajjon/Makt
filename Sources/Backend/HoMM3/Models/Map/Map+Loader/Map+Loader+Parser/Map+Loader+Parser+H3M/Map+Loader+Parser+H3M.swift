@@ -37,12 +37,13 @@ extension Map.Loader.Parser.H3M {
         let _ = try parseRumors()
         let predefinedHeroes = try parsePredefinedHeroes(format: format)
         
-        let _ = try parseTerrain(
+        let world = try parseTerrain(
             hasUnderworld: about.summary.hasTwoLevels,
             size: about.summary.size
         )
         
         let definitions = try parseDefinitions()
+        assert(definitions.objectAttributes.count < (world.above.tiles.count + (world.belowGround?.tiles.count ?? 0)))
      
         let _ = try parseObjects(
             format: format,
@@ -51,7 +52,7 @@ extension Map.Loader.Parser.H3M {
             predefinedHeroes: predefinedHeroes,
             disposedHeroes: disposedHeroes
         )
-        let _ = try parseEvents()
+//        let _ = try parseEvents()
         
         return .init(
             checksum: checksum,

@@ -8,50 +8,51 @@
 import Foundation
 
 public extension Map.Object.ID {
-    var debugDescription: String {
+    
+    var name: String {
         
         switch self {
-        case .artifact(let value):
-            return "artifact: \(value)"
-        case .borderguard(let value):
-            return "borderguard: \(value)"
-        case .keymastersTent(let value):
-            return "keymastersTent: \(value)"
-        case .creatureBank(let value):
-            return "creatureBank: \(value)"
-        case .creatureGenerator1(let value):
-            return "creatureGenerator1: \(value)"
-        case .creatureGenerator4(let value):
-            return "creatureGenerator4: \(value)"
-        case .garrison(let value):
-            return "garrison: \(value)"
-        case .hero(let value):
-            return "hero: \(value)"
-        case .monolithOneWayEntrance(let value):
-            return "monolithOneWayEntrance: \(value)"
-        case .monolithOneWayExit(let value):
-            return "monolithOneWayExit: \(value)"
-        case .monolithTwoWay(let value):
-            return "monolithTwoWay: \(value)"
-        case .mine(let value):
-            return "mine: \(value)"
-        case .monster(let value):
-            return "monster: \(value)"
-        case .spellScroll(let value):
-            return "spellScroll: \(value)"
-        case .town(let value):
-            return "town: \(value)"
-        case .witchHut(let value):
-            return "witchHut: \(value)"
-        case .borderGate(let value):
-            return "borderGate: \(value)"
-        case .randomDwellingAtLevel(let value):
-            return "randomDwellingWithLevel: \(value)"
-        case .randomDwellingOfFaction(let value):
-            return "randomDwellingOfFaction: \(value)"
-        case .resource(let value):
-            return "resource: \(value)"
-            
+        case .artifact:
+            return "artifact"
+        case .borderguard:
+            return "borderguard"
+        case .keymastersTent:
+            return "keymastersTent"
+        case .creatureBank:
+            return "creatureBank"
+        case .creatureGenerator1:
+            return "creatureGenerator1"
+        case .creatureGenerator4:
+            return "creatureGenerator4"
+        case .garrison:
+            return "garrison"
+        case .hero:
+            return "hero"
+        case .monolithOneWayEntrance:
+            return "monolithOneWayEntrance"
+        case .monolithOneWayExit:
+            return "monolithOneWayExit"
+        case .monolithTwoWay:
+            return "monolithTwoWay"
+        case .mine:
+            return "mine"
+        case .monster:
+            return "monster"
+        case .spellScroll:
+            return "spellScroll"
+        case .town:
+            return "town"
+        case .witchHut:
+            return "witchHut"
+        case .borderGate:
+            return "borderGate"
+        case .randomDwellingAtLevel:
+            return "randomDwellingWithLevel"
+        case .randomDwellingOfFaction:
+            return "randomDwellingOfFaction"
+        case .resource:
+            return "resource"
+
         // MARK: without sub id"
         case .abandonedMine: return "abandonedMine"
         case .altarOfSacrifice: return "altarOfSacrifice"
@@ -122,7 +123,7 @@ public extension Map.Object.ID {
         case .sanctuary: return "sanctuary"
         case .scholar: return "scholar"
         case .seaChest: return "seaChest"
-        case .seerSHut: return "seerSHut"
+        case .seersHut: return "seersHut"
         case .crypt: return "crypt"
         case .shipwreck: return "shipwreck"
         case .shipwreckSurvivor: return "shipwreckSurvivor"
@@ -144,7 +145,7 @@ public extension Map.Object.ID {
         case .university: return "university"
         case .wagon: return "wagon"
         case .warMachineFactory: return "warMachineFactory"
-        case .schooloFWar: return "schooloFWar"
+        case .schoolOfWar: return "schoolOfWar"
         case .warriorsTomb: return "warriorsTomb"
         case .waterWheel: return "waterWheel"
         case .wateringHole: return "wateringHole"
@@ -241,14 +242,6 @@ public extension Map.Object.ID {
         case .reef2: return "reef2"
             
             
-            
-            
-            
-            
-            
-            
-            
-            
         case .desertHills: return "desertHills"
         case .dirtHills: return "dirtHills"
         case .grassHills: return "grassHills"
@@ -264,7 +257,7 @@ public extension Map.Object.ID {
         case .cloverField: return "cloverField"
         case .cursedGround2: return "cursedGround2"
         case .evilFog: return "evilFog"
-        case .favoredWinds: return "favoredWinds"
+        case .favorableWinds: return "favorableWinds"
         case .fieryFields: return "fieryFields"
         case .holyGround: return "holyGround"
         case .lucidPools: return "lucidPools"
@@ -272,7 +265,65 @@ public extension Map.Object.ID {
         case .magicPlains2: return "magicPlains2"
         case .rocklands: return "rocklands"
         case .dragonUtopia: return "dragonUtopia"
+        case .decorativeTown:
+            return "decorativeTown"
+        case .genericPassable(let subID):
+            return "genericPassable:\(subID)"
         }
+        
+    }
+    
+    var debugDescription: String {
+        
+        switch self {
+        case .artifact(let value):
+            return "artifact: \(value)"
+        case .borderguard(let value):
+            return "borderguard: \(value)"
+        case .keymastersTent(let value):
+            return "keymastersTent: \(value)"
+        case .creatureBank(let value):
+            return "creatureBank: \(value)"
+        case .creatureGenerator1(let value):
+            return "creatureGenerator1: \(value)"
+        case .creatureGenerator4(let value):
+            return "creatureGenerator4: \(value)"
+        case .garrison(let value):
+            return "garrison: \(value)"
+        case .hero(let value):
+            return "hero: \(value)"
+        case .monolithOneWayEntrance(let value):
+            return "monolithOneWayEntrance: \(value)"
+        case .monolithOneWayExit(let value):
+            return "monolithOneWayExit: \(value)"
+        case .monolithTwoWay(let value):
+            return "monolithTwoWay: \(value)"
+        case .mine(let value):
+            return "mine: \(value)"
+        case .monster(let value):
+            return "monster: \(value)"
+        case .spellScroll(let value):
+            return "spellScroll: \(value)"
+        case .town(let value):
+            return "town: \(value)"
+        case .witchHut(let value):
+            return "witchHut: \(value)"
+        case .borderGate(let value):
+            return "borderGate: \(value)"
+        case .randomDwellingAtLevel(let value):
+            return "randomDwellingWithLevel: \(value)"
+        case .randomDwellingOfFaction(let value):
+            return "randomDwellingOfFaction: \(value)"
+        case .resource(let value):
+            return "resource: \(value)"
+        case .genericPassable(let subID):
+            return "genericPassable:\(subID)"
+        
+        default:
+            return self.name
+        }
+
+       
         
     }
 }

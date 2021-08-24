@@ -40,7 +40,6 @@ public extension Creature.ID {
         upgraded: [Self],
         _ upgradedOrNot: UpgradedOrNot = .nonUpgradedAndUpgraded, sorting: Sorting = .byLevel
     ) -> [Self] {
-        precondition(upgradedOrNot != .nonUpgradedAndUpgraded && sorting == .byUpgradedOrNot)
         var creatureIDs = [Self]()
         if upgradedOrNot.includeNonUpgraded {
             creatureIDs.append(contentsOf: nonUpgraded)

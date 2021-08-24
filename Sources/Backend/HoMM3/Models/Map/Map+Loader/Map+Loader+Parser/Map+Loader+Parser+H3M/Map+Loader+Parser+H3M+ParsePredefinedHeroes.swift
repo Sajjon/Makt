@@ -171,12 +171,33 @@ internal extension Map.Loader.Parser.H3M {
 }
 
 internal extension Map.Loader.Parser.H3M {
-    func parseArtifactID(format: Map.Format) throws -> Artifact.ID? {
-        let artifactIDRaw: UInt16 = try format == .restorationOfErathia ? UInt16(reader.readUInt8()) : reader.readUInt16()
-        let isArtifactSet: Bool = format == .restorationOfErathia ? artifactIDRaw == 0xff : artifactIDRaw == 0xffff
+    
+    func parseIDBasedOn<RR>(format: Map.Format) throws -> RR? where RR: RawRepresentable, RR.RawValue == UInt8 {
+        let idRaw: UInt16 = try format == .restorationOfErathia ? UInt16(reader.readUInt8()) : reader.readUInt16()
+        let hasValue: Bool = format == .restorationOfErathia ? idRaw == 0xff : idRaw == 0xffff
 
-        guard isArtifactSet else { return nil }
-        return try Artifact.ID(integer: artifactIDRaw)
+        guard hasValue else { return nil }
+        return try RR.init(integer: idRaw)
+    }
+    
+    func parseArtifactID(format: Map.Format) throws -> Artifact.ID? {
+//        let artifactIDRaw: UInt16 = try format == .restorationOfErathia ? UInt16(reader.readUInt8()) : reader.readUInt16()
+//        let isArtifactSet: Bool = format == .restorationOfErathia ? artifactIDRaw == 0xff : artifactIDRaw == 0xffff
+//
+//        guard isArtifactSet else { return nil }
+//        return try Artifact.ID(integer: artifactIDRaw)
+        try parseIDBasedOn(format: format)
+    }
+    
+    func parseCreatureID(format: Map.Format) throws -> Creature.ID? {
+        try parseIDBasedOn(format: format)
+    }
+    
+    func parseArtifactIDs(format: Map.Format) throws -> [Artifact.ID] {
+        try reader.readUInt8().nTimes {
+//            try Artifact.ID(integer: format == .restorationOfErathia ? reader.readUInt8() : UInt8(reader.readUInt16()))
+            try parseArtifactID(format: format)!
+        }
     }
 }
 
