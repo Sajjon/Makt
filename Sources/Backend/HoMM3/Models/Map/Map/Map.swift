@@ -11,11 +11,26 @@ public extension Map.Loader.Parser {
     final class Inspector {
         
         public typealias OnParseAbout = (Map.About) -> Void
+        
+        public typealias OnParseDisposedHeroes = (_ disposedHeroes: [Hero.Disposed]) -> Void
+        public typealias OnParseAllowedArtifacts = (_ allowedArtifacts: [Artifact.ID]) -> Void
+        public typealias OnParseAllowedSpells = (_ allowedSpells: [Spell.ID]) -> Void
+        public typealias OnParseAllowedHeroAbilities = (_ allowedHeroAbilites: [Hero.SecondarySkill.Kind]) -> Void
+        public typealias OnParseRumors = ([Map.Rumor]) -> Void
+        public typealias OnParsePredefinedHeroes = ([Hero.Predefined]) -> Void
+        
         public typealias OnParseWorld = (Map.World) -> Void
         public typealias OnParseDefinitions = (Map.Definitions) -> Void
         public typealias OnParseObject = (Map.Object) -> Void
         
         private let onParseAbout: OnParseAbout?
+        private let onParseDisposedHeroes: OnParseDisposedHeroes?
+        private let onParseAllowedArtifacts: OnParseAllowedArtifacts?
+        private let onParseAllowedSpells: OnParseAllowedSpells?
+        private let onParseAllowedHeroAbilities: OnParseAllowedHeroAbilities?
+        private let onParseRumors: OnParseRumors?
+        private let onParsePredefinedHeroes: OnParsePredefinedHeroes?
+        
         private let onParseWorld: OnParseWorld?
         private let onParseDefinitions: OnParseDefinitions?
         private let onParseObject: OnParseObject?
@@ -32,11 +47,24 @@ public extension Map.Loader.Parser {
         init(
             settings: Settings = .init(),
             onParseAbout: OnParseAbout? = nil,
+            onParseDisposedHeroes: OnParseDisposedHeroes? = nil,
+            onParseAllowedArtifacts: OnParseAllowedArtifacts? = nil,
+            onParseAllowedSpells: OnParseAllowedSpells? = nil,
+            onParseAllowedHeroAbilities: OnParseAllowedHeroAbilities? = nil,
+            
+            onParseRumors: OnParseRumors? = nil,
+            onParsePredefinedHeroes: OnParsePredefinedHeroes? = nil,
             onParseWorld: OnParseWorld? = nil,
             onParseDefinitions: OnParseDefinitions? = nil,
             onParseObject: OnParseObject? = nil
         ) {
             self.settings = settings
+            self.onParseDisposedHeroes = onParseDisposedHeroes
+            self.onParseAllowedArtifacts = onParseAllowedArtifacts
+            self.onParseAllowedSpells = onParseAllowedSpells
+            self.onParseAllowedHeroAbilities = onParseAllowedHeroAbilities
+            self.onParseRumors = onParseRumors
+            self.onParsePredefinedHeroes = onParsePredefinedHeroes
             self.onParseAbout = onParseAbout
             self.onParseWorld = onParseWorld
             self.onParseDefinitions = onParseDefinitions
@@ -51,27 +79,28 @@ public extension Map.Loader.Parser.Inspector {
     }
     
     func didParseDisposedHeroes(_ disposedHeroes: [Hero.Disposed]) {
-        
+        onParseDisposedHeroes?(disposedHeroes)
     }
     
     func didParseAllowedArtifacts(_ allowedArtifacts: [Artifact.ID]) {
+        onParseAllowedArtifacts?(allowedArtifacts)
         
     }
     
     func didParseAllowedSpells(_ allowedSpells: [Spell.ID]) {
-        
+        onParseAllowedSpells?(allowedSpells)
     }
     
     func didParseAllowedHeroAbilities(_ allowedHeroAbilities: [Hero.SecondarySkill.Kind]) {
-        
+        onParseAllowedHeroAbilities?(allowedHeroAbilities)
     }
     
     func didParseRumors(_ rumors: [Map.Rumor]) {
-        
+        onParseRumors?(rumors)
     }
     
     func didParsePredefinedHeroes(_ predefinedHeroes: [Hero.Predefined]) {
-        
+        onParsePredefinedHeroes?(predefinedHeroes)
     }
     
     func didParseWorld(_ world: Map.World) {

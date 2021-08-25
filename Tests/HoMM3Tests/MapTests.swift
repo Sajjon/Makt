@@ -28,12 +28,34 @@ final class LoadMapTests: XCTestCase {
                 XCTAssertEqual(summary.fileName, "cyon_roe_small_1lvl_all_water_no_objects.h3m")
                 XCTAssertEqual(summary.fileSizeCompressed, 1_252)
             },
+            onParseDisposedHeroes: { disposedHeroes in
+                XCTAssertTrue(disposedHeroes.isEmpty)
+            },
+            onParseAllowedArtifacts: { allowedArtifacts in
+                XCTAssertEqual(allowedArtifacts, Artifact.ID.available(in: .restorationOfErathia))
+            },
+            onParseAllowedSpells: { allowedSpells in
+                XCTAssertEqual(allowedSpells, Spell.ID.allCases)
+            },
+            onParseAllowedHeroAbilities: { allowedSeconarySkills in
+                XCTAssertEqual(allowedSeconarySkills, Hero.SecondarySkill.Kind.allCases)
+            },
+            onParseRumors: { rumors in
+                XCTAssertTrue(rumors.isEmpty)
+            },
+            onParsePredefinedHeroes: { predefinedHeroes in
+                XCTAssertTrue(predefinedHeroes.isEmpty)
+            },
             onParseWorld: { world in
                 XCTAssertNil(world.belowGround)
                 XCTAssertFalse(world.above.isUnderworld)
                 let tiles = world.above.tiles
-                print(tiles)
                 XCTAssertTrue(tiles.allSatisfy({ $0.terrain.kind == .water }))
+
+                XCTAssertEqual(tiles.prefix(Size.small.height).map({ $0.position.y }), (0...35).map({ .init($0) }))
+                
+                XCTAssertTrue(tiles.prefix(Size.small.height).map({ $0.position.x }).allSatisfy({ $0 == 0 }))
+                
             },
             onParseDefinitions: { definitions in
                 XCTAssertEqual(definitions.objectAttributes.count, 0)

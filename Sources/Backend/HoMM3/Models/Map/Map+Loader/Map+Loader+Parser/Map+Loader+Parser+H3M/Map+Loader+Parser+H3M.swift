@@ -29,18 +29,24 @@ extension Map.Loader.Parser.H3M {
         
         let about = try parseAbout()
         inspector?.didParseAbout(about)
+       
         let format = about.summary.format
         
         let disposedHeroes = try parseDisposedHeroes(format: format)
         inspector?.didParseDisposedHeroes(disposedHeroes)
+        
         let allowedArtifacts = try parseAllowedArtifacts(format: format)
         inspector?.didParseAllowedArtifacts(allowedArtifacts)
+        
         let allowedSpells = try parseAllowedSpells(format: format)
         inspector?.didParseAllowedSpells(allowedSpells)
+        
         let allowedHeroAbilities = try parseAllowedHeroAbilities(format: format)
         inspector?.didParseAllowedHeroAbilities(allowedHeroAbilities)
+        
         let rumors = try parseRumors()
         inspector?.didParseRumors(rumors)
+        
         let predefinedHeroes = try parsePredefinedHeroes(format: format)
         inspector?.didParsePredefinedHeroes(predefinedHeroes)
         
