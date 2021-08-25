@@ -10,6 +10,10 @@ public extension Map {
         public let kind: Kind
         public let owner: PlayerColor?
     }
+    
+    struct Shipyard: Hashable {
+        public let owner: PlayerColor?
+    }
 }
 public extension Map.Mine {
     enum Kind: UInt8, Hashable, CaseIterable {

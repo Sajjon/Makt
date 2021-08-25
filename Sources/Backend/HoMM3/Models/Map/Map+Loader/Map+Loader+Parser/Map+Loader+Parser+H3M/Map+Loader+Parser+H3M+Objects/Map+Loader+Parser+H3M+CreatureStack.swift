@@ -12,7 +12,7 @@ internal extension Map.Loader.Parser.H3M {
     func parseCreatureStacks<I>(
         format: Map.Format,
         count _count: I
-    ) throws -> CreatureStacks where I: FixedWidthInteger {
+    ) throws -> CreatureStacks? where I: FixedWidthInteger {
         let count = Int(_count)
         let stacks: [CreatureStack] = try (0..<count).compactMap { slotIndex -> CreatureStack? in
             //            guard let creatureID: Creature.ID = try parseCreatureID(format: format) else {
@@ -22,6 +22,11 @@ internal extension Map.Loader.Parser.H3M {
             let idRaw: UInt16 = try format == .restorationOfErathia ? UInt16(reader.readUInt8()) : reader.readUInt16()
             let isNotSet: Bool = format == .restorationOfErathia ? idRaw == 0xff : idRaw == 0xffff
             let quantity = try CreatureStack.Quantity(reader.readUInt16())
+            
+            guard quantity > 0 else {
+                return nil
+            }
+            
             
             guard isNotSet == false else { return nil }
             //            guard hasValue else { return nil }
@@ -37,14 +42,16 @@ internal extension Map.Loader.Parser.H3M {
         return .init(creatureStacks: stacks)
     }
     
-    func parseArmy<I>(format: Map.Format, count _count: I, parseFormation: Bool) throws -> Army where I: FixedWidthInteger {
+    func parseArmy<I>(format: Map.Format, count _count: I, parseFormation: Bool) throws -> Army? where I: FixedWidthInteger {
         let count = Int(_count)
         let creatureStacks = try parseCreatureStacks(format: format, count: count)
         
-        let formation: Army.Formation? = !parseFormation ? nil : try Army.Formation(integer: reader.readUInt8())
+        let formation: Army.Formation? = parseFormation ? try Army.Formation(integer: reader.readUInt8()) : nil
+        
+        guard let stacks = creatureStacks else { return nil }
         
         return .init(
-            creatureStacks: creatureStacks, formation: formation
+            creatureStacks: stacks, formation: formation
         )
     }
     

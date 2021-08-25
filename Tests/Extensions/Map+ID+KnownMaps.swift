@@ -14,6 +14,8 @@ extension Map.ID {
         .init(fileName: name.appending("." + Self.fileExtension))
     }
     
+    /// SOD, .small
+    static let forSale: Self = .h3m("For Sale")
 
     /// ROE, .small, smallest file size
     static let goodToGo: Self = .h3m("Good to Go")
@@ -33,6 +35,8 @@ extension Map.ID {
     
     static let vikingWeShallGo: Self = .h3m("A Viking We Shall Go")
     static let noahsArk: Self = .h3m("Noahs Ark")
+    
+    
     static let overthrowThyNeighbour: Self = .h3m("Overthrow Thy Neighbors")
     static let mythAndLegend: Self = .h3m("Myth and Legend")
 

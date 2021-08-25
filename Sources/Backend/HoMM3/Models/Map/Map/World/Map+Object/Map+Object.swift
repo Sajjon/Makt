@@ -24,10 +24,21 @@ public extension Map {
         public let artifact: Artifact
     }
     
+    struct Dwelling: Hashable {
+        public let owner: PlayerColor?
+        public let id: Object.ID
+    }
+    
     struct GuardedResource: Hashable {
         public let message: String?
         public let guards: CreatureStacks?
         public let resource: Resource
+    }
+    
+    struct Garrison: Hashable {
+        let owner: PlayerColor
+        let creatures: CreatureStacks?
+        let areCreaturesRemovable: Bool
     }
 }
 
@@ -45,12 +56,16 @@ public extension Map.Object {
     
     enum Kind: Hashable {
         case generic
+        case garrison(Map.Garrison)
         case artifact(Map.GuardedArtifact)
         case resource(Map.GuardedResource)
         case event(Map.Event)
+        case dwelling(Map.Dwelling)
         case hero(Hero)
         case mine(Map.Mine)
         case town(Map.Town)
+        case shipyard(Map.Shipyard)
+        case seershut(Map.Seershut)
         case monster(Map.Monster)
     }
 }

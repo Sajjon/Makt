@@ -20,6 +20,7 @@ public extension RawRepresentable where RawValue: FixedWidthInteger {
     }
 }
 public extension RawRepresentable where RawValue == UInt8 {
+    
     init<I>(integer: I) throws where I: FixedWidthInteger {
         do {
             let rawValue = try UInt8(integer: integer)

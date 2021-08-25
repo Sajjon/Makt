@@ -37,18 +37,12 @@ private extension Map.Loader.Parser.H3M {
         disposedHero: Hero.Disposed? = nil
     ) throws -> Hero {
         let questIdentifier: UInt32? = format > .restorationOfErathia ? try reader.readUInt32() : nil
-        let owner = try PlayerColor(integer: reader.readUInt8())
+        let ownerRawID = try reader.readUInt8()
+        let owner: PlayerColor? = ownerRawID != PlayerColor.neutralRawValue ? try PlayerColor(integer: ownerRawID) : nil
         let heroClass = try Hero.Class(integer: reader.readUInt8())
         
    
-        let name: String = try {
-            let maybeCustomName: String? = try reader.readBool() ? reader.readString() : nil
-            let name = maybeCustomName ?? disposedHero?.name
-            guard let heroName = name else {
-                fatalError("Expected a name!")
-            }
-            return heroName
-        }()
+        let name: String? = try reader.readBool() ? reader.readString() : disposedHero?.name
         
         let experiencePoints: UInt32? = try {
             if format > .armageddonsBlade {
@@ -60,17 +54,7 @@ private extension Map.Loader.Parser.H3M {
             }
         }() ?? predefinedHero?.startingExperiencePoints
         
-        let portraitID: Hero.ID = try {
-            let maybeCustomPortrait: Hero.ID? = try reader.readBool() ? .init(integer: reader.readUInt8()) : nil
-            let portraitID = maybeCustomPortrait ?? disposedHero?.portraitID
-            
-            guard let heroPortraitID = portraitID else {
-                fatalError("Expected a portrait!")
-            }
-            return heroPortraitID
-            
-        }()
-        
+        let portraitID: Hero.ID? = try reader.readBool() ? .init(integer: reader.readUInt8()) : disposedHero?.portraitID
       
         let startingSecondarySkills: [Hero.SecondarySkill]? = try reader.readBool() ? try parseSecondarySkills() :  predefinedHero?.startingSecondarySkills
         

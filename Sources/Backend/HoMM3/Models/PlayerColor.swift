@@ -17,6 +17,8 @@ public enum PlayerColor: UInt8, Comparable, CaseIterable, CustomStringConvertibl
 
     
     case red, blue, tan, green, orange, purple, teal, pink
+    
+    public static let neutralRawValue: RawValue = 0xff
 }
 
 public extension PlayerColor {
