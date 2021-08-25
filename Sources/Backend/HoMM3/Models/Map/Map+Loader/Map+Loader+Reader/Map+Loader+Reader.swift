@@ -29,7 +29,7 @@ public extension Map.Loader {
 
 // MARK: Private
 private extension Map.Loader.Reader {
-    var mapsDirectoryPath: String { config.gamesFilesDirectoryPath.appending("Maps/") }
+    var mapsDirectoryPath: String { config.gamesFilesDirectories.maps }
 }
 
 

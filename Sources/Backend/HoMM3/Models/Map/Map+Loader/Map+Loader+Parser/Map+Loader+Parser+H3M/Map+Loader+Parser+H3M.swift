@@ -23,29 +23,40 @@ public extension Map.Loader.Parser {
 
 // MARK: Parse Map
 extension Map.Loader.Parser.H3M {
-    func parse() throws -> Map {
+    func parse(inspector: Map.Loader.Parser.Inspector? = nil) throws -> Map {
         
         let checksum = CRC32.checksum(readMap.data)
         
         let about = try parseAbout()
+        inspector?.didParseAbout(about)
         let format = about.summary.format
         
         let disposedHeroes = try parseDisposedHeroes(format: format)
-        let _ = try parseAllowedArtifacts(format: format)
+        inspector?.didParseDisposedHeroes(disposedHeroes)
+        let allowedArtifacts = try parseAllowedArtifacts(format: format)
+        inspector?.didParseAllowedArtifacts(allowedArtifacts)
         let allowedSpells = try parseAllowedSpells(format: format)
-        let _ = try parseAllowedHeroAbilities(format: format)
-        let _ = try parseRumors()
+        inspector?.didParseAllowedSpells(allowedSpells)
+        let allowedHeroAbilities = try parseAllowedHeroAbilities(format: format)
+        inspector?.didParseAllowedHeroAbilities(allowedHeroAbilities)
+        let rumors = try parseRumors()
+        inspector?.didParseRumors(rumors)
         let predefinedHeroes = try parsePredefinedHeroes(format: format)
+        inspector?.didParsePredefinedHeroes(predefinedHeroes)
         
         let world = try parseTerrain(
             hasUnderworld: about.summary.hasTwoLevels,
             size: about.summary.size
         )
+        inspector?.didParseWorld(world)
         
         let definitions = try parseDefinitions()
+        inspector?.didParseDefinitions(definitions)
+        
         assert(definitions.objectAttributes.count < (world.above.tiles.count + (world.belowGround?.tiles.count ?? 0)))
      
         let _ = try parseObjects(
+            inspector: inspector,
             format: format,
             definitions: definitions,
             allowedSpellsOnMap: allowedSpells,

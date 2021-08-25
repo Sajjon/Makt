@@ -54,12 +54,12 @@ public extension Map.Loader {
 
 // MARK: Public
 public extension Map.Loader {
-    func load(id mapID: Map.ID) throws -> Map {
+    func load(id mapID: Map.ID, inspector: Map.Loader.Parser.Inspector? = nil) throws -> Map {
         if let cachedMap = cache.load(id: mapID) {
             return cachedMap
         }
         let readMap = try reader.read(by: mapID)
-        let parsedMap = try parser.parse(readMap: readMap)
+        let parsedMap = try parser.parse(readMap: readMap, inspector: inspector)
         cache.save(map: parsedMap)
         return parsedMap
     }

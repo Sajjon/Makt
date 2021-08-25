@@ -89,7 +89,8 @@ private extension Map.Object.ID {
             self = try .borderGate(.init(integer: subId))
         case .randomDwellingWithLevel:
             self = try .randomDwellingAtLevel(.init(integer: subId))
-        case .randomDwellingFactoion:
+        case .randomDwellingOfFaction
+:
             self = try .randomDwellingOfFaction(.init(integer: subId))
         case .resource:
             self = try .resource(.init(integer: subId))

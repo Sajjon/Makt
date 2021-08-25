@@ -165,6 +165,7 @@ internal extension Map.Loader.Parser.H3M {
     }
     
     func parseObjects(
+        inspector: Map.Loader.Parser.Inspector? = nil,
         format: Map.Format,
         definitions: Map.Definitions,
         allowedSpellsOnMap: [Spell.ID],
@@ -174,27 +175,35 @@ internal extension Map.Loader.Parser.H3M {
         
         let objectCount = try reader.readUInt32()
         
+        print("🤡 objectCount: \(objectCount), definitions.objectAttributes.count: \(definitions.objectAttributes.count)")
         guard definitions.objectAttributes.count <= objectCount else {
             throw Error.expectedDefinitionCountToBeLessThanOrEqualToObjectCount
         }
         
-        print("🤡 objectCount: \(objectCount), definitions.objectAttributes.count: \(definitions.objectAttributes.count)")
         
-        let objects: [Map.Object] = try objectCount.nTimes {
+        var objects = [Map.Object]()
+        for objectIndex in 0..<objectCount {
+            if let maxObjectsToParse = inspector?.settings.maxObjectsToParse, (objectIndex + 1) > maxObjectsToParse {
+                break
+            }
+            print("🔮 objectIndex: \(objectIndex)")
             let position = try reader.readPosition()
             
             /// Index in just previously parse `definitions: Map.Definitions`
             let definitionIndex = try reader.readUInt32()
+            
+            
+            
             print("🤡 definitionIndex: \(definitionIndex)")
             
             guard
                 definitionIndex < definitions.objectAttributes.count
             else {
                 fatalError("definitionIndex too large: \(definitionIndex)")
-//                throw Error.unknownObjectDefintion(
-//                    indexTooLarge: .init(definitionIndex),
-//                    haveOnlyParsedDefinitionArrayOfLength: definitions.objectAttributes.count
-//                )
+                //                throw Error.unknownObjectDefintion(
+                //                    indexTooLarge: .init(definitionIndex),
+                //                    haveOnlyParsedDefinitionArrayOfLength: definitions.objectAttributes.count
+                //                )
             }
             
             let definition = definitions.objectAttributes[.init(definitionIndex)]
@@ -207,7 +216,7 @@ internal extension Map.Loader.Parser.H3M {
             
             switch definition.objectID.class {
             case .abandonedMine: fatalError("abandoned mine")
-            
+                
             case .artifact:
                 let (message, guards) = try parseMessageAndGuards(format: format)
                 let artifact: Artifact
@@ -263,41 +272,41 @@ internal extension Map.Loader.Parser.H3M {
             case .monster:
                 switch definition.objectID {
                 case .monster(let creatureID):
-                               objectKind = try .monster(
-                                   parseMonster(format: format, creatureID: creatureID)
-                               )
-                           case .randomMonsterLevel1:
-                               objectKind = try .monster(
-                                   parseRandomMonster(format: format, level: .one)
-                               )
-                           case .randomMonsterLevel2:
-                               objectKind = try .monster(
-                                   parseRandomMonster(format: format, level: .two)
-                               )
-                           case .randomMonsterLevel3:
-                               objectKind = try .monster(
-                                   parseRandomMonster(format: format, level: .three)
-                               )
-                           case .randomMonsterLevel4:
-                               objectKind = try .monster(
-                                   parseRandomMonster(format: format, level: .four)
-                               )
-                           case .randomMonsterLevel5:
-                               objectKind = try .monster(
-                                   parseRandomMonster(format: format, level: .five)
-                               )
-                           case .randomMonsterLevel6:
-                               objectKind = try .monster(
-                                   parseRandomMonster(format: format, level: .six)
-                               )
-                           case .randomMonsterLevel7:
-                               objectKind = try .monster(
-                                   parseRandomMonster(format: format, level: .seven)
-                               )
-                           case .randomMonster:
-                               objectKind = try .monster(
-                                   parseRandomMonster(format: format)
-                               )
+                    objectKind = try .monster(
+                        parseMonster(format: format, creatureID: creatureID)
+                    )
+                case .randomMonsterLevel1:
+                    objectKind = try .monster(
+                        parseRandomMonster(format: format, level: .one)
+                    )
+                case .randomMonsterLevel2:
+                    objectKind = try .monster(
+                        parseRandomMonster(format: format, level: .two)
+                    )
+                case .randomMonsterLevel3:
+                    objectKind = try .monster(
+                        parseRandomMonster(format: format, level: .three)
+                    )
+                case .randomMonsterLevel4:
+                    objectKind = try .monster(
+                        parseRandomMonster(format: format, level: .four)
+                    )
+                case .randomMonsterLevel5:
+                    objectKind = try .monster(
+                        parseRandomMonster(format: format, level: .five)
+                    )
+                case .randomMonsterLevel6:
+                    objectKind = try .monster(
+                        parseRandomMonster(format: format, level: .six)
+                    )
+                case .randomMonsterLevel7:
+                    objectKind = try .monster(
+                        parseRandomMonster(format: format, level: .seven)
+                    )
+                case .randomMonster:
+                    objectKind = try .monster(
+                        parseRandomMonster(format: format)
+                    )
                 default: fatalError("incorrect impl")
                 }
             case .oceanBottle: fatalError("oceanBottle")
@@ -307,10 +316,10 @@ internal extension Map.Loader.Parser.H3M {
             case .randomHero: fallthrough
             case .prison:
                 objectKind = try .hero(
-                                parseRandomHero(
-                                    format: format
-                                )
-                            )
+                    parseRandomHero(
+                        format: format
+                    )
+                )
                 
             case .questGuard: fatalError("questGuard")
             case .randomDwelling: fatalError("questGuard")
@@ -320,7 +329,7 @@ internal extension Map.Loader.Parser.H3M {
                 let (message, guards) = try parseMessageAndGuards(format: format)
                 let quantityBase = try reader.readUInt32()
                 try reader.skip(byteCount: 4)
-              
+                
                 let resourceKind: Resource.Kind
                 if case let .resource(kind) = definition.objectID {
                     resourceKind = kind
@@ -328,7 +337,7 @@ internal extension Map.Loader.Parser.H3M {
                     // random
                     resourceKind = .random()
                 }
-               
+                
                 // Gold is always multiplied by 100
                 let amount = Resource.Amount(resourceKind == .gold ? quantityBase * 100 : quantityBase)
                 let resource = Resource(kind: resourceKind, amount: amount)
@@ -354,16 +363,16 @@ internal extension Map.Loader.Parser.H3M {
                     switch bountyStripped {
                     case .experience:
                         bounty = try .experience(reader.readUInt32())
-                    
+                        
                     case .manaPoints:
                         bounty = try .manaPoints(reader.readUInt32())
-                    
+                        
                     case .moraleBonus:
                         bounty = try .moraleBonus(reader.readUInt8())
-                    
+                        
                     case .luckBonus:
                         bounty = try .luckBonus(reader.readUInt8())
-                    
+                        
                     case .resource:
                         let resource = try Resource(
                             kind: .init(integer: reader.readUInt8()),
@@ -371,27 +380,27 @@ internal extension Map.Loader.Parser.H3M {
                             amount: .init(reader.readUInt32() & 0x00ffffff)
                         )
                         bounty =  .resource(resource)
-                    
+                        
                     case .primarySkill:
                         let primarySkill = try Hero.PrimarySkill(
                             kind: .init(integer: reader.readInt8()),
                             level: .init(reader.readUInt8())
                         )
                         bounty =  .primarySkill(primarySkill)
-                    
+                        
                     case .secondarySkill:
                         let secondarySkill = try Hero.SecondarySkill(
                             kind: .init(integer: reader.readInt8()),
                             level: .init(integer: reader.readUInt8())
                         )
                         bounty =  .secondarySkill(secondarySkill)
-                    
+                        
                     case .artifact:
                         guard let artifactID = try parseArtifactID(format: format) else {
                             fatalError("Expected artifact ID")
                         }
                         bounty = .artifact(artifactID)
-
+                        
                     case .spell:
                         print("🤡 bounty/reward is spell..?")
                         bounty = try .spell(.init(integer: reader.readInt8()))
@@ -465,13 +474,14 @@ internal extension Map.Loader.Parser.H3M {
             
             let mapObject = Map.Object(
                 position: position,
-                objectID: definition.objectID,
+                attributes: definition,
                 kind: objectKind
             )
             
             print("🔮 successfully parse mapObject: \(mapObject)")
             
-            return mapObject
+            inspector?.didParseObject(mapObject)
+            objects.append(mapObject)
         }
         return .init(objects: objects)
     }
@@ -534,7 +544,7 @@ public struct CreatureStacks: Hashable {
 // TODO: Extract to separate another (separate?) file?
 internal extension Map.Loader.Parser.H3M {
     
-
+    
     
     func parseResources() throws -> Resources {
         let resources: [Resource] = try Resource.Kind.allCases.map { kind in

@@ -49,7 +49,7 @@ public extension Map.Tile.Terrain.Kind {
 
 /// MARK: Kind
 public extension Map.Tile.Terrain {
-    enum Kind: UInt8, Equatable, CustomDebugStringConvertible, CaseIterable {
+    enum Kind: UInt8, Hashable, CustomDebugStringConvertible, CaseIterable {
         case dirt, sand, grass, snow, swamp, rough, subterranean, lava, water, rock
     }
 }

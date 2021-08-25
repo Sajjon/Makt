@@ -22,7 +22,7 @@ public extension Map.Loader {
 public extension Map.Loader.Parser {
 
   
-    func parse(readMap: Map.Loader.ReadMap) throws -> Map {
+    func parse(readMap: Map.Loader.ReadMap, inspector: Map.Loader.Parser.Inspector? = nil) throws -> Map {
         let stream = DataReader(readMap: readMap)
         let formatRawValue = try stream.readUInt32()
         let h3mParser: H3M
@@ -42,7 +42,7 @@ public extension Map.Loader.Parser {
                 h3mParser = H3M(readMap: readMap)
             }
         }
-        return try h3mParser.parse()
+        return try h3mParser.parse(inspector: inspector)
     
         
     }

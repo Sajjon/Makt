@@ -651,7 +651,8 @@ public extension Map.Object.ID {
              randomDwellingWithLevel = 217,
              
              /// subtype = faction
-             randomDwellingFactoion = 218,
+             randomDwellingOfFaction
+ = 218,
              
              garrison2 = 219,
              abandonedMine = 220,

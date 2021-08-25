@@ -14,9 +14,10 @@ public extension Map {
   
     struct Object: Hashable, CustomDebugStringConvertible {
         public let position: Position
-        public let objectID: Object.ID
+        public let attributes: Map.Object.Attributes
         public let kind: Kind
     }
+    
     
     struct GuardedArtifact: Hashable {
         public let message: String?
@@ -40,6 +41,10 @@ public extension Map {
         let creatures: CreatureStacks?
         let areCreaturesRemovable: Bool
     }
+}
+
+public extension Map.Object {
+    var objectID: ID { attributes.objectID }
 }
 
 public extension Map.Object {

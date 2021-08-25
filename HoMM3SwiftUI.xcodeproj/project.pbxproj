@@ -99,6 +99,7 @@
 		487C2C3E26D3DC9800031505 /* Map+Loader+Parser+H3M+Object+Monster.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487C2C3D26D3DC9800031505 /* Map+Loader+Parser+H3M+Object+Monster.swift */; };
 		487C2C4026D4C08900031505 /* Hero+Placeholder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487C2C3F26D4C08900031505 /* Hero+Placeholder.swift */; };
 		487C2C4226D508E500031505 /* Map+Loader+Parser+H3M+CreatureStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487C2C4126D508E500031505 /* Map+Loader+Parser+H3M+CreatureStack.swift */; };
+		48BC466B26D667EE00D435F1 /* Map+Object+ID+Stripped.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48BC466A26D667EE00D435F1 /* Map+Object+ID+Stripped.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -208,6 +209,7 @@
 		487C2C3D26D3DC9800031505 /* Map+Loader+Parser+H3M+Object+Monster.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Map+Loader+Parser+H3M+Object+Monster.swift"; sourceTree = "<group>"; };
 		487C2C3F26D4C08900031505 /* Hero+Placeholder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Hero+Placeholder.swift"; sourceTree = "<group>"; };
 		487C2C4126D508E500031505 /* Map+Loader+Parser+H3M+CreatureStack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Map+Loader+Parser+H3M+CreatureStack.swift"; sourceTree = "<group>"; };
+		48BC466A26D667EE00D435F1 /* Map+Object+ID+Stripped.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Map+Object+ID+Stripped.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -582,6 +584,7 @@
 			children = (
 				487C2C1826CEDD4C00031505 /* Map+Object+ID.swift */,
 				487C2C2A26D0EFB800031505 /* Map+Object+ID+CustomDebugStringConvertible.swift */,
+				48BC466A26D667EE00D435F1 /* Map+Object+ID+Stripped.swift */,
 				487C2C2126CF8B8000031505 /* Map+Object+ID+ParseFromH3M.swift */,
 			);
 			path = "Map+Object+ID";
@@ -793,6 +796,7 @@
 				487C2BF226CD78CF00031505 /* Map+Loader+Parser+H3M+ParsePredefinedHeroes.swift in Sources */,
 				487C2B8826CA950100031505 /* Map+Format.swift in Sources */,
 				487C2B9226CA9B5900031505 /* DataReader.swift in Sources */,
+				48BC466B26D667EE00D435F1 /* Map+Object+ID+Stripped.swift in Sources */,
 				487C2B9D26CAD21F00031505 /* AITactic.swift in Sources */,
 				487C2C0126CECDA600031505 /* Map+Rumor.swift in Sources */,
 				487C2BC626CCF5B700031505 /* CRC32Checksum.swift in Sources */,

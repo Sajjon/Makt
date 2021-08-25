@@ -14,12 +14,12 @@ public extension Map {
 }
 
 public extension Map.Object {
-    struct Attributes: Equatable, CustomDebugStringConvertible {
+    struct Attributes: Hashable, CustomDebugStringConvertible {
         public let animationFileName: String
         public let supportedLandscapes: [Map.Tile.Terrain.Kind]
         public let mapEditorLandscapeGroup: [Map.Tile.Terrain.Kind]
 
-       public let objectID: Map.Object.ID
+        public let objectID: Map.Object.ID
 
         public let group: Group?
         public let pathfinding: Pathfinding
@@ -41,13 +41,13 @@ public extension Map.Object.Attributes {
         """
     }
     
-    struct Pathfinding: Equatable {
+    struct Pathfinding: Hashable {
         public let visitability: Visitability
         public let passability: Passability
     }
 
     
-     enum Group: UInt8, Equatable, CaseIterable, CustomDebugStringConvertible {
+     enum Group: UInt8, Hashable, CaseIterable, CustomDebugStringConvertible {
         case towns = 1
         case monsters
         case heroes
@@ -70,10 +70,10 @@ public extension Map.Object.Attributes.Group {
 
 public extension Map.Object.Attributes.Pathfinding {
     
-    struct Visitability: Equatable {
+    struct Visitability: Hashable {
         public let visitablilityPerTileRelativePositionMap: [RelativePosition: IsVisitable]
     }
-    struct Passability: Equatable {
+    struct Passability: Hashable {
         public let passabilityPerTileRelativePositionMap: [RelativePosition: IsPassable]
     }
     
