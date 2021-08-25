@@ -16,6 +16,13 @@ extension Map.ID {
     
     /// SOD, .small
     static let forSale: Self = .h3m("For Sale")
+    
+    /// SOD, .small
+    static let tooManyMonsters: Self = .h3m("Too Many Monsters")
+    
+    /// ROE, small
+    static let kneeDeepInTheDead: Self = .h3m("Knee Deep in the Dead")
+    
 
     /// ROE, .small, smallest file size
     static let goodToGo: Self = .h3m("Good to Go")

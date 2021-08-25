@@ -72,7 +72,7 @@ public enum Endianess {
 public extension DataReader {
     
     enum Error: Swift.Error {
-        case outOfBounds
+        case dataReaderHasNoMoreBytesToBeRead
     }
     
     func readUInt8(endianess: Endianess = .little) throws -> UInt8 {
@@ -103,7 +103,7 @@ public extension DataReader {
     
     func read(byteCount: Int) throws -> Data {
         guard source.count >= byteCount else {
-            throw Error.outOfBounds
+            throw Error.dataReaderHasNoMoreBytesToBeRead
         }
         let startIndex = Data.Index(offset)
         let endIndex = startIndex.advanced(by: byteCount)
@@ -126,7 +126,7 @@ public extension DataReader {
     
     func seek(to targetOffset: Int) throws {
         guard targetOffset < source.count else {
-            throw Error.outOfBounds
+            throw Error.dataReaderHasNoMoreBytesToBeRead
         }
 
         self.offset = targetOffset

@@ -39,8 +39,8 @@ private extension Map.Loader.Parser.H3M {
         let questIdentifier: UInt32? = format > .restorationOfErathia ? try reader.readUInt32() : nil
         let ownerRawID = try reader.readUInt8()
         let owner: PlayerColor? = ownerRawID != PlayerColor.neutralRawValue ? try PlayerColor(integer: ownerRawID) : nil
-        let heroClass = try Hero.Class(integer: reader.readUInt8())
-        
+        let heroClassRawId = try reader.readUInt8()
+        let heroClass: Hero.Class? = Hero.Class(rawValue: heroClassRawId)
    
         let name: String? = try reader.readBool() ? reader.readString() : disposedHero?.name
         
@@ -63,19 +63,16 @@ private extension Map.Loader.Parser.H3M {
         let patrolRadius = try reader.readUInt8()
         let isPatrolling = patrolRadius != 0xff
         
-        
         let customBiography: String? = try {
             guard format > .restorationOfErathia else { return nil }
-            return try !reader.readBool() ? nil : reader.readString()
+            return try reader.readBool() ? reader.readString() : nil
         }() ?? predefinedHero?.biography
-        
         
         let customGender: Hero.Gender? = try {
             guard format > .restorationOfErathia else { return nil }
             guard try reader.readBool() else { /* does NOT have custom gender */ return nil }
             return Hero.Gender(rawValue: try reader.readUInt8())
         }() ?? predefinedHero?.customGender
-        
         let customSpells: [Spell.ID]? = try {
             guard format >= .armageddonsBlade else { return nil }
             if format > .armageddonsBlade {
@@ -90,7 +87,6 @@ private extension Map.Loader.Parser.H3M {
                 return [try Spell.ID(integer: buff)]
             }
         }() ?? predefinedHero?.customSpells
-        
         let customPrimarySkills: [Hero.PrimarySkill]? = try {
             guard format > .armageddonsBlade else { return nil }
             guard try reader.readBool() else { return nil }
@@ -98,7 +94,6 @@ private extension Map.Loader.Parser.H3M {
         }() ?? predefinedHero?.customPrimarySkills
         
         try reader.skip(byteCount: 16)
-        
         return .init(
             class: heroClass,
             questIdentifier: questIdentifier,

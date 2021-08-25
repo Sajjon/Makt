@@ -8,7 +8,7 @@
 import Foundation
 
 public struct Hero: Hashable {
-    public let `class`: Hero.Class
+    public let `class`: Hero.Class?
     public let questIdentifier: UInt32?
     public let portraitID: ID?
     public let name: String?

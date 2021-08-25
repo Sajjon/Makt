@@ -9,7 +9,8 @@ import Foundation
 
 extension FixedWidthInteger {
     func nTimes<R>(repeat closure: () throws -> R) rethrows -> [R] {
-        try (0..<Int(self)).map { _ in
+        guard self > 0 else { return [] }
+        return try (0..<Int(self)).map { _ in
             try closure()
         }
     }

@@ -15,8 +15,21 @@ extension Map.PlayersInfo.PlayerInfo {
 
 final class LoadMapTests: XCTestCase {
     
+    func test_assert_small_map_kneeDeepInTheDead() throws {
+        let map = try Map.load(.kneeDeepInTheDead)
+        XCTAssertEqual(map.about.summary.fileName, "Knee Deep in the Dead.h3m")
+        XCTAssertEqual(map.about.summary.fileSizeCompressed, 6_909)
+        XCTAssertEqual(map.about.summary.fileSize, 1)
+    }
+    
+    func test_assert_small_map_tooManyMonsters() throws {
+        let map = try Map.load(.tooManyMonsters)
+        XCTAssertEqual(map.about.summary.fileName, "Too Many Monsters.h3m")
+        XCTAssertEqual(map.about.summary.fileSizeCompressed, 7_569)
+        XCTAssertEqual(map.about.summary.fileSize, 1)
+    }
+    
     func test_assert_small_map_forSale() throws {
-        
         let map = try Map.load(.forSale)
         XCTAssertEqual(map.about.summary.fileName, "For Sale.h3m")
         XCTAssertEqual(map.about.summary.fileSizeCompressed, 8_434)
