@@ -54,12 +54,13 @@ extension Map.Loader.Parser.H3M {
             hasUnderworld: about.summary.hasTwoLevels,
             size: about.summary.size
         )
+        assert(world.above.tiles.count == about.summary.size.tileCount)
         inspector?.didParseWorld(world)
         
         let definitions = try parseDefinitions()
+        assert(definitions.objectAttributes.count < (world.above.tiles.count + (world.belowGround?.tiles.count ?? 0)))
         inspector?.didParseDefinitions(definitions)
         
-        assert(definitions.objectAttributes.count < (world.above.tiles.count + (world.belowGround?.tiles.count ?? 0)))
      
         let _ = try parseObjects(
             inspector: inspector,
@@ -69,7 +70,8 @@ extension Map.Loader.Parser.H3M {
             predefinedHeroes: predefinedHeroes,
             disposedHeroes: disposedHeroes
         )
-//        let _ = try parseEvents()
+        
+        let _ = try parseEvents()
         
         return .init(
             checksum: checksum,
@@ -214,9 +216,11 @@ private extension Map.Loader.Parser.H3M {
     /// and global events (these are set in Map Specifications)
     func parseDefinitions() throws -> Map.Definitions {
         let definitionCount = try reader.readUInt32()
-        let attributes: [Map.Object.Attributes] = try definitionCount.nTimes {
+        let attributes: [Map.Object.Attributes] = try (0..<definitionCount).compactMap { _ in
             /// aka "Sprite name"
             let animationFileName = try reader.readString()
+            
+            let offsetAfterAnimationName = reader.offset
             
             /// Which squares (of this object) are passable, counted from the bottom right corner
             /// (bit 1: passable, bit 0: impassable
@@ -226,24 +230,30 @@ private extension Map.Loader.Parser.H3M {
             /// (bit 1: active, bit 0: passive
             let visitabilityBitmask = try reader.readBitArray(byteCount: Map.Object.Attributes.Pathfinding.rowCount)
             
-            func boolPerPosition(bitmask: Bitmask) -> [Map.Object.Attributes.Pathfinding.RelativePosition: Bool] {
+            assert(reader.offset == offsetAfterAnimationName + 12)
+            
+            func allowedRelativePositions(bitmask: Bitmask) -> Set<Map.Object.Attributes.Pathfinding.RelativePosition> {
                 precondition(bitmask.count == Map.Object.Attributes.Pathfinding.rowCount * Map.Object.Attributes.Pathfinding.columnCount)
                 var index = 0
-                var map: [Map.Object.Attributes.Pathfinding.RelativePosition: Bool] = [:]
+                var set = Set<Map.Object.Attributes.Pathfinding.RelativePosition>()
                 for row in 0..<Map.Object.Attributes.Pathfinding.rowCount {
                     for column in 0..<Map.Object.Attributes.Pathfinding.columnCount {
                         defer { index += 1 }
                         let relativePosition: Map.Object.Attributes.Pathfinding.RelativePosition = .init(column: .init(column), row: .init(row))
-                        map[relativePosition] = bitmask[index]
+                        let allowed = bitmask[index]
+                        if allowed {
+                            set.insert(relativePosition)
+                        }
                     }
                 }
-                return map
+//                return Array(set).sorted()
+                return set
             }
             
             
             let pathfinding = Map.Object.Attributes.Pathfinding(
-                visitability: .init(visitablilityPerTileRelativePositionMap: boolPerPosition(bitmask: visitabilityBitmask)),
-                passability:  .init(passabilityPerTileRelativePositionMap: boolPerPosition(bitmask: passabilityBitmask))
+                visitability: .init(relativePositionsOfVisitableTiles: allowedRelativePositions(bitmask: visitabilityBitmask)),
+                passability: .init(relativePositionsOfPassableTiles: allowedRelativePositions(bitmask: passabilityBitmask))
             )
             
              ///   ├─ 2  bytes.
@@ -311,14 +321,49 @@ private extension Map.Loader.Parser.H3M {
                 pathfinding: pathfinding,
                 zRenderingPosition: zRenderingPosition
             )
+            
+            guard
+                objectAttributes != .invisibleHardcodedIntoEveryMapAttribute_RandomMonster,
+                objectAttributes != .invisibleHardcodedIntoEveryMapAttribute_Hole else {
+                return nil
+            }
     
             return objectAttributes
 
         }
+        
+        
    
         return .init(objectAttributes: attributes)
     }
 }
+
+private extension Map.Object.Attributes {
+    static let invisibleHardcodedIntoEveryMapAttribute_RandomMonster: Self = .init(
+        animationFileName: "AVWmrnd0.def",
+        supportedLandscapes: [.water, .lava, .subterranean, .rock, .swamp, .snow, .grass, .sand],
+        mapEditorLandscapeGroup: [.sand],
+        objectID: .randomMonster,
+        group: .monsters,
+        pathfinding: Pathfinding(
+            visitability: [(0, 5)],
+            passability: [(0, 0), (0, 1), (1, 0), (2, 0), (3, 0), (0, 2), (0, 3), (0, 4), (4, 0), (5, 0), (6, 0), (7, 0), (1, 1), (1, 2), (2, 1), (2, 2), (3, 1), (4, 1), (5, 1), (6, 1), (3, 2), (4, 2), (1, 3), (7, 1), (2, 3), (3, 3), (4, 3), (5, 2), (6, 2), (7, 2), (5, 3), (1, 4), (6, 3), (7, 3), (1, 5), (2, 4), (2, 5), (3, 4), (4, 4), (5, 4), (3, 5), (4, 5), (5, 5), (6, 4), (6, 5), (7, 4), (7, 5)]
+        )
+        , zRenderingPosition: 0)
+    
+    static let invisibleHardcodedIntoEveryMapAttribute_Hole: Self = .init(
+        animationFileName: "AVLholg0.def",
+        supportedLandscapes: [.snow],
+        mapEditorLandscapeGroup: [.snow],
+        objectID: .hole,
+        group: nil,
+        pathfinding: Pathfinding(
+            visitability: [],
+            passability: [(0, 2), (7, 4), (0, 5), (2, 5), (0, 1), (7, 1), (6, 5), (7, 2), (5, 1), (4, 5), (4, 0), (4, 1), (6, 1), (5, 0), (1, 0), (2, 4), (6, 2), (5, 2), (0, 3), (2, 0), (3, 1), (0, 0), (3, 3), (4, 3), (1, 2), (2, 3), (0, 4), (3, 0), (1, 4), (6, 4), (4, 2), (3, 2), (1, 3), (6, 3), (4, 4), (3, 5), (1, 5), (1, 1), (5, 5), (2, 1), (7, 5), (7, 0), (6, 0), (5, 3), (3, 4), (5, 4), (7, 3), (2, 2)]
+            )
+        , zRenderingPosition: 1)
+}
+
 
 // MARK: Parse Events
 private extension Map.Loader.Parser.H3M {

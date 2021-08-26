@@ -231,7 +231,8 @@ internal extension Map.Loader.Parser.H3M {
         let townID: Map.Town.ID = try format > .restorationOfErathia ? .fromMapFile(reader.readUInt32()) : .generated(UUID())
         
         let owner = try PlayerColor(integer: reader.readUInt8())
-        let name: String? = try reader.readBool() ? reader.readString() : nil
+        let hasName = try reader.readBool()
+        let name: String? = try hasName ? reader.readString() : nil
         print("🏰 town: name='\(name)'")
         
         let hasGarrison = try reader.readBool()

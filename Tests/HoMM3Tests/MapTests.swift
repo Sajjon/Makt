@@ -15,8 +15,171 @@ extension Map.PlayersInfo.PlayerInfo {
 
 final class LoadMapTests: XCTestCase {
     
+    
+    func test_test_map_all_water_but_the_corners_no_objects() throws {
+        let mapLoader = Map.Loader.init(config: Config.init(gamesFilesDirectories: .init(maps: .custom("/Users/sajjon/Developer/Fun/Games/HoMM/HoMM3SwiftUI/Tests/TestMaps/"))))
+        let mapFile = "cyon_roe_small_1lvl_all_water_but_the_corners_no_objects.h3m"
+        let mapID = Map.ID.init(fileName: mapFile)
+        
+        let inspector = Map.Loader.Parser.Inspector(
+            settings: .init(),
+            onParseAbout: { about in
+                let summary = about.summary
+                XCTAssertEqual(summary.fileName, "cyon_roe_small_1lvl_all_water_but_the_corners_no_objects.h3m")
+                XCTAssertEqual(summary.format, .restorationOfErathia)
+                XCTAssertEqual(summary.fileSizeCompressed, 1_324)
+            },
+            onParseDisposedHeroes: { disposedHeroes in
+                XCTAssertTrue(disposedHeroes.isEmpty)
+            },
+            onParseAllowedArtifacts: { allowedArtifacts in
+                XCTAssertEqual(allowedArtifacts, Artifact.ID.available(in: .restorationOfErathia))
+            },
+            onParseAllowedSpells: { allowedSpells in
+                XCTAssertEqual(allowedSpells, Spell.ID.allCases)
+            },
+            onParseAllowedHeroAbilities: { allowedSeconarySkills in
+                XCTAssertEqual(allowedSeconarySkills, Hero.SecondarySkill.Kind.allCases)
+            },
+            onParseRumors: { rumors in
+                XCTAssertTrue(rumors.isEmpty)
+            },
+            onParsePredefinedHeroes: { predefinedHeroes in
+                XCTAssertTrue(predefinedHeroes.isEmpty)
+            },
+            onParseWorld: { world in
+                XCTAssertNil(world.belowGround)
+                XCTAssertFalse(world.above.isUnderworld)
+                let tiles = world.above.tiles
+                XCTAssertEqual(tiles.count, 36*36)
+                XCTAssertEqual(tiles.filter({ $0.terrain.kind == .water }).count, tiles.count - 4) // the four corners contain: [snow, dirt, lava, rough]
+                XCTAssertEqual(tiles[0].terrain.kind, .snow)
+                XCTAssertEqual(tiles[35].terrain.kind, .dirt)
+                XCTAssertEqual(tiles[36*35].terrain.kind, .lava)
+                XCTAssertEqual(tiles[36*36 - 1].terrain.kind, .rough)
+
+                XCTAssertEqual(tiles.prefix(Size.small.height).map({ $0.position.y }), (0...35).map({ .init($0) }))
+                
+                XCTAssertTrue(tiles.prefix(Size.small.height).map({ $0.position.x }).allSatisfy({ $0 == 0 }))
+            },
+            onParseDefinitions: { definitions in
+                XCTAssertEqual(definitions.objectAttributes.count, 0, "Expected 0 definitions but got #\(definitions.objectAttributes.count), more specifically these:\n\(definitions.objectAttributes)\n")
+            },
+            onParseObject: { object in
+                XCTFail("Expected zero objects.")
+            })
+        
+        XCTAssertNoThrow(try mapLoader.load(id: mapID, inspector: inspector))
+    }
+    
+    func test_test_map_ab_all_water() throws {
+        let mapLoader = Map.Loader.init(config: Config.init(gamesFilesDirectories: .init(maps: .custom("/Users/sajjon/Developer/Fun/Games/HoMM/HoMM3SwiftUI/Tests/TestMaps/"))))
+        let mapFile = "cyon_ab_small_1lvl_all_water_no_objects.h3m"
+        let mapID = Map.ID(fileName: mapFile)
+        
+        let inspector = Map.Loader.Parser.Inspector(
+            settings: .init(),
+            onParseAbout: { about in
+                let summary = about.summary
+                XCTAssertEqual(summary.format, .armageddonsBlade)
+                XCTAssertEqual(summary.fileName, mapFile)
+                XCTAssertEqual(summary.fileSizeCompressed, 1272)
+            },
+            onParseDisposedHeroes: { disposedHeroes in
+                XCTAssertTrue(disposedHeroes.isEmpty)
+            },
+            onParseAllowedArtifacts: { allowedArtifacts in
+//                XCTAssertEqual(allowedArtifacts, Artifact.ID.available(in: .shadowOfDeath))
+                XCTAssertFalse(allowedArtifacts.isEmpty)
+            },
+            onParseAllowedSpells: { allowedSpells in
+                XCTAssertFalse(allowedSpells.isEmpty)
+            },
+            onParseAllowedHeroAbilities: { allowedSeconarySkills in
+                XCTAssertFalse(allowedSeconarySkills.isEmpty)
+            },
+            onParseRumors: { rumors in
+                XCTAssertTrue(rumors.isEmpty)
+            },
+            onParsePredefinedHeroes: { predefinedHeroes in
+                XCTAssertTrue(predefinedHeroes.isEmpty)
+            },
+            onParseWorld: { world in
+                XCTAssertNil(world.belowGround)
+                XCTAssertFalse(world.above.isUnderworld)
+                let tiles = world.above.tiles
+                XCTAssertEqual(tiles.count, 36*36)
+                XCTAssertTrue(tiles.allSatisfy({ $0.terrain.kind == .water }))
+
+                XCTAssertEqual(tiles.prefix(Size.small.height).map({ $0.position.y }), (0...35).map({ .init($0) }))
+                
+                XCTAssertTrue(tiles.prefix(Size.small.height).map({ $0.position.x }).allSatisfy({ $0 == 0 }))
+            },
+            onParseDefinitions: { definitions in
+                XCTAssertEqual(definitions.objectAttributes.count, 0, "Expected 0 definitions but got #\(definitions.objectAttributes.count), more specifically these:\n\(definitions.objectAttributes)\n")
+            },
+            onParseObject: { object in
+                XCTFail("Expected zero objects.")
+            })
+        
+        XCTAssertNoThrow(try mapLoader.load(id: mapID, inspector: inspector))
+    }
+    
+    func test_test_map_sod_all_water() throws {
+        let mapLoader = Map.Loader.init(config: Config.init(gamesFilesDirectories: .init(maps: .custom("/Users/sajjon/Developer/Fun/Games/HoMM/HoMM3SwiftUI/Tests/TestMaps/"))))
+        let mapFile = "cyon_sod_small_1lvl_all_water_no_objects.h3m"
+        let mapID = Map.ID(fileName: mapFile)
+        
+        let inspector = Map.Loader.Parser.Inspector(
+            settings: .init(),
+            onParseAbout: { about in
+                let summary = about.summary
+                XCTAssertEqual(summary.format, .shadowOfDeath)
+                XCTAssertEqual(summary.fileName, "cyon_sod_small_1lvl_all_water_no_objects.h3m")
+                XCTAssertEqual(summary.fileSizeCompressed, 1311)
+            },
+            onParseDisposedHeroes: { disposedHeroes in
+                XCTAssertTrue(disposedHeroes.isEmpty)
+            },
+            onParseAllowedArtifacts: { allowedArtifacts in
+//                XCTAssertEqual(allowedArtifacts, Artifact.ID.available(in: .shadowOfDeath))
+                XCTAssertFalse(allowedArtifacts.isEmpty)
+            },
+            onParseAllowedSpells: { allowedSpells in
+                XCTAssertTrue(allowedSpells.isEmpty)
+            },
+            onParseAllowedHeroAbilities: { allowedSeconarySkills in
+                XCTAssertTrue(allowedSeconarySkills.isEmpty)
+            },
+            onParseRumors: { rumors in
+                XCTAssertTrue(rumors.isEmpty)
+            },
+            onParsePredefinedHeroes: { predefinedHeroes in
+                XCTAssertTrue(predefinedHeroes.isEmpty)
+            },
+            onParseWorld: { world in
+                XCTAssertNil(world.belowGround)
+                XCTAssertFalse(world.above.isUnderworld)
+                let tiles = world.above.tiles
+                XCTAssertEqual(tiles.count, 36*36)
+                XCTAssertTrue(tiles.allSatisfy({ $0.terrain.kind == .water }))
+
+                XCTAssertEqual(tiles.prefix(Size.small.height).map({ $0.position.y }), (0...35).map({ .init($0) }))
+                
+                XCTAssertTrue(tiles.prefix(Size.small.height).map({ $0.position.x }).allSatisfy({ $0 == 0 }))
+            },
+            onParseDefinitions: { definitions in
+                XCTAssertEqual(definitions.objectAttributes.count, 0, "Expected 0 definitions but got #\(definitions.objectAttributes.count), more specifically these:\n\(definitions.objectAttributes)\n")
+            },
+            onParseObject: { object in
+                XCTFail("Expected zero objects.")
+            })
+        
+        XCTAssertNoThrow(try mapLoader.load(id: mapID, inspector: inspector))
+    }
+    
+    
     func test_test_map_all_water() throws {
-//        let mapLoader = Map.Loader(config: .init(gamesFilesDirectoryPath: ))
         let mapLoader = Map.Loader.init(config: Config.init(gamesFilesDirectories: .init(maps: .custom("/Users/sajjon/Developer/Fun/Games/HoMM/HoMM3SwiftUI/Tests/TestMaps/"))))
         let mapFile = "cyon_roe_small_1lvl_all_water_no_objects.h3m"
         let mapID = Map.ID.init(fileName: mapFile)
@@ -25,6 +188,7 @@ final class LoadMapTests: XCTestCase {
             settings: .init(),
             onParseAbout: { about in
                 let summary = about.summary
+                XCTAssertEqual(summary.format, .restorationOfErathia)
                 XCTAssertEqual(summary.fileName, "cyon_roe_small_1lvl_all_water_no_objects.h3m")
                 XCTAssertEqual(summary.fileSizeCompressed, 1_252)
             },
@@ -50,15 +214,15 @@ final class LoadMapTests: XCTestCase {
                 XCTAssertNil(world.belowGround)
                 XCTAssertFalse(world.above.isUnderworld)
                 let tiles = world.above.tiles
+                XCTAssertEqual(tiles.count, 36*36)
                 XCTAssertTrue(tiles.allSatisfy({ $0.terrain.kind == .water }))
 
                 XCTAssertEqual(tiles.prefix(Size.small.height).map({ $0.position.y }), (0...35).map({ .init($0) }))
                 
                 XCTAssertTrue(tiles.prefix(Size.small.height).map({ $0.position.x }).allSatisfy({ $0 == 0 }))
-                
             },
             onParseDefinitions: { definitions in
-                XCTAssertEqual(definitions.objectAttributes.count, 0)
+                XCTAssertEqual(definitions.objectAttributes.count, 0, "Expected 0 definitions but got #\(definitions.objectAttributes.count), more specifically these:\n\(definitions.objectAttributes)\n")
             },
             onParseObject: { object in
                 XCTFail("Expected zero objects.")
@@ -70,7 +234,7 @@ final class LoadMapTests: XCTestCase {
     /// Smallest compressed file size
     func test_assert_a_really_small_map_good_to_go() throws {
         let inspector = Map.Loader.Parser.Inspector(
-            settings: .init(maxObjectsToParse: 1),
+            settings: .init(maxObjectsToParse: 0),
             onParseAbout: { about in
                 let summary = about.summary
                 XCTAssertEqual(summary.fileName, "Good to Go.h3m")
@@ -78,10 +242,15 @@ final class LoadMapTests: XCTestCase {
                 XCTAssertEqual(summary.fileSize, 23_852)
             },
             onParseDefinitions: { definitions in
-                XCTAssertEqual(definitions.objectAttributes.count, 138) // I counted 94 manually in Map Editor. One object probably may contain many definitions.
+                XCTAssertEqual(definitions.objectAttributes.count, 136)
+                
                 print(definitions.objectAttributes)
-//                let heroObjectIDs = definitions.objectAttributes.filter({ $0.objectID.stripped == .hero })
-//                XCTAssertEqual(heroObjectIDs.count, 4)
+                let heroObjectIDs = definitions.objectAttributes.map({ $0.objectID }).filter({ $0.stripped == .hero })
+                XCTAssertEqual(heroObjectIDs.count, 4)
+                XCTAssertTrue(heroObjectIDs.contains(Map.Object.ID.hero(.verdish)))
+                XCTAssertTrue(heroObjectIDs.contains(Map.Object.ID.hero(.korbac)))
+                XCTAssertTrue(heroObjectIDs.contains(Map.Object.ID.hero(.yog)))
+                XCTAssertTrue(heroObjectIDs.contains(Map.Object.ID.hero(.oris)))
             },
             onParseObject: { object in
                 print("✨ test parsed object ✅: \(object)")

@@ -11,7 +11,6 @@ public struct Size: Equatable {
     public typealias Scalar = Int
     public let width: Scalar
     public let height: Scalar
-    
 }
 
 private extension Size.Scalar {
@@ -36,6 +35,8 @@ private extension Size {
     }
 }
 public extension Size {
+    
+    var tileCount: Int { height * height }
     
     static let small: Self = .make(.small)
     static let medium: Self = .make(.medium)

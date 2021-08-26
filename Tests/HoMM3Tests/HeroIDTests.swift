@@ -43,6 +43,18 @@ final class HeroIDTest: XCTestCase {
         doTest(heroId: .yog, is: 96)
     }
     
+    func testOrisYog() {
+        doTest(heroId: .oris, is: 110)
+    }
+    
+    func testKorbac() {
+        doTest(heroId: .korbac, is: 117)
+    }
+    
+    func testVerdish() {
+        doTest(heroId: .verdish, is: 123)
+    }
+    
     func testTiva() {
         doTest(heroId: .tiva, is: 127)
     }

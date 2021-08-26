@@ -79,10 +79,11 @@ internal extension Map.Loader.Parser.H3M {
         }()
         
         // If has underworld => parse it
-        let underworld: Map.Level? = try !hasUnderworld ? nil : {
+        let underworld: Map.Level? = try hasUnderworld ? {
+            fatalError("did NOT expected underwolrd")
             let tiles = try parseTiles(inUnderworld: true)
             return .init(isUnderworld: true, tiles: tiles)
-        }()
+        }() : nil
         
         return .init(above: aboveGround, belowGround: underworld)
     }

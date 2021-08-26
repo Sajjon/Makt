@@ -190,7 +190,7 @@ internal extension Map.Loader.Parser.H3M {
             let position = try reader.readPosition()
             
             /// Index in just previously parse `definitions: Map.Definitions`
-            let definitionIndex = try reader.readUInt32()
+            let definitionIndex = try reader.readUInt32() - 2 // minus two because of [`invisibleHardcodedIntoEveryMapAttribute_RandomMonster`, `invisibleHardcodedIntoEveryMapAttribute_Hole`]
             
             
             

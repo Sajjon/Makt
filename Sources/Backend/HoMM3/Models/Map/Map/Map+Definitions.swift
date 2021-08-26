@@ -32,18 +32,20 @@ public extension Map.Object {
 public extension Map.Object.Attributes {
     
     var debugDescription: String {
-        """
-        animationFileName: \(animationFileName)
-        objectID: \(objectID)
-        group: \(group.map{ $0.debugDescription } ?? "nil")
-        supportedLandscapes: \(supportedLandscapes)
-        mapEditorLandscapeGroup: \(mapEditorLandscapeGroup)
-        """
+        "\(objectID)"
     }
     
-    struct Pathfinding: Hashable {
+    struct Pathfinding: Hashable, CustomDebugStringConvertible {
         public let visitability: Visitability
         public let passability: Passability
+        
+        
+        public var debugDescription: String {
+            """
+            visitable: \(visitability.relativePositionsOfVisitableTiles)
+            passable: \(passability.relativePositionsOfPassableTiles)
+            """
+        }
     }
 
     
@@ -70,18 +72,44 @@ public extension Map.Object.Attributes.Group {
 
 public extension Map.Object.Attributes.Pathfinding {
     
-    struct Visitability: Hashable {
-        public let visitablilityPerTileRelativePositionMap: [RelativePosition: IsVisitable]
+    struct Visitability: Hashable, ExpressibleByArrayLiteral {
+        public let relativePositionsOfVisitableTiles: Set<RelativePosition>
+        public typealias ArrayLiteralElement = (RelativePosition.Scalar, RelativePosition.Scalar)
+        public init(arrayLiteral elements: ArrayLiteralElement...) {
+            self.init(relativePositionsOfVisitableTiles: Set(elements.map({ .init(x: $0.0, y: $0.1) })))
+        }
+        public init(relativePositionsOfVisitableTiles: Set<RelativePosition>) {
+            self.relativePositionsOfVisitableTiles = relativePositionsOfVisitableTiles
+        }
     }
-    struct Passability: Hashable {
-        public let passabilityPerTileRelativePositionMap: [RelativePosition: IsPassable]
+    struct Passability: Hashable, ExpressibleByArrayLiteral {
+        public let relativePositionsOfPassableTiles: Set<RelativePosition>
+        
+        public typealias ArrayLiteralElement = (RelativePosition.Scalar, RelativePosition.Scalar)
+        public init(arrayLiteral elements: ArrayLiteralElement...) {
+            self.init(relativePositionsOfPassableTiles: Set(elements.map({ .init(x: $0.0, y: $0.1) })))
+        }
+        public init(relativePositionsOfPassableTiles: Set<RelativePosition>) {
+            self.relativePositionsOfPassableTiles = relativePositionsOfPassableTiles
+        }
+        
+     
     }
     
     static let columnCount = 8
     static let rowCount = 6
     
     /// A relative position on adventure map, two dimensions (x: Int, y: Int)
-    struct RelativePosition: Hashable {
+    struct RelativePosition: Hashable, Comparable, CustomDebugStringConvertible {
+        public static func < (lhs: Self, rhs: Self) -> Bool {
+            if lhs.x < rhs.x { return true }
+            return lhs.y < rhs.y
+        }
+        
+        public var debugDescription: String {
+            "(\(x), \(y))"
+        }
+        
         public typealias Scalar = Int32
         public let x: Scalar
         public let y: Scalar
