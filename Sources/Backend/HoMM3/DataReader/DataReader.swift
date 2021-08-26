@@ -57,7 +57,11 @@ internal extension DataReader {
         case .little:
             return littleEndianInt
         case .big:
-            fatalError("what to do?")
+            var endianessSwappedBytes = bytes
+            endianessSwappedBytes.reverse()
+            return endianessSwappedBytes.withUnsafeBytes {
+                $0.load(as: I.self)
+            }
         }
     }
 }
@@ -138,13 +142,16 @@ public extension DataReader {
     }
     
     
-    func readString() throws -> String {
-        let length = Int(try readUInt32())
-        assert(length <= 500_000, "This string is unresonably long, lenght: \(length) bytes. Probably some offset error...")
-        guard length > 0 else {
+    func readString(maxByteCount: UInt32? = nil) throws -> String {
+        let lengthU32 = try readUInt32()
+        if let max = maxByteCount, lengthU32 > max {
+            fatalError("String to long. Max was 32.")
+        }
+        assert(lengthU32 <= 500_000, "This string is unresonably long, lenght: \(lengthU32) bytes. Probably some offset error...")
+        guard lengthU32 > 0 else {
             return ""
         }
-        let data = try read(byteCount: length)
+        let data = try read(byteCount: .init(lengthU32))
         return String(bytes: data, encoding: .utf8)!
     }
     

@@ -234,12 +234,38 @@ final class LoadMapTests: XCTestCase {
     /// Smallest compressed file size
     func test_assert_a_really_small_map_good_to_go() throws {
         let inspector = Map.Loader.Parser.Inspector(
-            settings: .init(maxObjectsToParse: 0),
+            settings: .init(maxObjectsToParse: nil),
             onParseAbout: { about in
                 let summary = about.summary
                 XCTAssertEqual(summary.fileName, "Good to Go.h3m")
                 XCTAssertEqual(summary.fileSizeCompressed, 4_982)
                 XCTAssertEqual(summary.fileSize, 23_852)
+                XCTAssertEqual(summary.format, .restorationOfErathia)
+            },
+            onParseDisposedHeroes: { disposedHeroes in
+                XCTAssertTrue(disposedHeroes.isEmpty)
+            },
+            onParseAllowedArtifacts: { allowedArtifacts in
+                XCTAssertEqual(allowedArtifacts, Artifact.ID.available(in: .restorationOfErathia))
+            },
+            onParseAllowedSpells: { allowedSpells in
+                XCTAssertEqual(allowedSpells, Spell.ID.allCases)
+            },
+            onParseAllowedHeroAbilities: { allowedSeconarySkills in
+                XCTAssertEqual(allowedSeconarySkills, Hero.SecondarySkill.Kind.allCases)
+            },
+            onParseRumors: { rumors in
+                XCTAssertTrue(rumors.isEmpty)
+            },
+            onParsePredefinedHeroes: { predefinedHeroes in
+                XCTAssertTrue(predefinedHeroes.isEmpty)
+            },
+            onParseWorld: { world in
+                print(world.above)
+                XCTAssertNil(world.belowGround)
+                XCTAssertFalse(world.above.isUnderworld)
+                let tiles = world.above.tiles
+                XCTAssertEqual(tiles.count, 36*36)
             },
             onParseDefinitions: { definitions in
                 XCTAssertEqual(definitions.objectAttributes.count, 136)
@@ -247,16 +273,16 @@ final class LoadMapTests: XCTestCase {
                 print(definitions.objectAttributes)
                 let heroObjectIDs = definitions.objectAttributes.map({ $0.objectID }).filter({ $0.stripped == .hero })
                 XCTAssertEqual(heroObjectIDs.count, 4)
-                XCTAssertTrue(heroObjectIDs.contains(Map.Object.ID.hero(.verdish)))
-                XCTAssertTrue(heroObjectIDs.contains(Map.Object.ID.hero(.korbac)))
-                XCTAssertTrue(heroObjectIDs.contains(Map.Object.ID.hero(.yog)))
-                XCTAssertTrue(heroObjectIDs.contains(Map.Object.ID.hero(.oris)))
+                XCTAssertTrue(heroObjectIDs.contains(.hero(.barbarian)))
+                XCTAssertTrue(heroObjectIDs.contains(.hero(.battleMage)))
+                XCTAssertTrue(heroObjectIDs.contains(.hero(.beastmaster)))
+                XCTAssertTrue(heroObjectIDs.contains(.hero(.witch)))
+//                              XCTAssertTrue(heroObjectIDs.contains(Hero.Class.)
+//                XCTAssertTrue(heroObjectIDs.contains(Map.Object.ID.hero(.korbac)))
+//                XCTAssertTrue(heroObjectIDs.contains(Map.Object.ID.hero(.yog)))
+//                XCTAssertTrue(heroObjectIDs.contains(Map.Object.ID.hero(.oris)))
             },
             onParseObject: { object in
-                print("✨ test parsed object ✅: \(object)")
-//                if object.position == .init(x: 0, y: 0, inUnderworld: false) {
-//                    XCTAssertEqual(object.objectID, Map.Object.ID.treasureChest)
-//                }
             })
         
         do {
@@ -292,19 +318,111 @@ final class LoadMapTests: XCTestCase {
     /// After `goodToGo` and `elbowRoom`: smallest compressed file size
     func test_assert_a_really_small_map_judgementDay() throws {
         
-        let map = try Map.load(.judgementDay)
-        XCTAssertEqual(map.about.summary.fileName, "Judgement Day.h3m")
-        XCTAssertEqual(map.about.summary.fileSizeCompressed, 5_059)
-        XCTAssertEqual(map.about.summary.fileSize, 1)
+
+        
+        let inspector = Map.Loader.Parser.Inspector(
+            settings: .init(maxObjectsToParse: nil),
+            onParseAbout: { about in
+                let summary = about.summary
+
+                XCTAssertEqual(summary.fileName, "Judgement Day.h3m")
+                XCTAssertEqual(summary.fileSizeCompressed, 5_059)
+                XCTAssertEqual(summary.fileSize, 21201)
+                XCTAssertEqual(summary.format, .restorationOfErathia)
+            },
+            onParseDisposedHeroes: { disposedHeroes in
+                XCTAssertTrue(disposedHeroes.isEmpty)
+            },
+            onParseAllowedArtifacts: { allowedArtifacts in
+                XCTAssertEqual(allowedArtifacts, Artifact.ID.available(in: .restorationOfErathia))
+            },
+            onParseAllowedSpells: { allowedSpells in
+                XCTAssertEqual(allowedSpells, Spell.ID.allCases)
+            },
+            onParseAllowedHeroAbilities: { allowedSeconarySkills in
+                XCTAssertEqual(allowedSeconarySkills, Hero.SecondarySkill.Kind.allCases)
+            },
+            onParseRumors: { rumors in
+                XCTAssertTrue(rumors.isEmpty)
+            },
+            onParsePredefinedHeroes: { predefinedHeroes in
+                XCTAssertTrue(predefinedHeroes.isEmpty)
+            },
+            onParseWorld: { world in
+                print(world.above)
+                XCTAssertNil(world.belowGround)
+                XCTAssertFalse(world.above.isUnderworld)
+                let tiles = world.above.tiles
+                XCTAssertEqual(tiles.count, 36*36)
+            },
+            onParseDefinitions: { definitions in
+                XCTAssertEqual(definitions.objectAttributes.count, 111)
+  
+            },
+            onParseObject: { object in
+            })
+        
+        do {
+            let _ = try Map.load(.judgementDay, inspector: inspector)
+        } catch {
+            // errors are ignored for now.
+        }
     }
     
     /// After `goodToGo`: smallest compressed file size
     func test_assert_a_really_small_map_elbowRoom() throws {
+
         
-        let map = try Map.load(.elbowRoom)
-        XCTAssertEqual(map.about.summary.fileName, "Elbow Room.h3m")
-        XCTAssertEqual(map.about.summary.fileSizeCompressed, 4_996)
-        XCTAssertEqual(map.about.summary.fileSize, 24_590)
+        let inspector = Map.Loader.Parser.Inspector(
+            settings: .init(maxObjectsToParse: 1),
+            onParseAbout: { about in
+                let summary = about.summary
+                XCTAssertEqual(summary.fileName, "Elbow Room.h3m")
+                XCTAssertEqual(summary.fileSizeCompressed, 4_996)
+                XCTAssertEqual(summary.fileSize, 24_590)
+                XCTAssertEqual(summary.format, .armageddonsBlade)
+            },
+            onParseDisposedHeroes: { disposedHeroes in
+                XCTAssertTrue(disposedHeroes.isEmpty)
+            },
+            onParseAllowedArtifacts: { allowedArtifacts in
+                XCTAssertFalse(allowedArtifacts.isEmpty)
+            },
+            onParseAllowedSpells: { allowedSpells in
+                XCTAssertEqual(allowedSpells, Spell.ID.allCases)
+            },
+            onParseAllowedHeroAbilities: { allowedSeconarySkills in
+                XCTAssertEqual(allowedSeconarySkills, Hero.SecondarySkill.Kind.allCases)
+            },
+            onParseRumors: { rumors in
+                XCTAssertTrue(rumors.isEmpty)
+            },
+            onParsePredefinedHeroes: { predefinedHeroes in
+                XCTAssertTrue(predefinedHeroes.isEmpty)
+            },
+            onParseWorld: { world in
+                print(world.above)
+                XCTAssertNil(world.belowGround)
+                XCTAssertFalse(world.above.isUnderworld)
+                let tiles = world.above.tiles
+                XCTAssertEqual(tiles.count, 36*36)
+            },
+            onParseDefinitions: { definitions in
+                XCTAssertEqual(definitions.objectAttributes.count, 119)
+            },
+            onParseObject: { object in
+                if case let .town(randomTownPink) = object.kind {
+                    XCTAssertEqual(randomTownPink.owner, .pink)
+                    XCTAssertEqual(randomTownPink.events.count, 1)
+                }
+            })
+        
+        do {
+            let _ = try Map.load(.elbowRoom, inspector: inspector)
+        } catch {
+            // errors are ignored for now.
+        }
+
     }
 
     func test_assert_can_load_map_by_id__tutorial_map() throws {

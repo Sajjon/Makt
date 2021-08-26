@@ -9,7 +9,7 @@ import Foundation
 
 public extension Hero {
     struct Disposed: Equatable {
-        let heroID: ID
+        let heroClass: Class
         let portraitID: ID?
         let name: String
         let availableForPlayers: [PlayerColor]

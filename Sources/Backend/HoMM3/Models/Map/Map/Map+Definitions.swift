@@ -23,7 +23,7 @@ public extension Map.Object {
 
         public let group: Group?
         public let pathfinding: Pathfinding
-        public let zRenderingPosition: UInt8
+        public let inUnderworld: Bool
     }
 }
 

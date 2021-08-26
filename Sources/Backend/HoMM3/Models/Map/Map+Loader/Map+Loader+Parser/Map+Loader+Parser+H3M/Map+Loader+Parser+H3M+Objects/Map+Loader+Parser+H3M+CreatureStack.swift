@@ -42,17 +42,17 @@ internal extension Map.Loader.Parser.H3M {
         return .init(creatureStacks: stacks)
     }
     
-    func parseArmy<I>(format: Map.Format, count _count: I, parseFormation: Bool) throws -> Army? where I: FixedWidthInteger {
-        let count = Int(_count)
-        let creatureStacks = try parseCreatureStacks(format: format, count: count)
-        
-        let formation: Army.Formation? = parseFormation ? try Army.Formation(integer: reader.readUInt8()) : nil
-        
-        guard let stacks = creatureStacks else { return nil }
-        
-        return .init(
-            creatureStacks: stacks, formation: formation
-        )
-    }
+//    func parseArmy<I>(format: Map.Format, count _count: I, parseFormation: Bool) throws -> Army? where I: FixedWidthInteger {
+//        let count = Int(_count)
+//        let creatureStacks = try parseCreatureStacks(format: format, count: count)
+//        
+//        let formation: Army.Formation? = parseFormation ? try Army.Formation(integer: reader.readUInt8()) : nil
+//        
+//        guard let stacks = creatureStacks else { return nil }
+//        
+//        return .init(
+//            creatureStacks: stacks, formation: formation
+//        )
+//    }
     
 }

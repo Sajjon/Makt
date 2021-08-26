@@ -125,7 +125,7 @@ public extension Map.Object {
              
              garrison(hasAntiMagic: Bool),
              
-             hero(Hero.ID),
+             hero(Hero.Class),
              
              hillFort,
              grail,

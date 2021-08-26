@@ -8,41 +8,38 @@
 import Foundation
 
 
+
 internal extension Map.Loader.Parser.H3M {
     
     func parseHero(
-        format: Map.Format,
-        predefinedHeroes: [Hero.Predefined],
-        disposedHeroes: [Hero.Disposed],
-        heroID: Hero.ID
+        heroClass: Hero.Class,
+        format: Map.Format
     ) throws -> Hero {
-        let predefined: Hero.Predefined? = predefinedHeroes.first(where: { $0.heroID == heroID })
-        let disposed: Hero.Disposed? = disposedHeroes.first(where: { $0.heroID == heroID })
-        
-        return try _parseHero(format: format, predefinedHero: predefined, disposedHero: disposed)
+        try _parseHero(class: heroClass, format: format)
     }
     
     func parseRandomHero(
         format: Map.Format
     ) throws -> Hero {
-        try _parseHero(format: format)
+        try _parseHero(class: nil, format: format)
     }
 }
 
 private extension Map.Loader.Parser.H3M {
-    
     func _parseHero(
-        format: Map.Format,
-        predefinedHero: Hero.Predefined? = nil,
-        disposedHero: Hero.Disposed? = nil
+        class maybeExpectedHeroClass: Hero.Class?,
+        format: Map.Format
     ) throws -> Hero {
         let questIdentifier: UInt32? = format > .restorationOfErathia ? try reader.readUInt32() : nil
         let ownerRawID = try reader.readUInt8()
         let owner: PlayerColor? = ownerRawID != PlayerColor.neutralRawValue ? try PlayerColor(integer: ownerRawID) : nil
-        let heroClassRawId = try reader.readUInt8()
-        let heroClass: Hero.Class? = Hero.Class(rawValue: heroClassRawId)
+        let heroClass: Hero.Class = try Hero.Class(integer: reader.readUInt8())
+        if let expectedHeroClass = maybeExpectedHeroClass {
+            assert(expectedHeroClass == heroClass)
+        }
+        
    
-        let name: String? = try reader.readBool() ? reader.readString() : disposedHero?.name
+        let name: String? = try reader.readBool() ? reader.readString() : nil
         
         let experiencePoints: UInt32? = try {
             if format > .armageddonsBlade {
@@ -52,13 +49,14 @@ private extension Map.Loader.Parser.H3M {
                 guard xp > 0 else { return nil }
                 return xp
             }
-        }() ?? predefinedHero?.startingExperiencePoints
+        }() ?? nil
         
-        let portraitID: Hero.ID? = try reader.readBool() ? .init(integer: reader.readUInt8()) : disposedHero?.portraitID
+        let portraitID: Hero.ID? = try reader.readBool() ? .init(integer: reader.readUInt8()) : nil
       
-        let startingSecondarySkills: [Hero.SecondarySkill]? = try reader.readBool() ? try parseSecondarySkills() :  predefinedHero?.startingSecondarySkills
+        let startingSecondarySkills: [Hero.SecondarySkill]? = try reader.readBool() ? try parseSecondarySkills() : nil
         
         let garrison: CreatureStacks? = try reader.readBool() ? parseCreatureStacks(format: format, count: 7) : nil
+        let formation = try Army.Formation(integer: reader.readUInt8())
         let artifacts = try parseArtifactsOfHero(format: format)
         let patrolRadius = try reader.readUInt8()
         let isPatrolling = patrolRadius != 0xff
@@ -66,13 +64,14 @@ private extension Map.Loader.Parser.H3M {
         let customBiography: String? = try {
             guard format > .restorationOfErathia else { return nil }
             return try reader.readBool() ? reader.readString() : nil
-        }() ?? predefinedHero?.biography
+        }() ?? nil
         
         let customGender: Hero.Gender? = try {
             guard format > .restorationOfErathia else { return nil }
             guard try reader.readBool() else { /* does NOT have custom gender */ return nil }
             return Hero.Gender(rawValue: try reader.readUInt8())
-        }() ?? predefinedHero?.customGender
+        }() ?? nil
+        
         let customSpells: [Spell.ID]? = try {
             guard format >= .armageddonsBlade else { return nil }
             if format > .armageddonsBlade {
@@ -86,12 +85,13 @@ private extension Map.Loader.Parser.H3M {
                 guard buff < 255 else { return nil } //255 means no spells
                 return [try Spell.ID(integer: buff)]
             }
-        }() ?? predefinedHero?.customSpells
+        }() ?? nil
+        
         let customPrimarySkills: [Hero.PrimarySkill]? = try {
             guard format > .armageddonsBlade else { return nil }
             guard try reader.readBool() else { return nil }
             return try parsePrimarySkills() // TODO replace primary skill with hero specialty if available. VCMI does it, but surely we can do better.
-        }() ?? predefinedHero?.customPrimarySkills
+        }() ?? nil
         
         try reader.skip(byteCount: 16)
         return .init(
@@ -100,7 +100,8 @@ private extension Map.Loader.Parser.H3M {
             portraitID: portraitID,
             name: name,
             owner: owner,
-            army: garrison.map({ Army.init(creatureStacks: $0, formation: nil) }),
+            army: garrison,
+            formation: formation,
             patrolRadius: .init(patrolRadius),
             isPatroling: isPatrolling,
             startingExperiencePoints: experiencePoints ?? 0,

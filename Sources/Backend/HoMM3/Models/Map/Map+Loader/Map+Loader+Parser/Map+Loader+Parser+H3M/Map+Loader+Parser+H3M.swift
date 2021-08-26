@@ -108,14 +108,15 @@ private extension Map.Loader.Parser.H3M {
         var disposed = [Hero.Disposed]()
         if format >= .shadowOfDeath {
             disposed = try reader.readUInt8().nTimes {
-                let heroID = try parseHeroID()!
+//                let heroID = try parseHeroID()!
+                let heroClass = try Hero.Class(integer: reader.readUInt8())
                 let portraitID = try parseHeroPortraitID()
                 let name = try reader.readString()
                 
                 let availableForPlayers = try parseAvailableForPlayers()
                 
                 return Hero.Disposed(
-                    heroID: heroID,
+                    heroClass: heroClass,
                     portraitID: portraitID,
                     name: name,
                     availableForPlayers: availableForPlayers
@@ -220,8 +221,6 @@ private extension Map.Loader.Parser.H3M {
             /// aka "Sprite name"
             let animationFileName = try reader.readString()
             
-            let offsetAfterAnimationName = reader.offset
-            
             /// Which squares (of this object) are passable, counted from the bottom right corner
             /// (bit 1: passable, bit 0: impassable
             let passabilityBitmask = try reader.readBitArray(byteCount: Map.Object.Attributes.Pathfinding.rowCount)
@@ -229,8 +228,6 @@ private extension Map.Loader.Parser.H3M {
             /// Active/visitable squares (overlaid on impassable squares)
             /// (bit 1: active, bit 0: passive
             let visitabilityBitmask = try reader.readBitArray(byteCount: Map.Object.Attributes.Pathfinding.rowCount)
-            
-            assert(reader.offset == offsetAfterAnimationName + 12)
             
             func allowedRelativePositions(bitmask: Bitmask) -> Set<Map.Object.Attributes.Pathfinding.RelativePosition> {
                 precondition(bitmask.count == Map.Object.Attributes.Pathfinding.rowCount * Map.Object.Attributes.Pathfinding.columnCount)
@@ -246,7 +243,6 @@ private extension Map.Loader.Parser.H3M {
                         }
                     }
                 }
-//                return Array(set).sorted()
                 return set
             }
             
@@ -290,24 +286,23 @@ private extension Map.Loader.Parser.H3M {
             /// What landscape group the object will be in the editor
             let mapEditorLandscapeGroup = try parseLandscapes()
             
+            let objectIDRaw = try reader.readUInt32()
             
             
             let objectID = try Map.Object.ID(
-                id: reader.readUInt32(),
+                id: objectIDRaw,
                 subId: reader.readUInt32()
             )
-
 
             /// used by editor
             let objectGroupRaw = try reader.readUInt8()
             let group: Map.Object.Attributes.Group? = .init(rawValue: objectGroupRaw)
             
-            /// Antoshkiv: "whether the object will be over or below object"
-            /// VCMI: `printPriority`
-            let zRenderingPosition = try reader.readUInt8()
+            let inUnderworld = try reader.readBool()
             
             /// Unknown
             let unknownBytes = try reader.read(byteCount: 16)
+    
             guard unknownBytes.allSatisfy({ $0 == 0x00 }) else {
                 fatalError("If we hit this fatalError we can probably remove this check. I THINK I've identified behaviour that these 16 unknown bytes are always 16 zeroes. This might not be the case for some custom maps. I've added this assertion as a kind of 'offset check', meaning that it is helpful that we expect these 16 bytes to all be zero as an indicator that we are reading the correct values before at the expected offset in the maps byte blob.")
             }
@@ -319,7 +314,7 @@ private extension Map.Loader.Parser.H3M {
                 objectID: objectID,
                 group: group,
                 pathfinding: pathfinding,
-                zRenderingPosition: zRenderingPosition
+                inUnderworld: inUnderworld
             )
             
             guard
@@ -347,9 +342,11 @@ private extension Map.Object.Attributes {
         group: .monsters,
         pathfinding: Pathfinding(
             visitability: [(0, 5)],
-            passability: [(0, 0), (0, 1), (1, 0), (2, 0), (3, 0), (0, 2), (0, 3), (0, 4), (4, 0), (5, 0), (6, 0), (7, 0), (1, 1), (1, 2), (2, 1), (2, 2), (3, 1), (4, 1), (5, 1), (6, 1), (3, 2), (4, 2), (1, 3), (7, 1), (2, 3), (3, 3), (4, 3), (5, 2), (6, 2), (7, 2), (5, 3), (1, 4), (6, 3), (7, 3), (1, 5), (2, 4), (2, 5), (3, 4), (4, 4), (5, 4), (3, 5), (4, 5), (5, 5), (6, 4), (6, 5), (7, 4), (7, 5)]
-        )
-        , zRenderingPosition: 0)
+            passability: [
+                (0, 0), (0, 1), (1, 0), (2, 0), (3, 0), (0, 2), (0, 3), (0, 4), (4, 0), (5, 0), (6, 0), (7, 0), (1, 1), (1, 2), (2, 1), (2, 2), (3, 1), (4, 1), (5, 1), (6, 1), (3, 2), (4, 2), (1, 3), (7, 1), (2, 3), (3, 3), (4, 3), (5, 2), (6, 2), (7, 2), (5, 3), (1, 4), (6, 3), (7, 3), (1, 5), (2, 4), (2, 5), (3, 4), (4, 4), (5, 4), (3, 5), (4, 5), (5, 5), (6, 4), (6, 5), (7, 4), (7, 5)
+            ]
+        ),
+        inUnderworld: false)
     
     static let invisibleHardcodedIntoEveryMapAttribute_Hole: Self = .init(
         animationFileName: "AVLholg0.def",
@@ -359,9 +356,11 @@ private extension Map.Object.Attributes {
         group: nil,
         pathfinding: Pathfinding(
             visitability: [],
-            passability: [(0, 2), (7, 4), (0, 5), (2, 5), (0, 1), (7, 1), (6, 5), (7, 2), (5, 1), (4, 5), (4, 0), (4, 1), (6, 1), (5, 0), (1, 0), (2, 4), (6, 2), (5, 2), (0, 3), (2, 0), (3, 1), (0, 0), (3, 3), (4, 3), (1, 2), (2, 3), (0, 4), (3, 0), (1, 4), (6, 4), (4, 2), (3, 2), (1, 3), (6, 3), (4, 4), (3, 5), (1, 5), (1, 1), (5, 5), (2, 1), (7, 5), (7, 0), (6, 0), (5, 3), (3, 4), (5, 4), (7, 3), (2, 2)]
-            )
-        , zRenderingPosition: 1)
+            passability: [
+                (0, 2), (7, 4), (0, 5), (2, 5), (0, 1), (7, 1), (6, 5), (7, 2), (5, 1), (4, 5), (4, 0), (4, 1), (6, 1), (5, 0), (1, 0), (2, 4), (6, 2), (5, 2), (0, 3), (2, 0), (3, 1), (0, 0), (3, 3), (4, 3), (1, 2), (2, 3), (0, 4), (3, 0), (1, 4), (6, 4), (4, 2), (3, 2), (1, 3), (6, 3), (4, 4), (3, 5), (1, 5), (1, 1), (5, 5), (2, 1), (7, 5), (7, 0), (6, 0), (5, 3), (3, 4), (5, 4), (7, 3), (2, 2)
+            ]
+        ),
+        inUnderworld: true)
 }
 
 

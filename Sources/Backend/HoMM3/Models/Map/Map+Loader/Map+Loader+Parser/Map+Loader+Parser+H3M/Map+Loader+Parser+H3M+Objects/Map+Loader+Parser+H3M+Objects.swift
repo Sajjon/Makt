@@ -226,9 +226,17 @@ internal extension Map.Loader.Parser.H3M {
                     artifact = .scroll(spell: spellIDParsed)
                 } else if case let .artifact(expectedArtifactID) = definition.objectID {
                     artifact = .init(id: expectedArtifactID)
-                } else {
-                    fatalError("unhandled artifact object: \(definition.objectID)")
-                }
+                } else if case .randomMajorArtifact = definition.objectID {
+                    artifact = .init(id: .random(class: .major, in: format))
+                } else if case .randomMinorArtifact = definition.objectID {
+                    artifact = .init(id: .random(class: .minor, in: format))
+                } else if case .randomRelic = definition.objectID {
+                    artifact = .init(id: .random(class: .relic, in: format))
+                } else if case .randomTreasureArtifact = definition.objectID {
+                    artifact = .init(id: .random(class: .treasure, in: format))
+                } else if case .randomArtifact = definition.objectID {
+                    artifact = .init(id: .random(class: .any, in: format))
+                } else { fatalError("incorrect implementation, unhandled object ID: \(definition.objectID)") }
                 let guardedArtifact = Map.GuardedArtifact(message: message, guards: guards, artifact: artifact)
                 objectKind = .artifact(guardedArtifact)
             case .dwelling:
@@ -258,13 +266,11 @@ internal extension Map.Loader.Parser.H3M {
             case .grail:
                 fatalError("grail")
             case .hero:
-                guard case let .hero(heroID) = definition.objectID else { fatalError("incorrect") }
+                guard case let .hero(heroClass) = definition.objectID else { fatalError("incorrect") }
                 objectKind = try .hero(
                     parseHero(
-                        format: format,
-                        predefinedHeroes: predefinedHeroes,
-                        disposedHeroes: disposedHeroes,
-                        heroID: heroID
+                        heroClass: heroClass,
+                        format: format
                     )
                 )
             case .lighthouse:
