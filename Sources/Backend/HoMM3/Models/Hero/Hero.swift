@@ -8,7 +8,11 @@
 import Foundation
 
 public struct Hero: Hashable {
-    public let `class`: Hero.Class?
+    public enum IdentifierKind: Hashable {
+        case randomHeroOfClass(Hero.Class)
+        case specificHeroWithID(Hero.ID)
+    }
+    public let identifierKind: IdentifierKind
     public let questIdentifier: UInt32?
     public let portraitID: ID?
     public let name: String?
@@ -24,6 +28,25 @@ public struct Hero: Hashable {
     public let gender: Gender?
     public let spells: [Spell.ID]?
     public let primarySkills: [PrimarySkill]?
+}
+
+
+
+public extension Hero {
+    
+    var `class`: Hero.Class {
+        switch identifierKind {
+        case .randomHeroOfClass(let futureClass): return futureClass
+        case .specificHeroWithID(let heroID): return heroID.class
+        }
+    }
+    
+    var isPlaceholder: Bool {
+        switch identifierKind {
+        case .randomHeroOfClass: return true
+        case .specificHeroWithID: return false
+        }
+    }
 }
 
 public extension Hero {

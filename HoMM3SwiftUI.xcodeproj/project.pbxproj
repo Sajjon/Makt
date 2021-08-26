@@ -18,6 +18,7 @@
 		481BDF6926C5942200C5E335 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 481BDF6826C5942200C5E335 /* Assets.xcassets */; };
 		481BDF6C26C5942200C5E335 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 481BDF6B26C5942200C5E335 /* Preview Assets.xcassets */; };
 		481BDFA026C6A4F000C5E335 /* MapTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 481BDF9F26C6A4F000C5E335 /* MapTests.swift */; };
+		487AF96826D7B9C30073277F /* Hero+ID+HeroClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487AF96726D7B9C30073277F /* Hero+ID+HeroClass.swift */; };
 		487C2B8026C9066600031505 /* Map+Loader+Cache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487C2B7D26C9066500031505 /* Map+Loader+Cache.swift */; };
 		487C2B8126C9066600031505 /* Map+Loader+Parser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487C2B7F26C9066600031505 /* Map+Loader+Parser.swift */; };
 		487C2B8426C936D600031505 /* Map+ID+KnownMaps.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487C2B8326C936D600031505 /* Map+ID+KnownMaps.swift */; };
@@ -129,6 +130,7 @@
 		481BDF9D26C6A4F000C5E335 /* Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = Tests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		481BDF9F26C6A4F000C5E335 /* MapTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapTests.swift; sourceTree = "<group>"; };
 		481BDFA126C6A4F000C5E335 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		487AF96726D7B9C30073277F /* Hero+ID+HeroClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Hero+ID+HeroClass.swift"; sourceTree = "<group>"; };
 		487C2B7D26C9066500031505 /* Map+Loader+Cache.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Map+Loader+Cache.swift"; sourceTree = "<group>"; };
 		487C2B7F26C9066600031505 /* Map+Loader+Parser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Map+Loader+Parser.swift"; sourceTree = "<group>"; };
 		487C2B8326C936D600031505 /* Map+ID+KnownMaps.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Map+ID+KnownMaps.swift"; sourceTree = "<group>"; };
@@ -329,6 +331,15 @@
 			path = Frontend;
 			sourceTree = "<group>";
 		};
+		487AF96626D7B9B30073277F /* Hero+ID */ = {
+			isa = PBXGroup;
+			children = (
+				487C2BB726CC2F2300031505 /* Hero+ID.swift */,
+				487AF96726D7B9C30073277F /* Hero+ID+HeroClass.swift */,
+			);
+			path = "Hero+ID";
+			sourceTree = "<group>";
+		};
 		487C2B7C26C9066500031505 /* Map+Loader+Cache */ = {
 			isa = PBXGroup;
 			children = (
@@ -383,7 +394,7 @@
 				487C2BF726CD918E00031505 /* PrimarySkill */,
 				487C2BEA26CD745200031505 /* SecondarySkill */,
 				487C2B9626CAD1E400031505 /* Hero.swift */,
-				487C2BB726CC2F2300031505 /* Hero+ID.swift */,
+				487AF96626D7B9B30073277F /* Hero+ID */,
 				487C2BBD26CC2F6300031505 /* Hero+Custom.swift */,
 				487C2BD426CD335D00031505 /* Hero+Disposed.swift */,
 				487C2BD626CD337100031505 /* Hero+Predefined.swift */,
@@ -807,6 +818,7 @@
 				487C2BD726CD337100031505 /* Hero+Predefined.swift in Sources */,
 				487C2BB126CB9B9A00031505 /* Map+PlayersInfo.swift in Sources */,
 				487C2BB326CB9BC500031505 /* Map+Decrompress.swift in Sources */,
+				487AF96826D7B9C30073277F /* Hero+ID+HeroClass.swift in Sources */,
 				487C2BAF26CB9B5700031505 /* Map+TeamInfo.swift in Sources */,
 				481462F826C902C800431960 /* Map+About.swift in Sources */,
 				487C2B8026C9066600031505 /* Map+Loader+Cache.swift in Sources */,

@@ -14,6 +14,10 @@ public extension Map {
     struct Shipyard: Hashable {
         public let owner: PlayerColor?
     }
+    
+    struct Shrine: Hashable {
+        public let spell: Spell.ID?
+    }
 }
 public extension Map.Mine {
     enum Kind: UInt8, Hashable, CaseIterable {

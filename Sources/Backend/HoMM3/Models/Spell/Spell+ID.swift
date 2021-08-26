@@ -12,6 +12,8 @@ public extension Spell {
     /// Source: http://heroescommunity.com/viewthread.php3?TID=46589&PID=1529922#focus
     enum ID: UInt8, Hashable, Comparable, CaseIterable {
         
+        public static let noneRawValue: RawValue = 0xff
+        
         // MARK: Adventure Spells
         case summonBoat,
              scuttleBoat,

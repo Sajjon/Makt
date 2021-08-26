@@ -23,21 +23,41 @@ internal extension Map.Loader.Parser.H3M {
     ) throws -> Hero {
         try _parseHero(class: nil, format: format)
     }
+    
+    func parseOwner() throws -> PlayerColor? {
+        let raw = try reader.readUInt8()
+        return raw != PlayerColor.neutralRawValue ? try PlayerColor(integer: raw) : nil
+    }
+    
+    func parseSpellID() throws -> Spell.ID? {
+        let raw = try reader.readUInt8()
+        return raw != Spell.ID.noneRawValue ? try Spell.ID(integer: raw) : nil
+    }
 }
 
 private extension Map.Loader.Parser.H3M {
+    
+    
+    
     func _parseHero(
         class maybeExpectedHeroClass: Hero.Class?,
         format: Map.Format
     ) throws -> Hero {
         let questIdentifier: UInt32? = format > .restorationOfErathia ? try reader.readUInt32() : nil
-        let ownerRawID = try reader.readUInt8()
-        let owner: PlayerColor? = ownerRawID != PlayerColor.neutralRawValue ? try PlayerColor(integer: ownerRawID) : nil
-        let heroClass: Hero.Class = try Hero.Class(integer: reader.readUInt8())
-        if let expectedHeroClass = maybeExpectedHeroClass {
-            assert(expectedHeroClass == heroClass)
-        }
+        let owner: PlayerColor? = try parseOwner()
         
+        let identifierKind: Hero.IdentifierKind = try {
+            
+            if let expectedHeroClass = maybeExpectedHeroClass {
+                let heroID = try Hero.ID(integer: reader.readUInt8())
+                assert(heroID.class == expectedHeroClass)
+                return Hero.IdentifierKind.specificHeroWithID(heroID)
+            } else {
+                let heroClass = try Hero.Class(integer: reader.readUInt8())
+                return Hero.IdentifierKind.randomHeroOfClass(heroClass)
+            }
+            
+        }()
    
         let name: String? = try reader.readBool() ? reader.readString() : nil
         
@@ -94,8 +114,10 @@ private extension Map.Loader.Parser.H3M {
         }() ?? nil
         
         try reader.skip(byteCount: 16)
+        
+   
         return .init(
-            class: heroClass,
+            identifierKind: identifierKind,
             questIdentifier: questIdentifier,
             portraitID: portraitID,
             name: name,

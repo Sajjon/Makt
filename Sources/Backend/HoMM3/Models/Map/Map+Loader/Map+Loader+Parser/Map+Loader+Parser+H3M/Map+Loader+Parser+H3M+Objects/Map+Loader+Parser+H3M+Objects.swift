@@ -192,7 +192,7 @@ internal extension Map.Loader.Parser.H3M {
             /// Index in just previously parse `definitions: Map.Definitions`
             let definitionIndex = try reader.readUInt32() - 2 // minus two because of [`invisibleHardcodedIntoEveryMapAttribute_RandomMonster`, `invisibleHardcodedIntoEveryMapAttribute_Hole`]
             
-            
+       
             
             print("🤡 definitionIndex: \(definitionIndex)")
             
@@ -240,15 +240,14 @@ internal extension Map.Loader.Parser.H3M {
                 let guardedArtifact = Map.GuardedArtifact(message: message, guards: guards, artifact: artifact)
                 objectKind = .artifact(guardedArtifact)
             case .dwelling:
-                let ownerRaw = try reader.readUInt8()
-                let owner: PlayerColor? = ownerRaw != PlayerColor.neutralRawValue ? try PlayerColor(integer: ownerRaw) : nil
+                let owner = try parseOwner()
                 try reader.skip(byteCount: 3)
                 let dwellng = Map.Dwelling(owner: owner, id: definition.objectID)
                 objectKind = .dwelling(dwellng)
             case .event:
                 objectKind = try .event(parseEvent(format: format))
             case .garrison:
-                let owner = try PlayerColor(integer: reader.readUInt8())
+                let owner = try parseOwner()
                 try reader.skip(byteCount: 3)
                 let creatures = try parseCreatureStacks(format: format, count: 7)
                 let areCreaturesRemovable = try format > .restorationOfErathia ? reader.readBool() : true
@@ -449,12 +448,14 @@ internal extension Map.Loader.Parser.H3M {
                 try reader.skip(byteCount: 2)
                 objectKind = .seershut(seershut)
             case .shipyard:
-                let ownerRaw = try reader.readUInt8()
-                let owner: PlayerColor? = ownerRaw != PlayerColor.neutralRawValue ? try PlayerColor(integer: ownerRaw) : nil
+                let owner = try parseOwner()
                 try reader.skip(byteCount: 3)
                 let shipyard = Map.Shipyard(owner: owner)
                 objectKind = .shipyard(shipyard)
-            case .shrine: fatalError("shrine")
+            case .shrine:
+                let spellID = try parseSpellID()
+                try reader.skip(byteCount: 3)
+                objectKind = .shrine(.init(spell: spellID))
             case .sign: fatalError("sign")
             case .spellScroll: fatalError("spellScroll")
             case .town:

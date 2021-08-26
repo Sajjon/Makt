@@ -37,7 +37,7 @@ public extension Map {
     }
     
     struct Garrison: Hashable {
-        let owner: PlayerColor
+        let owner: PlayerColor?
         let creatures: CreatureStacks?
         let areCreaturesRemovable: Bool
     }
@@ -70,6 +70,7 @@ public extension Map.Object {
         case mine(Map.Mine)
         case town(Map.Town)
         case shipyard(Map.Shipyard)
+        case shrine(Map.Shrine)
         case seershut(Map.Seershut)
         case monster(Map.Monster)
     }

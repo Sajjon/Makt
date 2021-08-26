@@ -28,7 +28,7 @@ public extension Map {
         
         public let id: ID
         public let faction: Faction
-        public let owner: PlayerColor
+        public let owner: PlayerColor?
         public let name: String?
         public let garrison: CreatureStacks?
         public let formation: Army.Formation
@@ -428,7 +428,7 @@ internal extension Map.Loader.Parser.H3M {
     func parseTown(format: Map.Format, faction: Faction, allowedSpellsOnMap: [Spell.ID]) throws -> Map.Town {
         let townID: Map.Town.ID = try format > .restorationOfErathia ? .fromMapFile(reader.readUInt32()) : .generated(UUID())
         
-        let owner = try PlayerColor(integer: reader.readUInt8())
+        let owner = try parseOwner()
         print("🏰 town: owner='\(owner)'")
         let hasName = try reader.readBool()
         print("🏰 town: hasName='\(hasName)'")

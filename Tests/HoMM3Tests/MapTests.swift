@@ -234,7 +234,7 @@ final class LoadMapTests: XCTestCase {
     /// Smallest compressed file size
     func test_assert_a_really_small_map_good_to_go() throws {
         let inspector = Map.Loader.Parser.Inspector(
-            settings: .init(maxObjectsToParse: nil),
+            settings: .init(),
             onParseAbout: { about in
                 let summary = about.summary
                 XCTAssertEqual(summary.fileName, "Good to Go.h3m")
@@ -321,7 +321,7 @@ final class LoadMapTests: XCTestCase {
 
         
         let inspector = Map.Loader.Parser.Inspector(
-            settings: .init(maxObjectsToParse: nil),
+            settings: .init(),
             onParseAbout: { about in
                 let summary = about.summary
 
@@ -374,7 +374,7 @@ final class LoadMapTests: XCTestCase {
 
         
         let inspector = Map.Loader.Parser.Inspector(
-            settings: .init(maxObjectsToParse: 1),
+            settings: .init(),
             onParseAbout: { about in
                 let summary = about.summary
                 XCTAssertEqual(summary.fileName, "Elbow Room.h3m")
