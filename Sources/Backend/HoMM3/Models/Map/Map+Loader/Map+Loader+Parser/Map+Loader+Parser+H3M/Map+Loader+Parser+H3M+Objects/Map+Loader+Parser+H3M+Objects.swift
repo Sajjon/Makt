@@ -190,9 +190,7 @@ internal extension Map.Loader.Parser.H3M {
             let position = try reader.readPosition()
             
             /// Index in just previously parse `definitions: Map.Definitions`
-            let definitionIndex = try reader.readUInt32() - 2 // minus two because of [`invisibleHardcodedIntoEveryMapAttribute_RandomMonster`, `invisibleHardcodedIntoEveryMapAttribute_Hole`]
-            
-       
+            let definitionIndex = try reader.readUInt32()
             
             print("🤡 definitionIndex: \(definitionIndex)")
             
@@ -273,7 +271,9 @@ internal extension Map.Loader.Parser.H3M {
                     )
                 )
             case .lighthouse:
-                fatalError("lighthouse")
+                let owner = try parseOwner()
+                try reader.skip(byteCount: 3)
+                objectKind = .lighthouse(.init(owner: owner))
             case .monster:
                 switch definition.objectID {
                 case .monster(let creatureID):
@@ -476,7 +476,15 @@ internal extension Map.Loader.Parser.H3M {
                         )
                     )
                 }
-            case .witchHut: fatalError("witchHut")
+            case .witchHut:
+                let allowedSkills: [Hero.SecondarySkill.Kind] = format > .restorationOfErathia ? try {
+                    try reader.readBitArray(byteCount: 4).prefix(Hero.SecondarySkill.Kind.allCases.count).enumerated().compactMap { (skillIndex, allowed) in
+                        guard allowed else { return nil }
+                        return Hero.SecondarySkill.Kind.allCases[skillIndex]
+                    }
+                }() : Hero.SecondarySkill.Kind.allCases
+                
+                objectKind = .witchHut(.init(learnableSkills: allowedSkills))
             }
             
             let mapObject = Map.Object(

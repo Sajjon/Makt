@@ -268,7 +268,7 @@ final class LoadMapTests: XCTestCase {
                 XCTAssertEqual(tiles.count, 36*36)
             },
             onParseDefinitions: { definitions in
-                XCTAssertEqual(definitions.objectAttributes.count, 136)
+                XCTAssertEqual(definitions.objectAttributes.count, 138)
                 
                 print(definitions.objectAttributes)
                 let heroObjectIDs = definitions.objectAttributes.map({ $0.objectID }).filter({ $0.stripped == .hero })

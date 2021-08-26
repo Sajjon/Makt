@@ -73,10 +73,23 @@ public extension Map.Object {
         case shrine(Map.Shrine)
         case seershut(Map.Seershut)
         case monster(Map.Monster)
+        case witchHut(Map.WitchHut)
+        case lighthouse(Map.Lighthouse)
+        
     }
 }
 
 public extension Map {
+    
+    struct WitchHut: Hashable {
+        public let learnableSkills: [Hero.SecondarySkill.Kind]
+    }
+    
+    struct Lighthouse: Hashable {
+        public let owner: PlayerColor?
+    }
+    
+    
     struct Monster: Hashable {
         public let creatureStack: CreatureStack
         /// unique code for this monster (used in missions)

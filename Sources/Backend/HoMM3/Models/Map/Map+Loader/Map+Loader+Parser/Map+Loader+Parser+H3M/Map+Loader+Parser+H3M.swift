@@ -317,11 +317,11 @@ private extension Map.Loader.Parser.H3M {
                 inUnderworld: inUnderworld
             )
             
-            guard
-                objectAttributes != .invisibleHardcodedIntoEveryMapAttribute_RandomMonster,
-                objectAttributes != .invisibleHardcodedIntoEveryMapAttribute_Hole else {
-                return nil
-            }
+//            guard
+//                objectAttributes != .invisibleHardcodedIntoEveryMapAttribute_RandomMonster,
+//                objectAttributes != .invisibleHardcodedIntoEveryMapAttribute_Hole else {
+//                return nil
+//            }
     
             return objectAttributes
 
