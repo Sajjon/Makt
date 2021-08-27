@@ -63,8 +63,8 @@ final class FailingMapTests: XCTestCase {
                 
                 XCTAssertTrue(tiles.prefix(Size.small.height).map({ $0.position.x }).allSatisfy({ $0 == 0 }))
             },
-            onParseDefinitions: { definitions in
-                XCTAssertEqual(definitions.objectAttributes.count, 0, "Expected 0 definitions but got #\(definitions.objectAttributes.count), more specifically these:\n\(definitions.objectAttributes)\n")
+            onParseAttributes: { attributes in
+                XCTAssertEqual(attributes.attributes.count, 0, "Expected 0 attributes but got #\(attributes.attributes.count), more specifically these:\n\(attributes.attributes)\n")
             },
             onParseObject: { object in
                 XCTFail("Expected zero objects.")
@@ -116,8 +116,8 @@ final class FailingMapTests: XCTestCase {
                 
                 XCTAssertTrue(tiles.prefix(Size.small.height).map({ $0.position.x }).allSatisfy({ $0 == 0 }))
             },
-            onParseDefinitions: { definitions in
-                XCTAssertEqual(definitions.objectAttributes.count, 0, "Expected 0 definitions but got #\(definitions.objectAttributes.count), more specifically these:\n\(definitions.objectAttributes)\n")
+            onParseAttributes: { attributes in
+                XCTAssertEqual(attributes.attributes.count, 0, "Expected 0 attributes but got #\(attributes.attributes.count), more specifically these:\n\(attributes.attributes)\n")
             },
             onParseObject: { object in
                 XCTFail("Expected zero objects.")
@@ -169,8 +169,8 @@ final class FailingMapTests: XCTestCase {
                 
                 XCTAssertTrue(tiles.prefix(Size.small.height).map({ $0.position.x }).allSatisfy({ $0 == 0 }))
             },
-            onParseDefinitions: { definitions in
-                XCTAssertEqual(definitions.objectAttributes.count, 0, "Expected 0 definitions but got #\(definitions.objectAttributes.count), more specifically these:\n\(definitions.objectAttributes)\n")
+            onParseAttributes: { attributes in
+                XCTAssertEqual(attributes.attributes.count, 0, "Expected 0 attributes but got #\(attributes.attributes.count), more specifically these:\n\(attributes.attributes)\n")
             },
             onParseObject: { object in
                 XCTFail("Expected zero objects.")
@@ -222,8 +222,8 @@ final class FailingMapTests: XCTestCase {
                 
                 XCTAssertTrue(tiles.prefix(Size.small.height).map({ $0.position.x }).allSatisfy({ $0 == 0 }))
             },
-            onParseDefinitions: { definitions in
-                XCTAssertEqual(definitions.objectAttributes.count, 0, "Expected 0 definitions but got #\(definitions.objectAttributes.count), more specifically these:\n\(definitions.objectAttributes)\n")
+            onParseAttributes: { attributes in
+                XCTAssertEqual(attributes.attributes.count, 0, "Expected 0 attributes but got #\(attributes.attributes.count), more specifically these:\n\(attributes.attributes)\n")
             },
             onParseObject: { object in
                 XCTFail("Expected zero objects.")
@@ -268,11 +268,11 @@ final class FailingMapTests: XCTestCase {
                 let tiles = world.above.tiles
                 XCTAssertEqual(tiles.count, 36*36)
             },
-            onParseDefinitions: { definitions in
-                XCTAssertEqual(definitions.objectAttributes.count, 138)
+            onParseAttributes: { attributes in
+                XCTAssertEqual(attributes.attributes.count, 138)
                 
-                print(definitions.objectAttributes)
-                let heroObjectIDs = definitions.objectAttributes.map({ $0.objectID }).filter({ $0.stripped == .hero })
+                print(attributes.attributes)
+                let heroObjectIDs = attributes.attributes.map({ $0.objectID }).filter({ $0.stripped == .hero })
                 XCTAssertEqual(heroObjectIDs.count, 4)
                 XCTAssertTrue(heroObjectIDs.contains(.hero(.barbarian)))
                 XCTAssertTrue(heroObjectIDs.contains(.hero(.battleMage)))
@@ -352,8 +352,8 @@ final class FailingMapTests: XCTestCase {
                 let tiles = world.above.tiles
                 XCTAssertEqual(tiles.count, 36*36)
             },
-            onParseDefinitions: { definitions in
-                XCTAssertEqual(definitions.objectAttributes.count, 111)
+            onParseAttributes: { attributes in
+                XCTAssertEqual(attributes.attributes.count, 111)
   
             },
             onParseObject: { object in
@@ -404,8 +404,8 @@ final class FailingMapTests: XCTestCase {
                 let tiles = world.above.tiles
                 XCTAssertEqual(tiles.count, 36*36)
             },
-            onParseDefinitions: { definitions in
-                XCTAssertEqual(definitions.objectAttributes.count, 121)
+            onParseAttributes: { attributes in
+                XCTAssertEqual(attributes.attributes.count, 121)
             },
             onParseObject: { object in
                

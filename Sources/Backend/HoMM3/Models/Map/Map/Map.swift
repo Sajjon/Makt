@@ -20,9 +20,11 @@ public extension Map.Loader.Parser {
         public typealias OnParsePredefinedHeroes = ([Hero.Predefined]) -> Void
         
         public typealias OnParseWorld = (Map.World) -> Void
-        public typealias OnParseDefinitions = (Map.Definitions) -> Void
+        public typealias OnParseAttributesOfObjects = (Map.AttributesOfObjects) -> Void
         public typealias OnParseObject = (Map.Object) -> Void
-        
+        public typealias OnParseAllObjects = (Map.DetailsAboutObjects) -> Void
+        public typealias OnParseEvents = (Map.GlobalEvents) -> Void
+
         private let onParseAbout: OnParseAbout?
         private let onParseDisposedHeroes: OnParseDisposedHeroes?
         private let onParseAllowedArtifacts: OnParseAllowedArtifacts?
@@ -32,8 +34,10 @@ public extension Map.Loader.Parser {
         private let onParsePredefinedHeroes: OnParsePredefinedHeroes?
         
         private let onParseWorld: OnParseWorld?
-        private let onParseDefinitions: OnParseDefinitions?
+        private let onParseAttributesOfObjects: OnParseAttributesOfObjects?
         private let onParseObject: OnParseObject?
+        private let onParseAllObjects: OnParseAllObjects?
+        private let onParseEvents: OnParseEvents?
         
         public struct Settings {
             public let maxObjectsToParse: Int?
@@ -55,8 +59,10 @@ public extension Map.Loader.Parser {
             onParseRumors: OnParseRumors? = nil,
             onParsePredefinedHeroes: OnParsePredefinedHeroes? = nil,
             onParseWorld: OnParseWorld? = nil,
-            onParseDefinitions: OnParseDefinitions? = nil,
-            onParseObject: OnParseObject? = nil
+            onParseAttributesOfObjects: OnParseAttributesOfObjects? = nil,
+            onParseObject: OnParseObject? = nil,
+            onParseAllObjects: OnParseAllObjects? = nil,
+            onParseEvents: OnParseEvents? = nil
         ) {
             self.settings = settings
             self.onParseDisposedHeroes = onParseDisposedHeroes
@@ -67,8 +73,10 @@ public extension Map.Loader.Parser {
             self.onParsePredefinedHeroes = onParsePredefinedHeroes
             self.onParseAbout = onParseAbout
             self.onParseWorld = onParseWorld
-            self.onParseDefinitions = onParseDefinitions
+            self.onParseAttributesOfObjects = onParseAttributesOfObjects
             self.onParseObject = onParseObject
+            self.onParseAllObjects = onParseAllObjects
+            self.onParseEvents = onParseEvents
         }
     }
 }
@@ -107,18 +115,29 @@ public extension Map.Loader.Parser.Inspector {
         onParseWorld?(world)
     }
     
-    func didParseDefinitions(_ definitions: Map.Definitions) {
-        onParseDefinitions?(definitions)
+    func didParseAttributesOfObjects(_ attributesOfObjects: Map.AttributesOfObjects) {
+        onParseAttributesOfObjects?(attributesOfObjects)
     }
     
     func didParseObject(_ object: Map.Object) {
         onParseObject?(object)
+    }
+    
+    func didParseAllObjects(_ objects: Map.DetailsAboutObjects) {
+        onParseAllObjects?(objects)
+    }
+    
+    func didParseEvents(_ events: Map.GlobalEvents) {
+        onParseEvents?(events)
     }
 }
 
 public struct Map: Equatable, Identifiable {
     public let checksum: UInt32
     public let about: About
+    public let attributesOfObjects: Map.AttributesOfObjects
+    public let detailsAboutObjects: Map.DetailsAboutObjects
+    public let globalEvents: Map.GlobalEvents
 }
 
 

@@ -10,17 +10,15 @@ public extension Map {
     // TODO disambiguate between invisible events that might be triggered when walked on a certain tile (or also time based?) and visible event OBJECTs. One is parsed amongst objects in `parseObjects` the other is parsed in `parseEvents`. Should both really share the same struct?
     struct Event: Hashable {
         
-        
-
-        
+        private let name: String?
         private let firstOccurence: UInt16?
         private let nextOccurence: UInt8?
-        
 
         private let shouldBeRemovedAfterVisit: Bool
         private let availability: Availability
         
         public init(
+            name: String? = nil,
             firstOccurence: UInt16? = nil,
             nextOccurence: UInt8? = nil,
             
@@ -31,6 +29,7 @@ public extension Map {
             shouldBeRemovedAfterVisit: Bool,
             canBeActivatedByHuman: Bool
         ) {
+            self.name = name
             self.firstOccurence = firstOccurence
             self.nextOccurence = nextOccurence
         

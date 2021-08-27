@@ -8,8 +8,12 @@
 import Foundation
 
 public extension Map {
-    struct Objects: Hashable {
+    struct DetailsAboutObjects: Hashable {
         public let objects: [Object]
+    }
+    
+    struct GlobalEvents: Hashable {
+        public let events: [Event]
     }
   
     struct Object: Hashable, CustomDebugStringConvertible {

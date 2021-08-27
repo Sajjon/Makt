@@ -57,25 +57,30 @@ extension Map.Loader.Parser.H3M {
         assert(world.above.tiles.count == about.summary.size.tileCount)
         inspector?.didParseWorld(world)
         
-        let definitions = try parseDefinitions()
-        assert(definitions.objectAttributes.count < (world.above.tiles.count + (world.belowGround?.tiles.count ?? 0)))
-        inspector?.didParseDefinitions(definitions)
+        let attributesOfObjects = try parseAttributesOfObjects()
+        assert(attributesOfObjects.attributes.count < (world.above.tiles.count + (world.belowGround?.tiles.count ?? 0)))
+        inspector?.didParseAttributesOfObjects(attributesOfObjects)
         
      
-        let _ = try parseObjects(
+        let detailsAboutObjects = try parseDetailsAboutObjects(
             inspector: inspector,
             format: format,
-            definitions: definitions,
+            attributesOfObjects: attributesOfObjects,
             allowedSpellsOnMap: allowedSpells,
             predefinedHeroes: predefinedHeroes,
             disposedHeroes: disposedHeroes
         )
+        inspector?.didParseAllObjects(detailsAboutObjects)
         
-        let _ = try parseEvents()
+        let globalEvents = try parseGlobalEvents(format: format)
+        inspector?.didParseEvents(globalEvents)
         
         return .init(
             checksum: checksum,
-            about: about
+            about: about,
+            attributesOfObjects: attributesOfObjects,
+            detailsAboutObjects: detailsAboutObjects,
+            globalEvents: globalEvents
         )
     }
 }
@@ -208,16 +213,16 @@ private extension Map.Loader.Parser.H3M {
 
 public typealias Bitmask = BitArray
 
-// MARK: Parse "Definitions
+// MARK: Parse "Attributes
 private extension Map.Loader.Parser.H3M {
     
     /// Parse object atributes
     /// Here are properties of all objects on the map including castles and heroes
     /// (but not land itself, roads and rivers) and Events, both placed on the map
     /// and global events (these are set in Map Specifications)
-    func parseDefinitions() throws -> Map.Definitions {
-        let definitionCount = try reader.readUInt32()
-        let attributes: [Map.Object.Attributes] = try (0..<definitionCount).compactMap { _ in
+    func parseAttributesOfObjects() throws -> Map.AttributesOfObjects {
+        let attributesCount = try reader.readUInt32()
+        let attributes: [Map.Object.Attributes] = try (0..<attributesCount).compactMap { _ in
             /// aka "Sprite name"
             let animationFileName = try reader.readString()
             
@@ -307,7 +312,7 @@ private extension Map.Loader.Parser.H3M {
                 fatalError("If we hit this fatalError we can probably remove this check. I THINK I've identified behaviour that these 16 unknown bytes are always 16 zeroes. This might not be the case for some custom maps. I've added this assertion as a kind of 'offset check', meaning that it is helpful that we expect these 16 bytes to all be zero as an indicator that we are reading the correct values before at the expected offset in the maps byte blob.")
             }
             
-            let objectAttributes = Map.Object.Attributes(
+            let attributes = Map.Object.Attributes(
                 animationFileName: animationFileName,
                 supportedLandscapes: supportedLandscapes,
                 mapEditorLandscapeGroup: mapEditorLandscapeGroup,
@@ -318,18 +323,18 @@ private extension Map.Loader.Parser.H3M {
             )
             
 //            guard
-//                objectAttributes != .invisibleHardcodedIntoEveryMapAttribute_RandomMonster,
-//                objectAttributes != .invisibleHardcodedIntoEveryMapAttribute_Hole else {
+//                attributes != .invisibleHardcodedIntoEveryMapAttribute_RandomMonster,
+//                attributes != .invisibleHardcodedIntoEveryMapAttribute_Hole else {
 //                return nil
 //            }
     
-            return objectAttributes
+            return attributes
 
         }
         
         
    
-        return .init(objectAttributes: attributes)
+        return .init(attributes: attributes)
     }
 }
 
@@ -366,8 +371,32 @@ private extension Map.Object.Attributes {
 
 // MARK: Parse Events
 private extension Map.Loader.Parser.H3M {
-    func parseEvents() throws -> [Map.Event] {
-        []
+    func parseGlobalEvents(format: Map.Format) throws -> Map.GlobalEvents {
+        let events: [Map.Event] = try reader.readUInt32().nTimes {
+            let name = try reader.readString()
+            let message = try reader.readString()
+            let resources = try parseResources()
+            let availableForPlayers = try parseAvailableForPlayers()
+            let canBeActivatedByHuman = try format > .armageddonsBlade ? reader.readBool() : true
+            let canBeActivatedByComputer = try reader.readBool()
+            let firstOcurence = try reader.readUInt16()
+            let nextOcurence = try reader.readUInt8()
+
+            try reader.skip(byteCount: 17)
+                
+            return Map.Event(
+                name: name,
+                firstOccurence: firstOcurence,
+                nextOccurence: nextOcurence,
+                pandorasBox: .init(message: message, resourcesToBeGained: resources),
+                availableForPlayers: availableForPlayers,
+                canBeActivatedByComputer: canBeActivatedByComputer,
+                shouldBeRemovedAfterVisit: true, // what ?
+                canBeActivatedByHuman: canBeActivatedByHuman
+            )
+        }
+        
+        return .init(events: events)
     }
     
 }

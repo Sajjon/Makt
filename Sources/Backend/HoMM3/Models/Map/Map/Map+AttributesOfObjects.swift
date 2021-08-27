@@ -1,5 +1,5 @@
 //
-//  Map+Definitions.swift
+//  Map+Attributes.swift
 //  HoMM3SwiftUI
 //
 //  Created by Alexander Cyon on 2021-08-19.
@@ -8,8 +8,8 @@
 import Foundation
 
 public extension Map {
-    struct Definitions: Equatable {
-        public let objectAttributes: [Map.Object.Attributes]
+    struct AttributesOfObjects: Equatable {
+        public let attributes: [Map.Object.Attributes]
     }
 }
 
@@ -26,7 +26,6 @@ public extension Map.Object {
         public let inUnderworld: Bool
     }
 }
-
 
 
 public extension Map.Object.Attributes {

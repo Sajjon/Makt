@@ -74,7 +74,7 @@
 		487C2BF926CD919B00031505 /* Hero+PrimarySkill.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487C2BF826CD919B00031505 /* Hero+PrimarySkill.swift */; };
 		487C2BFB26CD91AA00031505 /* Hero+PrimarySkill+Kind.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487C2BFA26CD91AA00031505 /* Hero+PrimarySkill+Kind.swift */; };
 		487C2BFD26CE4AC400031505 /* Map+Loader+Parser+H3M+Tiles.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487C2BFC26CE4AC400031505 /* Map+Loader+Parser+H3M+Tiles.swift */; };
-		487C2BFF26CECD8500031505 /* Map+Definitions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487C2BFE26CECD8500031505 /* Map+Definitions.swift */; };
+		487C2BFF26CECD8500031505 /* Map+AttributesOfObjects.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487C2BFE26CECD8500031505 /* Map+AttributesOfObjects.swift */; };
 		487C2C0126CECDA600031505 /* Map+Rumor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487C2C0026CECDA600031505 /* Map+Rumor.swift */; };
 		487C2C0426CECDBB00031505 /* Map+World.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487C2C0326CECDBB00031505 /* Map+World.swift */; };
 		487C2C0626CECDCE00031505 /* Map+Level.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487C2C0526CECDCE00031505 /* Map+Level.swift */; };
@@ -188,7 +188,7 @@
 		487C2BF826CD919B00031505 /* Hero+PrimarySkill.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Hero+PrimarySkill.swift"; sourceTree = "<group>"; };
 		487C2BFA26CD91AA00031505 /* Hero+PrimarySkill+Kind.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Hero+PrimarySkill+Kind.swift"; sourceTree = "<group>"; };
 		487C2BFC26CE4AC400031505 /* Map+Loader+Parser+H3M+Tiles.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Map+Loader+Parser+H3M+Tiles.swift"; sourceTree = "<group>"; };
-		487C2BFE26CECD8500031505 /* Map+Definitions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Map+Definitions.swift"; sourceTree = "<group>"; };
+		487C2BFE26CECD8500031505 /* Map+AttributesOfObjects.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Map+AttributesOfObjects.swift"; sourceTree = "<group>"; };
 		487C2C0026CECDA600031505 /* Map+Rumor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Map+Rumor.swift"; sourceTree = "<group>"; };
 		487C2C0326CECDBB00031505 /* Map+World.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Map+World.swift"; sourceTree = "<group>"; };
 		487C2C0526CECDCE00031505 /* Map+Level.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Map+Level.swift"; sourceTree = "<group>"; };
@@ -481,7 +481,7 @@
 				487C2BD026CD32AF00031505 /* About */,
 				487C2BC326CCEDF600031505 /* Map.swift */,
 				481462FB26C902E800431960 /* Map+ID.swift */,
-				487C2BFE26CECD8500031505 /* Map+Definitions.swift */,
+				487C2BFE26CECD8500031505 /* Map+AttributesOfObjects.swift */,
 				487C2C0026CECDA600031505 /* Map+Rumor.swift */,
 			);
 			path = Map;
@@ -808,7 +808,7 @@
 				487C2C1B26CF741500031505 /* Map+Object+CreatureGenerator.swift in Sources */,
 				487C2C2526CF913100031505 /* Creature+ID.swift in Sources */,
 				487C2BE726CD49CD00031505 /* Spell+ID.swift in Sources */,
-				487C2BFF26CECD8500031505 /* Map+Definitions.swift in Sources */,
+				487C2BFF26CECD8500031505 /* Map+AttributesOfObjects.swift in Sources */,
 				487C2BA926CB94D900031505 /* Creature.swift in Sources */,
 				487C2B9B26CAD21000031505 /* Faction.swift in Sources */,
 				481462FC26C902E800431960 /* Map+ID.swift in Sources */,

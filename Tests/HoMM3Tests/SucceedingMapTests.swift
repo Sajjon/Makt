@@ -34,6 +34,7 @@ final class MapTests: XCTestCase {
         
         XCTAssertEqual(map.about.victoryLossConditions.victoryConditions.map { $0.kind.stripped }, [.defeatSpecificHero])
         XCTAssertEqual(map.about.victoryLossConditions.lossConditions.map { $0.kind.stripped }, [.loseSpecificHero, .standard])
+        
     }
     
     
