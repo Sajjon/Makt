@@ -473,13 +473,16 @@ internal extension Map.Loader.Parser.H3M {
                 try CreatureStack(creatureID: creatureID, quantity: .init(reader.readUInt16()))
             }
             try reader.skip(byteCount: 4)
+
             
             let townEvent = Map.Event(
-                message: message,
                 firstOccurence: firstOccurence,
                 nextOccurence: nextOccurence,
-                resourcesToBeGained: resources,
-                creaturesGained: .init(creatureStacks: creatureStacks),
+                pandorasBox: .init(
+                    message: message,
+                    resourcesToBeGained: resources,
+                    creaturesGained: .init(creatureStacks: creatureStacks)
+                ),
                 availableForPlayers: players,
                 canBeActivatedByComputer: canBeActivatedByComputer,
                 shouldBeRemovedAfterVisit: false, // is this correct?

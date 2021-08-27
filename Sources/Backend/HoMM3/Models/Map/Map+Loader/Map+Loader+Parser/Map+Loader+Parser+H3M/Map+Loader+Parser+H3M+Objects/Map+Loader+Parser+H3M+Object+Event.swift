@@ -27,17 +27,7 @@ internal extension Map.Loader.Parser.H3M {
     }
     
     func parseEvent(format: Map.Format) throws -> Map.Event {
-        let (message, guards) = try parseMessageAndGuards(format: format)
-        let experiencePointsToBeGained = try reader.readUInt32()
-        let manaPointsToBeGainedOrDrained = try reader.readUInt32()
-        let moraleToBeGainedOrDrained = try reader.readUInt8()
-        let luckToBeGainedOrDrained = try reader.readUInt8()
-        let resourcesToBeGained = try parseResources()
-        let primarySkills = try parsePrimarySkills()
-        let secondarySkills = try parseSecondarySkills()
-        let artifactIDs = try parseArtifactIDs(format: format)
-        let spellIDSs = try parseSpellCountAndIDs()
-        let creaturesGained = try parseCreatureStacks(format: format, count: reader.readUInt8())
+        let pandorasBox = try parsePandorasBox(format: format)
         
         try reader.skip(byteCount: 8) // unknown?
         let availableForPlayers = try parseAvailableForPlayers()
@@ -46,18 +36,7 @@ internal extension Map.Loader.Parser.H3M {
         try reader.skip(byteCount: 4) // unknown?
         
         return .init(
-            message: message,
-            guards: guards,
-            experiencePointsToBeGained: .init(experiencePointsToBeGained),
-            manaPointsToBeGainedOrDrained: .init(manaPointsToBeGainedOrDrained),
-            moraleToBeGainedOrDrained: .init(moraleToBeGainedOrDrained),
-            luckToBeGainedOrDrained: .init(luckToBeGainedOrDrained),
-            resourcesToBeGained: resourcesToBeGained,
-            primarySkills: primarySkills,
-            secondarySkills: secondarySkills,
-            artifactIDs: artifactIDs,
-            spellIDs: spellIDSs,
-            creaturesGained: creaturesGained,
+             pandorasBox: pandorasBox,
             availableForPlayers: availableForPlayers,
             canBeActivatedByComputer: canBeActivatedByComputer,
             shouldBeRemovedAfterVisit: shouldBeRemovedAfterVisit,

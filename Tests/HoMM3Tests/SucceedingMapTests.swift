@@ -35,4 +35,31 @@ final class MapTests: XCTestCase {
         XCTAssertEqual(map.about.victoryLossConditions.victoryConditions.map { $0.kind.stripped }, [.defeatSpecificHero])
         XCTAssertEqual(map.about.victoryLossConditions.lossConditions.map { $0.kind.stripped }, [.loseSpecificHero, .standard])
     }
+    
+    
+    func test_assert_can_load_map_by_id__taleOfTwoLands_allies() throws {
+        // Delete any earlier cached maps.
+        Map.loader.cache.__deleteMap(by: .taleOfTwoLandsAllies)
+        let map = try Map.load(.taleOfTwoLandsAllies)
+        XCTAssertEqual(map.about.summary.fileName, "Tale of two lands (Allies).h3m")
+        XCTAssertEqual(map.about.summary.name, "Tale of Two Lands (Allies)")
+        XCTAssertEqual(map.about.summary.description, "The continents of East and West Varesburg have decided to wage war one last time.  Securing the resources of your continent (with help from your ally) and then moving onto the other as quickly as possible is the best stategy for the battle of the Varesburgs.")
+        XCTAssertEqual(map.about.summary.fileSizeCompressed, 73_233)
+        XCTAssertEqual(map.about.summary.fileSize, 400_340)
+        XCTAssertTrue(map.about.summary.hasTwoLevels)
+        XCTAssertEqual(map.about.summary.format, .armageddonsBlade)
+        XCTAssertEqual(map.about.summary.difficulty, .normal)
+        XCTAssertEqual(map.about.summary.size, .extraLarge)
+        XCTAssertEqual(map.about.playersInfo.players.count, 4)
+       
+        XCTAssertTrue(map.about.playersInfo.players.allSatisfy({ $0.isPlayableBothByHumanAndAI }))
+        
+        XCTAssertTrue(map.about.playersInfo.players.allSatisfy({ $0.allowedFactionsForThisPlayer == Faction.playable(in: .restorationOfErathia) }))
+
+        XCTAssertEqual(map.about.victoryLossConditions.victoryConditions.map { $0.kind.stripped }, [.standard])
+        XCTAssertEqual(map.about.victoryLossConditions.lossConditions.map { $0.kind.stripped }, [.standard])
+        
+        XCTAssertEqual(map.about.teamInfo.teams?.count, 2)
+        XCTAssertEqual(map.about.teamInfo, [[.red, .blue], [.tan, .green]])
+    }
 }

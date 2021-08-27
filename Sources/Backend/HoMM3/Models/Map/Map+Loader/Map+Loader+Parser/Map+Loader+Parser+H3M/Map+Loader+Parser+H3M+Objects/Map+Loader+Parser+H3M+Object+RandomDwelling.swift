@@ -7,17 +7,8 @@
 
 import Foundation
 
-//public extension Map {
-//    struct Dwelling: Hashable {
-//        public let owner: PlayerColor?
-//    }
-//}
-
 internal extension Map.Loader.Parser.H3M {
-    func parseRandomDwelling(objectID: Map.Object.ID) throws -> Map.Dwelling {
-     fatalError()
-    }
-    
+  
     func parseDwelling(objectID: Map.Object.ID) throws -> Map.Dwelling {
         let owner = try parseOwner()
         try reader.skip(byteCount: 3)

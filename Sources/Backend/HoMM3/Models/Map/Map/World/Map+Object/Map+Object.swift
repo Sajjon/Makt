@@ -81,6 +81,8 @@ public extension Map.Object {
         case scholar(Map.Scholar)
         case seershut(Map.Seershut)
         case monster(Map.Monster)
+        case pandorasBox(Map.PandorasBox)
+        case questGuard(Quest)
         case witchHut(Map.WitchHut)
         case lighthouse(Map.Lighthouse)
         case grail(Map.Grail)

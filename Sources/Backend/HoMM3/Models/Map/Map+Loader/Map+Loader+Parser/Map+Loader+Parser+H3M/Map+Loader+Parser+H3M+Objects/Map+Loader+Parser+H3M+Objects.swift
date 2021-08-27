@@ -214,8 +214,6 @@ internal extension Map.Loader.Parser.H3M {
             let objectKind: Map.Object.Kind
             
             switch definition.objectID.class {
-            case .abandonedMine: fatalError("abandoned mine")
-                
             case .artifact:
                 let (message, guards) = try parseMessageAndGuards(format: format)
                 let artifact: Artifact
@@ -311,7 +309,9 @@ internal extension Map.Loader.Parser.H3M {
                 default: fatalError("incorrect impl")
                 }
           
-            case .pandorasBox:  fatalError("pandorasbox")
+            case .pandorasBox:
+                let pandorasBox = try parsePandorasBox(format: format)
+                objectKind = .pandorasBox(pandorasBox)
             case .placeholderHero:  fatalError("placeholderHero")
                 
             case .randomHero: fallthrough
@@ -322,7 +322,9 @@ internal extension Map.Loader.Parser.H3M {
                     )
                 )
                 
-            case .questGuard: fatalError("questGuard")
+            case .questGuard:
+                let quest = try parseQuest()
+                objectKind = .questGuard(quest)
                 
             case .dwelling: fallthrough
             case .randomDwelling: fallthrough
@@ -349,11 +351,17 @@ internal extension Map.Loader.Parser.H3M {
                 
                 let guardedResource = Map.GuardedResource(message: message, guards: guards, resource: resource)
                 objectKind = .resource(guardedResource)
+           
             case .resourceGenerator:
                 guard case let .mine(mineKind) = definition.objectID else { fatalError("incorrect") }
                 let mine = try Map.Mine(kind: mineKind, owner: .init(rawValue: reader.readUInt8()))
                 try reader.skip(byteCount: 3)
                 objectKind = .mine(mine)
+            case .abandonedMine:
+                let mine = try Map.Mine(kind: nil, owner: .init(rawValue: reader.readUInt8()))
+                try reader.skip(byteCount: 3)
+                objectKind = .mine(mine)
+           
             case .scholar:
                 let scholarBonusKind = try Map.Scholar.Bonus.Stripped(integer: reader.readUInt8())
                 let bonusIDRaw = try reader.readUInt8()
@@ -428,7 +436,6 @@ internal extension Map.Loader.Parser.H3M {
                         bounty = .artifact(artifactID)
                         
                     case .spell:
-                        print("🤡 bounty/reward is spell..?")
                         bounty = try .spell(.init(integer: reader.readInt8()))
                         
                     case .creature:
@@ -446,9 +453,7 @@ internal extension Map.Loader.Parser.H3M {
                 let seershut: Map.Seershut
                 
                 if format > .restorationOfErathia {
-                    print("🌍 format is AB/SOD => parsing quest")
                     let quest = try parseQuest()
-                    print("✅ parsed quest: \(quest)\n\n\nparsing bounty")
                     seershut = try .init(quest: quest, bounty: bounty())
                 } else {
                     assert(format == .restorationOfErathia)
@@ -467,6 +472,7 @@ internal extension Map.Loader.Parser.H3M {
                     )
                 }
                 try reader.skip(byteCount: 2)
+                
                 objectKind = .seershut(seershut)
             case .shipyard:
                 let owner = try parseOwner()

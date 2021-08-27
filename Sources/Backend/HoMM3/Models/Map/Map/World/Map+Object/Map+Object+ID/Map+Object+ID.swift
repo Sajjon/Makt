@@ -7,7 +7,8 @@
 
 public extension Map {
     struct Mine: Hashable {
-        public let kind: Kind
+        /// nil means `abandoned mine`
+        public let kind: Kind?
         public let owner: PlayerColor?
     }
     
