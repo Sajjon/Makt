@@ -41,6 +41,11 @@ public extension Map {
         let creatures: CreatureStacks?
         let areCreaturesRemovable: Bool
     }
+    
+    
+    struct Grail: Hashable {
+        public let radius: UInt32
+    }
 }
 
 public extension Map.Object {
@@ -71,10 +76,14 @@ public extension Map.Object {
         case town(Map.Town)
         case shipyard(Map.Shipyard)
         case shrine(Map.Shrine)
+        case sign(Map.Sign)
+        case oceanBottle(Map.OceanBottle)
+        case scholar(Map.Scholar)
         case seershut(Map.Seershut)
         case monster(Map.Monster)
         case witchHut(Map.WitchHut)
         case lighthouse(Map.Lighthouse)
+        case grail(Map.Grail)
         
     }
 }

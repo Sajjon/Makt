@@ -725,6 +725,22 @@ public extension Creature.ID {
         .sacredPhoenix
     ]
     #endif // WOG
+    
+    enum QueryUpgraded {
+        case yes, no, random
+    }
+    
+    static func creatureID(at level: Creature.Level, of faction: Faction, upgraded: QueryUpgraded) -> Creature.ID {
+        let creaturesOfFaction = of(faction: faction)
+        let creaturesAtLevel = at(level: level)
+        let matches = Array(Set(creaturesAtLevel).intersection(Set(creaturesOfFaction))).sorted(by: { $0.rawValue < $1.rawValue })
+        assert(matches.count == 2)
+        switch upgraded {
+        case .no: return matches[0]
+        case .yes: return matches[1]
+        case .random: return matches.randomElement()!
+        }
+    }
 }
 
 public extension Creature {

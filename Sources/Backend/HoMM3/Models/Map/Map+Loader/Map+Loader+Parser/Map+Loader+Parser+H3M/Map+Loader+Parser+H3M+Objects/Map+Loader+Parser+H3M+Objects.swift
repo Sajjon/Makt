@@ -7,6 +7,8 @@
 
 import Foundation
 
+func UNUSED(_ any: Any) { /* noop */ }
+
 public struct Quest: Hashable {
     
     /// An identifier identifying some object/entity relating to this quest, e.g. a quest identifier for an hero (not Hero.ID (?)) or for a wandering monster (not just a Creature.ID).
@@ -197,11 +199,10 @@ internal extension Map.Loader.Parser.H3M {
             guard
                 definitionIndex < definitions.objectAttributes.count
             else {
-                fatalError("definitionIndex too large: \(definitionIndex)")
-                //                throw Error.unknownObjectDefintion(
-                //                    indexTooLarge: .init(definitionIndex),
-                //                    haveOnlyParsedDefinitionArrayOfLength: definitions.objectAttributes.count
-                //                )
+                                throw Error.unknownObjectDefintion(
+                                    indexTooLarge: .init(definitionIndex),
+                                    haveOnlyParsedDefinitionArrayOfLength: definitions.objectAttributes.count
+                                )
             }
             
             let definition = definitions.objectAttributes[.init(definitionIndex)]
@@ -237,11 +238,6 @@ internal extension Map.Loader.Parser.H3M {
                 } else { fatalError("incorrect implementation, unhandled object ID: \(definition.objectID)") }
                 let guardedArtifact = Map.GuardedArtifact(message: message, guards: guards, artifact: artifact)
                 objectKind = .artifact(guardedArtifact)
-            case .dwelling:
-                let owner = try parseOwner()
-                try reader.skip(byteCount: 3)
-                let dwellng = Map.Dwelling(owner: owner, id: definition.objectID)
-                objectKind = .dwelling(dwellng)
             case .event:
                 objectKind = try .event(parseEvent(format: format))
             case .garrison:
@@ -261,7 +257,7 @@ internal extension Map.Loader.Parser.H3M {
                 // Generic objects have no body, nothing to parse.
                 objectKind = .generic
             case .grail:
-                fatalError("grail")
+                objectKind = try .grail(.init(radius: reader.readUInt32()))
             case .hero:
                 guard case let .hero(heroClass) = definition.objectID else { fatalError("incorrect") }
                 objectKind = try .hero(
@@ -314,8 +310,8 @@ internal extension Map.Loader.Parser.H3M {
                     )
                 default: fatalError("incorrect impl")
                 }
-            case .oceanBottle: fatalError("oceanBottle")
-            case .pandorasBox:  fatalError("oceanBottle")
+          
+            case .pandorasBox:  fatalError("pandorasbox")
             case .placeholderHero:  fatalError("placeholderHero")
                 
             case .randomHero: fallthrough
@@ -327,9 +323,13 @@ internal extension Map.Loader.Parser.H3M {
                 )
                 
             case .questGuard: fatalError("questGuard")
-            case .randomDwelling: fatalError("questGuard")
-            case .randomDwellingOfFaction: fatalError("randomDwellingOfFaction")
-            case .randomDwellingAtLevel: fatalError("randomDwellingAtLevel")
+                
+            case .dwelling: fallthrough
+            case .randomDwelling: fallthrough
+            case .randomDwellingOfFaction: fallthrough
+            case .randomDwellingAtLevel:
+                objectKind = try .dwelling(parseDwelling(objectID: definition.objectID))
+                
             case .resource:
                 let (message, guards) = try parseMessageAndGuards(format: format)
                 let quantityBase = try reader.readUInt32()
@@ -354,7 +354,28 @@ internal extension Map.Loader.Parser.H3M {
                 let mine = try Map.Mine(kind: mineKind, owner: .init(rawValue: reader.readUInt8()))
                 try reader.skip(byteCount: 3)
                 objectKind = .mine(mine)
-            case .scholar: fatalError("scholar")
+            case .scholar:
+                let scholarBonusKind = try Map.Scholar.Bonus.Stripped(integer: reader.readUInt8())
+                let bonusIDRaw = try reader.readUInt8()
+               
+                
+                let bonus: Map.Scholar.Bonus
+                switch scholarBonusKind {
+                case .primarySkill:
+                    bonus = try .primarySkill(.init(integer: bonusIDRaw))
+                case .secondarySkill:
+                    bonus = try .secondarySkill(.init(integer: bonusIDRaw))
+                case .spell:
+                    bonus = try .spell(.init(integer: bonusIDRaw))
+                case .random:
+                    UNUSED(bonusIDRaw)
+                    bonus = .random
+                }
+                
+                try reader.skip(byteCount: 6)
+                
+                objectKind = .scholar(.init(bonus: bonus))
+        
             case .seersHut:
                 
                 func bounty() throws -> Map.Seershut.Bounty {
@@ -456,7 +477,14 @@ internal extension Map.Loader.Parser.H3M {
                 let spellID = try parseSpellID()
                 try reader.skip(byteCount: 3)
                 objectKind = .shrine(.init(spell: spellID))
-            case .sign: fatalError("sign")
+            case .sign:
+                let message = try reader.readString()
+                try reader.skip(byteCount: 4)
+                objectKind = .sign(.init(message: message))
+            case .oceanBottle:
+                let message = try reader.readString()
+                try reader.skip(byteCount: 4)
+                objectKind = .oceanBottle(.init(message: message))
             case .spellScroll: fatalError("spellScroll")
             case .town:
                 if case let .town(faction) = definition.objectID {

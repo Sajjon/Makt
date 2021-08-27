@@ -18,6 +18,32 @@ public extension Map {
     struct Shrine: Hashable {
         public let spell: Spell.ID?
     }
+    struct Sign: Hashable {
+        public let message: String
+    }
+    struct OceanBottle: Hashable {
+        public let message: String
+    }
+    
+    struct Scholar: Hashable {
+        
+        public let bonus: Bonus
+        
+        public enum Bonus: Hashable {
+            
+            case primarySkill(Hero.PrimarySkill.Kind)
+            case secondarySkill(Hero.SecondarySkill.Kind)
+            case spell(Spell.ID)
+            case random
+            
+            public enum Stripped: UInt8, Hashable, CaseIterable {
+                case primarySkill
+                case secondarySkill
+                case spell
+                case random = 255
+            }
+        }
+    }
 }
 public extension Map.Mine {
     enum Kind: UInt8, Hashable, CaseIterable {
@@ -655,8 +681,7 @@ public extension Map.Object.ID {
              randomDwellingWithLevel = 217,
              
              /// subtype = faction
-             randomDwellingOfFaction
- = 218,
+             randomDwellingOfFaction = 218,
              
              garrison2 = 219,
              abandonedMine = 220,
