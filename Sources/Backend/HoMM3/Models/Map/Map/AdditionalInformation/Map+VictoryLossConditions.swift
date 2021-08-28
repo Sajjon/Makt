@@ -8,7 +8,7 @@
 import Foundation
 
 public extension Map {
-    struct VictoryLossConditions: Equatable {
+    struct VictoryLossConditions: Hashable {
         public let victoryConditions: [VictoryCondition]
         public let lossConditions: [LossCondition]
     }

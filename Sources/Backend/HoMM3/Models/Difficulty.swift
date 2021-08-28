@@ -7,6 +7,6 @@
 
 import Foundation
 
-public enum Difficulty: Int8, Equatable {
+public enum Difficulty: UInt8, Hashable, CaseIterable {
     case easy, normal, hard, expert, impossible
 }

@@ -169,12 +169,10 @@ internal extension Map.Loader.Parser.H3M {
     func parseDetailsAboutObjects(
         inspector: Map.Loader.Parser.Inspector? = nil,
         format: Map.Format,
-        attributesOfObjects: Map.AttributesOfObjects,
-        allowedSpellsOnMap: [Spell.ID],
-        predefinedHeroes: [Hero.Predefined],
-        disposedHeroes: [Hero.Disposed]
+        additionalMapInformation: Map.AdditionalInformation,
+        attributesOfObjects: Map.AttributesOfObjects
     ) throws -> Map.DetailsAboutObjects {
-        
+        let allowedSpellsOnMap = additionalMapInformation.availableSpells?.spells ?? Spell.ID.allCases
         let objectCount = try reader.readUInt32()
         
         var objects = [Map.Object]()

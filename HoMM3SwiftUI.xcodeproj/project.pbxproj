@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		481462F826C902C800431960 /* Map+About.swift in Sources */ = {isa = PBXBuildFile; fileRef = 481462F726C902C800431960 /* Map+About.swift */; };
+		481462F826C902C800431960 /* Map+BasicInformation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 481462F726C902C800431960 /* Map+BasicInformation.swift */; };
 		481462FA26C902D800431960 /* Config.swift in Sources */ = {isa = PBXBuildFile; fileRef = 481462F926C902D800431960 /* Config.swift */; };
 		481462FC26C902E800431960 /* Map+ID.swift in Sources */ = {isa = PBXBuildFile; fileRef = 481462FB26C902E800431960 /* Map+ID.swift */; };
 		4814630026C9041200431960 /* Map+About+Summary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 481462FF26C9041200431960 /* Map+About+Summary.swift */; };
@@ -22,6 +22,10 @@
 		487AF96B26D9131C0073277F /* SucceedingMapTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487AF96A26D9131C0073277F /* SucceedingMapTests.swift */; };
 		487AF96E26D91CB60073277F /* Map+Loader+Parser+H3M+Object+RandomDwelling.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487AF96C26D91CA70073277F /* Map+Loader+Parser+H3M+Object+RandomDwelling.swift */; };
 		487AF97126D928340073277F /* Map+Loader+Parser+H3M+Object+PandorasBox.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487AF96F26D928310073277F /* Map+Loader+Parser+H3M+Object+PandorasBox.swift */; };
+		487AF97326DA1A080073277F /* Map+Loader+Parser+H3M+AdditionalInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487AF97226DA1A080073277F /* Map+Loader+Parser+H3M+AdditionalInfo.swift */; };
+		487AF97526DA1B260073277F /* Map+AdditionalInformation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487AF97426DA1B260073277F /* Map+AdditionalInformation.swift */; };
+		487AF97726DA1B790073277F /* H3M+Parse+PlayersInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487AF97626DA1B790073277F /* H3M+Parse+PlayersInfo.swift */; };
+		487AF97B26DA23500073277F /* H3M+Parse+CustomHeroes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487AF97A26DA23500073277F /* H3M+Parse+CustomHeroes.swift */; };
 		487C2B8026C9066600031505 /* Map+Loader+Cache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487C2B7D26C9066500031505 /* Map+Loader+Cache.swift */; };
 		487C2B8126C9066600031505 /* Map+Loader+Parser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487C2B7F26C9066600031505 /* Map+Loader+Parser.swift */; };
 		487C2B8426C936D600031505 /* Map+ID+KnownMaps.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487C2B8326C936D600031505 /* Map+ID+KnownMaps.swift */; };
@@ -48,17 +52,16 @@
 		487C2BB326CB9BC500031505 /* Map+Decrompress.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487C2BB226CB9BC500031505 /* Map+Decrompress.swift */; };
 		487C2BB526CC2E8500031505 /* HeroIDTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487C2BB426CC2E8500031505 /* HeroIDTests.swift */; };
 		487C2BB926CC2F2600031505 /* Hero+ID.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487C2BB726CC2F2300031505 /* Hero+ID.swift */; };
-		487C2BBE26CC2F6300031505 /* Hero+Custom.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487C2BBD26CC2F6300031505 /* Hero+Custom.swift */; };
+		487C2BBE26CC2F6300031505 /* Map+PlayersInfo+StartingHero.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487C2BBD26CC2F6300031505 /* Map+PlayersInfo+StartingHero.swift */; };
 		487C2BC226CCCCD900031505 /* BitArray.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487C2BC126CCCCD900031505 /* BitArray.swift */; };
 		487C2BC426CCEDF600031505 /* Map.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487C2BC326CCEDF600031505 /* Map.swift */; };
 		487C2BC626CCF5B700031505 /* CRC32Checksum.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487C2BC526CCF5B700031505 /* CRC32Checksum.swift */; };
 		487C2BCB26CCF6A600031505 /* CRC32Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487C2BCA26CCF6A600031505 /* CRC32Tests.swift */; };
 		487C2BCE26CD327C00031505 /* Integers+RepeatNTimes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487C2BCD26CD327C00031505 /* Integers+RepeatNTimes.swift */; };
 		487C2BD326CD334800031505 /* Map+Loader+Parser+H3M+Error.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487C2BD226CD334800031505 /* Map+Loader+Parser+H3M+Error.swift */; };
-		487C2BD526CD335D00031505 /* Hero+Disposed.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487C2BD426CD335D00031505 /* Hero+Disposed.swift */; };
-		487C2BD726CD337100031505 /* Hero+Predefined.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487C2BD626CD337100031505 /* Hero+Predefined.swift */; };
-		487C2BD926CD33CC00031505 /* Map+Loader+Parser+H3M+ParseAbout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487C2BD826CD33CC00031505 /* Map+Loader+Parser+H3M+ParseAbout.swift */; };
-		487C2BDB26CD342E00031505 /* Map+Loader+Parser+H3M+DataReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487C2BDA26CD342E00031505 /* Map+Loader+Parser+H3M+DataReader.swift */; };
+		487C2BD526CD335D00031505 /* Map+AdditionalInfo+CustomHero.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487C2BD426CD335D00031505 /* Map+AdditionalInfo+CustomHero.swift */; };
+		487C2BD726CD337100031505 /* Map+AdditionalInfo+HeroSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487C2BD626CD337100031505 /* Map+AdditionalInfo+HeroSettings.swift */; };
+		487C2BD926CD33CC00031505 /* Map+Loader+Parser+H3M+ParseBasicInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487C2BD826CD33CC00031505 /* Map+Loader+Parser+H3M+ParseBasicInfo.swift */; };
 		487C2BDE26CD3D0200031505 /* Artifact+ID.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487C2BDD26CD3D0200031505 /* Artifact+ID.swift */; };
 		487C2BE026CD3D7400031505 /* ArtifactIDTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487C2BDF26CD3D7400031505 /* ArtifactIDTests.swift */; };
 		487C2BE226CD464E00031505 /* Version.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487C2BE126CD464E00031505 /* Version.swift */; };
@@ -68,7 +71,7 @@
 		487C2BEC26CD746800031505 /* Hero+SecondarySkill.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487C2BEB26CD746800031505 /* Hero+SecondarySkill.swift */; };
 		487C2BEE26CD748000031505 /* Hero+SecondarySkill+Kind.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487C2BED26CD748000031505 /* Hero+SecondarySkill+Kind.swift */; };
 		487C2BF026CD748F00031505 /* Hero+SecondarySkill+Level.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487C2BEF26CD748F00031505 /* Hero+SecondarySkill+Level.swift */; };
-		487C2BF226CD78CF00031505 /* Map+Loader+Parser+H3M+ParsePredefinedHeroes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487C2BF126CD78CF00031505 /* Map+Loader+Parser+H3M+ParsePredefinedHeroes.swift */; };
+		487C2BF226CD78CF00031505 /* H3M+Parse+HeroSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487C2BF126CD78CF00031505 /* H3M+Parse+HeroSettings.swift */; };
 		487C2BF426CD916C00031505 /* Artifact+Slot.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487C2BF326CD916C00031505 /* Artifact+Slot.swift */; };
 		487C2BF626CD918300031505 /* Hero+Gender.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487C2BF526CD918300031505 /* Hero+Gender.swift */; };
 		487C2BF926CD919B00031505 /* Hero+PrimarySkill.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487C2BF826CD919B00031505 /* Hero+PrimarySkill.swift */; };
@@ -117,7 +120,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		481462F726C902C800431960 /* Map+About.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Map+About.swift"; sourceTree = "<group>"; };
+		481462F726C902C800431960 /* Map+BasicInformation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Map+BasicInformation.swift"; sourceTree = "<group>"; };
 		481462F926C902D800431960 /* Config.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Config.swift; sourceTree = "<group>"; };
 		481462FB26C902E800431960 /* Map+ID.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Map+ID.swift"; sourceTree = "<group>"; };
 		481462FF26C9041200431960 /* Map+About+Summary.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Map+About+Summary.swift"; sourceTree = "<group>"; };
@@ -137,6 +140,10 @@
 		487AF96A26D9131C0073277F /* SucceedingMapTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SucceedingMapTests.swift; sourceTree = "<group>"; };
 		487AF96C26D91CA70073277F /* Map+Loader+Parser+H3M+Object+RandomDwelling.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Map+Loader+Parser+H3M+Object+RandomDwelling.swift"; sourceTree = "<group>"; };
 		487AF96F26D928310073277F /* Map+Loader+Parser+H3M+Object+PandorasBox.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Map+Loader+Parser+H3M+Object+PandorasBox.swift"; sourceTree = "<group>"; };
+		487AF97226DA1A080073277F /* Map+Loader+Parser+H3M+AdditionalInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Map+Loader+Parser+H3M+AdditionalInfo.swift"; sourceTree = "<group>"; };
+		487AF97426DA1B260073277F /* Map+AdditionalInformation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Map+AdditionalInformation.swift"; sourceTree = "<group>"; };
+		487AF97626DA1B790073277F /* H3M+Parse+PlayersInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "H3M+Parse+PlayersInfo.swift"; sourceTree = "<group>"; };
+		487AF97A26DA23500073277F /* H3M+Parse+CustomHeroes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "H3M+Parse+CustomHeroes.swift"; sourceTree = "<group>"; };
 		487C2B7D26C9066500031505 /* Map+Loader+Cache.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Map+Loader+Cache.swift"; sourceTree = "<group>"; };
 		487C2B7F26C9066600031505 /* Map+Loader+Parser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Map+Loader+Parser.swift"; sourceTree = "<group>"; };
 		487C2B8326C936D600031505 /* Map+ID+KnownMaps.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Map+ID+KnownMaps.swift"; sourceTree = "<group>"; };
@@ -162,17 +169,16 @@
 		487C2BB226CB9BC500031505 /* Map+Decrompress.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Map+Decrompress.swift"; sourceTree = "<group>"; };
 		487C2BB426CC2E8500031505 /* HeroIDTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeroIDTests.swift; sourceTree = "<group>"; };
 		487C2BB726CC2F2300031505 /* Hero+ID.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Hero+ID.swift"; sourceTree = "<group>"; };
-		487C2BBD26CC2F6300031505 /* Hero+Custom.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Hero+Custom.swift"; sourceTree = "<group>"; };
+		487C2BBD26CC2F6300031505 /* Map+PlayersInfo+StartingHero.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Map+PlayersInfo+StartingHero.swift"; sourceTree = "<group>"; };
 		487C2BC126CCCCD900031505 /* BitArray.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BitArray.swift; sourceTree = "<group>"; };
 		487C2BC326CCEDF600031505 /* Map.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Map.swift; sourceTree = "<group>"; };
 		487C2BC526CCF5B700031505 /* CRC32Checksum.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CRC32Checksum.swift; sourceTree = "<group>"; };
 		487C2BCA26CCF6A600031505 /* CRC32Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CRC32Tests.swift; sourceTree = "<group>"; };
 		487C2BCD26CD327C00031505 /* Integers+RepeatNTimes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Integers+RepeatNTimes.swift"; sourceTree = "<group>"; };
 		487C2BD226CD334800031505 /* Map+Loader+Parser+H3M+Error.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Map+Loader+Parser+H3M+Error.swift"; sourceTree = "<group>"; };
-		487C2BD426CD335D00031505 /* Hero+Disposed.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Hero+Disposed.swift"; sourceTree = "<group>"; };
-		487C2BD626CD337100031505 /* Hero+Predefined.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Hero+Predefined.swift"; sourceTree = "<group>"; };
-		487C2BD826CD33CC00031505 /* Map+Loader+Parser+H3M+ParseAbout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Map+Loader+Parser+H3M+ParseAbout.swift"; sourceTree = "<group>"; };
-		487C2BDA26CD342E00031505 /* Map+Loader+Parser+H3M+DataReader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Map+Loader+Parser+H3M+DataReader.swift"; sourceTree = "<group>"; };
+		487C2BD426CD335D00031505 /* Map+AdditionalInfo+CustomHero.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Map+AdditionalInfo+CustomHero.swift"; sourceTree = "<group>"; };
+		487C2BD626CD337100031505 /* Map+AdditionalInfo+HeroSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Map+AdditionalInfo+HeroSettings.swift"; sourceTree = "<group>"; };
+		487C2BD826CD33CC00031505 /* Map+Loader+Parser+H3M+ParseBasicInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Map+Loader+Parser+H3M+ParseBasicInfo.swift"; sourceTree = "<group>"; };
 		487C2BDD26CD3D0200031505 /* Artifact+ID.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Artifact+ID.swift"; sourceTree = "<group>"; };
 		487C2BDF26CD3D7400031505 /* ArtifactIDTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArtifactIDTests.swift; sourceTree = "<group>"; };
 		487C2BE126CD464E00031505 /* Version.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Version.swift; sourceTree = "<group>"; };
@@ -182,7 +188,7 @@
 		487C2BEB26CD746800031505 /* Hero+SecondarySkill.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Hero+SecondarySkill.swift"; sourceTree = "<group>"; };
 		487C2BED26CD748000031505 /* Hero+SecondarySkill+Kind.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Hero+SecondarySkill+Kind.swift"; sourceTree = "<group>"; };
 		487C2BEF26CD748F00031505 /* Hero+SecondarySkill+Level.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Hero+SecondarySkill+Level.swift"; sourceTree = "<group>"; };
-		487C2BF126CD78CF00031505 /* Map+Loader+Parser+H3M+ParsePredefinedHeroes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Map+Loader+Parser+H3M+ParsePredefinedHeroes.swift"; sourceTree = "<group>"; };
+		487C2BF126CD78CF00031505 /* H3M+Parse+HeroSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "H3M+Parse+HeroSettings.swift"; sourceTree = "<group>"; };
 		487C2BF326CD916C00031505 /* Artifact+Slot.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Artifact+Slot.swift"; sourceTree = "<group>"; };
 		487C2BF526CD918300031505 /* Hero+Gender.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Hero+Gender.swift"; sourceTree = "<group>"; };
 		487C2BF826CD919B00031505 /* Hero+PrimarySkill.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Hero+PrimarySkill.swift"; sourceTree = "<group>"; };
@@ -354,6 +360,23 @@
 			path = Failing;
 			sourceTree = "<group>";
 		};
+		487AF97826DA1FFD0073277F /* PlayersInfo */ = {
+			isa = PBXGroup;
+			children = (
+				487C2BBD26CC2F6300031505 /* Map+PlayersInfo+StartingHero.swift */,
+				487C2BB026CB9B9A00031505 /* Map+PlayersInfo.swift */,
+			);
+			path = PlayersInfo;
+			sourceTree = "<group>";
+		};
+		487AF97926DA23340073277F /* H3M+AdditionalInfo */ = {
+			isa = PBXGroup;
+			children = (
+				487AF97A26DA23500073277F /* H3M+Parse+CustomHeroes.swift */,
+			);
+			path = "H3M+AdditionalInfo";
+			sourceTree = "<group>";
+		};
 		487C2B7C26C9066500031505 /* Map+Loader+Cache */ = {
 			isa = PBXGroup;
 			children = (
@@ -382,14 +405,16 @@
 		487C2B8926CA951300031505 /* Map+Loader+Parser+H3M */ = {
 			isa = PBXGroup;
 			children = (
+				487AF97926DA23340073277F /* H3M+AdditionalInfo */,
 				487C2C3126D2367200031505 /* Map+Loader+Parser+H3M+Objects */,
 				487C2B8A26CA952700031505 /* Map+Loader+Parser+H3M.swift */,
 				487C2BFC26CE4AC400031505 /* Map+Loader+Parser+H3M+Tiles.swift */,
-				487C2BF126CD78CF00031505 /* Map+Loader+Parser+H3M+ParsePredefinedHeroes.swift */,
+				487C2BF126CD78CF00031505 /* H3M+Parse+HeroSettings.swift */,
 				487C2BB226CB9BC500031505 /* Map+Decrompress.swift */,
 				487C2BD226CD334800031505 /* Map+Loader+Parser+H3M+Error.swift */,
-				487C2BD826CD33CC00031505 /* Map+Loader+Parser+H3M+ParseAbout.swift */,
-				487C2BDA26CD342E00031505 /* Map+Loader+Parser+H3M+DataReader.swift */,
+				487C2BD826CD33CC00031505 /* Map+Loader+Parser+H3M+ParseBasicInfo.swift */,
+				487AF97226DA1A080073277F /* Map+Loader+Parser+H3M+AdditionalInfo.swift */,
+				487AF97626DA1B790073277F /* H3M+Parse+PlayersInfo.swift */,
 			);
 			path = "Map+Loader+Parser+H3M";
 			sourceTree = "<group>";
@@ -409,9 +434,6 @@
 				487C2BEA26CD745200031505 /* SecondarySkill */,
 				487C2B9626CAD1E400031505 /* Hero.swift */,
 				487AF96626D7B9B30073277F /* Hero+ID */,
-				487C2BBD26CC2F6300031505 /* Hero+Custom.swift */,
-				487C2BD426CD335D00031505 /* Hero+Disposed.swift */,
-				487C2BD626CD337100031505 /* Hero+Predefined.swift */,
 				487C2BF526CD918300031505 /* Hero+Gender.swift */,
 				487C2C3F26D4C08900031505 /* Hero+Placeholder.swift */,
 			);
@@ -476,9 +498,11 @@
 		487C2BCF26CD32A600031505 /* Map */ = {
 			isa = PBXGroup;
 			children = (
+				487AF97826DA1FFD0073277F /* PlayersInfo */,
 				487C2C0226CECDB100031505 /* World */,
 				487C2B8726CA950100031505 /* Map+Format.swift */,
-				487C2BD026CD32AF00031505 /* About */,
+				481462F726C902C800431960 /* Map+BasicInformation.swift */,
+				487C2BD026CD32AF00031505 /* AdditionalInformation */,
 				487C2BC326CCEDF600031505 /* Map.swift */,
 				481462FB26C902E800431960 /* Map+ID.swift */,
 				487C2BFE26CECD8500031505 /* Map+AttributesOfObjects.swift */,
@@ -487,19 +511,20 @@
 			path = Map;
 			sourceTree = "<group>";
 		};
-		487C2BD026CD32AF00031505 /* About */ = {
+		487C2BD026CD32AF00031505 /* AdditionalInformation */ = {
 			isa = PBXGroup;
 			children = (
-				481462F726C902C800431960 /* Map+About.swift */,
 				487C2B8E26CA98DC00031505 /* Map+AllowedHeroes.swift */,
 				487C2B8C26CA988E00031505 /* Map+VictoryLossConditions.swift */,
+				487C2BD626CD337100031505 /* Map+AdditionalInfo+HeroSettings.swift */,
+				487C2BD426CD335D00031505 /* Map+AdditionalInfo+CustomHero.swift */,
 				481462FF26C9041200431960 /* Map+About+Summary.swift */,
 				487C2BA426CB8EC700031505 /* Map+VictoryCondition.swift */,
 				487C2BAC26CB951500031505 /* Map+LossCondition.swift */,
 				487C2BAE26CB9B5700031505 /* Map+TeamInfo.swift */,
-				487C2BB026CB9B9A00031505 /* Map+PlayersInfo.swift */,
+				487AF97426DA1B260073277F /* Map+AdditionalInformation.swift */,
 			);
-			path = About;
+			path = AdditionalInformation;
 			sourceTree = "<group>";
 		};
 		487C2BD126CD32D600031505 /* Models */ = {
@@ -774,16 +799,16 @@
 				487C2C3C26D3BA1200031505 /* Map+Loader+Parser+H3M+Object+Hero.swift in Sources */,
 				487C2BFD26CE4AC400031505 /* Map+Loader+Parser+H3M+Tiles.swift in Sources */,
 				487C2B8B26CA952700031505 /* Map+Loader+Parser+H3M.swift in Sources */,
+				487AF97B26DA23500073277F /* H3M+Parse+CustomHeroes.swift in Sources */,
 				487C2BC426CCEDF600031505 /* Map.swift in Sources */,
-				487C2BDB26CD342E00031505 /* Map+Loader+Parser+H3M+DataReader.swift in Sources */,
 				487C2C1426CED24F00031505 /* Map+Object.swift in Sources */,
-				487C2BD926CD33CC00031505 /* Map+Loader+Parser+H3M+ParseAbout.swift in Sources */,
+				487C2BD926CD33CC00031505 /* Map+Loader+Parser+H3M+ParseBasicInfo.swift in Sources */,
 				487C2BFB26CD91AA00031505 /* Hero+PrimarySkill+Kind.swift in Sources */,
 				487C2B9F26CAD22900031505 /* Difficulty.swift in Sources */,
 				4814630226C904D000431960 /* Map+Loader.swift in Sources */,
 				487C2BCE26CD327C00031505 /* Integers+RepeatNTimes.swift in Sources */,
 				487C2BF926CD919B00031505 /* Hero+PrimarySkill.swift in Sources */,
-				487C2BBE26CC2F6300031505 /* Hero+Custom.swift in Sources */,
+				487C2BBE26CC2F6300031505 /* Map+PlayersInfo+StartingHero.swift in Sources */,
 				487C2C3A26D26DEC00031505 /* Map+Loader+Parser+H3M+Object+Town.swift in Sources */,
 				487C2B9726CAD1E400031505 /* Hero.swift in Sources */,
 				487C2BA126CAD23600031505 /* PlayerColor.swift in Sources */,
@@ -809,12 +834,13 @@
 				487C2C2526CF913100031505 /* Creature+ID.swift in Sources */,
 				487C2BE726CD49CD00031505 /* Spell+ID.swift in Sources */,
 				487C2BFF26CECD8500031505 /* Map+AttributesOfObjects.swift in Sources */,
+				487AF97726DA1B790073277F /* H3M+Parse+PlayersInfo.swift in Sources */,
 				487C2BA926CB94D900031505 /* Creature.swift in Sources */,
 				487C2B9B26CAD21000031505 /* Faction.swift in Sources */,
 				481462FC26C902E800431960 /* Map+ID.swift in Sources */,
 				487AF96E26D91CB60073277F /* Map+Loader+Parser+H3M+Object+RandomDwelling.swift in Sources */,
 				487C2BE526CD49BA00031505 /* Spell.swift in Sources */,
-				487C2BD526CD335D00031505 /* Hero+Disposed.swift in Sources */,
+				487C2BD526CD335D00031505 /* Map+AdditionalInfo+CustomHero.swift in Sources */,
 				487C2C3326D2368D00031505 /* Map+Loader+Parser+H3M+Objects.swift in Sources */,
 				487C2C1926CEDD4C00031505 /* Map+Object+ID.swift in Sources */,
 				487C2C2726CFC69E00031505 /* Creature+Level.swift in Sources */,
@@ -822,7 +848,7 @@
 				487C2C1126CECEBC00031505 /* Map+Tile+Rotation.swift in Sources */,
 				487C2C0B26CECE2000031505 /* Map+Tile+Terrain.swift in Sources */,
 				487C2C2E26D2258800031505 /* Data+Hex.swift in Sources */,
-				487C2BF226CD78CF00031505 /* Map+Loader+Parser+H3M+ParsePredefinedHeroes.swift in Sources */,
+				487C2BF226CD78CF00031505 /* H3M+Parse+HeroSettings.swift in Sources */,
 				487C2B8826CA950100031505 /* Map+Format.swift in Sources */,
 				487C2B9226CA9B5900031505 /* DataReader.swift in Sources */,
 				48BC466B26D667EE00D435F1 /* Map+Object+ID+Stripped.swift in Sources */,
@@ -833,16 +859,18 @@
 				487C2BB926CC2F2600031505 /* Hero+ID.swift in Sources */,
 				487C2C0626CECDCE00031505 /* Map+Level.swift in Sources */,
 				481462FA26C902D800431960 /* Config.swift in Sources */,
-				487C2BD726CD337100031505 /* Hero+Predefined.swift in Sources */,
+				487C2BD726CD337100031505 /* Map+AdditionalInfo+HeroSettings.swift in Sources */,
 				487C2BB126CB9B9A00031505 /* Map+PlayersInfo.swift in Sources */,
 				487C2BB326CB9BC500031505 /* Map+Decrompress.swift in Sources */,
 				487AF97126D928340073277F /* Map+Loader+Parser+H3M+Object+PandorasBox.swift in Sources */,
 				487AF96826D7B9C30073277F /* Hero+ID+HeroClass.swift in Sources */,
 				487C2BAF26CB9B5700031505 /* Map+TeamInfo.swift in Sources */,
-				481462F826C902C800431960 /* Map+About.swift in Sources */,
+				481462F826C902C800431960 /* Map+BasicInformation.swift in Sources */,
 				487C2B8026C9066600031505 /* Map+Loader+Cache.swift in Sources */,
 				487C2B8126C9066600031505 /* Map+Loader+Parser.swift in Sources */,
 				487C2C0926CECDED00031505 /* Map+Tile.swift in Sources */,
+				487AF97326DA1A080073277F /* Map+Loader+Parser+H3M+AdditionalInfo.swift in Sources */,
+				487AF97526DA1B260073277F /* Map+AdditionalInformation.swift in Sources */,
 				487C2B8F26CA98DC00031505 /* Map+AllowedHeroes.swift in Sources */,
 				487C2C3E26D3DC9800031505 /* Map+Loader+Parser+H3M+Object+Monster.swift in Sources */,
 				487C2BF626CD918300031505 /* Hero+Gender.swift in Sources */,

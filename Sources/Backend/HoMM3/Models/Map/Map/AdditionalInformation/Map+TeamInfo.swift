@@ -8,9 +8,9 @@
 import Foundation
 
 public extension Map {
-    struct TeamInfo: Equatable, CustomStringConvertible {
+    struct TeamInfo: Hashable, CustomStringConvertible {
         public let teams: [Team]?
-        public struct Team: Equatable, CustomStringConvertible {
+        public struct Team: Hashable, CustomStringConvertible {
             public let id: Int
             public let players: [PlayerColor]
         }

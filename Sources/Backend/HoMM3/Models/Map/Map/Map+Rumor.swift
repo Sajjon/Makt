@@ -8,7 +8,7 @@
 import Foundation
 
 public extension Map {
-    struct Rumor: Equatable {
+    struct Rumor: Hashable {
         public let name: String
         public let text: String
     }

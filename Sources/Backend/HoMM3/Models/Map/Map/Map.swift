@@ -10,14 +10,14 @@ import Foundation
 public extension Map.Loader.Parser {
     final class Inspector {
         
-        public typealias OnParseAbout = (Map.About) -> Void
+        public typealias OnParseBasicInfo = (Map.BasicInformation) -> Void
         
-        public typealias OnParseDisposedHeroes = (_ disposedHeroes: [Hero.Disposed]) -> Void
-        public typealias OnParseAllowedArtifacts = (_ allowedArtifacts: [Artifact.ID]) -> Void
-        public typealias OnParseAllowedSpells = (_ allowedSpells: [Spell.ID]) -> Void
-        public typealias OnParseAllowedHeroAbilities = (_ allowedHeroAbilites: [Hero.SecondarySkill.Kind]) -> Void
-        public typealias OnParseRumors = ([Map.Rumor]) -> Void
-        public typealias OnParsePredefinedHeroes = ([Hero.Predefined]) -> Void
+        public typealias OnParseCustomHeroes = (_ customHeroes: Map.AdditionalInformation.CustomHeroes) -> Void
+        public typealias OnParseAvailableArtifacts = (_ availableArtifacts: Map.AdditionalInformation.AvailableArtifacts) -> Void
+        public typealias OnParseAvailableSpells = (_ availableSpells:  Map.AdditionalInformation.AvailableSpells) -> Void
+        public typealias OnParseAvailableSecondarySkills = (_ availableSecondarySkills:  Map.AdditionalInformation.AvailableSecondarySkills) -> Void
+        public typealias OnParseRumors = (Map.AdditionalInformation.Rumors) -> Void
+        public typealias OnParseHeroSettings = (Map.AdditionalInformation.HeroSettings) -> Void
         
         public typealias OnParseWorld = (Map.World) -> Void
         public typealias OnParseAttributesOfObjects = (Map.AttributesOfObjects) -> Void
@@ -25,13 +25,13 @@ public extension Map.Loader.Parser {
         public typealias OnParseAllObjects = (Map.DetailsAboutObjects) -> Void
         public typealias OnParseEvents = (Map.GlobalEvents) -> Void
 
-        private let onParseAbout: OnParseAbout?
-        private let onParseDisposedHeroes: OnParseDisposedHeroes?
-        private let onParseAllowedArtifacts: OnParseAllowedArtifacts?
-        private let onParseAllowedSpells: OnParseAllowedSpells?
-        private let onParseAllowedHeroAbilities: OnParseAllowedHeroAbilities?
+        private let onParseBasicInfo: OnParseBasicInfo?
+        private let onParseCustomHeroes: OnParseCustomHeroes?
+        private let onParseAvailableArtifacts: OnParseAvailableArtifacts?
+        private let onParseAvailableSpells: OnParseAvailableSpells?
+        private let onParseAvailableSecondarySkills: OnParseAvailableSecondarySkills?
         private let onParseRumors: OnParseRumors?
-        private let onParsePredefinedHeroes: OnParsePredefinedHeroes?
+        private let onParseHeroSettings: OnParseHeroSettings?
         
         private let onParseWorld: OnParseWorld?
         private let onParseAttributesOfObjects: OnParseAttributesOfObjects?
@@ -50,14 +50,14 @@ public extension Map.Loader.Parser {
         
         init(
             settings: Settings = .init(),
-            onParseAbout: OnParseAbout? = nil,
-            onParseDisposedHeroes: OnParseDisposedHeroes? = nil,
-            onParseAllowedArtifacts: OnParseAllowedArtifacts? = nil,
-            onParseAllowedSpells: OnParseAllowedSpells? = nil,
-            onParseAllowedHeroAbilities: OnParseAllowedHeroAbilities? = nil,
+            onParseBasicInfo: OnParseBasicInfo? = nil,
+            onParseCustomHeroes: OnParseCustomHeroes? = nil,
+            onParseAvailableArtifacts: OnParseAvailableArtifacts? = nil,
+            onParseAvailableSpells: OnParseAvailableSpells? = nil,
+            onParseAvailableSecondarySkills: OnParseAvailableSecondarySkills? = nil,
             
             onParseRumors: OnParseRumors? = nil,
-            onParsePredefinedHeroes: OnParsePredefinedHeroes? = nil,
+            onParseHeroSettings: OnParseHeroSettings? = nil,
             onParseWorld: OnParseWorld? = nil,
             onParseAttributesOfObjects: OnParseAttributesOfObjects? = nil,
             onParseObject: OnParseObject? = nil,
@@ -65,13 +65,13 @@ public extension Map.Loader.Parser {
             onParseEvents: OnParseEvents? = nil
         ) {
             self.settings = settings
-            self.onParseDisposedHeroes = onParseDisposedHeroes
-            self.onParseAllowedArtifacts = onParseAllowedArtifacts
-            self.onParseAllowedSpells = onParseAllowedSpells
-            self.onParseAllowedHeroAbilities = onParseAllowedHeroAbilities
+            self.onParseBasicInfo = onParseBasicInfo
+            self.onParseCustomHeroes = onParseCustomHeroes
+            self.onParseAvailableArtifacts = onParseAvailableArtifacts
+            self.onParseAvailableSpells = onParseAvailableSpells
+            self.onParseAvailableSecondarySkills = onParseAvailableSecondarySkills
             self.onParseRumors = onParseRumors
-            self.onParsePredefinedHeroes = onParsePredefinedHeroes
-            self.onParseAbout = onParseAbout
+            self.onParseHeroSettings = onParseHeroSettings
             self.onParseWorld = onParseWorld
             self.onParseAttributesOfObjects = onParseAttributesOfObjects
             self.onParseObject = onParseObject
@@ -82,33 +82,32 @@ public extension Map.Loader.Parser {
 }
 public extension Map.Loader.Parser.Inspector {
     
-    func didParseAbout(_ about: Map.About) {
-        onParseAbout?(about)
+    func didParseBasicInfo(_ about: Map.BasicInformation) {
+        onParseBasicInfo?(about)
     }
     
-    func didParseDisposedHeroes(_ disposedHeroes: [Hero.Disposed]) {
-        onParseDisposedHeroes?(disposedHeroes)
+    func didParseCustomHeroes(_ customHeroes: Map.AdditionalInformation.CustomHeroes) {
+        onParseCustomHeroes?(customHeroes)
     }
     
-    func didParseAllowedArtifacts(_ allowedArtifacts: [Artifact.ID]) {
-        onParseAllowedArtifacts?(allowedArtifacts)
-        
+    func didParseAvailableArtifacts(_ availableArtifacts: Map.AdditionalInformation.AvailableArtifacts) {
+        onParseAvailableArtifacts?(availableArtifacts)
     }
     
-    func didParseAllowedSpells(_ allowedSpells: [Spell.ID]) {
-        onParseAllowedSpells?(allowedSpells)
+    func didParseAvailableSpells(_ availableSpells: Map.AdditionalInformation.AvailableSpells) {
+        onParseAvailableSpells?(availableSpells)
     }
     
-    func didParseAllowedHeroAbilities(_ allowedHeroAbilities: [Hero.SecondarySkill.Kind]) {
-        onParseAllowedHeroAbilities?(allowedHeroAbilities)
+    func didParseAvailableSecondarySkills(_ availableSecondarySkills: Map.AdditionalInformation.AvailableSecondarySkills) {
+        onParseAvailableSecondarySkills?(availableSecondarySkills)
     }
     
-    func didParseRumors(_ rumors: [Map.Rumor]) {
+    func didParseRumors(_ rumors: Map.AdditionalInformation.Rumors) {
         onParseRumors?(rumors)
     }
     
-    func didParsePredefinedHeroes(_ predefinedHeroes: [Hero.Predefined]) {
-        onParsePredefinedHeroes?(predefinedHeroes)
+    func didParseHeroSettings(_ heroSettings: Map.AdditionalInformation.HeroSettings) {
+        onParseHeroSettings?(heroSettings)
     }
     
     func didParseWorld(_ world: Map.World) {
@@ -134,7 +133,18 @@ public extension Map.Loader.Parser.Inspector {
 
 public struct Map: Equatable, Identifiable {
     public let checksum: UInt32
-    public let about: About
+    
+    /// Name, description, size, difficulty etc.
+    public let basicInformation: BasicInformation
+    
+    
+    public let playersInfo: InformationAboutPlayers
+    
+    /// Victory/Loss conditions, teams, rumors, hero settings, SOD: avaiable skills/artifacts/spells etc.
+    public let additionalInformation: AdditionalInformation
+    
+    public let world: World
+    
     public let attributesOfObjects: Map.AttributesOfObjects
     public let detailsAboutObjects: Map.DetailsAboutObjects
     public let globalEvents: Map.GlobalEvents
@@ -147,13 +157,12 @@ extension Map {
     ///
     /// `internal` access modifier so that it can be tested.
     internal static let loader = Loader.shared
-    
 }
 
 
 // MARK: Identifiable
 public extension Map {
-    var id: ID { about.id }
+    var id: ID { basicInformation.id }
 }
 
 // MARK: Load

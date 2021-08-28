@@ -1,5 +1,5 @@
 //
-//  Map+Loader+Parser+H3M+ParsePredefinedHeroes.swift
+//  Map+Loader+Parser+H3M+SettingsForHero.swift
 //  HoMM3SwiftUI
 //
 //  Created by Alexander Cyon on 2021-08-18.
@@ -7,20 +7,20 @@
 
 import Foundation
 
-// MARK: Parse PreDefined Heroes
+// MARK: Parse Hero Settings
 internal extension Map.Loader.Parser.H3M {
-    func parsePredefinedHeroes(format: Map.Format) throws -> [Hero.Predefined] {
+    func parseHeroSettings(format: Map.Format) throws -> Map.AdditionalInformation.HeroSettings? {
       
         
         switch format {
         #if WOG
         case .wakeOfGods: fallthrough
         #endif // WOG
-        case .armageddonsBlade: return []
+        case .armageddonsBlade: return nil
         case .shadowOfDeath:
             let availableHeroIDs = Hero.ID.playable(in: format)
             assert(availableHeroIDs.count == 156)
-            return try (0..<availableHeroIDs.count).compactMap { heroIDIndex in
+            let settingsForHeroes: [Map.AdditionalInformation.SettingsForHero] = try (0..<availableHeroIDs.count).compactMap { heroIDIndex in
                 
                 // Hero is custom?
                 guard try reader.readBool() else { return nil }
@@ -46,7 +46,7 @@ internal extension Map.Loader.Parser.H3M {
                 let hasCustomPrimarySkills = try reader.readBool()
                 let customPrimarySkills: [Hero.PrimarySkill]? = !hasCustomPrimarySkills ? nil : try parsePrimarySkills()
                 
-                let predefinedHero = Hero.Predefined(
+                return .init(
                     heroID: heroID,
                     startingExperiencePoints: startingExperiencePoints,
                     startingSecondarySkills: startingSecondarySkills,
@@ -56,12 +56,10 @@ internal extension Map.Loader.Parser.H3M {
                     customSpells: customSpells,
                     customPrimarySkills: customPrimarySkills
                 )
-                
-                return predefinedHero
-                
             }
+            return .init(settingsForHeroes: settingsForHeroes)
         case .restorationOfErathia:
-            return []
+            return nil
         }
     }
 }

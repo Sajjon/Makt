@@ -8,7 +8,7 @@
 import Foundation
 
 public extension Map {
-    struct LossCondition: Equatable {
+    struct LossCondition: Hashable {
         public let kind: Kind
     }
 }
@@ -18,7 +18,7 @@ public extension Map.LossCondition {
     
     static let standard = Self(kind: .standard)
     
-    enum Kind: Equatable {
+    enum Kind: Hashable {
         /// You lose if the specified hero is defeated.
         case loseSpecificHero(locatedAt: Position)
             
@@ -54,7 +54,7 @@ public extension Map.LossCondition.Kind {
 
 
 public extension Map.LossCondition.Kind {
-    enum Stripped: UInt8, Equatable, CustomStringConvertible {
+    enum Stripped: UInt8, Hashable, CustomStringConvertible {
         
         /// You lose if the specified town is occupied by an enemy.
         case loseSpecificTown

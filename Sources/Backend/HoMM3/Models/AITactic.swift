@@ -6,7 +6,7 @@
 //
 
 import Foundation
-public enum AITactic: Int, Equatable {
+public enum AITactic: UInt8, Equatable {
     case random, warrior, builder, explorer
 }
 

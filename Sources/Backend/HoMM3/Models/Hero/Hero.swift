@@ -34,6 +34,11 @@ public struct Hero: Hashable {
 
 public extension Hero {
     
+    struct ArtifactInSlot: Hashable {
+        public let slot: Artifact.Slot
+        public let artifactID: Artifact.ID
+    }
+    
     var `class`: Hero.Class {
         switch identifierKind {
         case .randomHeroOfClass(let futureClass): return futureClass
@@ -74,5 +79,7 @@ public extension Hero {
         case captain,
         navigator
         #endif // HOTA
+        
+        
     }
 }

@@ -10,7 +10,7 @@ import Foundation
 
 public extension Map {
     
-    struct VictoryCondition: Equatable {
+    struct VictoryCondition: Hashable {
         public let kind: Kind
         public let appliesToAI: Bool
     }
@@ -24,7 +24,7 @@ public extension Map.VictoryCondition {
         kind.victoryIconID
     }
     
-    enum Kind: Equatable {
+    enum Kind: Hashable {
         /// You must find a specific artifact. Win by placing the artifact in one of your heroes’ backpacks.
         case acquireSpecificArtifact(Artifact.ID)
         

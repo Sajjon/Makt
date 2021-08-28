@@ -7,7 +7,7 @@
 
 import Foundation
 
-public struct Size: Equatable {
+public struct Size: Hashable {
     public typealias Scalar = Int
     public let width: Scalar
     public let height: Scalar

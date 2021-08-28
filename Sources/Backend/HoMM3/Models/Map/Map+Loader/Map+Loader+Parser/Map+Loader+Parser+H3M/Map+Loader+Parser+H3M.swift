@@ -27,34 +27,21 @@ extension Map.Loader.Parser.H3M {
         
         let checksum = CRC32.checksum(readMap.data)
         
-        let about = try parseAbout()
-        inspector?.didParseAbout(about)
+        let basicInfo = try parseBasicInfo()
+        inspector?.didParseBasicInfo(basicInfo)
        
-        let format = about.summary.format
+        let format = basicInfo.format
+        let size = basicInfo.size
         
-        let disposedHeroes = try parseDisposedHeroes(format: format)
-        inspector?.didParseDisposedHeroes(disposedHeroes)
+        let playersInfo = try parseInformationAboutPlayers(format: format)
         
-        let allowedArtifacts = try parseAllowedArtifacts(format: format)
-        inspector?.didParseAllowedArtifacts(allowedArtifacts)
-        
-        let allowedSpells = try parseAllowedSpells(format: format)
-        inspector?.didParseAllowedSpells(allowedSpells)
-        
-        let allowedHeroAbilities = try parseAllowedHeroAbilities(format: format)
-        inspector?.didParseAllowedHeroAbilities(allowedHeroAbilities)
-        
-        let rumors = try parseRumors()
-        inspector?.didParseRumors(rumors)
-        
-        let predefinedHeroes = try parsePredefinedHeroes(format: format)
-        inspector?.didParsePredefinedHeroes(predefinedHeroes)
-        
+        let additionalInfo = try parseAdditionalInfo(inspector: inspector, format: format, playersInfo: playersInfo)
+
         let world = try parseTerrain(
-            hasUnderworld: about.summary.hasTwoLevels,
-            size: about.summary.size
+            hasUnderworld: basicInfo.hasTwoLevels,
+            size: size
         )
-        assert(world.above.tiles.count == about.summary.size.tileCount)
+        assert(world.above.tiles.count == size.tileCount)
         inspector?.didParseWorld(world)
         
         let attributesOfObjects = try parseAttributesOfObjects()
@@ -65,10 +52,8 @@ extension Map.Loader.Parser.H3M {
         let detailsAboutObjects = try parseDetailsAboutObjects(
             inspector: inspector,
             format: format,
-            attributesOfObjects: attributesOfObjects,
-            allowedSpellsOnMap: allowedSpells,
-            predefinedHeroes: predefinedHeroes,
-            disposedHeroes: disposedHeroes
+            additionalMapInformation: additionalInfo,
+            attributesOfObjects: attributesOfObjects
         )
         inspector?.didParseAllObjects(detailsAboutObjects)
         
@@ -77,7 +62,10 @@ extension Map.Loader.Parser.H3M {
         
         return .init(
             checksum: checksum,
-            about: about,
+            basicInformation: basicInfo,
+            playersInfo: playersInfo,
+            additionalInformation: additionalInfo,
+            world: world,
             attributesOfObjects: attributesOfObjects,
             detailsAboutObjects: detailsAboutObjects,
             globalEvents: globalEvents
@@ -86,14 +74,7 @@ extension Map.Loader.Parser.H3M {
 }
 
 internal extension Map.Loader.Parser.H3M {
-    func parseHeroID() throws -> Hero.ID? {
-        try reader.readHeroID {
-            Error.unrecognizedHeroID($0)
-        }
-    }
-    func parseHeroPortraitID() throws -> Hero.ID? {
-        try parseHeroID()
-    }
+
     
     func parseAvailableForPlayers() throws -> [PlayerColor] {
         try BitArray(
@@ -105,56 +86,16 @@ internal extension Map.Loader.Parser.H3M {
             return PlayerColor.allCases[colorIndex]
         }
     }
+    
+        
+        func parseHeroClass() throws -> Hero.Class? {
+            let heroClassRaw = try reader.readUInt8()
+            guard heroClassRaw != 0xff else { return nil }
+            return try Hero.Class(integer: heroClassRaw)
+        }
+
 }
 
-// MARK: Parse Disposed Heros
-private extension Map.Loader.Parser.H3M {
-    func parseDisposedHeroes(format: Map.Format) throws -> [Hero.Disposed] {
-        var disposed = [Hero.Disposed]()
-        if format >= .shadowOfDeath {
-            disposed = try reader.readUInt8().nTimes {
-//                let heroID = try parseHeroID()!
-                let heroClass = try Hero.Class(integer: reader.readUInt8())
-                let portraitID = try parseHeroPortraitID()
-                let name = try reader.readString()
-                
-                let availableForPlayers = try parseAvailableForPlayers()
-                
-                return Hero.Disposed(
-                    heroClass: heroClass,
-                    portraitID: portraitID,
-                    name: name,
-                    availableForPlayers: availableForPlayers
-                )
-            }
-        }
-        try reader.skip(byteCount: 31) // skip `nil`s
-        return disposed
-    }
-}
-
-// MARK: Parse Artifacts
-private extension Map.Loader.Parser.H3M {
-    func parseAllowedArtifacts(format: Map.Format) throws -> [Artifact.ID] {
-        
-        let availableIDS = Artifact.ID.available(in: format)
-        
-        // All allowed by default.
-        var allowedArtifactIDs = availableIDS
-        
-        if format != .restorationOfErathia {
-            let bits = try reader.readBitArray(byteCount: format == .armageddonsBlade ? 17 : 18)
-            
-            allowedArtifactIDs = bits.prefix(availableIDS.count).enumerated().compactMap { (artifactIDIndex, available) in
-                guard available else { return nil }
-                return availableIDS[artifactIDIndex]
-            }
-            
-        }
-        // TODO VCMI manually bans combination artifacts according to some logic... needed?
-        return allowedArtifactIDs
-    }
-}
 
 internal extension Map.Loader.Parser.H3M {
     func parseSpellIDs(includeIfBitSet: Bool = true) throws -> [Spell.ID] {
@@ -169,46 +110,7 @@ internal extension Map.Loader.Parser.H3M {
     }
 }
 
-// MARK: Parse Allowed Spells
-private extension Map.Loader.Parser.H3M {
-    
-    func parseAllowedSpells(format: Map.Format) throws -> [Spell.ID] {
-        guard format >= .shadowOfDeath else { return Spell.ID.allCases }
-        return try parseSpellIDs()
-    }
-}
 
-
-// MARK: Parse Allowed Hero Abilities
-private extension Map.Loader.Parser.H3M {
-    func parseAllowedHeroAbilities(format: Map.Format) throws -> [Hero.SecondarySkill.Kind] {
-        
-        let availableSkillIDs = Hero.SecondarySkill.Kind.allCases
-        var allowedSkillIDs = availableSkillIDs
-        
-
-        if format >= .shadowOfDeath {
-            allowedSkillIDs = try Array(reader.readBitArray(byteCount: 4).prefix(availableSkillIDs.count)).enumerated().compactMap { (skillKindIDIndex, available) in
-                guard available else { return nil }
-                return availableSkillIDs[skillKindIDIndex]
-            }
-        }
-        
-        return allowedSkillIDs
-    }
-}
-
-
-// MARK: Parsed Rumors
-private extension Map.Loader.Parser.H3M {
-    func parseRumors() throws -> [Map.Rumor] {
-        try reader.readUInt32().nTimes {
-            let name = try reader.readString()
-            let text = try reader.readString()
-            return .init(name: name, text: text)
-        }
-    }
-}
 
 
 public typealias Bitmask = BitArray
@@ -321,15 +223,7 @@ private extension Map.Loader.Parser.H3M {
                 pathfinding: pathfinding,
                 inUnderworld: inUnderworld
             )
-            
-//            guard
-//                attributes != .invisibleHardcodedIntoEveryMapAttribute_RandomMonster,
-//                attributes != .invisibleHardcodedIntoEveryMapAttribute_Hole else {
-//                return nil
-//            }
-    
             return attributes
-
         }
         
         

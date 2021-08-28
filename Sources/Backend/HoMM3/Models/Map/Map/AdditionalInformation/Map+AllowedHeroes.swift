@@ -8,7 +8,7 @@
 import Foundation
 
 public extension Map {
-    struct AllowedHeroes: Equatable {
+    struct AvailableHeroes: Hashable {
         public let heroIDs: [Hero.ID]
     }
 }

@@ -33,12 +33,12 @@ public extension Position {
         """
     }
     
-    func fitsInMapDescribed(by summary: Map.About.Summary) -> Bool {
-        if !summary.hasTwoLevels && self.inUnderworld {
+    func fitsInMapDescribed(by basicInformation: Map.BasicInformation) -> Bool {
+        if !basicInformation.hasTwoLevels && self.inUnderworld {
             // Cyon: is this correct? Does Z mean underworld or not?
             return false
         }
         
-        return x <= summary.size.width && y <= summary.size.height
+        return x <= basicInformation.size.width && y <= basicInformation.size.height
     }
 }
