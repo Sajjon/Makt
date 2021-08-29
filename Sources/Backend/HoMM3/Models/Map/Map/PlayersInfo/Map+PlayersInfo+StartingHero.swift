@@ -10,8 +10,8 @@ import Foundation
 public extension Map.InformationAboutPlayers {
     
     struct StartingHero: Hashable {
-        let `class`: Hero.Class
-        let portraitId: Hero.ID
+        let heroID: Hero.ID
+        let portraitId: Hero.ID?
         let name: String
     }
     

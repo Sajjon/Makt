@@ -37,93 +37,102 @@ extension  Map.Loader.Parser.H3M {
             
             let aiTactic = try AITactic(integer: reader.readUInt8())
             
-            let allowedAlignment: Alignment? = try format >= .shadowOfDeath ? Alignment(integer: reader.readUInt8()) : nil
+            let allowedAlignments: [Alignment] = try format >= .shadowOfDeath ? {
+                try reader.readBitArray(byteCount: 1).enumerated().compactMap { (alignmentID, allowed) in
+                    guard allowed else { return nil }
+                    return Alignment.allCases[alignmentID]
+                }
+            }() : Alignment.allCases
            
             
             // Factions this player can choose
-            let allowedFactionsForThisPlayer: [Faction] = try {
-                var allowedFactionsForThisPlayerBitmask = try UInt16(reader.readUInt8())
+            let playableFactions: [Faction] = try {
+                var playableFactionsBitmask = try UInt16(reader.readUInt8())
                 
                 if format > .restorationOfErathia {
-                    allowedFactionsForThisPlayerBitmask += try 256 * UInt16(reader.readUInt8())
+                    playableFactionsBitmask += try 256 * UInt16(reader.readUInt8())
                 }
                 
                 let playableFactions: [Faction] = Faction.playable(in: format)
             
                 return playableFactions.filter {
-                    allowedFactionsForThisPlayerBitmask & (1 << $0.rawValue) != 0
+                    playableFactionsBitmask & (1 << $0.rawValue) != 0
                 }
             }()
             
-            let isRandomFaction = try reader.readBool()
+            let basic = Map.InformationAboutPlayers.PlayerInfo.Basic(
+                color: playerColor,
+                isPlayableByHuman: isPlayableByHuman,
+                isPlayableByAI: isPlayableByAI,
+                aiTactic: aiTactic,
+                allowedAlignments: allowedAlignments,
+                playableFactions: playableFactions
+            )
+            
+            
+            let _ = try reader.readBool() // isRandomFaction ??? Russians: "Whether the player owns Random Town"???
             let hasMainTown = try reader.readBool()
             
-            var generateHeroAtMainTown = true
-            var heroClass: Hero.Class?
-            var positionOfMainTown: Position?
-            if hasMainTown {
-                if format > .restorationOfErathia {
-                    generateHeroAtMainTown = try reader.readBool()
-                    heroClass = try Hero.Class(integer: reader.readUInt8())
-                }
-                positionOfMainTown = try reader.readPosition()
-            }
+            
+            let mainTown: Map.InformationAboutPlayers.PlayerInfo.Additional.MainTown? = hasMainTown ? try {
+                let generateHeroAtMainTown = try format == .restorationOfErathia ? true : reader.readBool()
+                
+                let generateHeroID: Hero.ID? = try format == .restorationOfErathia ? nil : {
+                    let heroIDRaw = try reader.readUInt8()
+                    guard heroIDRaw != 0xff else {
+                        return nil
+                    }
+                    return try Hero.ID(integer: heroIDRaw)
+                }()
+                
+                //                assert((generateHeroClass != nil) == generateHeroAtMainTown)
+                let mainTownPosition = try reader.readPosition()
+                
+                return .init(
+                    position: mainTownPosition,
+                    generateHeroInThisTown: generateHeroAtMainTown,
+                    generateHeroID: generateHeroID
+                )
+           }() : nil
+            
+         
             
             let hasRandomHero = try reader.readBool()
-         
-            let customStartingHero: Map.InformationAboutPlayers.StartingHero? = try {
-                let heroClassRaw = try reader.readUInt8()
-                guard heroClassRaw != 0xff else { return nil }
-//                guard hasCustomMainHeroID else { return nil }
-                let heroClass = try Hero.Class(id: heroClassRaw)
-                let portratidIDRaw = try reader.readUInt8()
-                
-                /// Always read the `name` even though we might not have a portrait id => which results in returnin nil. Otherwise we mess up byte offset.
+            
+            let mainCustomHero: Map.InformationAboutPlayers.StartingHero? = try {
+                let heroIDRaw = try reader.readUInt8()
+                guard heroIDRaw != 0xff else {
+                    return nil
+                }
+                let heroID = try Hero.ID(integer: heroIDRaw)
+                let portraitIDRaw =  try reader.readUInt8()
+                var portraitID: Hero.ID?
+                if portraitIDRaw != 0xff {
+                    portraitID = try Hero.ID(integer: portraitIDRaw)
+                }
                 let name = try reader.readString()
-                guard !name.isEmpty else { return nil }
-                guard portratidIDRaw != 0xff else { return nil }
-                let portraitID = try Hero.ID(id: portratidIDRaw)
+                
                 return .init(
-                    class: heroClass,
+                    heroID: heroID,
                     portraitId: portraitID,
                     name: name
                 )
             }()
-            
-            
-//            var heroSettings: [Hero.Settings]?
-//            if format != .restorationOfErathia {
-//
-//                // VCMI code: variable name: `powerPlaceholders` with comment 'unknown byte'
-//                try reader.skip(byteCount: 1)
-//
-//                let heroCount = try Int(reader.readUInt8())
-//                try reader.skip(byteCount: 3)
-//                heroSettings = try heroCount.nTimes {
-//                    let heroID = try parseHeroID()!
-//                    let heroName = try reader.readString()
-//                    return .init(id: heroID, name: heroName)
-//                }
-//            }
-//
 
-            fatalError()
+            if hasRandomHero {
+                assert(mainCustomHero == nil)
+            }
+
+            assert(isPlayableByHuman || isPlayableByAI)
             
-//            let basic = Map.InformationAboutPlayers.PlayerInfo.Basic(
-//                color: playerColor,
-//                isPlayableByHuman: isPlayableByHuman,
-//                isPlayableByAI: isPlayableByAI,
-//                aiTactic: aiTactic,
-//                allowedAlignments: allowedAlignment,
-//                playableFactions: allowedFactionsForThisPlayer,
-//                hasMainTown: hasMainTown ? )
-//
-//            let additional = Map.InformationAboutPlayers.PlayerInfo.Basic()
-//
-//            return Map.InformationAboutPlayers.PlayerInfo(
-//                basic: basic,
-//                additional: additional
-//            )
+            let additional = Map.InformationAboutPlayers.PlayerInfo.Additional(
+                mainTown: mainTown,
+                startingHero: mainCustomHero.map { .specific($0) } ?? (hasRandomHero ? .random : nil )
+            )
+            
+            
+            return .init(basic: basic, additional: additional)
+            
         }
         
         return .init(players: players)

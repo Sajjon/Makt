@@ -8,10 +8,6 @@
 import XCTest
 @testable import HoMM3SwiftUI
 
-extension Map.PlayersInfo.PlayerInfo {
-    var isPlayableBothByHumanAndAI: Bool { isPlayableByHuman && isPlayableByAI }
-    var isPlayableOnlyByAI: Bool { !isPlayableByHuman && isPlayableByAI }
-}
 
 final class FailingMapTests: XCTestCase {
 
@@ -441,12 +437,12 @@ final class FailingMapTests: XCTestCase {
         XCTAssertEqual(map.about.playersInfo.players[1].isPlayableBothByHumanAndAI, true)
         XCTAssertEqual(map.about.playersInfo.players[2].isPlayableBothByHumanAndAI, true)
         
-        XCTAssertEqual(map.about.playersInfo.players[0].allowedFactionsForThisPlayer, [.tower])
-        XCTAssertEqual(map.about.playersInfo.players[1].allowedFactionsForThisPlayer, [.tower])
-        XCTAssertEqual(map.about.playersInfo.players[2].allowedFactionsForThisPlayer, [.tower])
-        XCTAssertEqual(map.about.playersInfo.players[3].allowedFactionsForThisPlayer, [.stronghold])
-        XCTAssertEqual(map.about.playersInfo.players[4].allowedFactionsForThisPlayer, [.dungeon])
-        XCTAssertEqual(map.about.playersInfo.players[5].allowedFactionsForThisPlayer, [.castle])
+        XCTAssertEqual(map.about.playersInfo.players[0].playableFactions, [.tower])
+        XCTAssertEqual(map.about.playersInfo.players[1].playableFactions, [.tower])
+        XCTAssertEqual(map.about.playersInfo.players[2].playableFactions, [.tower])
+        XCTAssertEqual(map.about.playersInfo.players[3].playableFactions, [.stronghold])
+        XCTAssertEqual(map.about.playersInfo.players[4].playableFactions, [.dungeon])
+        XCTAssertEqual(map.about.playersInfo.players[5].playableFactions, [.castle])
         
         XCTAssertEqual(map.about.victoryLossConditions.victoryConditions, [.standard])
         XCTAssertEqual(map.about.victoryLossConditions.lossConditions, [.standard])
@@ -502,7 +498,7 @@ final class FailingMapTests: XCTestCase {
         XCTAssertTrue(map.about.playersInfo.players[5].isPlayableOnlyByAI)
         
         XCTAssertEqual(
-            map.about.playersInfo.players.flatMap({ $0.allowedFactionsForThisPlayer }),
+            map.about.playersInfo.players.flatMap({ $0.playableFactions }),
             [.stronghold, .necropolis, .castle, .rampart, .castle, .inferno]
         )
         
@@ -529,11 +525,11 @@ final class FailingMapTests: XCTestCase {
         XCTAssertTrue(map.about.playersInfo.players[0].isPlayableBothByHumanAndAI)
         XCTAssertTrue(map.about.playersInfo.players.suffix(4).allSatisfy({ $0.isPlayableOnlyByAI }))
         
-        XCTAssertEqual(map.about.playersInfo.players[0].allowedFactionsForThisPlayer, [.castle])
-        XCTAssertEqual(map.about.playersInfo.players[1].allowedFactionsForThisPlayer, [.necropolis])
-        XCTAssertEqual(map.about.playersInfo.players[2].allowedFactionsForThisPlayer, [.inferno])
-        XCTAssertEqual(map.about.playersInfo.players[3].allowedFactionsForThisPlayer, [.dungeon])
-        XCTAssertEqual(map.about.playersInfo.players[4].allowedFactionsForThisPlayer, [.dungeon])
+        XCTAssertEqual(map.about.playersInfo.players[0].playableFactions, [.castle])
+        XCTAssertEqual(map.about.playersInfo.players[1].playableFactions, [.necropolis])
+        XCTAssertEqual(map.about.playersInfo.players[2].playableFactions, [.inferno])
+        XCTAssertEqual(map.about.playersInfo.players[3].playableFactions, [.dungeon])
+        XCTAssertEqual(map.about.playersInfo.players[4].playableFactions, [.dungeon])
         
         XCTAssertFalse(map.about.playersInfo.players[2].hasRandomHero)
         XCTAssertEqual(map.about.playersInfo.players[2].customMainHero?.name, "The Queen")
@@ -560,9 +556,9 @@ final class FailingMapTests: XCTestCase {
        
         XCTAssertTrue(map.about.playersInfo.players.allSatisfy({ $0.isPlayableBothByHumanAndAI }))
         
-        XCTAssertEqual(map.about.playersInfo.players[0].allowedFactionsForThisPlayer, Faction.playable(in: .restorationOfErathia))
-        XCTAssertEqual(map.about.playersInfo.players[1].allowedFactionsForThisPlayer, [.inferno])
-        XCTAssertEqual(map.about.playersInfo.players[2].allowedFactionsForThisPlayer, [.stronghold])
+        XCTAssertEqual(map.about.playersInfo.players[0].playableFactions, Faction.playable(in: .restorationOfErathia))
+        XCTAssertEqual(map.about.playersInfo.players[1].playableFactions, [.inferno])
+        XCTAssertEqual(map.about.playersInfo.players[2].playableFactions, [.stronghold])
         
         XCTAssertEqual(map.about.victoryLossConditions.victoryConditions.map { $0.kind.stripped }, [.buildGrailBuilding, .standard])
         XCTAssertEqual(map.about.victoryLossConditions.lossConditions.map { $0.kind.stripped }, [.standard])
@@ -586,9 +582,9 @@ final class FailingMapTests: XCTestCase {
         XCTAssertTrue(map.about.playersInfo.players.prefix(2).allSatisfy({ $0.isPlayableBothByHumanAndAI }))
         XCTAssertTrue(map.about.playersInfo.players[2].isPlayableOnlyByAI)
         
-        XCTAssertEqual(map.about.playersInfo.players[0].allowedFactionsForThisPlayer, Faction.playable(in: .restorationOfErathia))
-        XCTAssertEqual(map.about.playersInfo.players[1].allowedFactionsForThisPlayer, Faction.playable(in: .restorationOfErathia))
-        XCTAssertEqual(map.about.playersInfo.players[2].allowedFactionsForThisPlayer, Faction.playable(in: .restorationOfErathia))
+        XCTAssertEqual(map.about.playersInfo.players[0].playableFactions, Faction.playable(in: .restorationOfErathia))
+        XCTAssertEqual(map.about.playersInfo.players[1].playableFactions, Faction.playable(in: .restorationOfErathia))
+        XCTAssertEqual(map.about.playersInfo.players[2].playableFactions, Faction.playable(in: .restorationOfErathia))
         
         XCTAssertEqual(map.about.victoryLossConditions.victoryConditions.map { $0.kind.stripped }, [.flagAllCreatureDwellings, .standard])
         XCTAssertEqual(map.about.victoryLossConditions.lossConditions.map { $0.kind.stripped }, [.standard])
@@ -611,9 +607,9 @@ final class FailingMapTests: XCTestCase {
        
         XCTAssertTrue(map.about.playersInfo.players.allSatisfy({ $0.isPlayableBothByHumanAndAI }))
         
-        XCTAssertEqual(map.about.playersInfo.players[0].allowedFactionsForThisPlayer, [.inferno])
-        XCTAssertEqual(map.about.playersInfo.players[1].allowedFactionsForThisPlayer, [.stronghold])
-        XCTAssertEqual(map.about.playersInfo.players[2].allowedFactionsForThisPlayer, [.castle])
+        XCTAssertEqual(map.about.playersInfo.players[0].playableFactions, [.inferno])
+        XCTAssertEqual(map.about.playersInfo.players[1].playableFactions, [.stronghold])
+        XCTAssertEqual(map.about.playersInfo.players[2].playableFactions, [.castle])
         
         XCTAssertEqual(map.about.victoryLossConditions.victoryConditions.map { $0.kind.stripped }, [.flagAllMines, .standard])
         XCTAssertEqual(map.about.victoryLossConditions.lossConditions.map { $0.kind.stripped }, [.standard])
@@ -637,14 +633,14 @@ final class FailingMapTests: XCTestCase {
         XCTAssertTrue(map.about.playersInfo.players.prefix(3).allSatisfy({ $0.isPlayableOnlyByAI }))
         XCTAssertTrue(map.about.playersInfo.players.suffix(5).allSatisfy({ $0.isPlayableBothByHumanAndAI }))
         
-        XCTAssertEqual(map.about.playersInfo.players[0].allowedFactionsForThisPlayer, [.castle])
-        XCTAssertEqual(map.about.playersInfo.players[1].allowedFactionsForThisPlayer, [.dungeon])
-        XCTAssertEqual(map.about.playersInfo.players[2].allowedFactionsForThisPlayer, [.inferno])
-        XCTAssertEqual(map.about.playersInfo.players[3].allowedFactionsForThisPlayer, [.castle])
-        XCTAssertEqual(map.about.playersInfo.players[4].allowedFactionsForThisPlayer, [.rampart])
-        XCTAssertEqual(map.about.playersInfo.players[5].allowedFactionsForThisPlayer, [.dungeon])
-        XCTAssertEqual(map.about.playersInfo.players[6].allowedFactionsForThisPlayer, [.tower])
-        XCTAssertEqual(map.about.playersInfo.players[7].allowedFactionsForThisPlayer, [.rampart])
+        XCTAssertEqual(map.about.playersInfo.players[0].playableFactions, [.castle])
+        XCTAssertEqual(map.about.playersInfo.players[1].playableFactions, [.dungeon])
+        XCTAssertEqual(map.about.playersInfo.players[2].playableFactions, [.inferno])
+        XCTAssertEqual(map.about.playersInfo.players[3].playableFactions, [.castle])
+        XCTAssertEqual(map.about.playersInfo.players[4].playableFactions, [.rampart])
+        XCTAssertEqual(map.about.playersInfo.players[5].playableFactions, [.dungeon])
+        XCTAssertEqual(map.about.playersInfo.players[6].playableFactions, [.tower])
+        XCTAssertEqual(map.about.playersInfo.players[7].playableFactions, [.rampart])
         
         XCTAssertEqual(map.about.victoryLossConditions.victoryConditions.map { $0.kind.stripped }, [.acquireSpecificArtifact, .standard])
         XCTAssertEqual(map.about.victoryLossConditions.lossConditions.map { $0.kind.stripped }, [.standard])
@@ -667,11 +663,11 @@ final class FailingMapTests: XCTestCase {
        
         XCTAssertTrue(map.about.playersInfo.players.allSatisfy({ $0.isPlayableBothByHumanAndAI }))
         
-        XCTAssertEqual(map.about.playersInfo.players[0].allowedFactionsForThisPlayer, [.castle])
-        XCTAssertEqual(map.about.playersInfo.players[1].allowedFactionsForThisPlayer, [.tower])
-        XCTAssertEqual(map.about.playersInfo.players[2].allowedFactionsForThisPlayer, [.inferno])
-        XCTAssertEqual(map.about.playersInfo.players[3].allowedFactionsForThisPlayer, [.fortress])
-        XCTAssertEqual(map.about.playersInfo.players[4].allowedFactionsForThisPlayer, [.stronghold])
+        XCTAssertEqual(map.about.playersInfo.players[0].playableFactions, [.castle])
+        XCTAssertEqual(map.about.playersInfo.players[1].playableFactions, [.tower])
+        XCTAssertEqual(map.about.playersInfo.players[2].playableFactions, [.inferno])
+        XCTAssertEqual(map.about.playersInfo.players[3].playableFactions, [.fortress])
+        XCTAssertEqual(map.about.playersInfo.players[4].playableFactions, [.stronghold])
         
         XCTAssertEqual(map.about.victoryLossConditions.victoryConditions.map { $0.kind.stripped }, [.captureSpecificTown])
         XCTAssertEqual(map.about.victoryLossConditions.lossConditions.map { $0.kind.stripped }, [.timeLimit, .standard])
@@ -696,7 +692,7 @@ final class FailingMapTests: XCTestCase {
         XCTAssertTrue(map.about.playersInfo.players[5].isPlayableOnlyByAI)
         XCTAssertTrue(map.about.playersInfo.players[6].isPlayableBothByHumanAndAI)
         
-        XCTAssertTrue(map.about.playersInfo.players.allSatisfy({ $0.allowedFactionsForThisPlayer == Faction.playable(in: .restorationOfErathia) }))
+        XCTAssertTrue(map.about.playersInfo.players.allSatisfy({ $0.playableFactions == Faction.playable(in: .restorationOfErathia) }))
 
         XCTAssertEqual(map.about.victoryLossConditions.victoryConditions.map { $0.kind.stripped }, [.defeatSpecificHero])
         XCTAssertEqual(map.about.victoryLossConditions.lossConditions.map { $0.kind.stripped }, [.standard])
@@ -721,7 +717,7 @@ final class FailingMapTests: XCTestCase {
        
         XCTAssertTrue(map.about.playersInfo.players.allSatisfy({ $0.isPlayableBothByHumanAndAI }))
         
-        XCTAssertTrue(map.about.playersInfo.players.allSatisfy({ $0.allowedFactionsForThisPlayer == Faction.playable(in: .shadowOfDeath) }))
+        XCTAssertTrue(map.about.playersInfo.players.allSatisfy({ $0.playableFactions == Faction.playable(in: .shadowOfDeath) }))
 
         XCTAssertEqual(map.about.victoryLossConditions.victoryConditions.map { $0.kind.stripped }, [.standard])
         XCTAssertEqual(map.about.victoryLossConditions.lossConditions.map { $0.kind.stripped }, [.standard])
@@ -748,7 +744,7 @@ final class FailingMapTests: XCTestCase {
         XCTAssertTrue(map.about.playersInfo.players.allSatisfy({ $0.isPlayableBothByHumanAndAI }))
         XCTAssertTrue(map.about.playersInfo.players.allSatisfy({ $0.isRandomFaction }))
         
-        XCTAssertTrue(map.about.playersInfo.players.allSatisfy({ $0.allowedFactionsForThisPlayer == Faction.playable(in: .shadowOfDeath) }))
+        XCTAssertTrue(map.about.playersInfo.players.allSatisfy({ $0.playableFactions == Faction.playable(in: .shadowOfDeath) }))
 
         XCTAssertEqual(map.about.victoryLossConditions.victoryConditions.map { $0.kind.stripped }, [.standard])
         XCTAssertEqual(map.about.victoryLossConditions.lossConditions.map { $0.kind.stripped }, [.standard])

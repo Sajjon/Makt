@@ -33,9 +33,6 @@ public extension Map.InformationAboutPlayers.PlayerInfo {
         /// SOD feature only
         public let allowedAlignments: [Alignment]
         public let playableFactions: [Faction]
-        
-        public let mainTown: MainTown?
-        
     }
     
     struct Additional: Hashable {
@@ -45,34 +42,27 @@ public extension Map.InformationAboutPlayers.PlayerInfo {
             case specific(Map.InformationAboutPlayers.StartingHero)
         }
         
-        public struct StartingTown: Hashable {
-            public let position: Position
-            public let faction: Faction
-        }
+//        public struct StartingTown: Hashable {
+//            public let position: Position
+//            public let faction: Faction
+//        }
         
+//        public let startingTown: StartingTown?
+        
+        public let mainTown: MainTown?
         public let startingHero: StartingHeroType?
-        public let startingTown: StartingTown?
     }
 }
 
 
-public extension Map.InformationAboutPlayers.PlayerInfo.Basic {
+public extension Map.InformationAboutPlayers.PlayerInfo.Additional {
     struct MainTown: Hashable {
         let position: Position
         let generateHeroInThisTown: Bool
+//        let generateHeroClass: Hero.Class?
+        let generateHeroID: Hero.ID?
     }
 }
-//
-//public extension Map.PlayersInfo.PlayerInfoBasic {
-//    var isPlayableByAI: Bool { aiTactic != nil }
-//    var hasMainTown: Bool { mainTown != nil }
-//}
-//
-//extension Map.PlayersInfo: CustomDebugStringConvertible {
-//    public var debugDescription: String {
-//        playersBasicInfo.map({ $0.debugDescription }).joined(separator: "\n\n")
-//    }
-//}
 //
 //extension Map.PlayersInfo.PlayerInfo: CustomDebugStringConvertible {
 //
@@ -82,7 +72,7 @@ public extension Map.InformationAboutPlayers.PlayerInfo.Basic {
 //        ************************************************************
 //        "color: \(color)",
 //        isPlayableByHuman?: \(isPlayableByHuman)
-//        faction choices: \(allowedFactionsForThisPlayer.map({ String(describing: $0) }))
+//        faction choices: \(playableFactions.map({ String(describing: $0) }))
 //        \(aiTacticString)
 //        hasMainTown?: \(self.hasMainTown)
 //        hasRandonHero?: \(self.hasRandomHero)
