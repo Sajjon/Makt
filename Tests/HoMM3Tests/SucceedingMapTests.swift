@@ -60,7 +60,7 @@ final class MapTests: XCTestCase {
                 XCTAssertEqual(basicInfo.fileName, "Unholy Quest.h3m")
                 XCTAssertEqual(basicInfo.fileSizeCompressed, 53_956 )
                 XCTAssertEqual(basicInfo.fileSize, 349_615)
-                XCTAssertEqual(basicInfo.hasTwoLevels, true)
+                XCTAssertTrue(basicInfo.hasTwoLevels)
             }
         )
         
@@ -110,30 +110,69 @@ final class MapTests: XCTestCase {
     }
     
     
-//    func test_assert_can_load_map_by_id__taleOfTwoLands_allies() throws {
-//        // Delete any earlier cached maps.
-//        Map.loader.cache.__deleteMap(by: .taleOfTwoLandsAllies)
-//        let map = try Map.load(.taleOfTwoLandsAllies)
-//        XCTAssertEqual(basicInfo.fileName, "Tale of two lands (Allies).h3m")
-//        XCTAssertEqual(basicInfo.format, .armageddonsBlade)
-//        XCTAssertEqual(basicInfo.name, "Tale of Two Lands (Allies)")
-//        XCTAssertEqual(basicInfo.description, "The continents of East and West Varesburg have decided to wage war one last time.  Securing the resources of your continent (with help from your ally) and then moving onto the other as quickly as possible is the best stategy for the battle of the Varesburgs.")
-//        XCTAssertEqual(basicInfo.fileSizeCompressed, 73_233)
-//        XCTAssertEqual(basicInfo.fileSize, 400_340)
-//        XCTAssertTrue(basicInfo.hasTwoLevels)
-//        XCTAssertEqual(basicInfo.format, .armageddonsBlade)
-//        XCTAssertEqual(basicInfo.difficulty, .normal)
-//        XCTAssertEqual(basicInfo.size, .extraLarge)
-//        XCTAssertEqual(map.playersInfo.players.count, 4)
-//
-//        XCTAssertTrue(map.playersInfo.players.allSatisfy({ $0.isPlayableBothByHumanAndAI }))
-//
-//        XCTAssertTrue(map.playersInfo.players.allSatisfy({ $0.playableFactions == Faction.playable(in: .restorationOfErathia) }))
-//
-//        XCTAssertEqual(map.additionalInformation.victoryLossConditions.victoryConditions.map { $0.kind.stripped }, [.standard])
-//        XCTAssertEqual(map.additionalInformation.victoryLossConditions.lossConditions.map { $0.kind.stripped }, [.standard])
-//
-//        XCTAssertEqual(map.additionalInformation.teamInfo.teams?.count, 2)
-//        XCTAssertEqual(map.additionalInformation.teamInfo, [[.red, .blue], [.tan, .green]])
-//    }
+    func test_assert_can_load_map_by_id__taleOfTwoLands_allies() throws {
+        // Delete any earlier cached maps.
+        let mapID: Map.ID = .taleOfTwoLandsAllies
+        Map.loader.cache.__deleteMap(by: mapID)
+ 
+        let basicInfoInspector = Map.Loader.Parser.Inspector.BasicInfoInspector(
+            onParseFormat: { format in
+                XCTAssertEqual(format, .armageddonsBlade)
+            }, onParseName: { name in
+                XCTAssertEqual(name, "Tale of Two Lands (Allies)")
+            }, onParseDescription: { description in
+                XCTAssertEqual(description, "The continents of East and West Varesburg have decided to wage war one last time.  Securing the resources of your continent (with help from your ally) and then moving onto the other as quickly as possible is the best stategy for the battle of the Varesburgs.")
+            }, onParseDifficulty: { difficulty in
+                XCTAssertEqual(difficulty, .normal)
+            }, onParseSize: { size in
+                XCTAssertEqual(size, .extraLarge)
+            }, onFinishedParsingBasicInfo: { basicInfo in
+                XCTAssertEqual(basicInfo.fileName, "Tale of two lands (Allies).h3m")
+                XCTAssertEqual(basicInfo.fileSizeCompressed, 73_233)
+                XCTAssertEqual(basicInfo.fileSize, 400_340)
+                XCTAssertTrue(basicInfo.hasTwoLevels)
+            }
+        )
+        
+        let playersInfoInspector = Map.Loader.Parser.Inspector.PlayersInfoInspector(onParseROEBasic: { basic, color in
+            switch color {
+            case .red, .blue, .tan, .green:
+                XCTAssertTrue(basic.isPlayableBothByHumanAndAI)
+                XCTAssertEqual(basic.playableFactions, Faction.playable(in: .restorationOfErathia))
+            default: XCTFail("Expected only players Red, Blue, Tan, Green, but got: \(color)")
+            }
+            
+        })
+        
+        let victoryLossInspector = Map.Loader.Parser.Inspector.AdditionalInfoInspector.VictoryLossInspector(
+            onParseVictoryConditions: { victoryConditions in
+                XCTAssertEqual(victoryConditions.map { $0.kind.stripped }, [.standard])
+            },
+            onParseLossConditions: { lossConditions in
+                XCTAssertEqual(lossConditions.map { $0.kind.stripped }, [.standard])
+            }
+        )
+        
+        let additionalInfoInspector = Map.Loader.Parser.Inspector.AdditionalInfoInspector(
+            victoryLossInspector: victoryLossInspector,
+            onParseAvailableHeroes: nil,
+            onParseTeamInfo: { teamInfo in
+                XCTAssertEqual(teamInfo, [[.red, .blue], [.tan, .green]])
+            },
+            onParseCustomHeroes: nil,
+            onParseAvailableArtifacts: nil,
+            onParseAvailableSpells: nil,
+            onParseAvailableSecondarySkills: nil,
+            onParseRumors: nil,
+            onParseHeroSettings: nil
+        )
+        
+        let inspector = Map.Loader.Parser.Inspector(
+            basicInfoInspector: basicInfoInspector,
+            playersInfoInspector: playersInfoInspector,
+            additionalInformationInspector: additionalInfoInspector
+        )
+        
+        XCTAssertNoThrow(try Map.load(mapID, inspector: inspector))
+    }
 }
