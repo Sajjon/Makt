@@ -13,7 +13,7 @@ import Foundation
 extension  Map.Loader.Parser.H3M {
 
     
-    func parseBasicInfo() throws -> Map.BasicInformation {
+    func parseBasicInfo(inspector: Map.Loader.Parser.Inspector.BasicInfoInspector? = nil) throws -> Map.BasicInformation {
         // Check map for validity
         guard reader.sourceSize >= 50 else { throw Error.corruptMapFileTooSmall }
         // Map version
@@ -40,16 +40,24 @@ extension  Map.Loader.Parser.H3M {
         let sizeValue = try reader.readUInt32()
         let height = sizeValue
         let width = sizeValue
+        
         let size = Size(width: .init(width), height: .init(height))
+        inspector?.didParseSize(size)
+        
         let hasTwoLevels = try reader.readBool()
+        
         let name = try reader.readString()
+        inspector?.didParseName(name)
+        
         let description = try reader.readString()
+        inspector?.didParseDescription(description)
         
         let difficulty = try Difficulty(integer: reader.readUInt8()) // VCMI uses read SIGNED Int8 here instead of UInt8. But homm3tools uses UInt8.
+        inspector?.didParseDifficulty(difficulty)
         
         let maximumHeroLevel: Int? = try format > .restorationOfErathia ? Int(reader.readUInt8()) : nil
         
-        return Map.BasicInformation(
+        let basicInfo = Map.BasicInformation(
             id: readMap.id,
             fileSize: readMap.data.count,
             fileSizeCompressed: fileSizeCompressed,
@@ -61,5 +69,9 @@ extension  Map.Loader.Parser.H3M {
             hasTwoLevels: hasTwoLevels,
             maximumHeroLevel: maximumHeroLevel
         )
+        
+        inspector?.didFinishedParsingBasicInfo(basicInfo)
+        
+        return basicInfo
     }
 }

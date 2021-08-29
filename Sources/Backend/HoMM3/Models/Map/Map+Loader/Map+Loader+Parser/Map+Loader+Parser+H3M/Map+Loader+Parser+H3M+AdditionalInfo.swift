@@ -10,17 +10,19 @@ import Foundation
 extension Map.Loader.Parser.H3M {
         
     func parseAdditionalInfo(
-        inspector: Map.Loader.Parser.Inspector? = nil,
+        inspector: Map.Loader.Parser.Inspector.AdditionalInfoInspector? = nil,
         format: Map.Format,
         playersInfo: Map.InformationAboutPlayers
     ) throws -> Map.AdditionalInformation {
         
-        let victoryLossConditions = try parseVictoryLossConditions(format: format)
+        let victoryLossConditions = try parseVictoryLossConditions(inspector: inspector?.victoryLossInspector, format: format)
         
         /// The teams might contain non playble colors
         let teamInfo = try parseTeamInfo(validColors: playersInfo.players.map({ $0.color }))
+        inspector?.didParseTeamInfo(teamInfo)
         
         let availableHeroes = try parseAvailableHeroes(format: format)
+        inspector?.didParseAvailableHeroes(availableHeroes)
         
         
         if format > .restorationOfErathia {
@@ -68,10 +70,13 @@ extension Map.Loader.Parser.H3M {
 
 // MARK: VictoryLoss Cond.
 private extension  Map.Loader.Parser.H3M {
-    func parseVictoryLossConditions(format: Map.Format) throws -> Map.VictoryLossConditions {
+    func parseVictoryLossConditions(inspector: Map.Loader.Parser.Inspector.AdditionalInfoInspector.VictoryLossInspector? = nil, format: Map.Format) throws -> Map.VictoryLossConditions {
     
         let victories = try parseVictoryConditions(format: format)
+        inspector?.didParseVictoryConditions(victories)
+        
         let losses = try parseLossConditions()
+        inspector?.didParseLossConditions(losses)
         
         return .init(
             victoryConditions: victories,

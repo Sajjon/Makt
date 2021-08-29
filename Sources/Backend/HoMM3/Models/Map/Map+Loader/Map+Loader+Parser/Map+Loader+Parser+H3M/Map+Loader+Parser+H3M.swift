@@ -27,15 +27,14 @@ extension Map.Loader.Parser.H3M {
         
         let checksum = CRC32.checksum(readMap.data)
         
-        let basicInfo = try parseBasicInfo()
-        inspector?.didParseBasicInfo(basicInfo)
+        let basicInfo = try parseBasicInfo(inspector: inspector?.basicInfoInspector)
        
         let format = basicInfo.format
         let size = basicInfo.size
         
         let playersInfo = try parseInformationAboutPlayers(format: format)
         
-        let additionalInfo = try parseAdditionalInfo(inspector: inspector, format: format, playersInfo: playersInfo)
+        let additionalInfo = try parseAdditionalInfo(inspector: inspector?.additionalInformationInspector, format: format, playersInfo: playersInfo)
 
         let world = try parseTerrain(
             hasUnderworld: basicInfo.hasTwoLevels,

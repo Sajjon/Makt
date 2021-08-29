@@ -26,6 +26,10 @@
 		487AF97526DA1B260073277F /* Map+AdditionalInformation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487AF97426DA1B260073277F /* Map+AdditionalInformation.swift */; };
 		487AF97726DA1B790073277F /* H3M+Parse+PlayersInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487AF97626DA1B790073277F /* H3M+Parse+PlayersInfo.swift */; };
 		487AF97B26DA23500073277F /* H3M+Parse+CustomHeroes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487AF97A26DA23500073277F /* H3M+Parse+CustomHeroes.swift */; };
+		487AF97D26DC036C0073277F /* H3M+Parse+Inspector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487AF97C26DC036C0073277F /* H3M+Parse+Inspector.swift */; };
+		487AF98026DC039A0073277F /* H3M+Parse+Inspector+PlayersInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487AF97F26DC039A0073277F /* H3M+Parse+Inspector+PlayersInfo.swift */; };
+		487AF98226DC03B70073277F /* H3M+Parse+Inspector+AdditionalInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487AF98126DC03B70073277F /* H3M+Parse+Inspector+AdditionalInfo.swift */; };
+		487AF98426DC049F0073277F /* H3M+Parse+Inspector+BasicInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487AF98326DC049F0073277F /* H3M+Parse+Inspector+BasicInfo.swift */; };
 		487C2B8026C9066600031505 /* Map+Loader+Cache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487C2B7D26C9066500031505 /* Map+Loader+Cache.swift */; };
 		487C2B8126C9066600031505 /* Map+Loader+Parser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487C2B7F26C9066600031505 /* Map+Loader+Parser.swift */; };
 		487C2B8426C936D600031505 /* Map+ID+KnownMaps.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487C2B8326C936D600031505 /* Map+ID+KnownMaps.swift */; };
@@ -144,6 +148,10 @@
 		487AF97426DA1B260073277F /* Map+AdditionalInformation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Map+AdditionalInformation.swift"; sourceTree = "<group>"; };
 		487AF97626DA1B790073277F /* H3M+Parse+PlayersInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "H3M+Parse+PlayersInfo.swift"; sourceTree = "<group>"; };
 		487AF97A26DA23500073277F /* H3M+Parse+CustomHeroes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "H3M+Parse+CustomHeroes.swift"; sourceTree = "<group>"; };
+		487AF97C26DC036C0073277F /* H3M+Parse+Inspector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "H3M+Parse+Inspector.swift"; sourceTree = "<group>"; };
+		487AF97F26DC039A0073277F /* H3M+Parse+Inspector+PlayersInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "H3M+Parse+Inspector+PlayersInfo.swift"; sourceTree = "<group>"; };
+		487AF98126DC03B70073277F /* H3M+Parse+Inspector+AdditionalInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "H3M+Parse+Inspector+AdditionalInfo.swift"; sourceTree = "<group>"; };
+		487AF98326DC049F0073277F /* H3M+Parse+Inspector+BasicInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "H3M+Parse+Inspector+BasicInfo.swift"; sourceTree = "<group>"; };
 		487C2B7D26C9066500031505 /* Map+Loader+Cache.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Map+Loader+Cache.swift"; sourceTree = "<group>"; };
 		487C2B7F26C9066600031505 /* Map+Loader+Parser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Map+Loader+Parser.swift"; sourceTree = "<group>"; };
 		487C2B8326C936D600031505 /* Map+ID+KnownMaps.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Map+ID+KnownMaps.swift"; sourceTree = "<group>"; };
@@ -259,6 +267,7 @@
 		481462F626C902BF00431960 /* Map */ = {
 			isa = PBXGroup;
 			children = (
+				487AF97E26DC037D0073277F /* H3M+Parse+Inspector */,
 				487C2BCF26CD32A600031505 /* Map */,
 				4814630326C9053300431960 /* Map+Loader */,
 			);
@@ -375,6 +384,17 @@
 				487AF97A26DA23500073277F /* H3M+Parse+CustomHeroes.swift */,
 			);
 			path = "H3M+AdditionalInfo";
+			sourceTree = "<group>";
+		};
+		487AF97E26DC037D0073277F /* H3M+Parse+Inspector */ = {
+			isa = PBXGroup;
+			children = (
+				487AF97C26DC036C0073277F /* H3M+Parse+Inspector.swift */,
+				487AF98326DC049F0073277F /* H3M+Parse+Inspector+BasicInfo.swift */,
+				487AF97F26DC039A0073277F /* H3M+Parse+Inspector+PlayersInfo.swift */,
+				487AF98126DC03B70073277F /* H3M+Parse+Inspector+AdditionalInfo.swift */,
+			);
+			path = "H3M+Parse+Inspector";
 			sourceTree = "<group>";
 		};
 		487C2B7C26C9066500031505 /* Map+Loader+Cache */ = {
@@ -791,6 +811,7 @@
 				487C2BEE26CD748000031505 /* Hero+SecondarySkill+Kind.swift in Sources */,
 				487C2C2926CFCCD200031505 /* UInt8_Extensions.swift in Sources */,
 				487C2BE226CD464E00031505 /* Version.swift in Sources */,
+				487AF98026DC039A0073277F /* H3M+Parse+Inspector+PlayersInfo.swift in Sources */,
 				487C2BDE26CD3D0200031505 /* Artifact+ID.swift in Sources */,
 				487C2BEC26CD746800031505 /* Hero+SecondarySkill.swift in Sources */,
 				487C2BA526CB8EC700031505 /* Map+VictoryCondition.swift in Sources */,
@@ -812,6 +833,7 @@
 				487C2C3A26D26DEC00031505 /* Map+Loader+Parser+H3M+Object+Town.swift in Sources */,
 				487C2B9726CAD1E400031505 /* Hero.swift in Sources */,
 				487C2BA126CAD23600031505 /* PlayerColor.swift in Sources */,
+				487AF98426DC049F0073277F /* H3M+Parse+Inspector+BasicInfo.swift in Sources */,
 				4814630026C9041200431960 /* Map+About+Summary.swift in Sources */,
 				487C2BA726CB94CA00031505 /* Resource.swift in Sources */,
 				487C2C1D26CF7EA000031505 /* Map+Object+KeyColor.swift in Sources */,
@@ -825,6 +847,7 @@
 				487C2BC226CCCCD900031505 /* BitArray.swift in Sources */,
 				487C2BAB26CB94E600031505 /* Artifact.swift in Sources */,
 				481BDF6726C5942000C5E335 /* ContentView.swift in Sources */,
+				487AF97D26DC036C0073277F /* H3M+Parse+Inspector.swift in Sources */,
 				487C2C3826D26DC700031505 /* Map+Loader+Parser+H3M+Object+Event.swift in Sources */,
 				487C2B9926CAD1F800031505 /* Position.swift in Sources */,
 				487C2C4226D508E500031505 /* Map+Loader+Parser+H3M+CreatureStack.swift in Sources */,
@@ -835,6 +858,7 @@
 				487C2BE726CD49CD00031505 /* Spell+ID.swift in Sources */,
 				487C2BFF26CECD8500031505 /* Map+AttributesOfObjects.swift in Sources */,
 				487AF97726DA1B790073277F /* H3M+Parse+PlayersInfo.swift in Sources */,
+				487AF98226DC03B70073277F /* H3M+Parse+Inspector+AdditionalInfo.swift in Sources */,
 				487C2BA926CB94D900031505 /* Creature.swift in Sources */,
 				487C2B9B26CAD21000031505 /* Faction.swift in Sources */,
 				481462FC26C902E800431960 /* Map+ID.swift in Sources */,
