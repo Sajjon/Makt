@@ -397,6 +397,14 @@
 			path = "H3M+Parse+Inspector";
 			sourceTree = "<group>";
 		};
+		487AF98526DC097E0073277F /* H3M+PlayersInfo */ = {
+			isa = PBXGroup;
+			children = (
+				487AF97626DA1B790073277F /* H3M+Parse+PlayersInfo.swift */,
+			);
+			path = "H3M+PlayersInfo";
+			sourceTree = "<group>";
+		};
 		487C2B7C26C9066500031505 /* Map+Loader+Cache */ = {
 			isa = PBXGroup;
 			children = (
@@ -425,6 +433,7 @@
 		487C2B8926CA951300031505 /* Map+Loader+Parser+H3M */ = {
 			isa = PBXGroup;
 			children = (
+				487AF98526DC097E0073277F /* H3M+PlayersInfo */,
 				487AF97926DA23340073277F /* H3M+AdditionalInfo */,
 				487C2C3126D2367200031505 /* Map+Loader+Parser+H3M+Objects */,
 				487C2B8A26CA952700031505 /* Map+Loader+Parser+H3M.swift */,
@@ -434,7 +443,6 @@
 				487C2BD226CD334800031505 /* Map+Loader+Parser+H3M+Error.swift */,
 				487C2BD826CD33CC00031505 /* Map+Loader+Parser+H3M+ParseBasicInfo.swift */,
 				487AF97226DA1A080073277F /* Map+Loader+Parser+H3M+AdditionalInfo.swift */,
-				487AF97626DA1B790073277F /* H3M+Parse+PlayersInfo.swift */,
 			);
 			path = "Map+Loader+Parser+H3M";
 			sourceTree = "<group>";

@@ -86,68 +86,13 @@ public extension Map.InformationAboutPlayers.PlayerInfoVersioned {
         }}
 }
 
+// MARK: ROE
 public extension Map.InformationAboutPlayers {
     struct ROE: PlayerInfoDetails, Hashable {
         let basic: Basic
         let extra: Extra
     }
-    
-    struct AB: PlayerInfoDetails, Hashable {
-    }
-    
-    struct SOD: PlayerInfoDetails, Hashable {
-    }
 }
-
-public extension Map.InformationAboutPlayers.ROE {
-    var playableFactions: [Faction] {
-        basic.playableFactions
-    }
-    var isPlayableByHuman: Bool {
-        basic.isPlayableByHuman
-    }
-    var isPlayableByAI: Bool {
-        basic.isPlayableByAI
-    }
-}
-
-//
-//public extension Map.InformationAboutPlayers.ROE {
-//    var isPlayableByHuman: Bool {
-//        basic.isPlayableByAI
-//    }
-//    var isPlayableByAI: Bool {
-//        basic.isPlayableByAI
-//    }
-//}
-
-
-
-public extension Map.InformationAboutPlayers.AB {
-    var playableFactions: [Faction] {
-        fatalError()
-    }
-    
-    var isPlayableByHuman: Bool {
-        fatalError()
-    }
-    var isPlayableByAI: Bool {
-        fatalError()
-    }
-}
-
-public extension Map.InformationAboutPlayers.SOD {
-    var playableFactions: [Faction] {
-        fatalError()
-    }
-    var isPlayableByHuman: Bool {
-        fatalError()
-    }
-    var isPlayableByAI: Bool {
-        fatalError()
-    }
-}
-
 
 public extension Map.InformationAboutPlayers.ROE {
     
@@ -233,14 +178,14 @@ public extension Map.InformationAboutPlayers.ROE.Extra {
         
         let startingHeroFace: UInt8
         
-        let startingHeroName: String
+        let startingHeroName: String?
         
         
         init(
             startingHeroIsRandom: Bool,
             startingHeroID: UInt8,
             startingHeroFace: UInt8,
-            startingHeroName: String
+            startingHeroName: String?
         ) {
             precondition(startingHeroID != 0xff, "startingHeroID CANNOT be 0xFF for this struct")
             self.startingHeroIsRandom = startingHeroIsRandom
@@ -261,14 +206,14 @@ public extension Map.InformationAboutPlayers.ROE.Extra {
         let startingHeroID: UInt8
 
         let startingHeroFace: UInt8
-        let startingHeroName: String
+        let startingHeroName: String?
         
         init(
             startingTownPosition: Position,
             startingHeroIsRandom: Bool,
             startingHeroID: UInt8,
             startingHeroFace: UInt8,
-            startingHeroName: String
+            startingHeroName: String?
         ) {
             precondition(startingHeroID != 0xff, "startingHeroID CANNOT be 0xFF for this struct")
             self.startingTownPosition = startingTownPosition
@@ -279,3 +224,231 @@ public extension Map.InformationAboutPlayers.ROE.Extra {
         }
     }
 }
+
+public extension Map.InformationAboutPlayers.ROE {
+    var playableFactions: [Faction] {
+        basic.playableFactions
+    }
+    var isPlayableByHuman: Bool {
+        basic.isPlayableByHuman
+    }
+    var isPlayableByAI: Bool {
+        basic.isPlayableByAI
+    }
+}
+
+
+// MARK: AB
+public extension Map.InformationAboutPlayers {
+    struct AB: PlayerInfoDetails, Hashable {
+        let basic: Basic
+        let extra: ExtraABSOD
+    }
+}
+
+
+
+public extension Map.InformationAboutPlayers.AB {
+    
+    struct Basic: Hashable, PlayerInfoDetails {
+
+        
+        public let isPlayableByHuman: Bool
+        public let isPlayableByAI: Bool
+        public let behavior: AITactic
+        
+        // AB - no allowed_alignments uint here
+        
+        /// bitfield
+        public let playableFactions: [Faction]
+        public let isConfluxAllowed: Bool
+        public let unknown1: UInt8 // "Whether the player owns Random Town" ??
+        public let hasMainTown: Bool
+        
+    }
+ 
+}
+
+public extension Map.InformationAboutPlayers {
+       enum ExtraABSOD: Hashable {
+        case `default`(Default)
+        case withTown(WithTown)
+        case withHero(WithHero)
+        case withTownAndHero(WithTownAndHero)
+    }
+}
+
+public extension Map.InformationAboutPlayers.ExtraABSOD {
+    
+    /// Seen in War of the Mighty, Arrogance (AB, SOD)
+    struct Default: Hashable {
+        let startingHeroIsRandom: Bool
+
+        /// MUST be 0xFF for this struct
+        let startingHeroID: UInt8
+        let startingHeroFace: UInt8
+
+        let startingHeroName: String
+        
+        init(
+            startingHeroIsRandom: Bool,
+            startingHeroID: UInt8,
+            startingHeroFace: UInt8,
+            startingHeroName: String
+        ) {
+            precondition(startingHeroID == 0xff, "startingHeroID MUST be 0xFF for this struct")
+            self.startingHeroIsRandom = startingHeroIsRandom
+            self.startingHeroID = startingHeroID
+            self.startingHeroFace = startingHeroFace
+            self.startingHeroName = startingHeroName
+        }
+        
+    }
+    
+    /// Seen in War of the Mighty, Arrogance (AB, SOD)
+    struct WithTown: Hashable {
+        let createHeroAtStartingTown: Bool
+        let startingTownFaction: Faction
+        
+        let startingTownPosition: Position
+        let startingHeroIsRandom: Bool
+        
+        /// MUST be 0xFF for this struct
+        let startingHeroID: UInt8
+        
+        init(
+            createHeroAtStartingTown: Bool,
+            startingTownFaction: Faction,
+            startingTownPosition: Position,
+            startingHeroIsRandom: Bool,
+            startingHeroID: UInt8
+        ) {
+            precondition(startingHeroID == 0xff, "startingHeroID MUST be 0xFF for this struct")
+            self.createHeroAtStartingTown = createHeroAtStartingTown
+            self.startingTownFaction = startingTownFaction
+            self.startingTownPosition = startingTownPosition
+            self.startingHeroIsRandom = startingHeroIsRandom
+            self.startingHeroID = startingHeroID
+        }
+    }
+    
+    /// Seen in Pandora's Box (SOD)
+    struct WithHero: Hashable {
+        
+        let startingHeroIsRandom: Bool
+        
+        /// CANNOT be 0xFF for this struct
+        let startingHeroID: UInt8
+        
+        let startingHeroFace: UInt8
+        
+        let startingHeroName: String
+        
+        
+        init(
+            startingHeroIsRandom: Bool,
+            startingHeroID: UInt8,
+            startingHeroFace: UInt8,
+            startingHeroName: String
+        ) {
+            precondition(startingHeroID != 0xff, "startingHeroID CANNOT be 0xFF for this struct")
+            self.startingHeroIsRandom = startingHeroIsRandom
+            self.startingHeroID = startingHeroID
+            self.startingHeroFace = startingHeroFace
+            self.startingHeroName = startingHeroName
+        }
+    }
+    
+    struct WithTownAndHero: Hashable {
+           let createHeroAtStartingTown: Bool
+        let startingTownFaction: Faction
+        
+        let startingTownPosition: Position
+        let startingHeroIsRandom: Bool
+        
+        /// CANNOT be 0xFF for this struct
+        let startingHeroID: UInt8
+
+        let startingHeroFace: UInt8
+
+        let startingHeroName: String
+        
+        
+         init(
+            createHeroAtStartingTown: Bool,
+            startingTownFaction: Faction,
+            startingTownPosition: Position,
+            startingHeroIsRandom: Bool,
+            startingHeroID: UInt8,
+            startingHeroFace: UInt8,
+            startingHeroName: String
+        ) {
+            precondition(startingHeroID != 0xff, "startingHeroID CANNOT be 0xFF for this struct")
+            self.createHeroAtStartingTown = createHeroAtStartingTown
+            self.startingTownFaction = startingTownFaction
+            self.startingTownPosition = startingTownPosition
+            self.startingHeroIsRandom = startingHeroIsRandom
+            self.startingHeroID = startingHeroID
+            self.startingHeroFace = startingHeroFace
+            self.startingHeroName = startingHeroName
+        }
+    }
+}
+
+
+
+
+
+
+
+
+public extension Map.InformationAboutPlayers.AB {
+    var playableFactions: [Faction] {
+        fatalError()
+    }
+    
+    var isPlayableByHuman: Bool {
+        fatalError()
+    }
+    var isPlayableByAI: Bool {
+        fatalError()
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// MARK: SOD
+public extension Map.InformationAboutPlayers {
+    struct SOD: PlayerInfoDetails, Hashable {
+    }
+}
+
+
+
+public extension Map.InformationAboutPlayers.SOD {
+    var playableFactions: [Faction] {
+        fatalError()
+    }
+    var isPlayableByHuman: Bool {
+        fatalError()
+    }
+    var isPlayableByAI: Bool {
+        fatalError()
+    }
+}
+

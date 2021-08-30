@@ -395,6 +395,7 @@ public extension Creature.ID {
         case .fortress: return fortress(upgradedOrNot, sorting: sorting)
         case .conflux: return conflux(upgradedOrNot, sorting: sorting)
         case .neutral: return Self.neutral
+        case .random: fatalError("no creatures")
         }
     }
     

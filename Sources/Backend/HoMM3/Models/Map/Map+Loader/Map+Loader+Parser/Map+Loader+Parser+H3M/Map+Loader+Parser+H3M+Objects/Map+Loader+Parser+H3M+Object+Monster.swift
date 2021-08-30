@@ -27,13 +27,13 @@ internal extension Map.Loader.Parser.H3M {
         let quantity  = try CreatureStack.Quantity(reader.readUInt16())
         let creatureStack = CreatureStack(creatureID: creatureID, quantity: quantity)
         let hostility = try Map.Monster.Hostility(integer: reader.readUInt8())
-        let hasMessage = try reader.readBool()
+        let hasMessageOrResourcesOrArtifact = try reader.readBool()
         
         var message: String?
         var resources: Resources?
         var artifactID: Artifact.ID?
-        if hasMessage {
-            message = try reader.readString()
+        if hasMessageOrResourcesOrArtifact {
+            message = try reader.readString(maxByteCount: 8192)
             resources = try parseResources()
             artifactID = try parseArtifactID(format: format)
         }

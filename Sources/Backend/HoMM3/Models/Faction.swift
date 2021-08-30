@@ -8,7 +8,7 @@
 import Foundation
 
 public enum Faction: UInt8, Equatable, CaseIterable, CustomStringConvertible {
-    case castle, rampart, tower, inferno, necropolis, dungeon, stronghold, fortress, conflux, neutral
+    case castle, rampart, tower, inferno, necropolis, dungeon, stronghold, fortress, conflux, neutral, random = 0xff
 }
 
 // MARK: CustomStringConvertible
@@ -25,6 +25,7 @@ public extension Faction {
         case .fortress: return "fortress"
         case .conflux: return "conflux"
         case .neutral: return "neutral"
+        case .random: return "random"
         }
     }
 }

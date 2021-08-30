@@ -142,14 +142,22 @@ public extension DataReader {
     }
     
     
-    func readString(maxByteCount: UInt32? = nil) throws -> String {
+    func readString() throws -> String {
+       try _readString(maxByteCount: 50_000)!
+    }
+    
+    func readString(maxByteCount: UInt32) throws -> String? {
+        try _readString(maxByteCount: maxByteCount)
+    }
+    
+    private func _readString(maxByteCount: UInt32? = nil) throws -> String? {
         let lengthU32 = try readUInt32()
         if let max = maxByteCount, lengthU32 > max {
-            fatalError("String to long. Max was 32.")
+            fatalError("String too long. Max was \(max), but this will be \(lengthU32).")
         }
         assert(lengthU32 <= 500_000, "This string is unresonably long, lenght: \(lengthU32) bytes. Probably some offset error...")
         guard lengthU32 > 0 else {
-            return ""
+            return nil
         }
         let data = try read(byteCount: .init(lengthU32))
         return String(bytes: data, encoding: .utf8)!
