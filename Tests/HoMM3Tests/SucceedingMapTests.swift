@@ -44,45 +44,79 @@ final class MapTests: XCTestCase {
         let mapID: Map.ID = .unholyQuest
         Map.loader.cache.__deleteMap(by: mapID)
         
- 
+        let expectationOnParseFormatCalled = expectation(description: "onParseFormat")
+        let expectationOnParseName = expectation(description: "onParseName")
+        let expectationOnParseDescription = expectation(description: "onParseDescription")
+        let expectationOnParseDifficulty = expectation(description: "onParseDifficuly")
+        let expectationOnParseSize = expectation(description: "onParseSize")
+        let expectationOnFinishedParsingBasicInfo = expectation(description: "onFinishedParsingBasicInfo")
+        let expectationPlayerBasicRed = expectation(description: "PlayerBasicRed")
+        let expectationPlayerBasicBlue = expectation(description: "PlayerBasicBlue")
+        let expectationPlayerExtraRed = expectation(description: "PlayerExtraRed")
+        let expectationPlayerExtraBlue = expectation(description: "PlayerExtraBlue")
+        let expectationVictoryConditions = expectation(description: "VictoryConditions")
+        let expectationLossConditions = expectation(description: "LossConditions")
+        //       let expectation = expectation(description: "")
+        
         let basicInfoInspector = Map.Loader.Parser.Inspector.BasicInfoInspector(
             onParseFormat: { format in
                 XCTAssertEqual(format, .restorationOfErathia)
+                expectationOnParseFormatCalled.fulfill()
             }, onParseName: { name in
                 XCTAssertEqual(name, "Unholy Quest")
+                expectationOnParseName.fulfill()
             }, onParseDescription: { description in
                 XCTAssertEqual(description, "Deep below the surface lurk monsters the likes of which no one has ever seen. Word is that the monsters are preparing to rise from the depths and lay claim to the surface world. Go forth and slay their evil armies before they grow too large. You may be the world's only hope!")
+                expectationOnParseDescription.fulfill()
             }, onParseDifficulty: { difficulty in
                 XCTAssertEqual(difficulty, .hard)
+                expectationOnParseDifficulty.fulfill()
             }, onParseSize: { size in
                 XCTAssertEqual(size, .extraLarge)
+                expectationOnParseSize.fulfill()
             }, onFinishedParsingBasicInfo: { basicInfo in
                 XCTAssertEqual(basicInfo.fileName, "Unholy Quest.h3m")
                 XCTAssertEqual(basicInfo.fileSizeCompressed, 53_956 )
                 XCTAssertEqual(basicInfo.fileSize, 349_615)
                 XCTAssertTrue(basicInfo.hasTwoLevels)
+                expectationOnFinishedParsingBasicInfo.fulfill()
             }
         )
         
         let playersInfoInspector = Map.Loader.Parser.Inspector.PlayersInfoInspector(onParseROEBasic: { basic, color in
             switch color {
             case .red:
+                expectationPlayerBasicRed.fulfill()
                 XCTAssertTrue(basic.isPlayableOnlyByAI)
                 XCTAssertEqual(basic.playableFactions, [.inferno])
             case .blue:
+                expectationPlayerBasicBlue.fulfill()
                 XCTAssertTrue(basic.isPlayableBothByHumanAndAI)
                 XCTAssertEqual(basic.playableFactions, [.castle])
             default: XCTFail("Expected only players Red and Blue, but got: \(color)")
             }
-            
-        })
+        },
+        onParseROEExtra: { extra, color in
+            switch color {
+            case .red:
+                expectationPlayerExtraRed.fulfill()
+                break
+            case .blue:
+                expectationPlayerExtraBlue.fulfill()
+                break
+            default: XCTFail("Expected only players Red and Blue, but got: \(color)")
+            }
+        }
+        )
         
         let victoryLossInspector = Map.Loader.Parser.Inspector.AdditionalInfoInspector.VictoryLossInspector(
             onParseVictoryConditions: { victoryConditions in
                 XCTAssertEqual(victoryConditions.map { $0.kind.stripped }, [.defeatSpecificHero])
+                expectationVictoryConditions.fulfill()
             },
             onParseLossConditions: { lossConditions in
                 XCTAssertEqual(lossConditions.map { $0.kind.stripped }, [.loseSpecificHero, .standard])
+                expectationLossConditions.fulfill()
             }
         )
         
@@ -107,6 +141,8 @@ final class MapTests: XCTestCase {
         )
         
         XCTAssertNoThrow(try Map.load(mapID, inspector: inspector))
+        
+        waitForExpectations(timeout: 1)
     }
     
     

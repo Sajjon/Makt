@@ -32,7 +32,7 @@ extension Map.Loader.Parser.H3M {
         let format = basicInfo.format
         let size = basicInfo.size
         
-        let playersInfo = try parseInformationAboutPlayers(format: format)
+        let playersInfo = try parseInformationAboutPlayers(inspector: inspector?.playersInfoInspector, format: format)
         
         let additionalInfo = try parseAdditionalInfo(inspector: inspector?.additionalInformationInspector, format: format, playersInfo: playersInfo)
 

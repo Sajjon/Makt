@@ -18,6 +18,7 @@ extension  Map.Loader.Parser.H3M {
         guard reader.sourceSize >= 50 else { throw Error.corruptMapFileTooSmall }
         // Map version
         let format = try Map.Format(id: reader.readUInt32())
+        inspector?.didParseFormat(format)
         
         if
             !(format == .restorationOfErathia || format == .armageddonsBlade || format == .shadowOfDeath)

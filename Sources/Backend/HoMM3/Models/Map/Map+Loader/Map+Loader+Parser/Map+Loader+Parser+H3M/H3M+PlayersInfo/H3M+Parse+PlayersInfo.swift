@@ -11,12 +11,12 @@ import Foundation
 // MARK: PlayersInfo
 extension Map.Loader.Parser.H3M {
     
-    func parseInformationAboutPlayers(format: Map.Format) throws -> Map.InformationAboutPlayers {
+    func parseInformationAboutPlayers(inspector: Map.Loader.Parser.Inspector.PlayersInfoInspector? = nil, format: Map.Format) throws -> Map.InformationAboutPlayers {
         switch format {
         case .restorationOfErathia:
-            return try parsePlayersROE()
+            return try parsePlayersROE(inspector: inspector)
         case .armageddonsBlade:
-            return try parsePlayersAB()
+            return try parsePlayersAB(inspector: inspector)
         case .shadowOfDeath: fatalError("todo")
             #if WOG
             case .wakeOfGods: fatalError("todo")
@@ -27,13 +27,12 @@ extension Map.Loader.Parser.H3M {
 
 private extension Map.Loader.Parser.H3M {
     func parsePlayers(
-        parseInfo: () throws -> Map.InformationAboutPlayers.PlayerInfoVersioned
+        parseInfo: (PlayerColor) throws -> Map.InformationAboutPlayers.PlayerInfoVersioned
     ) throws -> Map.InformationAboutPlayers {
         let playerColors = PlayerColor.allCases
         assert(playerColors.count == 8)
         let players: [Map.InformationAboutPlayers.PlayerInfo] = try playerColors.map { playerColor in
-            print("🇸🇪playerColor: \(playerColor)")
-            let info = try parseInfo()
+            let info = try parseInfo(playerColor)
             return .init(color: playerColor, info: info)
         }
         return .init(players: players)
@@ -88,7 +87,7 @@ private extension Map.Loader.Parser.H3M {
 
 // MARK: ROE
 private extension Map.Loader.Parser.H3M {
-    func parsePlayersROE() throws -> Map.InformationAboutPlayers {
+    func parsePlayersROE(inspector: Map.Loader.Parser.Inspector.PlayersInfoInspector? = nil) throws -> Map.InformationAboutPlayers {
         
         func parseBasic() throws -> Map.InformationAboutPlayers.ROE.Basic {
             let isPlayableByHuman = try parseCanBeHuman()
@@ -153,9 +152,12 @@ private extension Map.Loader.Parser.H3M {
             
         }
         
-        return try parsePlayers {
+        
+        return try parsePlayers { playerColor in
             let basic = try parseBasic()
+            inspector?.didParsePlayerInfoROEBasic(basic, color: playerColor)
             let extra = try parseExtra(basic: basic)
+            inspector?.didParsePlayerInfoROEExtra(extra, color: playerColor)
             return .roe(.init(basic: basic, extra: extra))
         }
     }
@@ -165,7 +167,7 @@ private extension Map.Loader.Parser.H3M {
 
 // MARK: AB
 private extension Map.Loader.Parser.H3M {
-    func parsePlayersAB() throws -> Map.InformationAboutPlayers {
+    func parsePlayersAB(inspector: Map.Loader.Parser.Inspector.PlayersInfoInspector? = nil) throws -> Map.InformationAboutPlayers {
         
         func parseBasic() throws -> Map.InformationAboutPlayers.AB.Basic {
             let isPlayableByHuman = try parseCanBeHuman()
@@ -192,9 +194,11 @@ private extension Map.Loader.Parser.H3M {
             )
         }
         
-        return try parsePlayers {
+        return try parsePlayers { playerColor in
             let basic = try parseBasic()
+            inspector?.didParsePlayerInfoABBasic(basic, color: playerColor)
             let extra = try parseExtraABSOD(hasMainTown: basic.hasMainTown)
+            inspector?.didParsePlayerInfoABSODExtra(extra, color: playerColor)
             return .ab(.init(basic: basic, extra: extra))
         }
     }
