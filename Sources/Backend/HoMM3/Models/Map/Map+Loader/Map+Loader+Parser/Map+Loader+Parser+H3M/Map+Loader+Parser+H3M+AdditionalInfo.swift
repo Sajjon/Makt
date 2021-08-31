@@ -27,24 +27,24 @@ extension Map.Loader.Parser.H3M {
         
         if format > .restorationOfErathia {
             try reader.skip(byteCount: 4)
-//            let placeholderQuantity = try Int(reader.readUInt32())
-//            try reader.skip(byteCount: placeholderQuantity)
+            //            let placeholderQuantity = try Int(reader.readUInt32())
+            //            try reader.skip(byteCount: placeholderQuantity)
         }
-   
+        
         
         let customHeroes = try parseCustomHeroes(format: format)
-        customHeroes.map { inspector?.didParseCustomHeroes($0) }
+        inspector?.didParseCustomHeroes(customHeroes)
         
         try reader.skip(byteCount: 31) // skip `nil`s
         
         let availableArtifacts = try parseAvailableArtifacts(format: format)
-        customHeroes.map { inspector?.didParseCustomHeroes($0) }
+        inspector?.didParseAvailableArtifacts(availableArtifacts)
         
         let availableSpells = try parseAvailableSpells(format: format)
-        availableSpells.map { inspector?.didParseAvailableSpells($0) }
+        inspector?.didParseAvailableSpells(availableSpells)
         
         let availableSecondarySkills = try parseAvailableSecondarySkills(format: format)
-        availableSecondarySkills.map { inspector?.didParseAvailableSecondarySkills($0) }
+        inspector?.didParseAvailableSecondarySkills(availableSecondarySkills)
         
         let rumors = try parseRumors()
         inspector?.didParseRumors(rumors)

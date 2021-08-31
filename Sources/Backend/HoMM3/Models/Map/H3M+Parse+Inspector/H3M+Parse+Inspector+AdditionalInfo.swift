@@ -56,19 +56,19 @@ public extension Map.Loader.Parser.Inspector.AdditionalInfoInspector {
         onParseAvailableHeroes?(availableHeroes)
     }
     
-    func didParseCustomHeroes(_ customHeroes: Map.AdditionalInformation.CustomHeroes) {
+    func didParseCustomHeroes(_ customHeroes: Map.AdditionalInformation.CustomHeroes?) {
         onParseCustomHeroes?(customHeroes)
     }
     
-    func didParseAvailableArtifacts(_ availableArtifacts: Map.AdditionalInformation.AvailableArtifacts) {
+    func didParseAvailableArtifacts(_ availableArtifacts: Map.AdditionalInformation.AvailableArtifacts?) {
         onParseAvailableArtifacts?(availableArtifacts)
     }
     
-    func didParseAvailableSpells(_ availableSpells: Map.AdditionalInformation.AvailableSpells) {
+    func didParseAvailableSpells(_ availableSpells: Map.AdditionalInformation.AvailableSpells?) {
         onParseAvailableSpells?(availableSpells)
     }
     
-    func didParseAvailableSecondarySkills(_ availableSecondarySkills: Map.AdditionalInformation.AvailableSecondarySkills) {
+    func didParseAvailableSecondarySkills(_ availableSecondarySkills: Map.AdditionalInformation.AvailableSecondarySkills?) {
         onParseAvailableSecondarySkills?(availableSecondarySkills)
     }
     
@@ -85,10 +85,10 @@ public extension Map.Loader.Parser.Inspector.AdditionalInfoInspector {
     
     typealias OnParseAvailableHeroes = (Map.AvailableHeroes) -> Void
     typealias OnParseTeamInfo = (Map.TeamInfo) -> Void
-    typealias OnParseCustomHeroes = (_ customHeroes: Map.AdditionalInformation.CustomHeroes) -> Void
-    typealias OnParseAvailableArtifacts = (_ availableArtifacts: Map.AdditionalInformation.AvailableArtifacts) -> Void
-    typealias OnParseAvailableSpells = (_ availableSpells:  Map.AdditionalInformation.AvailableSpells) -> Void
-    typealias OnParseAvailableSecondarySkills = (_ availableSecondarySkills:  Map.AdditionalInformation.AvailableSecondarySkills) -> Void
+    typealias OnParseCustomHeroes = (_ customHeroes: Map.AdditionalInformation.CustomHeroes?) -> Void
+    typealias OnParseAvailableArtifacts = (_ availableArtifacts: Map.AdditionalInformation.AvailableArtifacts?) -> Void
+    typealias OnParseAvailableSpells = (_ availableSpells:  Map.AdditionalInformation.AvailableSpells?) -> Void
+    typealias OnParseAvailableSecondarySkills = (_ availableSecondarySkills:  Map.AdditionalInformation.AvailableSecondarySkills?) -> Void
     typealias OnParseRumors = (Map.AdditionalInformation.Rumors) -> Void
     typealias OnParseHeroSettings = (Map.AdditionalInformation.HeroSettings) -> Void
     

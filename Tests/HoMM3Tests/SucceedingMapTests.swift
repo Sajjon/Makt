@@ -8,28 +8,50 @@
 import XCTest
 import Foundation
 @testable import HoMM3SwiftUI
+    
+protocol FromPlayerColor: Equatable, RawRepresentable where RawValue == UInt8 {
+    init?(playerColor: PlayerColor)
+}
+
+extension FromPlayerColor {
+    init?(playerColor: PlayerColor) {
+        self.init(rawValue: playerColor.rawValue)
+    }
+}
+
+extension XCTestCase {
+    func XCTArraysEqual<Element: Hashable>(_ lhs: [Element], _ rhs: [Element], line: UInt = #line) {
+        if lhs != rhs {
+            let lhsSet = Set(lhs)
+            let rhsSet = Set(rhs)
+            let onlyInLHS = lhsSet.subtracting(rhsSet)
+            let onlyInRHS = rhsSet.subtracting(lhsSet)
+            XCTAssertEqual(onlyInLHS, [], "Expected arrays to equal, but found the following elements in the LHS array that were not found in the RHS array: \(onlyInLHS)", line: line)
+            XCTAssertEqual([], onlyInRHS, "Expected arrays to equal, but found the following elements in the RHS array that were not found in the LHS array: \(onlyInRHS)", line: line)
+        } else {
+            XCTAssertEqual(lhs, rhs, line: line)
+        }
+    }
+}
+
+enum TwoPlayer: UInt8, FromPlayerColor {
+    case red, blue
+}
+
+enum ThreePlayer: UInt8, FromPlayerColor {
+    case red, blue, tan
+}
+
+func twoPlayer(_ player: PlayerColor) throws -> TwoPlayer {
+    try XCTUnwrap(TwoPlayer(playerColor: player), "Expected only player Red and blue, but got: \(player)")
+}
+
+func threePlayers(_ player: PlayerColor) throws -> ThreePlayer {
+    try XCTUnwrap(ThreePlayer(playerColor: player), "Expected only player Red, Blue and Tan, but got: \(player)")
+}
 
 extension Map.BasicInformation {
     var fileName: String { id.fileName }
-}
-
-
-extension Array {
-    
-    @discardableResult
-    func when<Member>(
-        keyPath: KeyPath<Element, Member>,
-        is expectedMemberValue: Member,
-        closure: (Element) throws -> Void
-    ) rethrows -> Index? where Member: RawRepresentable, Member: Equatable {
-        guard let elementIndex = firstIndex(where: {
-            let member = $0[keyPath: keyPath]
-            return member == expectedMemberValue
-        }) else { return nil }
-        let element = self[elementIndex]
-        try closure(element)
-        return elementIndex
-    }
 }
 
 final class MapTests: XCTestCase {
@@ -50,13 +72,20 @@ final class MapTests: XCTestCase {
         let expectationOnParseDifficulty = expectation(description: "onParseDifficuly")
         let expectationOnParseSize = expectation(description: "onParseSize")
         let expectationOnFinishedParsingBasicInfo = expectation(description: "onFinishedParsingBasicInfo")
-        let expectationPlayerBasicRed = expectation(description: "PlayerBasicRed")
-        let expectationPlayerBasicBlue = expectation(description: "PlayerBasicBlue")
-        let expectationPlayerExtraRed = expectation(description: "PlayerExtraRed")
-        let expectationPlayerExtraBlue = expectation(description: "PlayerExtraBlue")
+        let expectationPlayerRedCanBeHuman = expectation(description: "Player Red CanBeHuman")
+        let expectationPlayerBlueCanBeHuman = expectation(description: "Player Blue CanBeHuman")
+        let expectationPlayerRedCanBeAI = expectation(description: "Player Red CanBeAI")
+        let expectationPlayerBlueCanBeAI = expectation(description: "Player Blue CanBeAI")
         let expectationVictoryConditions = expectation(description: "VictoryConditions")
         let expectationLossConditions = expectation(description: "LossConditions")
-        //       let expectation = expectation(description: "")
+        let expectationPlayerRedAITactic = expectation(description: "RED AITactic")
+        let expectationPlayerBlueAITactic = expectation(description: "BLUE AITactic")
+        let expectationPlayerRedPlayableFactions = expectation(description: "RED PlayableFactions")
+        let expectationPlayerBluePlayableFactions = expectation(description: "BLUE PlayableFactions")
+        let expectationPlayerRedHasMainTown = expectation(description: "RED hasMainTown")
+        let expectationPlayerBlueHasMainTown = expectation(description: "BLUE hasMainTown")
+        let expectationPlayerRedMainTown = expectation(description: "RED maintown")
+        let expectationPlayerBlueMainTown = expectation(description: "BLUE maintown")
         
         let basicInfoInspector = Map.Loader.Parser.Inspector.BasicInfoInspector(
             onParseFormat: { format in
@@ -83,55 +112,100 @@ final class MapTests: XCTestCase {
             }
         )
         
-        let playersInfoInspector = Map.Loader.Parser.Inspector.PlayersInfoInspector(onParseROEBasic: { basic, color in
-            switch color {
-            case .red:
-                expectationPlayerBasicRed.fulfill()
-                XCTAssertTrue(basic.isPlayableOnlyByAI)
-                XCTAssertEqual(basic.playableFactions, [.inferno])
-            case .blue:
-                expectationPlayerBasicBlue.fulfill()
-                XCTAssertTrue(basic.isPlayableBothByHumanAndAI)
-                XCTAssertEqual(basic.playableFactions, [.castle])
-            default: XCTFail("Expected only players Red and Blue, but got: \(color)")
+        let playersInfoInspector = Map.Loader.Parser.Inspector.PlayersInfoInspector(
+            onParseIsPlayableByHuman: { isPlayableByHuman, player in
+                switch try! threePlayers(player) {
+                case .red: XCTAssertFalse(isPlayableByHuman); expectationPlayerRedCanBeHuman.fulfill()
+                case .blue: XCTAssertTrue(isPlayableByHuman); expectationPlayerBlueCanBeHuman.fulfill()
+                case .tan: XCTAssertFalse(isPlayableByHuman)
+                }
+            },
+            onParseIsPlayableByAI:  { isPlayableByAI, player in
+                switch try! threePlayers(player) {
+                case .red: XCTAssertTrue(isPlayableByAI); expectationPlayerRedCanBeAI.fulfill()
+                case .blue: XCTAssertTrue(isPlayableByAI); expectationPlayerBlueCanBeAI.fulfill()
+                case .tan: XCTAssertFalse(isPlayableByAI)
+                }
+            },
+            onParseAITactic: { aiTactic, player in
+                switch try! twoPlayer(player) {
+                case .red:
+                    XCTAssertEqual(aiTactic, .builder) // found this expected value by opening this map in `Map Editor`
+                    expectationPlayerRedAITactic.fulfill()
+                case .blue:
+                    XCTAssertEqual(aiTactic, .random) // found this expected value by opening this map in `Map Editor`
+                    expectationPlayerBlueAITactic.fulfill()
+                }
+            },
+            onParsePlayableFactions: { playableFactions, player in
+                switch try! twoPlayer(player) {
+                case .red:
+                    XCTAssertEqual(playableFactions, [.inferno]) // found this expected value by opening this map in `Map Editor`
+                    expectationPlayerRedPlayableFactions.fulfill()
+                case .blue:
+                    XCTAssertEqual(playableFactions, [.castle]) // found this expected value by opening this map in `Map Editor`
+                    expectationPlayerBluePlayableFactions.fulfill()
+                }
+            },
+            onParseHasMainTown: { hasMainTown, player in
+                switch try! twoPlayer(player) {
+                case .red:
+                    XCTAssertFalse(hasMainTown) // found this expected value by opening this map in `Map Editor`
+                    expectationPlayerRedHasMainTown.fulfill()
+                case .blue:
+                    XCTAssertFalse(hasMainTown)  // found this expected value by opening this map in `Map Editor`
+                    expectationPlayerBlueHasMainTown.fulfill()
+                }
+            },
+            onParseMainTown: { (maybeMainTown: Map.InformationAboutPlayers.PlayerInfo.MainTown?, player) in
+                XCTAssertNil(maybeMainTown)
+                switch try! twoPlayer(player) {
+                case .red:
+                    expectationPlayerRedMainTown.fulfill()
+                case .blue:
+                    expectationPlayerBlueMainTown.fulfill()
+                }
             }
-        },
-        onParseROEExtra: { extra, color in
-            switch color {
-            case .red:
-                expectationPlayerExtraRed.fulfill()
-                break
-            case .blue:
-                expectationPlayerExtraBlue.fulfill()
-                break
-            default: XCTFail("Expected only players Red and Blue, but got: \(color)")
-            }
-        }
         )
         
         let victoryLossInspector = Map.Loader.Parser.Inspector.AdditionalInfoInspector.VictoryLossInspector(
             onParseVictoryConditions: { victoryConditions in
-                XCTAssertEqual(victoryConditions.map { $0.kind.stripped }, [.defeatSpecificHero])
+                XCTAssertEqual(
+                    victoryConditions.map { $0.kind },
+                    // found this expected value by opening this map in `Map Editor`
+                    [.defeatSpecificHero(locatedAt: .init(column: 88, row: 34, inUnderworld: true))]
+                )
                 expectationVictoryConditions.fulfill()
             },
             onParseLossConditions: { lossConditions in
-                XCTAssertEqual(lossConditions.map { $0.kind.stripped }, [.loseSpecificHero, .standard])
+                XCTAssertEqual(lossConditions.map { $0.kind }, [.loseSpecificHero(locatedAt: .init(column: 71, row: 67, inUnderworld: false)), .standard])
                 expectationLossConditions.fulfill()
             }
         )
         
+        let expectationAvailableHeroes = expectation(description: "Available Heroes")
+        let expectationTeamInfo = expectation(description: "TeamInfo")
+        let expectationCustomHeroes = expectation(description: "Custom heroes")
+        
         let additionalInfoInspector = Map.Loader.Parser.Inspector.AdditionalInfoInspector(
             victoryLossInspector: victoryLossInspector,
-            onParseAvailableHeroes: nil,
+            onParseAvailableHeroes: { availableHeroes in
+                self.XCTArraysEqual(availableHeroes.heroIDs, Hero.ID.playable(in: .restorationOfErathia))
+                expectationAvailableHeroes.fulfill()
+            },
             onParseTeamInfo: { teamInfo in
                 XCTAssertNil(teamInfo.teams)
+                expectationTeamInfo.fulfill()
             },
-            onParseCustomHeroes: nil,
-            onParseAvailableArtifacts: nil,
-            onParseAvailableSpells: nil,
-            onParseAvailableSecondarySkills: nil,
-            onParseRumors: nil,
-            onParseHeroSettings: nil
+            onParseCustomHeroes: {
+                XCTAssertNil($0)
+                expectationCustomHeroes.fulfill()
+            },
+            onParseAvailableArtifacts: { XCTAssertNil($0) },
+            onParseAvailableSpells: { XCTAssertNil($0) },
+            onParseAvailableSecondarySkills: { XCTAssertNil($0) },
+            onParseRumors: {  XCTAssertTrue($0.rumors.isEmpty) },
+            onParseHeroSettings: { XCTAssertTrue($0.settingsForHeroes.isEmpty) }
         )
         
         let inspector = Map.Loader.Parser.Inspector(
@@ -145,7 +219,7 @@ final class MapTests: XCTestCase {
         waitForExpectations(timeout: 1)
     }
     
-    
+    /*
     func test_assert_can_load_map_by_id__taleOfTwoLands_allies() throws {
         // Delete any earlier cached maps.
         let mapID: Map.ID = .taleOfTwoLandsAllies
@@ -211,4 +285,5 @@ final class MapTests: XCTestCase {
         
         XCTAssertNoThrow(try Map.load(mapID, inspector: inspector))
     }
+ */
 }

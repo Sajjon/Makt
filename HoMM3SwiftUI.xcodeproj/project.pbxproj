@@ -56,7 +56,6 @@
 		487C2BB326CB9BC500031505 /* Map+Decrompress.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487C2BB226CB9BC500031505 /* Map+Decrompress.swift */; };
 		487C2BB526CC2E8500031505 /* HeroIDTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487C2BB426CC2E8500031505 /* HeroIDTests.swift */; };
 		487C2BB926CC2F2600031505 /* Hero+ID.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487C2BB726CC2F2300031505 /* Hero+ID.swift */; };
-		487C2BBE26CC2F6300031505 /* Map+PlayersInfo+StartingHero.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487C2BBD26CC2F6300031505 /* Map+PlayersInfo+StartingHero.swift */; };
 		487C2BC226CCCCD900031505 /* BitArray.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487C2BC126CCCCD900031505 /* BitArray.swift */; };
 		487C2BC426CCEDF600031505 /* Map.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487C2BC326CCEDF600031505 /* Map.swift */; };
 		487C2BC626CCF5B700031505 /* CRC32Checksum.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487C2BC526CCF5B700031505 /* CRC32Checksum.swift */; };
@@ -177,7 +176,6 @@
 		487C2BB226CB9BC500031505 /* Map+Decrompress.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Map+Decrompress.swift"; sourceTree = "<group>"; };
 		487C2BB426CC2E8500031505 /* HeroIDTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeroIDTests.swift; sourceTree = "<group>"; };
 		487C2BB726CC2F2300031505 /* Hero+ID.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Hero+ID.swift"; sourceTree = "<group>"; };
-		487C2BBD26CC2F6300031505 /* Map+PlayersInfo+StartingHero.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Map+PlayersInfo+StartingHero.swift"; sourceTree = "<group>"; };
 		487C2BC126CCCCD900031505 /* BitArray.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BitArray.swift; sourceTree = "<group>"; };
 		487C2BC326CCEDF600031505 /* Map.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Map.swift; sourceTree = "<group>"; };
 		487C2BC526CCF5B700031505 /* CRC32Checksum.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CRC32Checksum.swift; sourceTree = "<group>"; };
@@ -372,7 +370,6 @@
 		487AF97826DA1FFD0073277F /* PlayersInfo */ = {
 			isa = PBXGroup;
 			children = (
-				487C2BBD26CC2F6300031505 /* Map+PlayersInfo+StartingHero.swift */,
 				487C2BB026CB9B9A00031505 /* Map+PlayersInfo.swift */,
 			);
 			path = PlayersInfo;
@@ -837,7 +834,6 @@
 				4814630226C904D000431960 /* Map+Loader.swift in Sources */,
 				487C2BCE26CD327C00031505 /* Integers+RepeatNTimes.swift in Sources */,
 				487C2BF926CD919B00031505 /* Hero+PrimarySkill.swift in Sources */,
-				487C2BBE26CC2F6300031505 /* Map+PlayersInfo+StartingHero.swift in Sources */,
 				487C2C3A26D26DEC00031505 /* Map+Loader+Parser+H3M+Object+Town.swift in Sources */,
 				487C2B9726CAD1E400031505 /* Hero.swift in Sources */,
 				487C2BA126CAD23600031505 /* PlayerColor.swift in Sources */,

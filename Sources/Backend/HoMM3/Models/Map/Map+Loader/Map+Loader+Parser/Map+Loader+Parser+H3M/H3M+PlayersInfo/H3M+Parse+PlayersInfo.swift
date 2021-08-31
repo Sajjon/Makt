@@ -7,6 +7,126 @@
 
 import Foundation
 
+private extension Map.Loader.Parser.H3M {
+    func parsePlayer(
+        inspector: Map.Loader.Parser.Inspector.PlayersInfoInspector? = nil,
+        format: Map.Format,
+        playerColor: PlayerColor,
+        isPlayableByHuman: Bool,
+        isPlayableByAI: Bool,
+        assertIsPlayable: Bool = true
+    ) throws -> Map.InformationAboutPlayers.PlayerInfo {
+        let isPlayable = isPlayableByHuman || assertIsPlayable
+        if assertIsPlayable {
+            precondition(isPlayable)
+        }
+        let aiTactic: AITactic = try AITactic(integer: reader.readUInt8())
+        print("♕ \(playerColor): aiTactic=\(aiTactic)")
+        inspector?.didParseAITactic(aiTactic, playerColor: playerColor)
+        
+        let allowedAlignments: UInt8? = try format >= .shadowOfDeath ? reader.readUInt8() : nil
+        print("♕ \(playerColor): allowedAlignments=\(allowedAlignments)")
+        
+        // Factions this player can choose
+        let playableFactions: [Faction] = try {
+            var playableFactionsBitmask = try UInt16(reader.readUInt8())
+            
+            if format != .restorationOfErathia {
+                playableFactionsBitmask += try 256 * UInt16(reader.readUInt8())
+            }
+            
+            let playableFactions: [Faction] = Faction.playable(in: format)
+        
+            return playableFactions.filter {
+                playableFactionsBitmask & (1 << $0.rawValue) != 0
+            }
+        }()
+        print("♕ \(playerColor): playableFactions=\(playableFactions)")
+        inspector?.didParsePlayableFactions(playableFactions, playerColor: playerColor)
+        
+        let hasRandomTown = try reader.readBool()
+        print("♕ \(playerColor): hasRandomTown=\(hasRandomTown)")
+//        inspector?.didParseHasRandomHero(<#T##value: Bool##Bool#>, playerColor: <#T##PlayerColor#>)
+        
+        let hasMainTown = try reader.readBool()
+        print("♕ \(playerColor): hasMainTown=\(hasMainTown)")
+        inspector?.didParseHasMainTown(hasMainTown, playerColor: playerColor)
+        
+    
+        let maybeMainTown: Map.InformationAboutPlayers.PlayerInfo.MainTown? = hasMainTown ? try {
+            var generateHeroAtMainTown = true
+            var townFaction: Faction = .random
+            if format != .restorationOfErathia {
+                generateHeroAtMainTown = try reader.readBool()
+                print("♕ \(playerColor): generateHeroAtMainTown=\(generateHeroAtMainTown)")
+                townFaction = try Faction(integer: reader.readUInt8())
+                print("♕ \(playerColor): townFaction=\(townFaction)")
+            }
+            let positionOfMainTown = try reader.readPosition()
+            print("♕ \(playerColor): positionOfMainTown=\(positionOfMainTown)")
+            let mainTown = Map.InformationAboutPlayers.PlayerInfo.MainTown.init(generateHeroInThisTown: generateHeroAtMainTown, faction: townFaction, position: positionOfMainTown)
+            return mainTown
+        }() : nil
+        inspector?.didParseMainTown(maybeMainTown, playerColor: playerColor)
+        
+        
+        let hasRandomHero = try reader.readBool()
+        print("♕ \(playerColor): hasRandomHero=\(hasRandomHero)")
+
+        let mainHero: Map.InformationAboutPlayers.PlayerInfo.MainHero? = try {
+            let heroIDRaw = try reader.readUInt8()
+            guard heroIDRaw != 0xff else { return nil }
+            let heroID = try Hero.ID(id: heroIDRaw)
+            let face = try Hero.ID(integer: reader.readUInt8()) // change to optional??
+            /// TODO? CHANGE? Always read? the `name` even though we might not have a portrait id => which results in returnin nil. Otherwise we mess up byte offset.
+            let name = try reader.readString(maxByteCount: isPlayable ? 12 : 0) // from `homm3tools`
+            let mainHero = Map.InformationAboutPlayers.PlayerInfo.MainHero(heroID: heroID, portraitId: face, name: name)
+            print("♕ \(playerColor): mainHero=\(mainHero)")
+            return mainHero
+        }()
+        
+        
+        let additionalInfo: Map.InformationAboutPlayers.PlayerInfo.AdditionalInfo? = try {
+            guard format > .restorationOfErathia else { return nil }
+            
+            try reader.skip(byteCount: 1)
+            
+            let heroCount = try Int(reader.readUInt8())
+            try reader.skip(byteCount: 3) // same as
+            
+            reader.rewind(byteCount: 4)
+            let heroCountU32 = try Int(reader.readUInt32())
+            assert(heroCountU32 == heroCount, "Just debugging and chechking that in all instances where we just read one byte and skip 3, that we are doing the right thing...")
+            
+            let heroes: [Map.InformationAboutPlayers.PlayerInfo.AdditionalInfo.SimpleHero] = try heroCount.nTimes {
+                let faceID = try Hero.ID(integer: reader.readUInt8())
+                let heroName = try reader.readString()
+                return .init(faceID: faceID, name: heroName)
+            }
+            
+            let additionalInfo = Map.InformationAboutPlayers.PlayerInfo.AdditionalInfo(heroes: heroes)
+            print("♕ \(playerColor): additionalInfo=\(additionalInfo)")
+            return additionalInfo
+        }()
+        
+        return Map.InformationAboutPlayers.PlayerInfo(
+            color: playerColor,
+            isPlayableByHuman: isPlayableByHuman,
+            aiTactic: isPlayableByAI ? aiTactic : nil,
+            allowedAlignments: allowedAlignments,
+            playableFactions: playableFactions,
+        
+//                isRandomFaction: hasRandomTown,
+//                generateHero: generateHero,
+            mainTown: maybeMainTown,
+            hasRandomHero: hasRandomHero,
+            mainHero: mainHero,
+            additionalInfo: additionalInfo
+//                customMainHero: customMainHero,
+//                heroSeeds: heroSeeds
+        )
+    }
+}
 
 // MARK: PlayersInfo
 extension Map.Loader.Parser.H3M {
@@ -15,309 +135,46 @@ extension Map.Loader.Parser.H3M {
         inspector: Map.Loader.Parser.Inspector.PlayersInfoInspector? = nil,
         format: Map.Format
     ) throws -> Map.InformationAboutPlayers {
-        switch format {
-        case .restorationOfErathia:
-            return try parsePlayersROE(inspector: inspector)
-        case .armageddonsBlade:
-            return try parsePlayersAB(inspector: inspector)
-        case .shadowOfDeath: fatalError("todo")
-            #if WOG
-            case .wakeOfGods: fatalError("todo")
-            #endif // WOG
-        }
-    }
-}
-
-private extension Map.Loader.Parser.H3M {
-    func parsePlayers(
-        parseInfo: (PlayerColor) throws -> Map.InformationAboutPlayers.PlayerInfoVersioned?
-    ) throws -> Map.InformationAboutPlayers {
-        let playerColors = PlayerColor.allCases
-        assert(playerColors.count == 8)
-        var players: [Map.InformationAboutPlayers.PlayerInfo] = []
-        for playerColor in playerColors {
-            guard let info = try parseInfo(playerColor) else {
-                continue // NOT break! will ruin offset
-            }
-            players.append(.init(color: playerColor, info: info))
-        }
-        return .init(players: players)
-    }
-}
-
-extension Map.Loader.Parser.H3M {
-    func parseBitFieldAsAllowedCases<Enum>(
-        cases: [Enum]
-    ) throws -> [Enum] where Enum: CaseIterable, Enum.AllCases == [Enum], Enum: RawRepresentable, Enum.RawValue == UInt8 {
-        let caseCount = cases.count
-        let qr = caseCount.quotientAndRemainder(dividingBy: 8)
-        let byteCount = qr.remainder == 0 ? qr.quotient : qr.quotient + 1
-        return try reader.readBitArray(byteCount: byteCount)
-            .prefix(caseCount)
-            .enumerated().compactMap { (index, allowed) in
-            guard allowed else { return nil }
-            return cases[index]
-        }
-    }
-    
-    func parseBitFieldAsAllowedCases<Enum>(
-        of enumType: Enum.Type
-    ) throws -> [Enum] where Enum: CaseIterable, Enum.AllCases == [Enum], Enum: RawRepresentable, Enum.RawValue == UInt8 {
-        try parseBitFieldAsAllowedCases(cases: Enum.allCases)
-    }
-    
- 
-}
-
-private extension Map.Loader.Parser.H3M {
-    
-    func parseCanBeHuman() throws -> Bool {
-        try reader.readBool()
-    }
-    
-    func parseCanBeComputer() throws -> Bool {
-        try reader.readBool()
-    }
-    
-    func parseBehaviour() throws -> AITactic {
-        try AITactic(integer: reader.readUInt8())
-    }
-    
-    func parseStartingHeroIsRandom() throws -> Bool {
-        try reader.readBool()
-    }
-}
-
-
-// MARK: ROE
-private extension Map.Loader.Parser.H3M {
-    func parsePlayersROE(inspector: Map.Loader.Parser.Inspector.PlayersInfoInspector? = nil) throws -> Map.InformationAboutPlayers {
-        
-        func parseAllowedFactions() throws -> [Faction] {
-            let allowedFactionsForThisPlayerBitmask = try UInt16(reader.readUInt8())
-            let playableFactions: [Faction] = Faction.playable(in: .restorationOfErathia)
-            return playableFactions.filter {
-                allowedFactionsForThisPlayerBitmask & (1 << $0.rawValue) != 0
-            }
-        }
-        
-        func parseBasic() throws -> Map.InformationAboutPlayers.ROE.Basic? {
-            let isPlayableByHuman = try parseCanBeHuman()
-            let isPlayableByAI = try parseCanBeComputer()
-
-            guard isPlayableByHuman || isPlayableByAI else {
-                try reader.skip(byteCount: 6)
-                return nil
+        var parsedLastPlayer = false
+        let players: [Map.InformationAboutPlayers.PlayerInfo] = try PlayerColor.allCases.compactMap { playerColor in
+            let isPlayableByHuman = try reader.readBool()
+            if !parsedLastPlayer {
+                print("♕ \(playerColor): isPlayableByHuman=\(isPlayableByHuman)")
+                inspector?.didParseIsPlayableByHuman(isPlayableByHuman, playerColor: playerColor)
             }
             
-            let behaviour = try parseBehaviour()
-            let playableFactions = try parseAllowedFactions()
-            let hasRandomTown = try reader.readBool()
-            let hasMainTown = try reader.readBool()
-        
-            return .init(
-                isPlayableByHuman: isPlayableByHuman,
-                isPlayableByAI: isPlayableByAI,
-                behavior: behaviour,
-                playableFactions: playableFactions,
-                hasRandomTown: hasRandomTown,
-                hasMainTown: hasMainTown
-            )
-        }
-        
-        func parseExtra(basic: Map.InformationAboutPlayers.ROE.Basic) throws -> Map.InformationAboutPlayers.ROE.Extra {
-            var mainTownPosition: Position!
-            if basic.hasMainTown {
-                mainTownPosition = try reader.readPosition()
-            }
-            let startingHeroIsRandom = try parseStartingHeroIsRandom()
-            let startingHeroIDRaw = try reader.readUInt8()
-            let hasStartingHero = startingHeroIDRaw != 0xff
-            
-            /// Asserts that the HeroIDRaw is valid
-//            let _: Hero.ID? = try hasStartingHero ? nil : Hero.ID(integer: startingHeroIDRaw)
-            
-            var startingHeroFace: Hero.ID!
-            var startingHeroName: String?
-            if hasStartingHero {
-                startingHeroFace = try .init(integer: reader.readUInt8())
-                startingHeroName = try reader.readString(maxByteCount: 12)
+            let isPlayableByAI = try reader.readBool()
+            if !parsedLastPlayer {
+                print("♕ \(playerColor): isPlayableByAI=\(isPlayableByAI)")
+                inspector?.didParseIsPlayableByAI(isPlayableByAI, playerColor: playerColor)
             }
             
-            let extra: Map.InformationAboutPlayers.ROE.Extra
-            switch (basic.hasMainTown, hasStartingHero) {
-            case (false, false):
-                extra = .default(.init(startingHeroIsRandom: startingHeroIsRandom, startingHeroID: startingHeroIDRaw))
-            case (true, false):
-                extra = .withTown(.init(startingTownPosition: mainTownPosition!, startingHeroIsRandom: startingHeroIsRandom, startingHeroID: startingHeroIDRaw))
-            case (false, true):
-                extra = .withHero(.init(startingHeroIsRandom: startingHeroIsRandom, startingHeroID: startingHeroIDRaw, startingHeroFace: startingHeroFace.rawValue, startingHeroName: startingHeroName))
-            case (true, true):
-                extra = .withTownAndHero(
-                    .init(
-                        startingTownPosition: mainTownPosition!,
-                        startingHeroIsRandom: startingHeroIsRandom,
-                        startingHeroID: startingHeroIDRaw,
-                        startingHeroFace: startingHeroFace.rawValue,
-                        startingHeroName: startingHeroName
-                    )
+            let playerIsPlayable = isPlayableByAI || isPlayableByHuman
+            
+            guard playerIsPlayable else {
+                // Supress errors, this player is not playable and coming bytes will contain junk.
+                let _ = try? parsePlayer(
+                    inspector: nil,
+                    format: format,
+                    playerColor: playerColor,
+                    isPlayableByHuman: false,
+                    isPlayableByAI: false,
+                    assertIsPlayable: false
                 )
-            }
-            
-            return extra
-            
-        }
-        
-        
-        return try parsePlayers { playerColor in
-            guard let basic = try parseBasic() else { return nil }
-            inspector?.didParsePlayerInfoROEBasic(basic, color: playerColor)
-            let extra = try parseExtra(basic: basic)
-            inspector?.didParsePlayerInfoROEExtra(extra, color: playerColor)
-            return .roe(.init(basic: basic, extra: extra))
-        }
-    }
-}
-
-
-
-// MARK: AB
-private extension Map.Loader.Parser.H3M {
-    
-    func playableFactionsABSOD(format: Map.Format) throws -> [Faction]  {
-         var allowedFactionsForThisPlayerBitmask = try UInt16(reader.readUInt8())
-
-             allowedFactionsForThisPlayerBitmask += try 256 * UInt16(reader.readUInt8())
-
-         let playableFactions: [Faction] = Faction.playable(in: format)
-
-         return playableFactions.filter {
-             allowedFactionsForThisPlayerBitmask & (1 << $0.rawValue) != 0
-         }
-     }
-    
-    func parsePlayersAB(inspector: Map.Loader.Parser.Inspector.PlayersInfoInspector? = nil) throws -> Map.InformationAboutPlayers {
-        
-        func parseBasic() throws -> Map.InformationAboutPlayers.AB.Basic? {
-            let isPlayableByHuman = try parseCanBeHuman()
-            let isPlayableByAI = try parseCanBeComputer()
-            
-            
-            guard isPlayableByHuman || isPlayableByAI else {
-                try reader.skip(byteCount: 12)
+                parsedLastPlayer = true
                 return nil
             }
             
-            let behaviour = try parseBehaviour()
-            
-            let allowedAlignmentRaw = try reader.readUInt8()
-            let allowedAlignment: Alignment? = allowedAlignmentRaw != 0xff ? try .init(integer: allowedAlignmentRaw) : nil
-
-            var playableFactions = try playableFactionsABSOD(format: .armageddonsBlade)
-            let isConfluxAllowed = try reader.readBool()
-            if isConfluxAllowed {
-                playableFactions.append(.conflux)
-            }
-            let hasRandomTown = try reader.readBool()
-            let hasMainTown = try reader.readBool()
-        
-            return .init(
+            return try parsePlayer(
+                inspector: inspector,
+                format: format,
+                playerColor: playerColor,
                 isPlayableByHuman: isPlayableByHuman,
-                isPlayableByAI: isPlayableByAI,
-                behavior: behaviour,
-                playableFactions: playableFactions,
-                isConfluxAllowed: isConfluxAllowed,
-                hasRandomTown: hasRandomTown,
-                hasMainTown: hasMainTown
+                isPlayableByAI: isPlayableByAI
             )
         }
         
-        return try parsePlayers { playerColor in
-            print("Trying to parse basic info about player: \(playerColor)")
-            guard let basic = try parseBasic() else { return nil }
-            print("🍀 Parsed basic info about player: \(playerColor)")
-            inspector?.didParsePlayerInfoABBasic(basic, color: playerColor)
-            print("Trying to parse extra info about player: \(playerColor)")
-            let extra = try parseExtraABSOD(hasMainTown: basic.hasMainTown)
-            print("🍀 Parsed extra info about player: \(playerColor)")
-            inspector?.didParsePlayerInfoABSODExtra(extra, color: playerColor)
-            return .ab(.init(basic: basic, extra: extra))
-        }
-    }
-}
-
-// MARK: ABSOD
-private extension Map.Loader.Parser.H3M {
-    func parseExtraABSOD(hasMainTown: Bool) throws -> Map.InformationAboutPlayers.ExtraABSOD {
-        var mainTownPosition: Position!
-        var createHeroAtStartingTown: Bool = false
-        var mainTownFaction: Faction!
-        if hasMainTown {
-            createHeroAtStartingTown = try reader.readBool()
-            mainTownFaction = try Faction(integer: reader.readUInt8())
-            mainTownPosition = try reader.readPosition()
-        }
-        let startingHeroIsRandom = try parseStartingHeroIsRandom()
-        let startingHeroIDRaw = try reader.readUInt8()
-        let maybeHasStartingHero = startingHeroIDRaw != 0xff
-        
-        /// Asserts that the HeroIDRaw is valid
-//        let _: Hero.ID? = try maybeHasStartingHero ? nil : Hero.ID(integer: startingHeroIDRaw)
-        
-        var startingHeroFace: Hero.ID!
-        var startingHeroName: String?
-        if maybeHasStartingHero {
-            startingHeroFace = try .init(integer: reader.readUInt8())
-            startingHeroName = try reader.readString(maxByteCount: 12)
-        }
-        
-        let hasStartingHero = maybeHasStartingHero && startingHeroName != nil
-        
-        let extra: Map.InformationAboutPlayers.ExtraABSOD
-        switch (hasMainTown, hasStartingHero) {
-        case (false, false):
-            fatalError("Ever get here?")
-            extra = .default(.init(
-                startingHeroIsRandom: startingHeroIsRandom,
-                startingHeroID: startingHeroIDRaw,
-                startingHeroFace: startingHeroFace.rawValue,
-                startingHeroName: startingHeroName!
-            )
-            )
-        case (true, false):
-            extra = .withTown(.init(
-                createHeroAtStartingTown: createHeroAtStartingTown,
-                startingTownFaction: mainTownFaction,
-                startingTownPosition: mainTownPosition,
-                startingHeroIsRandom: startingHeroIsRandom,
-                startingHeroID: startingHeroIDRaw
-            )
-            )
-        case (false, true):
-            fatalError("Ever get here?")
-            extra = .withHero(.init(
-                startingHeroIsRandom: startingHeroIsRandom,
-                startingHeroID: startingHeroIDRaw,
-                startingHeroFace: startingHeroFace.rawValue,
-                startingHeroName: startingHeroName!
-            )
-            )
-        case (true, true):
-            fatalError("Ever get here?")
-            extra = .withTownAndHero(.init(
-                createHeroAtStartingTown: createHeroAtStartingTown,
-                startingTownFaction: mainTownFaction,
-                startingTownPosition: mainTownPosition,
-                startingHeroIsRandom: startingHeroIsRandom,
-                startingHeroID: startingHeroIDRaw,
-                startingHeroFace: startingHeroFace.rawValue,
-                startingHeroName: startingHeroName!
-            )
-            )
-        }
-        
-        return extra
-        
+        return .init(players: players)
     }
     
 }

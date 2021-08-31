@@ -116,6 +116,12 @@ public extension DataReader {
         return Data(source[startIndex..<endIndex])
     }
     
+    /// Used for debugging
+    func rewind(byteCount: Int) {
+        precondition(offset > byteCount)
+        offset -= byteCount
+    }
+    
     func readInt(endianess: Endianess = .little) throws -> Int {
         try readInt(byteCount: MemoryLayout<Int>.size, endianess: endianess)
     }
