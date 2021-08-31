@@ -28,22 +28,27 @@ extension Map.Loader.Parser.H3M {
         let checksum = CRC32.checksum(readMap.data)
         
         let basicInfo = try parseBasicInfo(inspector: inspector?.basicInfoInspector)
+        print("🔮 Parsed basic info")
        
         let format = basicInfo.format
         let size = basicInfo.size
         
         let playersInfo = try parseInformationAboutPlayers(inspector: inspector?.playersInfoInspector, format: format)
+        print("🔮 Parsed players info")
         
         let additionalInfo = try parseAdditionalInfo(inspector: inspector?.additionalInformationInspector, format: format, playersInfo: playersInfo)
+        print("🔮 Parsed additional info")
 
         let world = try parseTerrain(
             hasUnderworld: basicInfo.hasTwoLevels,
             size: size
         )
+        print("🔮 Parsed world (tiles)")
         assert(world.above.tiles.count == size.tileCount)
         inspector?.didParseWorld(world)
         
         let attributesOfObjects = try parseAttributesOfObjects()
+        print("🔮 Parsed attributes of objects")
         assert(attributesOfObjects.attributes.count < (world.above.tiles.count + (world.belowGround?.tiles.count ?? 0)))
         inspector?.didParseAttributesOfObjects(attributesOfObjects)
         
@@ -54,6 +59,7 @@ extension Map.Loader.Parser.H3M {
             additionalMapInformation: additionalInfo,
             attributesOfObjects: attributesOfObjects
         )
+        print("🔮 Parsed details about objects")
         inspector?.didParseAllObjects(detailsAboutObjects)
         
         let globalEvents = try parseGlobalEvents(format: format)

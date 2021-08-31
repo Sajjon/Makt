@@ -11,7 +11,10 @@ import Foundation
 // MARK: PlayersInfo
 extension Map.Loader.Parser.H3M {
     
-    func parseInformationAboutPlayers(inspector: Map.Loader.Parser.Inspector.PlayersInfoInspector? = nil, format: Map.Format) throws -> Map.InformationAboutPlayers {
+    func parseInformationAboutPlayers(
+        inspector: Map.Loader.Parser.Inspector.PlayersInfoInspector? = nil,
+        format: Map.Format
+    ) throws -> Map.InformationAboutPlayers {
         switch format {
         case .restorationOfErathia:
             return try parsePlayersROE(inspector: inspector)
@@ -27,13 +30,16 @@ extension Map.Loader.Parser.H3M {
 
 private extension Map.Loader.Parser.H3M {
     func parsePlayers(
-        parseInfo: (PlayerColor) throws -> Map.InformationAboutPlayers.PlayerInfoVersioned
+        parseInfo: (PlayerColor) throws -> Map.InformationAboutPlayers.PlayerInfoVersioned?
     ) throws -> Map.InformationAboutPlayers {
         let playerColors = PlayerColor.allCases
         assert(playerColors.count == 8)
-        let players: [Map.InformationAboutPlayers.PlayerInfo] = try playerColors.map { playerColor in
-            let info = try parseInfo(playerColor)
-            return .init(color: playerColor, info: info)
+        var players: [Map.InformationAboutPlayers.PlayerInfo] = []
+        for playerColor in playerColors {
+            guard let info = try parseInfo(playerColor) else {
+                continue // NOT break! will ruin offset
+            }
+            players.append(.init(color: playerColor, info: info))
         }
         return .init(players: players)
     }
@@ -60,9 +66,7 @@ extension Map.Loader.Parser.H3M {
         try parseBitFieldAsAllowedCases(cases: Enum.allCases)
     }
     
-    func parseAllowedFactions() throws -> [Faction] {
-        try parseBitFieldAsAllowedCases(cases: Faction.playable(in: .restorationOfErathia))
-    }
+ 
 }
 
 private extension Map.Loader.Parser.H3M {
@@ -89,14 +93,26 @@ private extension Map.Loader.Parser.H3M {
 private extension Map.Loader.Parser.H3M {
     func parsePlayersROE(inspector: Map.Loader.Parser.Inspector.PlayersInfoInspector? = nil) throws -> Map.InformationAboutPlayers {
         
-        func parseBasic() throws -> Map.InformationAboutPlayers.ROE.Basic {
+        func parseAllowedFactions() throws -> [Faction] {
+            let allowedFactionsForThisPlayerBitmask = try UInt16(reader.readUInt8())
+            let playableFactions: [Faction] = Faction.playable(in: .restorationOfErathia)
+            return playableFactions.filter {
+                allowedFactionsForThisPlayerBitmask & (1 << $0.rawValue) != 0
+            }
+        }
+        
+        func parseBasic() throws -> Map.InformationAboutPlayers.ROE.Basic? {
             let isPlayableByHuman = try parseCanBeHuman()
             let isPlayableByAI = try parseCanBeComputer()
+
+            guard isPlayableByHuman || isPlayableByAI else {
+                try reader.skip(byteCount: 6)
+                return nil
+            }
+            
             let behaviour = try parseBehaviour()
-            let offset = reader.offset
             let playableFactions = try parseAllowedFactions()
-            assert(reader.offset == offset + 1)
-            let unknown1 = try reader.readUInt8()
+            let hasRandomTown = try reader.readBool()
             let hasMainTown = try reader.readBool()
         
             return .init(
@@ -104,7 +120,7 @@ private extension Map.Loader.Parser.H3M {
                 isPlayableByAI: isPlayableByAI,
                 behavior: behaviour,
                 playableFactions: playableFactions,
-                unknown1: unknown1,
+                hasRandomTown: hasRandomTown,
                 hasMainTown: hasMainTown
             )
         }
@@ -154,7 +170,7 @@ private extension Map.Loader.Parser.H3M {
         
         
         return try parsePlayers { playerColor in
-            let basic = try parseBasic()
+            guard let basic = try parseBasic() else { return nil }
             inspector?.didParsePlayerInfoROEBasic(basic, color: playerColor)
             let extra = try parseExtra(basic: basic)
             inspector?.didParsePlayerInfoROEExtra(extra, color: playerColor)
@@ -167,20 +183,42 @@ private extension Map.Loader.Parser.H3M {
 
 // MARK: AB
 private extension Map.Loader.Parser.H3M {
+    
+    func playableFactionsABSOD(format: Map.Format) throws -> [Faction]  {
+         var allowedFactionsForThisPlayerBitmask = try UInt16(reader.readUInt8())
+
+             allowedFactionsForThisPlayerBitmask += try 256 * UInt16(reader.readUInt8())
+
+         let playableFactions: [Faction] = Faction.playable(in: format)
+
+         return playableFactions.filter {
+             allowedFactionsForThisPlayerBitmask & (1 << $0.rawValue) != 0
+         }
+     }
+    
     func parsePlayersAB(inspector: Map.Loader.Parser.Inspector.PlayersInfoInspector? = nil) throws -> Map.InformationAboutPlayers {
         
-        func parseBasic() throws -> Map.InformationAboutPlayers.AB.Basic {
+        func parseBasic() throws -> Map.InformationAboutPlayers.AB.Basic? {
             let isPlayableByHuman = try parseCanBeHuman()
             let isPlayableByAI = try parseCanBeComputer()
+            
+            
+            guard isPlayableByHuman || isPlayableByAI else {
+                try reader.skip(byteCount: 12)
+                return nil
+            }
+            
             let behaviour = try parseBehaviour()
-            let offset = reader.offset
-            var playableFactions = try parseAllowedFactions()
-            assert(reader.offset == offset + 1)
+            
+            let allowedAlignmentRaw = try reader.readUInt8()
+            let allowedAlignment: Alignment? = allowedAlignmentRaw != 0xff ? try .init(integer: allowedAlignmentRaw) : nil
+
+            var playableFactions = try playableFactionsABSOD(format: .armageddonsBlade)
             let isConfluxAllowed = try reader.readBool()
             if isConfluxAllowed {
                 playableFactions.append(.conflux)
             }
-            let unknown1 = try reader.readUInt8()
+            let hasRandomTown = try reader.readBool()
             let hasMainTown = try reader.readBool()
         
             return .init(
@@ -189,15 +227,19 @@ private extension Map.Loader.Parser.H3M {
                 behavior: behaviour,
                 playableFactions: playableFactions,
                 isConfluxAllowed: isConfluxAllowed,
-                unknown1: unknown1,
+                hasRandomTown: hasRandomTown,
                 hasMainTown: hasMainTown
             )
         }
         
         return try parsePlayers { playerColor in
-            let basic = try parseBasic()
+            print("Trying to parse basic info about player: \(playerColor)")
+            guard let basic = try parseBasic() else { return nil }
+            print("🍀 Parsed basic info about player: \(playerColor)")
             inspector?.didParsePlayerInfoABBasic(basic, color: playerColor)
+            print("Trying to parse extra info about player: \(playerColor)")
             let extra = try parseExtraABSOD(hasMainTown: basic.hasMainTown)
+            print("🍀 Parsed extra info about player: \(playerColor)")
             inspector?.didParsePlayerInfoABSODExtra(extra, color: playerColor)
             return .ab(.init(basic: basic, extra: extra))
         }

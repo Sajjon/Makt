@@ -110,7 +110,7 @@ public extension Map.InformationAboutPlayers.ROE {
         
         // ROE - no town_conflux uint here
         
-        public let unknown1: UInt8
+        public let hasRandomTown: Bool
         public let hasMainTown: Bool
     }
     
@@ -262,7 +262,7 @@ public extension Map.InformationAboutPlayers.AB {
         /// bitfield
         public let playableFactions: [Faction]
         public let isConfluxAllowed: Bool
-        public let unknown1: UInt8 // "Whether the player owns Random Town" ??
+        public let hasRandomTown: Bool
         public let hasMainTown: Bool
         
     }

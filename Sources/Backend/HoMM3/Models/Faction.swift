@@ -58,10 +58,6 @@ private extension Faction {
         return factions
     }()
     
-    static let playableInRestorationOfErathia: [Self] = {
-        var factions = Self.playableInShadowOfDeath
-        factions.removeAll(where: { $0.rawValue >= Self.conflux.rawValue })
-        return factions
-    }()
+    static let playableInRestorationOfErathia: [Self] = [.castle, .rampart, .tower, .inferno, .necropolis, .dungeon, .stronghold, .fortress]
     
 }
