@@ -15,7 +15,9 @@ extension Map.Loader.Parser.H3M {
         playersInfo: Map.InformationAboutPlayers
     ) throws -> Map.AdditionalInformation {
         
-        let victoryLossConditions = try parseVictoryLossConditions(inspector: inspector?.victoryLossInspector, format: format)
+        let victoryLossConditions = try parseVictoryLossConditions(
+            inspector: inspector?.victoryLossInspector, format: format
+        )
         
         /// The teams might contain non playble colors
         let teamInfo = try parseTeamInfo(validColors: playersInfo.players.map({ $0.color }))
@@ -70,8 +72,11 @@ extension Map.Loader.Parser.H3M {
 
 // MARK: VictoryLoss Cond.
 private extension  Map.Loader.Parser.H3M {
-    func parseVictoryLossConditions(inspector: Map.Loader.Parser.Inspector.AdditionalInfoInspector.VictoryLossInspector? = nil, format: Map.Format) throws -> Map.VictoryLossConditions {
-    
+    func parseVictoryLossConditions(
+        inspector: Map.Loader.Parser.Inspector.AdditionalInfoInspector.VictoryLossInspector? = nil,
+        format: Map.Format
+    ) throws -> Map.VictoryLossConditions {
+        
         let victories = try parseVictoryConditions(format: format)
         inspector?.didParseVictoryConditions(victories)
         
@@ -99,56 +104,47 @@ private extension  Map.Loader.Parser.H3M {
         let allowNormalVictory = try reader.readBool()
         let appliesToAI = try reader.readBool()
         
-        var parameter1: UInt8?
-        var parameter2: UInt32?
-        var position: Position?
+        let specialVictoryKind: Map.VictoryCondition.Kind
         
         switch victoryConditionStripped {
         case .defeatAllEnemies:
             fatalError("Should have been handled above")
-            
         case .acquireSpecificArtifact:
-            parameter1 = try reader.readUInt8()
-            
-            if format != .restorationOfErathia {
-                try reader.skip(byteCount: 1)
-            }
+            specialVictoryKind = try .acquireSpecificArtifact(parseArtifactID(format: format)!)
         case .accumulateCreatures:
-            parameter1 = try reader.readUInt8()
-            if format != .restorationOfErathia {
-                try reader.skip(byteCount: 1)
-            }
-            parameter2 = try reader.readUInt32()
+            specialVictoryKind = try .accumulateCreatures(
+                kind: parseCreatureID(format: format)!,
+                amount: .init(reader.readUInt32())
+            )
         case .accumulateResources:
-            parameter1 = try reader.readUInt8()
-            parameter2 = try reader.readUInt32()
+            specialVictoryKind = try.accumulateResources(
+                kind: .init(integer: reader.readUInt8()),
+                amount: Resource.Amount(reader.readUInt32())
+            )
         case .captureSpecificTown:
-            position = try reader.readPosition()
+            specialVictoryKind = try .captureSpecificTown(locatedAt: reader.readPosition())
         case .flagAllCreatureDwellings:
-            break
+            specialVictoryKind = .flagAllCreatureDwellings
         case .flagAllMines:
-            break
+            specialVictoryKind = .flagAllMines
         case .upgradeSpecificTown:
-            position = try reader.readPosition()
-            parameter1 = try reader.readUInt8()
-            parameter2 = try UInt32(reader.readUInt8()) // completely unneccessary to cast this to UInt32, but for basically every other case the `parameter1` is used as a UInt32, thus declaring it having that type makes code (for other cases) safer.
+            specialVictoryKind = try .upgradeSpecificTown(
+                townLocation: reader.readPosition(),
+                upgradeHallToLevel: .init(reader.readUInt8()),
+                upgradeFortToLevel: .init(reader.readUInt8())
+            )
         case .buildGrailBuilding:
-            position = try reader.readPosition()
+            specialVictoryKind = try .buildGrailBuilding(inTownLocatedAt: reader.readPosition())
         case .defeatSpecificHero:
-            position = try reader.readPosition()
+            specialVictoryKind = try .defeatSpecificHero(locatedAt: reader.readPosition())
         case .defeatSpecificCreature:
-            position = try reader.readPosition()
+            specialVictoryKind = try .defeatSpecificCreature(locatedAt: reader.readPosition())
         case .transportSpecificArtifact:
-            parameter1 = try reader.readUInt8()
-            position = try reader.readPosition()
+            specialVictoryKind = try .transportSpecificArtifact(
+                id: parseArtifactID(format: format)!,
+                toTownLocatedAt: reader.readPosition()
+            )
         }
-        
-        let specialVictoryKind = try Map.VictoryCondition.Kind(
-            stripped: victoryConditionStripped,
-            parameter1: parameter1 != nil ? .init(parameter1!) : nil,
-            parameter2: parameter2 != nil ? .init(parameter2!) : nil,
-            position: position
-        )
         
         let specialVictory = Map.VictoryCondition(
             kind: specialVictoryKind,
@@ -176,25 +172,18 @@ private extension  Map.Loader.Parser.H3M {
             return [.standard]
         }
         
-        var parameter1: UInt16?
-        var position: Position?
+        let specialLossKind: Map.LossCondition.Kind
         
         switch lossConditionStripped {
-        
         case .loseAllTownsAndHeroesOrAfterTimeLimitStillControlNoTowns:
             fatalError("should have been handled above")
-            
-        case .loseSpecificTown, .loseSpecificHero:
-            position = try reader.readPosition()
+        case .loseSpecificTown:
+            specialLossKind = try .loseSpecificTown(locatedAt: reader.readPosition())
+        case .loseSpecificHero:
+            specialLossKind = try .loseSpecificHero(locatedAt: reader.readPosition())
         case .timeLimit:
-            parameter1 = try reader.readUInt16()
+            specialLossKind = try .timeLimit(dayCount: .init(reader.readUInt16()))
         }
-        
-        let specialLossKind = try Map.LossCondition.Kind(
-            stripped: lossConditionStripped,
-            parameter1: parameter1 != nil ? .init(parameter1!) : nil,
-            position: position
-        )
         
         let specialLossCondition = Map.LossCondition(kind: specialLossKind)
         
@@ -219,12 +208,13 @@ private extension  Map.Loader.Parser.H3M {
             // No teams/alliances
             return .init(teams: nil)
         }
-        
+        let offsetBefore = reader.offset
         let teamByColor: [PlayerColor: UInt8] = try Dictionary(uniqueKeysWithValues:  PlayerColor.allCases.compactMap { playerColor in
             let teamId = try reader.readUInt8()
             guard validColors.contains(playerColor) else { return nil }
             return (key: playerColor, value: teamId)
         })
+        assert(reader.offset == offsetBefore + 8)
         var teamsByTeamID: [UInt8: TempTeam] = [:]
         
         teamByColor.forEach({ (color: PlayerColor, teamID: UInt8) in
@@ -270,17 +260,19 @@ extension DataReader {
 private extension  Map.Loader.Parser.H3M {
     func parseAvailableHeroes(format: Map.Format) throws -> Map.AvailableHeroes {
         let availableHeroIDs = Hero.ID.playable(in: format)
-        
-        let playableHeroIDs: [Hero.ID] = try reader.readBitArray(
+        let bitmask =  try reader.readBitArray(
             byteCount: format == .restorationOfErathia ? 16 : 20
         )
         .prefix(availableHeroIDs.count)
+        
+        let playableHeroIDs: [Hero.ID] = bitmask
         .enumerated()
-        .compactMap {
-            let heroID = availableHeroIDs[$0.offset]
-            guard $0.element else {
+            .compactMap { (heroIDIndex, available) -> Hero.ID? in
+            guard available else {
                 return nil
             }
+            let heroID = availableHeroIDs[heroIDIndex]
+            assert(heroID.rawValue == heroIDIndex)
             return heroID
         }
 

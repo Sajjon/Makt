@@ -42,8 +42,8 @@ public extension Map.InformationAboutPlayers.PlayerInfo {
     
     struct MainHero: Hashable {
         let heroID: Hero.ID?
-        let portraitId: Hero.ID? /// when `heroID != nil`
-        let name: String?  /// when `heroID != nil`
+        let portraitId: Hero.ID?
+        let name: String?
     }
     
     struct MainTown: Hashable {

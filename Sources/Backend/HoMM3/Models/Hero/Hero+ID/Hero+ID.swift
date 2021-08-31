@@ -269,6 +269,11 @@ public extension Hero.ID {
         case .armageddonsBlade, .shadowOfDeath: return Self.allCases
         }
     }
+    
+    static let restorationOfErathiaPlusConflux: [Self] = {
+        let roe = playable(in: .restorationOfErathia)
+        return roe + Self.conflux
+    }()
 }
 
 // MARK: CustomStringConvertible

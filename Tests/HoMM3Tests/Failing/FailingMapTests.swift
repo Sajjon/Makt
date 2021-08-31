@@ -645,34 +645,7 @@ final class FailingMapTests: XCTestCase {
         XCTAssertEqual(map.about.victoryLossConditions.victoryConditions.map { $0.kind.stripped }, [.acquireSpecificArtifact, .standard])
         XCTAssertEqual(map.about.victoryLossConditions.lossConditions.map { $0.kind.stripped }, [.standard])
     }
-    
-    func test_assert_can_load_map_by_id__raceForArdintinny() throws {
-        // Delete any earlier cached maps.
-        Map.loader.cache.__deleteMap(by: .raceforArdintinny)
-        let map = try Map.load(.raceforArdintinny)
-        XCTAssertEqual(map.about.summary.fileName, "Race for Ardintinny.h3m")
-        XCTAssertEqual(map.about.summary.name, "Race for Ardintinny")
-        XCTAssertEqual(map.about.summary.description, "You and four other lords covet Medallion Bay, a profitable trade route.  Before your opponents or before six months is up you must take control of Ardintinny, the town controlling Medallion Bay.")
-        XCTAssertEqual(map.about.summary.fileSizeCompressed, 65_306 )
-        XCTAssertEqual(map.about.summary.fileSize, 387_938)
-        XCTAssertTrue(map.about.summary.hasTwoLevels)
-        XCTAssertEqual(map.about.summary.format, .restorationOfErathia)
-        XCTAssertEqual(map.about.summary.difficulty, .normal)
-        XCTAssertEqual(map.about.summary.size, .extraLarge)
-        XCTAssertEqual(map.about.playersInfo.players.count, 5)
-       
-        XCTAssertTrue(map.about.playersInfo.players.allSatisfy({ $0.isPlayableBothByHumanAndAI }))
         
-        XCTAssertEqual(map.about.playersInfo.players[0].playableFactions, [.castle])
-        XCTAssertEqual(map.about.playersInfo.players[1].playableFactions, [.tower])
-        XCTAssertEqual(map.about.playersInfo.players[2].playableFactions, [.inferno])
-        XCTAssertEqual(map.about.playersInfo.players[3].playableFactions, [.fortress])
-        XCTAssertEqual(map.about.playersInfo.players[4].playableFactions, [.stronghold])
-        
-        XCTAssertEqual(map.about.victoryLossConditions.victoryConditions.map { $0.kind.stripped }, [.captureSpecificTown])
-        XCTAssertEqual(map.about.victoryLossConditions.lossConditions.map { $0.kind.stripped }, [.timeLimit, .standard])
-    }
-    
     func test_assert_can_load_map_by_id__thousandIslands_allies() throws {
         // Delete any earlier cached maps.
         Map.loader.cache.__deleteMap(by: .thousandIslandsAllies)

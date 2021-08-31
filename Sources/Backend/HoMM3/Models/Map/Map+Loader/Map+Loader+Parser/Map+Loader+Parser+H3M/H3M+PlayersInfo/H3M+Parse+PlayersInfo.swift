@@ -21,11 +21,17 @@ private extension Map.Loader.Parser.H3M {
             precondition(isPlayable)
         }
         let aiTactic: AITactic = try AITactic(integer: reader.readUInt8())
+        
+        if isPlayable {
         print("♕ \(playerColor): aiTactic=\(aiTactic)")
         inspector?.didParseAITactic(aiTactic, playerColor: playerColor)
+        }
         
         let allowedAlignments: UInt8? = try format >= .shadowOfDeath ? reader.readUInt8() : nil
-        print("♕ \(playerColor): allowedAlignments=\(allowedAlignments)")
+        if isPlayable {
+            print("♕ \(playerColor): allowedAlignments=\(allowedAlignments)")
+            
+        }
         
         // Factions this player can choose
         let playableFactions: [Faction] = try {
@@ -41,8 +47,11 @@ private extension Map.Loader.Parser.H3M {
                 playableFactionsBitmask & (1 << $0.rawValue) != 0
             }
         }()
+        if isPlayable {
+            
         print("♕ \(playerColor): playableFactions=\(playableFactions)")
         inspector?.didParsePlayableFactions(playableFactions, playerColor: playerColor)
+        }
         
         let hasRandomTown = try reader.readBool()
         print("♕ \(playerColor): hasRandomTown=\(hasRandomTown)")
@@ -77,7 +86,8 @@ private extension Map.Loader.Parser.H3M {
             let heroIDRaw = try reader.readUInt8()
             guard heroIDRaw != 0xff else { return nil }
             let heroID = try Hero.ID(id: heroIDRaw)
-            let face = try Hero.ID(integer: reader.readUInt8()) // change to optional??
+            let customPortraitIDRaw = try reader.readUInt8()
+            let face: Hero.ID? = customPortraitIDRaw != 0xff ? try Hero.ID(integer: customPortraitIDRaw) : nil
             /// TODO? CHANGE? Always read? the `name` even though we might not have a portrait id => which results in returnin nil. Otherwise we mess up byte offset.
             let name = try reader.readString(maxByteCount: isPlayable ? 12 : 0) // from `homm3tools`
             let mainHero = Map.InformationAboutPlayers.PlayerInfo.MainHero(heroID: heroID, portraitId: face, name: name)

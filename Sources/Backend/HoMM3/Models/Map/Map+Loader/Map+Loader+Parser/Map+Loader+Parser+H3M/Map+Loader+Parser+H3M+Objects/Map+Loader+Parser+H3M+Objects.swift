@@ -147,13 +147,13 @@ internal extension Map.Loader.Parser.H3M {
         let limit = try reader.readUInt32()
         let deadline: Int? = limit == .max ? nil : .init(limit)
         
-        let firstVisitTextOrEmpty = try reader.readString()
-        let nextVisitTextOrEmpty = try reader.readString()
-        let completedTextOrEmpty = try reader.readString()
+        // Map "The story of the Fool (Traemask2.h3m") 9697 bytes...
+        let maxStringLength: UInt32 = 10_000
+        let firstVisitText = try reader.readString(maxByteCount: maxStringLength)
+        let nextVisitText = try reader.readString(maxByteCount: maxStringLength)
+        let completedText = try reader.readString(maxByteCount: maxStringLength)
         
-        let firstVisitText: String? = firstVisitTextOrEmpty.isEmpty ? nil : firstVisitTextOrEmpty
-        let nextVisitText: String? = nextVisitTextOrEmpty.isEmpty ? nil : nextVisitTextOrEmpty
-        let completedText: String? = completedTextOrEmpty.isEmpty ? nil : completedTextOrEmpty
+       
         
         return .init(
             kind: questKind,
