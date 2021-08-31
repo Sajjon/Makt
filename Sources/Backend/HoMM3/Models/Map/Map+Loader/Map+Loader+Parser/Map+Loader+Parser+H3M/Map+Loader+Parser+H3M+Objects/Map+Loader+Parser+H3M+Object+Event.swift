@@ -36,7 +36,9 @@ internal extension Map.Loader.Parser.H3M {
         try reader.skip(byteCount: 4) // unknown?
         
         return .init(
-             pandorasBox: pandorasBox,
+            message: pandorasBox.message,
+            guards: pandorasBox.guards,
+            bounty: pandorasBox.bounty,
             availableForPlayers: availableForPlayers,
             canBeActivatedByComputer: canBeActivatedByComputer,
             shouldBeRemovedAfterVisit: shouldBeRemovedAfterVisit,

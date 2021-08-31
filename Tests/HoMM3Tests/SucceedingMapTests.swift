@@ -428,7 +428,49 @@ final class MapTests: XCTestCase {
         let inspector = Map.Loader.Parser.Inspector(
             basicInfoInspector: basicInfoInspector,
             playersInfoInspector: playersInfoInspector,
-            additionalInformationInspector: additionalInfoInspector
+            additionalInformationInspector: additionalInfoInspector,
+            onParseWorld: { world in
+                XCTAssertNotNil(world.belowGround)
+//                print(world)
+            },
+            onParseObject: { object in
+                if object.indexInObjectAttributesArray == 266 {
+                    XCTAssertEqual(object.objectID, .event)
+                    guard case let .event(event) = object.kind else {
+                        XCTFail("expected event")
+                        return
+                    }
+                    XCTAssertEqual(event.message, "Warming a freezing old woman she blesses you with good luck for your next battle.")
+                    XCTAssertEqual(event.bounty?.luckToBeGainedOrDrained, 1)
+                    XCTAssertTrue(event.shouldBeRemovedAfterVisit)
+                    XCTAssertEqual(event.availability.availableForPlayers, [.red, .blue, .tan, .green, .orange])
+//                    XCTAssertEqual(object.kind, .event(.init(
+//                        name: nil,
+//                        firstOccurence: nil,
+//                        nextOccurence: nil,
+//                        pandorasBox: .init(
+//                            message:
+//                            guards: nil,
+//                            experiencePointsToBeGained: 0,
+//                            manaPointsToBeGainedOrDrained: 0,
+//                            moraleToBeGainedOrDrained: 0,
+//                            luckToBeGainedOrDrained: 1,
+//                            resourcesToBeGained: nil,
+//                            primarySkills: [],
+//                            secondarySkills: [],
+//                            artifactIDs: [],
+//                            spellIDs: [],
+//                            creaturesGained: nil
+//                        ),
+//                        availableForPlayers: [.red, .blue, .tan, .green, .orange],
+//                        canBeActivatedByComputer: false,
+//                        shouldBeRemovedAfterVisit: true,
+//                        canBeActivatedByHuman: true
+//                    )
+//                    )
+//                    )
+                }
+            }
         )
         
         XCTAssertNoThrow(try Map.load(mapID, inspector: inspector))

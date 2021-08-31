@@ -287,7 +287,8 @@ private extension Map.Loader.Parser.H3M {
                 name: name,
                 firstOccurence: firstOcurence,
                 nextOccurence: nextOcurence,
-                pandorasBox: .init(message: message, resourcesToBeGained: resources),
+                message: message,
+                bounty: .init(resourcesToBeGained: resources),
                 availableForPlayers: availableForPlayers,
                 canBeActivatedByComputer: canBeActivatedByComputer,
                 shouldBeRemovedAfterVisit: true, // what ?

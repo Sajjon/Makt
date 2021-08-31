@@ -73,7 +73,7 @@ private extension Map.Loader.Parser.H3M {
         
         let portraitID: Hero.ID? = try reader.readBool() ? .init(integer: reader.readUInt8()) : nil
       
-        let startingSecondarySkills: [Hero.SecondarySkill]? = try reader.readBool() ? try parseSecondarySkills() : nil
+        let startingSecondarySkills: [Hero.SecondarySkill]? = try reader.readBool() ? try parseSecondarySkills(amount: reader.readUInt32()) : nil
         
         let garrison: CreatureStacks? = try reader.readBool() ? parseCreatureStacks(format: format, count: 7) : nil
         let formation = try Army.Formation(integer: reader.readUInt8())

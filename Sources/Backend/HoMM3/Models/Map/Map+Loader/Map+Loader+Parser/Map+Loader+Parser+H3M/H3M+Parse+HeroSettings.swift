@@ -11,7 +11,6 @@ import Foundation
 internal extension Map.Loader.Parser.H3M {
     func parseHeroSettings(format: Map.Format) throws -> Map.AdditionalInformation.HeroSettings? {
       
-        
         switch format {
         #if WOG
         case .wakeOfGods: fallthrough
@@ -30,7 +29,7 @@ internal extension Map.Loader.Parser.H3M {
                 let startsWithExperiencePoints = try reader.readBool()
                 let startingExperiencePoints = try startsWithExperiencePoints ? reader.readUInt32() : 0
                 let startsWithSecondarySkills = try reader.readBool()
-                let startingSecondarySkills: [Hero.SecondarySkill]? = !startsWithSecondarySkills ? nil : try parseSecondarySkills()
+                let startingSecondarySkills: [Hero.SecondarySkill]? = !startsWithSecondarySkills ? nil : try parseSecondarySkills(amount: reader.readUInt32())
                 
                 let artifactsForHero = try parseArtifactsOfHero(format: format)
                 
@@ -65,8 +64,9 @@ internal extension Map.Loader.Parser.H3M {
 }
 internal extension Map.Loader.Parser.H3M {
     
-    func parseSecondarySkills() throws -> [Hero.SecondarySkill] {
-        let secondarySkillStartAmount = try reader.readUInt32()
+    /// Sometimes life is hard... for `Map.PandorasBox` and `Map.Event` just 1 byte (a UInt8) is read from reader as "secondarySkillStartAmount", but for
+    /// HeroSettings (SOD) in Map.AdditinalInformation and Hero object on map 4 bytes (a UInt32) is used.
+    func parseSecondarySkills<U>(amount secondarySkillStartAmount: U) throws -> [Hero.SecondarySkill] where U: UnsignedInteger & FixedWidthInteger {
         return try secondarySkillStartAmount.nTimes {
             let kindRaw = try reader.readUInt8()
             guard let kind = Hero.SecondarySkill.Kind(rawValue: kindRaw) else {

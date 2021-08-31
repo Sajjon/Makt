@@ -519,10 +519,11 @@ internal extension Map.Loader.Parser.H3M {
             let mapObject = Map.Object(
                 position: position,
                 attributes: attributesOfObject,
-                kind: objectKind
+                kind: objectKind,
+                indexInObjectAttributesArray: objectAttributesIndex
             )
             
-            print("🔮 successfully parse mapObject: \(mapObject)")
+            print("🔮 successfully parsed mapObject: \(mapObject), at objectAttributeIndex: \(objectAttributesIndex)")
             
             inspector?.didParseObject(mapObject)
             objects.append(mapObject)

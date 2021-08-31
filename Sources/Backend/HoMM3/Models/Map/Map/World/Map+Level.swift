@@ -55,7 +55,7 @@ public extension Map.Level {
                 return t
             }
             
-            return row.map(printTile).joined(separator: " ")
+            return row.map(printTile).joined(separator: "")
         }
         
         return rows.map(printRow).joined(separator: "\n")

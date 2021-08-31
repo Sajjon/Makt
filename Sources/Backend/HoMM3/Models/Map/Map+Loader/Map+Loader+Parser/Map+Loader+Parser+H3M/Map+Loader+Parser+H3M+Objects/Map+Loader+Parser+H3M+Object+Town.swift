@@ -478,8 +478,8 @@ internal extension Map.Loader.Parser.H3M {
             let townEvent = Map.Event(
                 firstOccurence: firstOccurence,
                 nextOccurence: nextOccurence,
-                pandorasBox: .init(
-                    message: message,
+                message: message,
+                bounty: Bounty.init(
                     resourcesToBeGained: resources,
                     creaturesGained: .init(creatureStacks: creatureStacks)
                 ),

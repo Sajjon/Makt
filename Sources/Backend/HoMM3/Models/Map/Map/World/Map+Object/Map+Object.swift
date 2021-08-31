@@ -20,6 +20,9 @@ public extension Map {
         public let position: Position
         public let attributes: Map.Object.Attributes
         public let kind: Kind
+        
+        /// used for testing
+        internal let indexInObjectAttributesArray: UInt32
     }
     
     

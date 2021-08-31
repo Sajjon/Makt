@@ -10,19 +10,27 @@ public extension Map {
     // TODO disambiguate between invisible events that might be triggered when walked on a certain tile (or also time based?) and visible event OBJECTs. One is parsed amongst objects in `parseObjects` the other is parsed in `parseEvents`. Should both really share the same struct?
     struct Event: Hashable {
         
-        private let name: String?
-        private let firstOccurence: UInt16?
-        private let nextOccurence: UInt8?
-
-        private let shouldBeRemovedAfterVisit: Bool
-        private let availability: Availability
+        public let name: String?
+ 
+        public let message: String?
+        public let guards: CreatureStacks?
+        public let bounty: Bounty?
+        
+        
+        internal let firstOccurence: UInt16?
+        internal let nextOccurence: UInt8?
+        internal let shouldBeRemovedAfterVisit: Bool
+        internal let availability: Availability
         
         public init(
             name: String? = nil,
             firstOccurence: UInt16? = nil,
             nextOccurence: UInt8? = nil,
             
-            pandorasBox: PandorasBox,
+           message: String? = nil,
+           guards: CreatureStacks? = nil,
+           bounty: Bounty? = nil,
+            
             
             availableForPlayers: [PlayerColor] = [],
             canBeActivatedByComputer: Bool,
@@ -33,6 +41,10 @@ public extension Map {
             self.firstOccurence = firstOccurence
             self.nextOccurence = nextOccurence
         
+            self.message = message
+            self.guards = guards
+            self.bounty = bounty
+            
             self.availability = .init(
                 availableForPlayers: availableForPlayers,
                 canBeActivatedByComputer: canBeActivatedByComputer,
@@ -46,10 +58,12 @@ public extension Map {
 
 // MARK: Availability
 public extension Map.Event {
+    
+    
     struct Availability: Hashable {
-        private let availableForPlayers: [PlayerColor]
-        private let canBeActivatedByComputer: Bool
-        private let canBeActivatedByHuman: Bool
+        internal let availableForPlayers: [PlayerColor]
+        internal let canBeActivatedByComputer: Bool
+        internal let canBeActivatedByHuman: Bool
         
         public init(
             availableForPlayers: [PlayerColor],
