@@ -16,7 +16,6 @@ public extension Map {
         public let guards: CreatureStacks?
         public let bounty: Bounty?
         
-        
         internal let firstOccurence: UInt16?
         internal let nextOccurence: UInt8?
         internal let shouldBeRemovedAfterVisit: Bool
@@ -27,12 +26,11 @@ public extension Map {
             firstOccurence: UInt16? = nil,
             nextOccurence: UInt8? = nil,
             
-           message: String? = nil,
-           guards: CreatureStacks? = nil,
-           bounty: Bounty? = nil,
+            message: String? = nil,
+            guards: CreatureStacks? = nil,
+            bounty: Bounty? = nil,
             
-            
-            availableForPlayers: [PlayerColor] = [],
+            allowedPlayers: [PlayerColor] = [],
             canBeActivatedByComputer: Bool,
             shouldBeRemovedAfterVisit: Bool,
             canBeActivatedByHuman: Bool
@@ -46,7 +44,7 @@ public extension Map {
             self.bounty = bounty
             
             self.availability = .init(
-                availableForPlayers: availableForPlayers,
+                allowedPlayers: allowedPlayers,
                 canBeActivatedByComputer: canBeActivatedByComputer,
                 canBeActivatedByHuman: canBeActivatedByHuman
             )
@@ -61,16 +59,16 @@ public extension Map.Event {
     
     
     struct Availability: Hashable {
-        internal let availableForPlayers: [PlayerColor]
+        internal let allowedPlayers: [PlayerColor]
         internal let canBeActivatedByComputer: Bool
         internal let canBeActivatedByHuman: Bool
         
         public init(
-            availableForPlayers: [PlayerColor],
+            allowedPlayers: [PlayerColor],
             canBeActivatedByComputer: Bool,
             canBeActivatedByHuman: Bool
         ) {
-            self.availableForPlayers = availableForPlayers
+            self.allowedPlayers = allowedPlayers
             self.canBeActivatedByComputer = canBeActivatedByComputer
             self.canBeActivatedByHuman = canBeActivatedByHuman
         }

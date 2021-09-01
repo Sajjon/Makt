@@ -23,7 +23,7 @@ public extension Map {
         public let message: String
     }
     struct OceanBottle: Hashable {
-        public let message: String
+        public let message: String? // yes indeed optional.
     }
     
     struct Scholar: Hashable {

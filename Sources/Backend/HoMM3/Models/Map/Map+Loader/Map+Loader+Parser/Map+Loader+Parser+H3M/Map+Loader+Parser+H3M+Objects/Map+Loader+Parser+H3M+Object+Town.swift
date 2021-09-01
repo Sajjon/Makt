@@ -421,11 +421,11 @@ internal extension Map.Loader.Parser.H3M {
     
     
     
-    func parseRandomTown(format: Map.Format, allowedSpellsOnMap: [Spell.ID]) throws -> Map.Town {
-        try parseTown(format: format, faction: .random(), allowedSpellsOnMap: allowedSpellsOnMap)
+    func parseRandomTown(format: Map.Format, allowedSpellsOnMap: [Spell.ID], availablePlayers: [PlayerColor]) throws -> Map.Town {
+        try parseTown(format: format, faction: .random(), allowedSpellsOnMap: allowedSpellsOnMap, availablePlayers: availablePlayers)
     }
     
-    func parseTown(format: Map.Format, faction: Faction, allowedSpellsOnMap: [Spell.ID]) throws -> Map.Town {
+    func parseTown(format: Map.Format, faction: Faction, allowedSpellsOnMap: [Spell.ID], availablePlayers: [PlayerColor]) throws -> Map.Town {
         let townID: Map.Town.ID = try format > .restorationOfErathia ? .fromMapFile(reader.readUInt32()) : .generated(UUID())
         
         let owner = try parseOwner()
@@ -459,7 +459,7 @@ internal extension Map.Loader.Parser.H3M {
             let name = try reader.readString()
             let message = try reader.readString()
             let resources = try parseResources()
-            let players = try parseAvailableForPlayers()
+            let allowedPlayers = try parseAllowedPlayers(availablePlayers: availablePlayers)
             let canBeActivatedByHuman = try format > .armageddonsBlade ? reader.readBool() : true
             let canBeActivatedByComputer = try reader.readBool()
             let firstOccurence = try reader.readUInt16()
@@ -483,7 +483,7 @@ internal extension Map.Loader.Parser.H3M {
                     resourcesToBeGained: resources,
                     creaturesGained: .init(creatureStacks: creatureStacks)
                 ),
-                availableForPlayers: players,
+                allowedPlayers: allowedPlayers,
                 canBeActivatedByComputer: canBeActivatedByComputer,
                 shouldBeRemovedAfterVisit: false, // is this correct?
                 canBeActivatedByHuman: canBeActivatedByHuman

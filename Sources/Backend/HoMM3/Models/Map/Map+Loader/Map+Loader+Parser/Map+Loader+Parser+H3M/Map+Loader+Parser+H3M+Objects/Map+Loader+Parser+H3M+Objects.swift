@@ -169,6 +169,7 @@ internal extension Map.Loader.Parser.H3M {
     func parseDetailsAboutObjects(
         inspector: Map.Loader.Parser.Inspector? = nil,
         format: Map.Format,
+        playersInfo: Map.InformationAboutPlayers,
         additionalMapInformation: Map.AdditionalInformation,
         attributesOfObjects: Map.AttributesOfObjects
     ) throws -> Map.DetailsAboutObjects {
@@ -232,7 +233,7 @@ internal extension Map.Loader.Parser.H3M {
                 let guardedArtifact = Map.GuardedArtifact(message: message, guards: guards, artifact: artifact)
                 objectKind = .artifact(guardedArtifact)
             case .event:
-                objectKind = try .event(parseEvent(format: format))
+                objectKind = try .event(parseEvent(format: format, availablePlayers: playersInfo.availablePlayers))
             case .garrison:
                 let owner = try parseOwner()
                 try reader.skip(byteCount: 3)
@@ -483,17 +484,21 @@ internal extension Map.Loader.Parser.H3M {
                 try reader.skip(byteCount: 4)
                 objectKind = .sign(.init(message: message))
             case .oceanBottle:
-                let message = try reader.readString()
+                let message = try reader.readString(maxByteCount: 150) // Cyon 150 is confirmed in Map Editor to be max for ocean bottle.
                 try reader.skip(byteCount: 4)
                 objectKind = .oceanBottle(.init(message: message))
-            case .spellScroll: fatalError("spellScroll")
+            case .spellScroll:
+                let (message, guardians) = try parseMessageAndGuards(format: format)
+                let spellID = try Spell.ID(integer: reader.readUInt32())
+                objectKind = .spellScroll(.init(spell: spellID, message: message, guardians: guardians))
             case .town:
                 if case let .town(faction) = attributesOfObject.objectID {
                     objectKind = try .town(
                         parseTown(
                             format: format,
                             faction: faction,
-                            allowedSpellsOnMap: allowedSpellsOnMap
+                            allowedSpellsOnMap: allowedSpellsOnMap,
+                            availablePlayers: playersInfo.availablePlayers
                         )
                     )
                 } else {
@@ -501,7 +506,8 @@ internal extension Map.Loader.Parser.H3M {
                     objectKind = try .town(
                         parseRandomTown(
                             format: format,
-                            allowedSpellsOnMap: allowedSpellsOnMap
+                            allowedSpellsOnMap: allowedSpellsOnMap,
+                            availablePlayers: playersInfo.availablePlayers
                         )
                     )
                 }

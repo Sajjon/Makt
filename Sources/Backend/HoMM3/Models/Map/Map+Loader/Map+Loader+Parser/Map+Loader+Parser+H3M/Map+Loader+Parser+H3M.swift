@@ -56,13 +56,14 @@ extension Map.Loader.Parser.H3M {
         let detailsAboutObjects = try parseDetailsAboutObjects(
             inspector: inspector,
             format: format,
+            playersInfo: playersInfo,
             additionalMapInformation: additionalInfo,
             attributesOfObjects: attributesOfObjects
         )
         print("🔮 Parsed details about objects")
         inspector?.didParseAllObjects(detailsAboutObjects)
         
-        let globalEvents = try parseGlobalEvents(format: format)
+        let globalEvents = try parseGlobalEvents(format: format, availablePlayers: playersInfo.availablePlayers)
         inspector?.didParseEvents(globalEvents)
         
         return .init(
@@ -80,16 +81,29 @@ extension Map.Loader.Parser.H3M {
 
 internal extension Map.Loader.Parser.H3M {
 
-    
-    func parseAvailableForPlayers() throws -> [PlayerColor] {
-        try BitArray(
-            data: reader.read(byteCount: 1)
+
+    func parseAllowedPlayers(availablePlayers availablePlayersList: [PlayerColor]) throws -> [PlayerColor] {
+        let availablePlayers = Set(availablePlayersList)
+        let rawByte = try reader.readUInt8()
+        let allowedPlayers = BitArray(
+            data: Data([rawByte])
         )
         .enumerated()
         .compactMap { (colorIndex, isAvailable) -> PlayerColor? in
             guard isAvailable else { return nil }
             return PlayerColor.allCases[colorIndex]
         }
+
+        let alternative = PlayerColor.allCases.filter {
+            (rawByte << $0.rawValue) != 0
+        }
+        
+        
+        assert(alternative == allowedPlayers)
+        
+        let allowedOfAvailable = allowedPlayers.filter { availablePlayers.contains($0) }
+        
+        return allowedOfAvailable
     }
     
         
@@ -270,12 +284,12 @@ private extension Map.Object.Attributes {
 
 // MARK: Parse Events
 private extension Map.Loader.Parser.H3M {
-    func parseGlobalEvents(format: Map.Format) throws -> Map.GlobalEvents {
+    func parseGlobalEvents(format: Map.Format, availablePlayers: [PlayerColor]) throws -> Map.GlobalEvents {
         let events: [Map.Event] = try reader.readUInt32().nTimes {
             let name = try reader.readString()
             let message = try reader.readString()
             let resources = try parseResources()
-            let availableForPlayers = try parseAvailableForPlayers()
+            let allowedPlayers = try parseAllowedPlayers(availablePlayers: availablePlayers)
             let canBeActivatedByHuman = try format > .armageddonsBlade ? reader.readBool() : true
             let canBeActivatedByComputer = try reader.readBool()
             let firstOcurence = try reader.readUInt16()
@@ -289,7 +303,7 @@ private extension Map.Loader.Parser.H3M {
                 nextOccurence: nextOcurence,
                 message: message,
                 bounty: .init(resourcesToBeGained: resources),
-                availableForPlayers: availableForPlayers,
+                allowedPlayers: allowedPlayers,
                 canBeActivatedByComputer: canBeActivatedByComputer,
                 shouldBeRemovedAfterVisit: true, // what ?
                 canBeActivatedByHuman: canBeActivatedByHuman

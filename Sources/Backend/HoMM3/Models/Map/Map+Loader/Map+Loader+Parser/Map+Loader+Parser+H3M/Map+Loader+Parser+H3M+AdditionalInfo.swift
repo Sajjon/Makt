@@ -34,7 +34,7 @@ extension Map.Loader.Parser.H3M {
         }
         
         
-        let customHeroes = try parseCustomHeroes(format: format)
+        let customHeroes = try parseCustomHeroes(format: format, availablePlayers: playersInfo.availablePlayers)
         inspector?.didParseCustomHeroes(customHeroes)
         
         try reader.skip(byteCount: 31) // skip `nil`s
@@ -260,6 +260,7 @@ extension DataReader {
 private extension  Map.Loader.Parser.H3M {
     func parseAvailableHeroes(format: Map.Format) throws -> Map.AvailableHeroes {
         let availableHeroIDs = Hero.ID.playable(in: format)
+        
         let bitmask =  try reader.readBitArray(
             byteCount: format == .restorationOfErathia ? 16 : 20
         )
@@ -271,9 +272,7 @@ private extension  Map.Loader.Parser.H3M {
             guard available else {
                 return nil
             }
-            let heroID = availableHeroIDs[heroIDIndex]
-            assert(heroID.rawValue == heroIDIndex)
-            return heroID
+            return availableHeroIDs[heroIDIndex]
         }
 
         return .init(heroIDs: playableHeroIDs)

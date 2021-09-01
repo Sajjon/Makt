@@ -26,11 +26,10 @@ internal extension Map.Loader.Parser.H3M {
         return (message, guards)
     }
     
-    func parseEvent(format: Map.Format) throws -> Map.Event {
+    func parseEvent(format: Map.Format, availablePlayers: [PlayerColor]) throws -> Map.Event {
         let pandorasBox = try parsePandorasBox(format: format)
         
-        try reader.skip(byteCount: 8) // unknown?
-        let availableForPlayers = try parseAvailableForPlayers()
+        let allowedPlayers = try parseAllowedPlayers(availablePlayers: availablePlayers)
         let canBeActivatedByComputer = try reader.readBool()
         let shouldBeRemovedAfterVisit = try reader.readBool()
         try reader.skip(byteCount: 4) // unknown?
@@ -39,7 +38,7 @@ internal extension Map.Loader.Parser.H3M {
             message: pandorasBox.message,
             guards: pandorasBox.guards,
             bounty: pandorasBox.bounty,
-            availableForPlayers: availableForPlayers,
+            allowedPlayers: allowedPlayers,
             canBeActivatedByComputer: canBeActivatedByComputer,
             shouldBeRemovedAfterVisit: shouldBeRemovedAfterVisit,
             canBeActivatedByHuman: true // yes hardcoded

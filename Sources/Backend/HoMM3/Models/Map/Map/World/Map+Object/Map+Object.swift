@@ -93,6 +93,7 @@ public extension Map.Object {
         case witchHut(Map.WitchHut)
         case lighthouse(Map.Lighthouse)
         case grail(Map.Grail)
+        case spellScroll(Map.SpellScroll)
         
     }
 }
@@ -107,6 +108,11 @@ public extension Map {
         public let owner: PlayerColor?
     }
     
+    struct SpellScroll: Hashable {
+        public let spell: Spell.ID
+        public let message: String?
+        public let guardians: CreatureStacks?
+    }
     
     struct Monster: Hashable {
         public let creatureStack: CreatureStack

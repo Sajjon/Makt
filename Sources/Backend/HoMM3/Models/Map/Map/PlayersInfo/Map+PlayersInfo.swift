@@ -10,6 +10,7 @@ import Foundation
 public extension Map {
     struct InformationAboutPlayers: Hashable {
         public let players: [PlayerInfo]
+        public var availablePlayers: [PlayerColor] { players.map { $0.color } } 
     }
 }
 

@@ -434,7 +434,9 @@ final class MapTests: XCTestCase {
 //                print(world)
             },
             onParseObject: { object in
-                if object.indexInObjectAttributesArray == 266 {
+                
+                
+                if object.position == .init(x: 50, y: 28, inUnderworld: false) {
                     XCTAssertEqual(object.objectID, .event)
                     guard case let .event(event) = object.kind else {
                         XCTFail("expected event")
@@ -442,52 +444,23 @@ final class MapTests: XCTestCase {
                     }
                     XCTAssertEqual(event.message, "Warming a freezing old woman she blesses you with good luck for your next battle.")
                     XCTAssertEqual(event.bounty?.luckToBeGainedOrDrained, 1)
+                    XCTAssertEqual(event.availability.allowedPlayers, [.red, .blue, .tan, .green, .orange])
                     XCTAssertTrue(event.shouldBeRemovedAfterVisit)
-                    XCTAssertEqual(event.availability.availableForPlayers, [.red, .blue, .tan, .green, .orange])
-//                    XCTAssertEqual(object.kind, .event(.init(
-//                        name: nil,
-//                        firstOccurence: nil,
-//                        nextOccurence: nil,
-//                        pandorasBox: .init(
-//                            message:
-//                            guards: nil,
-//                            experiencePointsToBeGained: 0,
-//                            manaPointsToBeGainedOrDrained: 0,
-//                            moraleToBeGainedOrDrained: 0,
-//                            luckToBeGainedOrDrained: 1,
-//                            resourcesToBeGained: nil,
-//                            primarySkills: [],
-//                            secondarySkills: [],
-//                            artifactIDs: [],
-//                            spellIDs: [],
-//                            creaturesGained: nil
-//                        ),
-//                        availableForPlayers: [.red, .blue, .tan, .green, .orange],
-//                        canBeActivatedByComputer: false,
-//                        shouldBeRemovedAfterVisit: true,
-//                        canBeActivatedByHuman: true
-//                    )
-//                    )
-//                    )
+                } else if object.position == .init(x: 100, y: 60, inUnderworld: false) {
+                    XCTAssertEqual(object.objectID, .event)
+                    guard case let .event(event) = object.kind else {
+                        XCTFail("expected event")
+                        return
+                    }
+                    XCTAssertEqual(event.message, "Being so far from home causes your troops to miss their families.")
+                    XCTAssertEqual(event.bounty?.moraleToBeGainedOrDrained, -2)
                 }
+                
+                
             }
         )
         
         XCTAssertNoThrow(try Map.load(mapID, inspector: inspector))
-        
-
-//        XCTAssertEqual(map.about.playersInfo.players.count, 5)
-//
-//        XCTAssertTrue(map.about.playersInfo.players.allSatisfy({ $0.isPlayableBothByHumanAndAI }))
-//
-//        XCTAssertEqual(map.about.playersInfo.players[0].playableFactions, [.castle])
-//        XCTAssertEqual(map.about.playersInfo.players[1].playableFactions, [.tower])
-//        XCTAssertEqual(map.about.playersInfo.players[2].playableFactions, [.inferno])
-//        XCTAssertEqual(map.about.playersInfo.players[3].playableFactions, [.fortress])
-//        XCTAssertEqual(map.about.playersInfo.players[4].playableFactions, [.stronghold])
-//
-//        XCTAssertEqual(map.about.victoryLossConditions.victoryConditions.map { $0.kind.stripped }, [.captureSpecificTown])
-//        XCTAssertEqual(map.about.victoryLossConditions.lossConditions.map { $0.kind.stripped }, [.timeLimit, .standard])
     }
 }
 
