@@ -237,6 +237,7 @@ internal extension Map.Loader.Parser.H3M {
                     artifact = .random(class: .any) //.init(id: .random(class: .any, in: format))
                 } else { fatalError("incorrect implementation, unhandled object ID: \(attributesOfObject.objectID)") }
                 let guardedArtifact = Map.GuardedArtifact(artifact, message: message, guards: guards)
+              
                 objectKind = .artifact(guardedArtifact)
             case .event:
                 objectKind = try .event(parseEvent(format: format, availablePlayers: playersInfo.availablePlayers))
@@ -531,7 +532,7 @@ internal extension Map.Loader.Parser.H3M {
                 indexInObjectAttributesArray: objectAttributesIndex
             )
             
-            print("🔮 successfully parsed mapObject: \(mapObject), at objectAttributeIndex: \(objectAttributesIndex)")
+//            print("🔮 successfully parsed mapObject: \(mapObject), at objectAttributeIndex: \(objectAttributesIndex)")
             
             inspector?.didParseObject(mapObject)
             objects.append(mapObject)

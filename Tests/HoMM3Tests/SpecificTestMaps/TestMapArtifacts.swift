@@ -84,6 +84,18 @@ final class ArtifactsMapTest: BaseMapTest {
                         stacks maybeStacks: [(CreatureStacks.Slot, CreatureStack)]? = nil,
                         line: UInt = #line
                     ) {
+                        if let artifactClass = randomArtifactClass {
+                            switch artifactClass {
+                            case .major:  XCTAssertEqual(object.attributes.objectID, .randomMajorArtifact)
+                            case .relic:  XCTAssertEqual(object.attributes.objectID, .randomRelic)
+                            case .minor:  XCTAssertEqual(object.attributes.objectID, .randomMinorArtifact)
+                            case .treasure:  XCTAssertEqual(object.attributes.objectID, .randomTreasureArtifact)
+                            }
+                           
+                        } else {
+                            XCTAssertEqual(object.attributes.objectID, .randomArtifact)
+                        }
+                        
                         guard case let .artifact(guardedArtifact) = object.kind else {
                             XCTFail("Expected artifact, but got: \(object.kind)")
                             return
@@ -142,11 +154,19 @@ final class ArtifactsMapTest: BaseMapTest {
                     case .at(1, y: 12):
                         assertArtifact(id: .cloakOfTheUndeadKing, msg: "cloak undead king")
                     case .at(1, y: 14):
-                        XCTAssertEqual(object.attributes.objectID, .randomArtifact)
                         assertRandomArtifact(class: .any, msg: "random", stacks: [
                             (CreatureStacks.Slot.one, .init(creatureID: .archer, quantity: 1)),
                             (CreatureStacks.Slot.seven, .init(creatureID: .archer, quantity: 1))
                         ])
+                    case .at(3, y: 14):
+                        assertRandomArtifact(class: .treasure, msg:  "random treasure")
+                    case .at(5, y: 14):
+                        assertRandomArtifact(class: .minor, msg:  "random minor")
+                    case .at(7, y: 14):
+                        assertRandomArtifact(class: .major, msg:  "random major")
+                    case .at(9, y: 14):
+                        assertRandomArtifact(class: .relic, msg:  "random relic")
+                       
                     default: break
                     }
                 }
