@@ -27,9 +27,14 @@ public extension Map {
     
     
     struct GuardedArtifact: Hashable {
+        public let artifact: Artifact
         public let message: String?
         public let guards: CreatureStacks?
-        public let artifact: Artifact
+        public init(_ artifact: Artifact, message: String? = nil, guards: CreatureStacks? = nil) {
+            self.artifact = artifact
+            self.message = message
+            self.guards = guards
+        }
     }
     
     struct Dwelling: Hashable {
@@ -51,6 +56,7 @@ public extension Map {
     
     
     struct Grail: Hashable {
+        /// Map Editor "select allowable placement radius"
         public let radius: UInt32
     }
 }
@@ -112,6 +118,11 @@ public extension Map {
         public let spell: Spell.ID
         public let message: String?
         public let guardians: CreatureStacks?
+        public init(id spellID: Spell.ID, message: String? = nil, guardians: CreatureStacks? = nil) {
+            self.spell = spellID
+            self.message = message
+            self.guardians = guardians
+        }
     }
     
     struct Monster: Hashable {

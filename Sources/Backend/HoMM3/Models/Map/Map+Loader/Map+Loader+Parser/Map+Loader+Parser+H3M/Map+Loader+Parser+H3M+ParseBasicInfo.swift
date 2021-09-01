@@ -47,10 +47,10 @@ extension  Map.Loader.Parser.H3M {
         
         let hasTwoLevels = try reader.readBool()
         
-        let name = try reader.readString()
+        let name = try reader.readString(maxByteCount: 30) ?? "" // Cyon verified that 30 chars is max for "Name" in Map Editor
         inspector?.didParseName(name)
         
-        let description = try reader.readString()
+        let description = try reader.readString(maxByteCount: 300) ?? ""  // Cyon verified that 300 chars is max for "Description" in Map Editor
         inspector?.didParseDescription(description)
         
         let difficulty = try Difficulty(integer: reader.readUInt8()) // VCMI uses read SIGNED Int8 here instead of UInt8. But homm3tools uses UInt8.

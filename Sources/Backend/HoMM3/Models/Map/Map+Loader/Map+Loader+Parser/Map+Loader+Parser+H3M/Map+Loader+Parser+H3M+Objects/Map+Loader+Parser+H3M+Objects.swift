@@ -230,7 +230,7 @@ internal extension Map.Loader.Parser.H3M {
                 } else if case .randomArtifact = attributesOfObject.objectID {
                     artifact = .init(id: .random(class: .any, in: format))
                 } else { fatalError("incorrect implementation, unhandled object ID: \(attributesOfObject.objectID)") }
-                let guardedArtifact = Map.GuardedArtifact(message: message, guards: guards, artifact: artifact)
+                let guardedArtifact = Map.GuardedArtifact(artifact, message: message, guards: guards)
                 objectKind = .artifact(guardedArtifact)
             case .event:
                 objectKind = try .event(parseEvent(format: format, availablePlayers: playersInfo.availablePlayers))
@@ -490,7 +490,7 @@ internal extension Map.Loader.Parser.H3M {
             case .spellScroll:
                 let (message, guardians) = try parseMessageAndGuards(format: format)
                 let spellID = try Spell.ID(integer: reader.readUInt32())
-                objectKind = .spellScroll(.init(spell: spellID, message: message, guardians: guardians))
+                objectKind = .spellScroll(.init(id: spellID, message: message, guardians: guardians))
             case .town:
                 if case let .town(faction) = attributesOfObject.objectID {
                     objectKind = try .town(
@@ -542,10 +542,27 @@ public struct CreatureStack: Hashable {
     public typealias Quantity = Int
     public let creatureID: Creature.ID
     public let quantity: Quantity
+    
 }
 
 
 public struct Army: Hashable {
+
+    public enum Formation: UInt8, Hashable, CaseIterable {
+        case wide, tight
+    }
+   
+    public let formation: Formation?
+    public let creatureStacks: CreatureStacks
+
+    public init(creatureStacks: CreatureStacks, formation: Formation?) {
+        self.creatureStacks = creatureStacks
+        self.formation = formation
+    }
+}
+
+public struct CreatureStacks: Hashable {
+    
     public enum Slot: UInt8, Hashable, CaseIterable {
         case one = 0
         case two
@@ -555,40 +572,40 @@ public struct Army: Hashable {
         case six
         case seven
     }
-    public enum Formation: UInt8, Hashable, CaseIterable {
-        case wide, tight
-    }
-    public let creatureStackAtSlot: [Slot: CreatureStack]
-    public let formation: Formation?
     
-    public init(creatureStackAtSlot: [Slot: CreatureStack], formation: Formation?) {
-        self.creatureStackAtSlot = creatureStackAtSlot
-        self.formation = formation
+    public let creatureStackAtSlot: [Slot: CreatureStack?]
+    
+    public init(creatureStackAtSlot: [Slot: CreatureStack?]) {
+        self.creatureStackAtSlot = creatureStackAtSlot.filter { $0.value != nil }
     }
     
-    public init(creatureStacks: CreatureStacks, formation: Formation?) {
-        self.init(
-            creatureStackAtSlot: Dictionary(
-                uniqueKeysWithValues: Army.Slot.allCases.enumerated().map({
-                    let key = $0.element
-                    print("🤡 $0.element: \($0.element), $0.offset: \($0.offset), creatureStacks.count: \(creatureStacks.creatureStacks.count)")
-                    let value = creatureStacks.creatureStacks[$0.offset]
-                    return (key: key, value: value)
-                })
-            ),
-            formation: formation
-        )
+    public init(stacks: [CreatureStack?]) {
+        precondition(stacks.count == Slot.allCases.count)
+        self.init(creatureStackAtSlot: Dictionary.init(uniqueKeysWithValues: Slot.allCases.enumerated().map({ index, slot in
+            return (key: slot, value: stacks[index])
+        })))
     }
-}
-
-public struct CreatureStacks: Hashable {
-    public let creatureStacks: [CreatureStack]
-    public init?(creatureStacks: [CreatureStack]) {
-        guard creatureStacks.count > 0 else {
-            return nil
-        }
-        self.creatureStacks = creatureStacks
-    }
+    
+    
+//    public init?(creatureStacks: [CreatureStack?]) {
+//
+//        guard creatureStacks.compactMap({ $0 }).count > 0 else {
+//            return nil
+//        }
+//
+//        self.init(
+//            creatureStackAtSlot: Dictionary(
+//                uniqueKeysWithValues: Slot.allCases.prefix(creatureStacks.count).enumerated().compactMap({
+//                    let key = $0.element
+//                    guard let value = creatureStacks[$0.offset] else {
+//                        return nil
+//                    }
+//                    return (key: key, value: value)
+//                })
+//            )
+//        )
+//    }
+    
 }
 
 

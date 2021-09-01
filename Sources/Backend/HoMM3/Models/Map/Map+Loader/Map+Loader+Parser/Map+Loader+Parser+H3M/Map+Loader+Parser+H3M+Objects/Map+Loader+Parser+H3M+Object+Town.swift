@@ -445,9 +445,7 @@ internal extension Map.Loader.Parser.H3M {
         
         
         let obligatorySpells = try format >= .armageddonsBlade ? parseSpellIDs() : []
-        var offsetSaved = reader.offset
         let possibleSpells = try parseSpellIDs(includeIfBitSet: false).filter({ allowedSpellsOnMap.contains($0) })
-        assert(reader.offset == offsetSaved + 9)
         
         // TODO add spells from mods.
         
@@ -469,7 +467,7 @@ internal extension Map.Loader.Parser.H3M {
             
             // New buildings
             let buildings = try parseBuildings()
-            let creatureStacks = try Creature.ID.of(faction: faction, .nonUpgradedOnly).map { creatureID in
+            let creatureStackList: [CreatureStack] = try Creature.ID.of(faction: faction, .nonUpgradedOnly).map { creatureID in
                 try CreatureStack(creatureID: creatureID, quantity: .init(reader.readUInt16()))
             }
             try reader.skip(byteCount: 4)
@@ -479,9 +477,9 @@ internal extension Map.Loader.Parser.H3M {
                 firstOccurence: firstOccurence,
                 nextOccurence: nextOccurence,
                 message: message,
-                bounty: Bounty.init(
+                bounty: Bounty(
                     resourcesToBeGained: resources,
-                    creaturesGained: .init(creatureStacks: creatureStacks)
+                    creaturesGained: .init(stacks: creatureStackList)
                 ),
                 allowedPlayers: allowedPlayers,
                 canBeActivatedByComputer: canBeActivatedByComputer,

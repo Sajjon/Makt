@@ -14,32 +14,27 @@ internal extension Map.Loader.Parser.H3M {
         count _count: I
     ) throws -> CreatureStacks? where I: FixedWidthInteger {
         let count = Int(_count)
-        let stacks: [CreatureStack] = try (0..<count).compactMap { slotIndex -> CreatureStack? in
-            //            guard let creatureID: Creature.ID = try parseCreatureID(format: format) else {
-            //                return nil // empty slot
-            //            }
+        let stacks: [(CreatureStacks.Slot, CreatureStack?)] = try (0..<count).map { slotIndex in
+            let slot = try CreatureStacks.Slot.init(id: .init(slotIndex))
             
             let idRaw: UInt16 = try format == .restorationOfErathia ? UInt16(reader.readUInt8()) : reader.readUInt16()
             let isNotSet: Bool = format == .restorationOfErathia ? idRaw == 0xff : idRaw == 0xffff
+            let isSet = !isNotSet
             let quantity = try CreatureStack.Quantity(reader.readUInt16())
             
-            guard quantity > 0 else {
-                return nil
+            guard quantity > 0, isSet else {
+                return (slot, nil)
             }
             
-            
-            guard isNotSet == false else { return nil }
-            //            guard hasValue else { return nil }
-            //            return try RR.init(integer: idRaw)
-            
-            let creatureID = (try? Creature.ID(integer: idRaw)) ?? .azureDragon // TODO FIX ME! Not `.azureDragon` just a temp fix...
+            let creatureID = try Creature.ID(integer: idRaw)
             
             if creatureID.rawValue > ((format > .restorationOfErathia ? Int(0xffff) : Int(0xff)) - 0xf) {
                 fatalError("handle this, vcmi does: `hlp->idRand = maxID - creID - 1`")
             }
-            return .init(creatureID: creatureID, quantity: quantity)
+            let stack = CreatureStack(creatureID: creatureID, quantity: quantity)
+            return (slot, stack)
         }
-        return .init(creatureStacks: stacks)
+        return .init(creatureStackAtSlot: Dictionary.init(uniqueKeysWithValues: stacks))
     }
     
 //    func parseArmy<I>(format: Map.Format, count _count: I, parseFormation: Bool) throws -> Army? where I: FixedWidthInteger {

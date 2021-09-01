@@ -30,6 +30,27 @@
 		487AF98026DC039A0073277F /* H3M+Parse+Inspector+PlayersInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487AF97F26DC039A0073277F /* H3M+Parse+Inspector+PlayersInfo.swift */; };
 		487AF98226DC03B70073277F /* H3M+Parse+Inspector+AdditionalInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487AF98126DC03B70073277F /* H3M+Parse+Inspector+AdditionalInfo.swift */; };
 		487AF98426DC049F0073277F /* H3M+Parse+Inspector+BasicInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487AF98326DC049F0073277F /* H3M+Parse+Inspector+BasicInfo.swift */; };
+		487AF98A26DF52440073277F /* TestMapArtifacts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487AF98926DF52440073277F /* TestMapArtifacts.swift */; };
+		487AF9A226DF5CBF0073277F /* town-spells-1-3.h3m in Resources */ = {isa = PBXBuildFile; fileRef = 487AF99026DF5CBF0073277F /* town-spells-1-3.h3m */; };
+		487AF9A326DF5CBF0073277F /* town-events.h3m in Resources */ = {isa = PBXBuildFile; fileRef = 487AF99126DF5CBF0073277F /* town-events.h3m */; };
+		487AF9A426DF5CBF0073277F /* monsters.h3m in Resources */ = {isa = PBXBuildFile; fileRef = 487AF99226DF5CBF0073277F /* monsters.h3m */; };
+		487AF9A526DF5CBF0073277F /* garrison.h3m in Resources */ = {isa = PBXBuildFile; fileRef = 487AF99326DF5CBF0073277F /* garrison.h3m */; };
+		487AF9A626DF5CBF0073277F /* town-spells-4-5.h3m in Resources */ = {isa = PBXBuildFile; fileRef = 487AF99426DF5CBF0073277F /* town-spells-4-5.h3m */; };
+		487AF9A726DF5CBF0073277F /* seers-hut.h3m in Resources */ = {isa = PBXBuildFile; fileRef = 487AF99526DF5CBF0073277F /* seers-hut.h3m */; };
+		487AF9A826DF5CBF0073277F /* events.h3m in Resources */ = {isa = PBXBuildFile; fileRef = 487AF99626DF5CBF0073277F /* events.h3m */; };
+		487AF9A926DF5CBF0073277F /* secondary-skills.h3m in Resources */ = {isa = PBXBuildFile; fileRef = 487AF99726DF5CBF0073277F /* secondary-skills.h3m */; };
+		487AF9AA26DF5CBF0073277F /* witch-hut.h3m in Resources */ = {isa = PBXBuildFile; fileRef = 487AF99826DF5CBF0073277F /* witch-hut.h3m */; };
+		487AF9AB26DF5CBF0073277F /* resources.h3m in Resources */ = {isa = PBXBuildFile; fileRef = 487AF99926DF5CBF0073277F /* resources.h3m */; };
+		487AF9AC26DF5CBF0073277F /* pandora-box.h3m in Resources */ = {isa = PBXBuildFile; fileRef = 487AF99A26DF5CBF0073277F /* pandora-box.h3m */; };
+		487AF9AD26DF5CBF0073277F /* random-RoE.h3m in Resources */ = {isa = PBXBuildFile; fileRef = 487AF99B26DF5CBF0073277F /* random-RoE.h3m */; };
+		487AF9AE26DF5CBF0073277F /* scholar.h3m in Resources */ = {isa = PBXBuildFile; fileRef = 487AF99C26DF5CBF0073277F /* scholar.h3m */; };
+		487AF9AF26DF5CBF0073277F /* random-AB.h3m in Resources */ = {isa = PBXBuildFile; fileRef = 487AF99D26DF5CBF0073277F /* random-AB.h3m */; };
+		487AF9B026DF5CBF0073277F /* dwelling.h3m in Resources */ = {isa = PBXBuildFile; fileRef = 487AF99E26DF5CBF0073277F /* dwelling.h3m */; };
+		487AF9B126DF5CBF0073277F /* random-SoD.h3m in Resources */ = {isa = PBXBuildFile; fileRef = 487AF99F26DF5CBF0073277F /* random-SoD.h3m */; };
+		487AF9B226DF5CBF0073277F /* creatures.h3m in Resources */ = {isa = PBXBuildFile; fileRef = 487AF9A026DF5CBF0073277F /* creatures.h3m */; };
+		487AF9B326DF5CBF0073277F /* artifacts.h3m in Resources */ = {isa = PBXBuildFile; fileRef = 487AF9A126DF5CBF0073277F /* artifacts.h3m */; };
+		487AF9B526DF6DDF0073277F /* Map+Position+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487AF9B426DF6DDF0073277F /* Map+Position+Extension.swift */; };
+		487AF9B726DF6DFA0073277F /* BaseMapTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487AF9B626DF6DFA0073277F /* BaseMapTest.swift */; };
 		487C2B8026C9066600031505 /* Map+Loader+Cache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487C2B7D26C9066500031505 /* Map+Loader+Cache.swift */; };
 		487C2B8126C9066600031505 /* Map+Loader+Parser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487C2B7F26C9066600031505 /* Map+Loader+Parser.swift */; };
 		487C2B8426C936D600031505 /* Map+ID+KnownMaps.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487C2B8326C936D600031505 /* Map+ID+KnownMaps.swift */; };
@@ -151,6 +172,27 @@
 		487AF97F26DC039A0073277F /* H3M+Parse+Inspector+PlayersInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "H3M+Parse+Inspector+PlayersInfo.swift"; sourceTree = "<group>"; };
 		487AF98126DC03B70073277F /* H3M+Parse+Inspector+AdditionalInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "H3M+Parse+Inspector+AdditionalInfo.swift"; sourceTree = "<group>"; };
 		487AF98326DC049F0073277F /* H3M+Parse+Inspector+BasicInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "H3M+Parse+Inspector+BasicInfo.swift"; sourceTree = "<group>"; };
+		487AF98926DF52440073277F /* TestMapArtifacts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestMapArtifacts.swift; sourceTree = "<group>"; };
+		487AF99026DF5CBF0073277F /* town-spells-1-3.h3m */ = {isa = PBXFileReference; lastKnownFileType = file; path = "town-spells-1-3.h3m"; sourceTree = "<group>"; };
+		487AF99126DF5CBF0073277F /* town-events.h3m */ = {isa = PBXFileReference; lastKnownFileType = file; path = "town-events.h3m"; sourceTree = "<group>"; };
+		487AF99226DF5CBF0073277F /* monsters.h3m */ = {isa = PBXFileReference; lastKnownFileType = file; path = monsters.h3m; sourceTree = "<group>"; };
+		487AF99326DF5CBF0073277F /* garrison.h3m */ = {isa = PBXFileReference; lastKnownFileType = file; path = garrison.h3m; sourceTree = "<group>"; };
+		487AF99426DF5CBF0073277F /* town-spells-4-5.h3m */ = {isa = PBXFileReference; lastKnownFileType = file; path = "town-spells-4-5.h3m"; sourceTree = "<group>"; };
+		487AF99526DF5CBF0073277F /* seers-hut.h3m */ = {isa = PBXFileReference; lastKnownFileType = file; path = "seers-hut.h3m"; sourceTree = "<group>"; };
+		487AF99626DF5CBF0073277F /* events.h3m */ = {isa = PBXFileReference; lastKnownFileType = file; path = events.h3m; sourceTree = "<group>"; };
+		487AF99726DF5CBF0073277F /* secondary-skills.h3m */ = {isa = PBXFileReference; lastKnownFileType = file; path = "secondary-skills.h3m"; sourceTree = "<group>"; };
+		487AF99826DF5CBF0073277F /* witch-hut.h3m */ = {isa = PBXFileReference; lastKnownFileType = file; path = "witch-hut.h3m"; sourceTree = "<group>"; };
+		487AF99926DF5CBF0073277F /* resources.h3m */ = {isa = PBXFileReference; lastKnownFileType = file; path = resources.h3m; sourceTree = "<group>"; };
+		487AF99A26DF5CBF0073277F /* pandora-box.h3m */ = {isa = PBXFileReference; lastKnownFileType = file; path = "pandora-box.h3m"; sourceTree = "<group>"; };
+		487AF99B26DF5CBF0073277F /* random-RoE.h3m */ = {isa = PBXFileReference; lastKnownFileType = file; path = "random-RoE.h3m"; sourceTree = "<group>"; };
+		487AF99C26DF5CBF0073277F /* scholar.h3m */ = {isa = PBXFileReference; lastKnownFileType = file; path = scholar.h3m; sourceTree = "<group>"; };
+		487AF99D26DF5CBF0073277F /* random-AB.h3m */ = {isa = PBXFileReference; lastKnownFileType = file; path = "random-AB.h3m"; sourceTree = "<group>"; };
+		487AF99E26DF5CBF0073277F /* dwelling.h3m */ = {isa = PBXFileReference; lastKnownFileType = file; path = dwelling.h3m; sourceTree = "<group>"; };
+		487AF99F26DF5CBF0073277F /* random-SoD.h3m */ = {isa = PBXFileReference; lastKnownFileType = file; path = "random-SoD.h3m"; sourceTree = "<group>"; };
+		487AF9A026DF5CBF0073277F /* creatures.h3m */ = {isa = PBXFileReference; lastKnownFileType = file; path = creatures.h3m; sourceTree = "<group>"; };
+		487AF9A126DF5CBF0073277F /* artifacts.h3m */ = {isa = PBXFileReference; lastKnownFileType = file; path = artifacts.h3m; sourceTree = "<group>"; };
+		487AF9B426DF6DDF0073277F /* Map+Position+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Map+Position+Extension.swift"; sourceTree = "<group>"; };
+		487AF9B626DF6DFA0073277F /* BaseMapTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseMapTest.swift; sourceTree = "<group>"; };
 		487C2B7D26C9066500031505 /* Map+Loader+Cache.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Map+Loader+Cache.swift"; sourceTree = "<group>"; };
 		487C2B7F26C9066600031505 /* Map+Loader+Parser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Map+Loader+Parser.swift"; sourceTree = "<group>"; };
 		487C2B8326C936D600031505 /* Map+ID+KnownMaps.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Map+ID+KnownMaps.swift"; sourceTree = "<group>"; };
@@ -329,6 +371,7 @@
 		481BDF9E26C6A4F000C5E335 /* Tests */ = {
 			isa = PBXGroup;
 			children = (
+				487AF98E26DF5CBF0073277F /* Resources */,
 				487C2BC926CCF69400031505 /* AlgorithmTests */,
 				487C2BC826CCF68A00031505 /* HoMM3Tests */,
 				487C2B8226C936C900031505 /* Extensions */,
@@ -402,6 +445,48 @@
 			path = "H3M+PlayersInfo";
 			sourceTree = "<group>";
 		};
+		487AF98826DF522D0073277F /* SpecificTestMaps */ = {
+			isa = PBXGroup;
+			children = (
+				487AF98926DF52440073277F /* TestMapArtifacts.swift */,
+				487AF9B626DF6DFA0073277F /* BaseMapTest.swift */,
+			);
+			path = SpecificTestMaps;
+			sourceTree = "<group>";
+		};
+		487AF98E26DF5CBF0073277F /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				487AF98F26DF5CBF0073277F /* TestMaps */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		487AF98F26DF5CBF0073277F /* TestMaps */ = {
+			isa = PBXGroup;
+			children = (
+				487AF99026DF5CBF0073277F /* town-spells-1-3.h3m */,
+				487AF99126DF5CBF0073277F /* town-events.h3m */,
+				487AF99226DF5CBF0073277F /* monsters.h3m */,
+				487AF99326DF5CBF0073277F /* garrison.h3m */,
+				487AF99426DF5CBF0073277F /* town-spells-4-5.h3m */,
+				487AF99526DF5CBF0073277F /* seers-hut.h3m */,
+				487AF99626DF5CBF0073277F /* events.h3m */,
+				487AF99726DF5CBF0073277F /* secondary-skills.h3m */,
+				487AF99826DF5CBF0073277F /* witch-hut.h3m */,
+				487AF99926DF5CBF0073277F /* resources.h3m */,
+				487AF99A26DF5CBF0073277F /* pandora-box.h3m */,
+				487AF99B26DF5CBF0073277F /* random-RoE.h3m */,
+				487AF99C26DF5CBF0073277F /* scholar.h3m */,
+				487AF99D26DF5CBF0073277F /* random-AB.h3m */,
+				487AF99E26DF5CBF0073277F /* dwelling.h3m */,
+				487AF99F26DF5CBF0073277F /* random-SoD.h3m */,
+				487AF9A026DF5CBF0073277F /* creatures.h3m */,
+				487AF9A126DF5CBF0073277F /* artifacts.h3m */,
+			);
+			path = TestMaps;
+			sourceTree = "<group>";
+		};
 		487C2B7C26C9066500031505 /* Map+Loader+Cache */ = {
 			isa = PBXGroup;
 			children = (
@@ -423,6 +508,7 @@
 			isa = PBXGroup;
 			children = (
 				487C2B8326C936D600031505 /* Map+ID+KnownMaps.swift */,
+				487AF9B426DF6DDF0073277F /* Map+Position+Extension.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -493,6 +579,7 @@
 		487C2BC826CCF68A00031505 /* HoMM3Tests */ = {
 			isa = PBXGroup;
 			children = (
+				487AF98826DF522D0073277F /* SpecificTestMaps */,
 				487AF96926D9130B0073277F /* Failing */,
 				487C2BB426CC2E8500031505 /* HeroIDTests.swift */,
 				487C2BDF26CD3D7400031505 /* ArtifactIDTests.swift */,
@@ -803,6 +890,24 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				487AF9AD26DF5CBF0073277F /* random-RoE.h3m in Resources */,
+				487AF9AA26DF5CBF0073277F /* witch-hut.h3m in Resources */,
+				487AF9A226DF5CBF0073277F /* town-spells-1-3.h3m in Resources */,
+				487AF9AE26DF5CBF0073277F /* scholar.h3m in Resources */,
+				487AF9A926DF5CBF0073277F /* secondary-skills.h3m in Resources */,
+				487AF9A426DF5CBF0073277F /* monsters.h3m in Resources */,
+				487AF9AC26DF5CBF0073277F /* pandora-box.h3m in Resources */,
+				487AF9AB26DF5CBF0073277F /* resources.h3m in Resources */,
+				487AF9B126DF5CBF0073277F /* random-SoD.h3m in Resources */,
+				487AF9AF26DF5CBF0073277F /* random-AB.h3m in Resources */,
+				487AF9B326DF5CBF0073277F /* artifacts.h3m in Resources */,
+				487AF9A326DF5CBF0073277F /* town-events.h3m in Resources */,
+				487AF9A526DF5CBF0073277F /* garrison.h3m in Resources */,
+				487AF9A826DF5CBF0073277F /* events.h3m in Resources */,
+				487AF9B226DF5CBF0073277F /* creatures.h3m in Resources */,
+				487AF9B026DF5CBF0073277F /* dwelling.h3m in Resources */,
+				487AF9A626DF5CBF0073277F /* town-spells-4-5.h3m in Resources */,
+				487AF9A726DF5CBF0073277F /* seers-hut.h3m in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -913,8 +1018,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				487AF98A26DF52440073277F /* TestMapArtifacts.swift in Sources */,
 				487C2BB526CC2E8500031505 /* HeroIDTests.swift in Sources */,
 				487C2BE926CD4A4500031505 /* SpellIDTests.swift in Sources */,
+				487AF9B726DF6DFA0073277F /* BaseMapTest.swift in Sources */,
+				487AF9B526DF6DDF0073277F /* Map+Position+Extension.swift in Sources */,
 				487C2B8426C936D600031505 /* Map+ID+KnownMaps.swift in Sources */,
 				481BDFA026C6A4F000C5E335 /* FailingMapTests.swift in Sources */,
 				487C2BCB26CCF6A600031505 /* CRC32Tests.swift in Sources */,

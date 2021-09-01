@@ -11,7 +11,7 @@ extension Map.ID {
     static let tutorial: Self = "Tutorial.tut"
     
     static func h3m(_ name: String) -> Self {
-        .init(fileName: name.appending("." + Self.fileExtension))
+        .init(named: name.appending("." + Self.fileExtension))
     }
     
     /// SOD, .small
