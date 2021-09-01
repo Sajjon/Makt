@@ -10,7 +10,7 @@ import Foundation
 public extension Artifact {
     
     /// From: http://heroescommunity.com/viewthread.php3?TID=46589&PID=1529923#focus
-    enum ID: UInt8, Hashable, CaseIterable {
+    enum ID: UInt8, Hashable, CaseIterable, CustomDebugStringConvertible {
         case spellBook,
         spellScroll,
         grail,
@@ -275,6 +275,14 @@ public extension Artifact.ID {
             
         }
     }
+    
+    static let armageddonsBladeArtifactsOnly: [Self] = [.vialOfDragonBlood, .armageddonsBlade]
+    static let shadowOfDeathArtifactsOnly: [Self] = Self.available(in: .shadowOfDeath).filter{
+        $0.rawValue > Self.armageddonsBlade.rawValue // remove AB
+        && $0.rawValue <= Self.cornucopia.rawValue // exclude WoG/HotA artifacts
+    }
+    
+    static let armageddonsBladeAndShadowOfDeathArtifactsOnly = Self.armageddonsBladeArtifactsOnly + Self.shadowOfDeathArtifactsOnly
 
 }
 
