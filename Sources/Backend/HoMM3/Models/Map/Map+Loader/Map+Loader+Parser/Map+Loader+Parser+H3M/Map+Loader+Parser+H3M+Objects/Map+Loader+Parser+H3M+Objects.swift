@@ -210,6 +210,12 @@ internal extension Map.Loader.Parser.H3M {
             let objectKind: Map.Object.Kind
             
             switch attributesOfObject.objectID.class {
+            
+            case .spellScroll: // TODO figure out a good way to merge `Map.SpellScroll` and `Map.Artifact.Kind == .spellScroll`
+                let (message, guardians) = try parseMessageAndGuards(format: format)
+                let spellID = try Spell.ID(integer: reader.readUInt32())
+                objectKind = .spellScroll(.init(id: spellID, message: message, guardians: guardians))
+            
             case .artifact:
                 let (message, guards) = try parseMessageAndGuards(format: format)
                 let artifact: Artifact
@@ -217,18 +223,18 @@ internal extension Map.Loader.Parser.H3M {
                     let spellIDParsed = try Spell.ID(integer: reader.readUInt32())
                     assert(spellIDParsed == expectedSpellScrollID)
                     artifact = .scroll(spell: spellIDParsed)
-                } else if case let .artifact(expectedArtifactID) = attributesOfObject.objectID {
-                    artifact = .init(id: expectedArtifactID)
+                } else if case let .artifact(specificArtifactID) = attributesOfObject.objectID {
+                    artifact =  .specific(id: specificArtifactID) //.init(id: expectedArtifactID)
                 } else if case .randomMajorArtifact = attributesOfObject.objectID {
-                    artifact = .init(id: .random(class: .major, in: format))
+                    artifact = .random(class: .major) //.init(id: .random(class: .major, in: format))
                 } else if case .randomMinorArtifact = attributesOfObject.objectID {
-                    artifact = .init(id: .random(class: .minor, in: format))
+                    artifact = .random(class: .minor) //.init(id: .random(class: .minor, in: format))
                 } else if case .randomRelic = attributesOfObject.objectID {
-                    artifact = .init(id: .random(class: .relic, in: format))
+                    artifact = .random(class: .relic) //.init(id: .random(class: .relic, in: format))
                 } else if case .randomTreasureArtifact = attributesOfObject.objectID {
-                    artifact = .init(id: .random(class: .treasure, in: format))
+                    artifact = .random(class: .treasure) //.init(id: .random(class: .treasure, in: format))
                 } else if case .randomArtifact = attributesOfObject.objectID {
-                    artifact = .init(id: .random(class: .any, in: format))
+                    artifact = .random(class: .any) //.init(id: .random(class: .any, in: format))
                 } else { fatalError("incorrect implementation, unhandled object ID: \(attributesOfObject.objectID)") }
                 let guardedArtifact = Map.GuardedArtifact(artifact, message: message, guards: guards)
                 objectKind = .artifact(guardedArtifact)
@@ -487,10 +493,6 @@ internal extension Map.Loader.Parser.H3M {
                 let message = try reader.readString(maxByteCount: 150) // Cyon 150 is confirmed in Map Editor to be max for ocean bottle.
                 try reader.skip(byteCount: 4)
                 objectKind = .oceanBottle(.init(message: message))
-            case .spellScroll:
-                let (message, guardians) = try parseMessageAndGuards(format: format)
-                let spellID = try Spell.ID(integer: reader.readUInt32())
-                objectKind = .spellScroll(.init(id: spellID, message: message, guardians: guardians))
             case .town:
                 if case let .town(faction) = attributesOfObject.objectID {
                     objectKind = try .town(
@@ -538,11 +540,14 @@ internal extension Map.Loader.Parser.H3M {
     }
 }
 
-public struct CreatureStack: Hashable {
+public struct CreatureStack: Hashable, CustomDebugStringConvertible {
     public typealias Quantity = Int
     public let creatureID: Creature.ID
     public let quantity: Quantity
     
+    public var debugDescription: String {
+        "\(creatureID): \(quantity)"
+    }
 }
 
 
@@ -561,7 +566,7 @@ public struct Army: Hashable {
     }
 }
 
-public struct CreatureStacks: Hashable {
+public struct CreatureStacks: Hashable, CustomDebugStringConvertible {
     
     public enum Slot: UInt8, Hashable, CaseIterable {
         case one = 0
@@ -571,19 +576,31 @@ public struct CreatureStacks: Hashable {
         case five
         case six
         case seven
+       
     }
     
     public let creatureStackAtSlot: [Slot: CreatureStack?]
+    
+    public var debugDescription: String {
+        creatureStackAtSlot.filter { $0.value != nil }.sorted(by: { $0.key.rawValue < $1.key.rawValue }).map {
+            return "[\($0.key.rawValue)]: \($0.value!)"
+        }.joined(separator: "\n")
+    }
     
     public init(creatureStackAtSlot: [Slot: CreatureStack?]) {
         self.creatureStackAtSlot = creatureStackAtSlot.filter { $0.value != nil }
     }
     
+    public init(stacksAtSlots: [(Slot, CreatureStack?)]) {
+        precondition(stacksAtSlots.count <= Slot.allCases.count)
+        self.init(creatureStackAtSlot: Dictionary(uniqueKeysWithValues: stacksAtSlots))
+    }
+    
     public init(stacks: [CreatureStack?]) {
         precondition(stacks.count == Slot.allCases.count)
-        self.init(creatureStackAtSlot: Dictionary.init(uniqueKeysWithValues: Slot.allCases.enumerated().map({ index, slot in
+        self.init(stacksAtSlots: Slot.allCases.enumerated().map({ index, slot in
             return (key: slot, value: stacks[index])
-        })))
+        }))
     }
     
     

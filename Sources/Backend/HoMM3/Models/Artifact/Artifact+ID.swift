@@ -275,16 +275,7 @@ public extension Artifact.ID {
             
         }
     }
-    
-    enum Class: String, CaseIterable, Hashable {
-        case treasure, minor, major, relic
-        static let any = Self?.none
-    }
-    
-    static func random(class: Class?, in version: Version) -> Self {
-        print("☣️ WARNING using global random artifact rather than using variables `class` and `version` (format)")
-        return .random()
-    }
+
 }
 
 public extension Artifact.ID {

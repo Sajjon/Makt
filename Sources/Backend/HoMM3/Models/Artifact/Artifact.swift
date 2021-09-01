@@ -7,24 +7,37 @@
 
 import Foundation
 
-public struct Artifact: Hashable, Identifiable {
-    public let id: ID
-    
-    /// In case of artifact ID being `spellScroll`
-    private var spellID: Spell.ID? // TODO improve this... using enum with associated value? => `Artifact.ID` -> `Artifact.ID.Stripped` and `Artifact.ID` will have associated values? Just for this case? Hmm... Might be beneficial for modelling combination artifacts though...
-    
-    private init(id: ID, spellID: Spell.ID?) {
-        self.id = id
-        self.spellID = spellID
+public struct Artifact: Hashable {
+    public enum Kind: Hashable {
+        case specific(artifactID: ID)
+        case spell(Spell.ID)
+        
+        /// `nil` means "any class".
+        case random(class: Class?)
+        
+        
     }
-    
-    public init(id: ID) {
-        self.init(id: id, spellID: nil)
+    public let kind: Kind
+    private init(kind: Kind) {
+        self.kind = kind
     }
 }
 
 public extension Artifact {
+    
+    
+    enum Class: String, CaseIterable, Hashable {
+        case treasure, minor, major, relic
+        static let any = Self?.none
+    }
+    
     static func scroll(spell spellID: Spell.ID) -> Self {
-        .init(id: .spellScroll, spellID: spellID)
+        .init(kind: .spell(spellID))
+    }
+    
+    static func random(`class`: Class?) -> Self { .init(kind: .random(class: `class`)) }
+    
+    static func specific(id artifactID: Artifact.ID) -> Self {
+        .init(kind: .specific(artifactID: artifactID))
     }
 }

@@ -32,7 +32,7 @@ import Foundation
 /// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 /// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 /// SOFTWARE.
-/// 
+///
 /// Map from: https://github.com/srg-kostyrko/homm3-parser/blob/master/__tests__/maps/artifacts.h3m
 
 final class ArtifactsMapTest: BaseMapTest {
@@ -51,6 +51,61 @@ final class ArtifactsMapTest: BaseMapTest {
                 if object.position == .at(15, y: 17) {
                     XCTAssertEqual(object.kind, .grail(.init(radius: 5)))
                 } else {
+                    
+                    func assertArtifact(
+                        id artifactID: Artifact.ID,
+                        msg message: String? = nil,
+                        stacks maybeStacks: [(CreatureStacks.Slot, CreatureStack)]? = nil,
+                        line: UInt = #line
+                    ) {
+                        guard case let .artifact(guardedArtifact) = object.kind else {
+                            XCTFail("Expected artifact, but got: \(object.kind)")
+                            return
+                        }
+                        XCTAssertEqual(guardedArtifact.message, message, line: line)
+                        if let stacks = maybeStacks {
+                            let expectedCreatureStacks = CreatureStacks(stacksAtSlots: stacks)
+                            XCTAssertEqual(guardedArtifact.guards, expectedCreatureStacks, line: line)
+                        } else {
+                            XCTAssertNil(guardedArtifact.guards, line: line)
+                        }
+
+                        let artifact = guardedArtifact.artifact
+                        guard case let .specific(artifactID) = artifact.kind else {
+                            XCTFail("Expected specific artifact id, but got: \(artifact.kind)")
+                            return
+                        }
+                        XCTAssertEqual(artifactID, artifactID, line: line)
+                    }
+                    
+                    func assertRandomArtifact(
+                        `class` randomArtifactClass: Artifact.Class?,
+                        msg message: String? = nil,
+                        stacks maybeStacks: [(CreatureStacks.Slot, CreatureStack)]? = nil,
+                        line: UInt = #line
+                    ) {
+                        guard case let .artifact(guardedArtifact) = object.kind else {
+                            XCTFail("Expected artifact, but got: \(object.kind)")
+                            return
+                        }
+                        XCTAssertEqual(guardedArtifact.message, message, line: line)
+                        if let stacks = maybeStacks {
+                            let expectedCreatureStacks = CreatureStacks(stacksAtSlots: stacks)
+                            XCTAssertEqual(guardedArtifact.guards, expectedCreatureStacks, line: line)
+                        } else {
+                            XCTAssertNil(guardedArtifact.guards, line: line)
+                        }
+
+                        let artifact = guardedArtifact.artifact
+                        guard case let .random(maybeRandomArtifactClass) = artifact.kind else {
+                            XCTFail("Expected random artifact, but got: \(artifact.kind)")
+                            return
+                        }
+                        XCTAssertEqual(randomArtifactClass, maybeRandomArtifactClass, line: line)
+                    }
+                    
+
+                    
                     switch object.position {
                     case .at(1, y: 0):
                         XCTAssertSpellScroll(object) { spellScroll in
@@ -70,6 +125,28 @@ final class ArtifactsMapTest: BaseMapTest {
                                 )
                             )
                         }
+                    case .at(1, y: 1):
+                        assertArtifact(id: .centaurAxe, msg: "centaurus axe")
+                    case .at(1, y: 2):
+                        assertArtifact(id: .shieldOfTheDwarvenLords, msg: "shield dwarven lords")
+                    case .at(1, y: 3):
+                        assertArtifact(id: .helmOfTheAlabasterUnicorn, msg: "helm unicorn")
+                    case .at(1, y: 4):
+                        assertArtifact(id: .breastplateOfPetrifiedWood, msg: "breastplate of pertified wood")
+                    case .at(1, y: 5):
+                        assertArtifact(id: .sandalsOfTheSaint, msg: "sandals saint")
+                    case .at(1, y: 6):
+                        assertArtifact(id: .celestialNecklaceOfBliss, msg: "necklace bliss")
+                    case .at(1, y: 7):
+                        assertArtifact(id: .quietEyeOfTheDragon, msg: "eye dragon")
+                    case .at(1, y: 12):
+                        assertArtifact(id: .cloakOfTheUndeadKing, msg: "cloak undead king")
+                    case .at(1, y: 14):
+                        XCTAssertEqual(object.attributes.objectID, .randomArtifact)
+                        assertRandomArtifact(class: .any, msg: "random", stacks: [
+                            (CreatureStacks.Slot.one, .init(creatureID: .archer, quantity: 1)),
+                            (CreatureStacks.Slot.seven, .init(creatureID: .archer, quantity: 1))
+                        ])
                     default: break
                     }
                 }
