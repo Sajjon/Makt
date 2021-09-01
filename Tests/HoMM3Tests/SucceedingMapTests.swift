@@ -19,21 +19,18 @@ extension FromPlayerColor {
     }
 }
 
-extension XCTestCase {
-    func XCTArraysEqual<Element: Hashable>(_ lhs: [Element], _ rhs: [Element], line: UInt = #line) {
-        if lhs != rhs {
-            let lhsSet = Set(lhs)
-            let rhsSet = Set(rhs)
-            let onlyInLHS = lhsSet.subtracting(rhsSet)
-            let onlyInRHS = rhsSet.subtracting(lhsSet)
-            XCTAssertEqual(onlyInLHS, [], "Expected arrays to equal, but found the following elements in the LHS array that were not found in the RHS array: \(onlyInLHS)", line: line)
-            XCTAssertEqual([], onlyInRHS, "Expected arrays to equal, but found the following elements in the RHS array that were not found in the LHS array: \(onlyInRHS)", line: line)
-        } else {
-            XCTAssertEqual(lhs, rhs, line: line)
-        }
+func XCTArraysEqual<Element: Hashable>(_ lhs: [Element], _ rhs: [Element], file: StaticString = #file, line: UInt = #line) {
+    if lhs != rhs {
+        let lhsSet = Set(lhs)
+        let rhsSet = Set(rhs)
+        let onlyInLHS = lhsSet.subtracting(rhsSet)
+        let onlyInRHS = rhsSet.subtracting(lhsSet)
+        XCTAssertEqual(onlyInLHS, [], "Expected arrays to equal, but found the following elements in the LHS array that were not found in the RHS array: \(onlyInLHS)", file: file, line: line)
+        XCTAssertEqual([], onlyInRHS, "Expected arrays to equal, but found the following elements in the RHS array that were not found in the LHS array: \(onlyInRHS)", file: file, line: line)
+    } else {
+        XCTAssertEqual(lhs, rhs, file: file, line: line)
     }
 }
-
 enum TwoPlayer: UInt8, FromPlayerColor {
     case red, blue
 }
@@ -207,7 +204,7 @@ final class MapTests: XCTestCase {
         let additionalInfoInspector = Map.Loader.Parser.Inspector.AdditionalInfoInspector(
             victoryLossInspector: victoryLossInspector,
             onParseAvailableHeroes: { availableHeroes in
-                self.XCTArraysEqual(availableHeroes.heroIDs, Hero.ID.playable(in: .restorationOfErathia))
+                XCTArraysEqual(availableHeroes.heroIDs, Hero.ID.playable(in: .restorationOfErathia))
                 expectationAvailableHeroes.fulfill()
             },
             onParseTeamInfo: { teamInfo in
@@ -294,7 +291,7 @@ final class MapTests: XCTestCase {
 //                expectedHeroes.removeAll(where: { $0 == .boragus })
 //                expectedHeroes.removeAll(where: { $0 == .adrienne })
 //                XCTAssertNotEqual(expectedHeroes, Hero.ID.playable(in: .restorationOfErathia))
-                self.XCTArraysEqual(availableHeroes.heroIDs, Hero.ID.restorationOfErathiaPlusConflux)
+                XCTArraysEqual(availableHeroes.heroIDs, Hero.ID.restorationOfErathiaPlusConflux)
             },
             onParseTeamInfo: { teamInfo in
                 XCTAssertEqual(teamInfo, [[.red, .blue], [.tan, .green]])
@@ -306,7 +303,7 @@ final class MapTests: XCTestCase {
                 var allButTwo = Artifact.ID.available(in: .armageddonsBlade)
                 allButTwo.removeAll(where: { $0 == .vialOfDragonBlood })
                 allButTwo.removeAll(where: { $0 == .armageddonsBlade })
-                self.XCTArraysEqual(allButTwo, availableArtifacts?.artifacts ?? [])
+                XCTArraysEqual(allButTwo, availableArtifacts?.artifacts ?? [])
             },
             onParseAvailableSpells: { XCTAssertNil($0) },
             onParseAvailableSecondarySkills: { XCTAssertNil($0) },
@@ -400,7 +397,7 @@ final class MapTests: XCTestCase {
             victoryLossInspector: victoryLossInspector,
             onParseAvailableHeroes: { availableHeroes in
                 // rumors works below! Team info below as well. Victory and loss condition above works. But not available heroes. hmm.
-//                self.XCTArraysEqual(availableHeroes.heroIDs, Hero.ID.playable(in: .restorationOfErathia))
+//                XCTArraysEqual(availableHeroes.heroIDs, Hero.ID.playable(in: .restorationOfErathia))
             },
             onParseTeamInfo: { teamInfo in
                 XCTAssertNil(teamInfo.teams)
