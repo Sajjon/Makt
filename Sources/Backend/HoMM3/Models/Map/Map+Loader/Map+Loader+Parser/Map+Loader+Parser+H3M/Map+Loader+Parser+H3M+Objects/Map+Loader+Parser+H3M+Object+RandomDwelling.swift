@@ -7,6 +7,37 @@
 
 import Foundation
 
+
+extension Map.Loader.Parser.H3M {
+    func parseBitmask<Case>(of cases: [Case], byteCount maybeByteCount: Int? = nil) throws -> [Case] where Case: CaseIterable, Case.AllCases == [Case] {
+        
+        let caseCount = cases.count
+        let qor = caseCount.quotientAndRemainder(dividingBy: 8)
+        let byteCount = maybeByteCount ?? (qor.remainder == 0 ? qor.quotient : qor.quotient + 1)
+        
+        return try Array(
+            reader
+                .readBitArray(byteCount: byteCount)
+                .reversed()
+                .prefix(caseCount)
+        )
+        .enumerated()
+        .compactMap { (index, available) in
+            guard available else { return nil }
+            return cases[index]
+        }
+    }
+    
+    func parseBitmask<Enum>(as enum: Enum.Type, byteCount: Int? = nil) throws -> [Enum] where Enum: CaseIterable, Enum.AllCases == [Enum] {
+        try parseBitmask(of: `enum`.allCases, byteCount: byteCount)
+    }
+    
+    func parseBitmaskOfEnum<Enum>(byteCount: Int? = nil) throws -> [Enum] where Enum: CaseIterable, Enum.AllCases == [Enum] {
+        try parseBitmask(of: Enum.allCases, byteCount: byteCount)
+    }
+}
+
+
 internal extension Map.Loader.Parser.H3M {
   
     func parseDwelling(objectID: Map.Object.ID) throws -> Map.Dwelling {
