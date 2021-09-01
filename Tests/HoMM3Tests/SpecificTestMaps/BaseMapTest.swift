@@ -12,6 +12,11 @@ import Foundation
 
 class BaseMapTest: XCTestCase {
     
+    override func setUp() {
+        super.setUp()
+        continueAfterFailure = false
+    }
+    
     enum Error: Swift.Error {
         case mapNotFound(named: String)
         case failedToReadFile(atPath: String)

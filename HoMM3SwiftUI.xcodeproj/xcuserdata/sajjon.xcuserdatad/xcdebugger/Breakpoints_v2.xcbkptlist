@@ -3,22 +3,4 @@
    uuid = "872C80EE-D22B-4968-9202-174A6958E6BC"
    type = "1"
    version = "2.0">
-   <Breakpoints>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "0C8532D9-8068-446C-B6DA-99EA8413F487"
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Sources/Backend/HoMM3/Models/Map/Map+Loader/Map+Loader+Parser/Map+Loader+Parser+H3M/Map+Loader+Parser+H3M+Objects/Map+Loader+Parser+H3M+Object+Monster.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "37"
-            endingLineNumber = "37"
-            landmarkName = "parseMonster(format:creatureID:)"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-   </Breakpoints>
 </Bucket>

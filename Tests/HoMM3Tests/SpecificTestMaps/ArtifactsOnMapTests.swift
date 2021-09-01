@@ -1,5 +1,5 @@
 //
-//  TestMapArtifacts.swift
+//  ArtifactsOnMapTests.swift
 //  Tests
 //
 //  Created by Alexander Cyon on 2021-09-01.
@@ -35,9 +35,34 @@ import Foundation
 ///
 /// Map from: https://github.com/srg-kostyrko/homm3-parser/blob/master/__tests__/maps/artifacts.h3m
 
-final class ArtifactsMapTest: BaseMapTest {
+final class ArtifactsOnMapTests: BaseMapTest {
     
     func testLoad() throws {
+        
+        var expectedPositions: [Position: XCTestExpectation] = [:]
+        var fulfilled = Set<Position>()
+        func at(_ x: Int32, y: Int32) -> Position {
+            let position = Position(x: x, y: y, inUnderworld: false)
+            if !fulfilled.contains(position) && !expectedPositions.contains(where: { $0.key == position }) {
+                let expectedObjectAt = expectation(description: "Expected object at: (\(x), \(y))")
+//                expectations.append(expectedObjectAt)
+                expectedPositions[position] = expectedObjectAt
+//                expectedPositions.insert(position)
+            }
+            return position
+        }
+        func fullfill(object: Map.Object) {
+            let position = object.position
+            guard let expectation = expectedPositions[position] else {
+                return
+            }
+            print("fulfilling expectation: \(expectation)")
+            expectation.fulfill()
+            assert(!fulfilled.contains(position), "Strange to fulfill exp multiple times...")
+            fulfilled.insert(position)
+            expectedPositions.removeValue(forKey: position)
+        }
+        
         let inspector = Map.Loader.Parser.Inspector(
             basicInfoInspector: .init(
                 onParseFormat: { XCTAssertEqual($0, .shadowOfDeath) },
@@ -48,10 +73,10 @@ final class ArtifactsMapTest: BaseMapTest {
                 onFinishedParsingBasicInfo: { XCTAssertFalse($0.hasTwoLevels) }
             ),
             onParseObject: { object in
-                if object.position == .at(15, y: 17) {
+                if object.position == at(15, y: 17) {
                     XCTAssertEqual(object.kind, .grail(.init(radius: 5)))
+                    fullfill(object: object)
                 } else {
-                    
                     func assertArtifact(
                         id artifactID: Artifact.ID,
                         msg message: String? = nil,
@@ -76,6 +101,7 @@ final class ArtifactsMapTest: BaseMapTest {
                             return
                         }
                         XCTAssertEqual(artifactID, artifactID, line: line)
+                        fullfill(object: object)
                     }
                     
                     func assertRandomArtifact(
@@ -114,16 +140,16 @@ final class ArtifactsMapTest: BaseMapTest {
                             return
                         }
                         XCTAssertEqual(randomArtifactClass, maybeRandomArtifactClass, line: line)
+                        fullfill(object: object)
                     }
                     
-
-                    
                     switch object.position {
-                    case .at(1, y: 0):
+                    case at(1, y: 0):
                         XCTAssertSpellScroll(object) { spellScroll in
                             XCTAssertEqual(spellScroll, .init(id: .slow, message: "spell scroll slow"))
                         }
-                    case .at(3, y: 0):
+                        fullfill(object: object)
+                    case at(3, y: 0):
                         XCTAssertSpellScroll(object) { spellScroll in
                             XCTAssertEqual(
                                 spellScroll,
@@ -137,34 +163,35 @@ final class ArtifactsMapTest: BaseMapTest {
                                 )
                             )
                         }
-                    case .at(1, y: 1):
+                        fullfill(object: object)
+                    case at(1, y: 1):
                         assertArtifact(id: .centaurAxe, msg: "centaurus axe")
-                    case .at(1, y: 2):
+                    case at(1, y: 2):
                         assertArtifact(id: .shieldOfTheDwarvenLords, msg: "shield dwarven lords")
-                    case .at(1, y: 3):
+                    case at(1, y: 3):
                         assertArtifact(id: .helmOfTheAlabasterUnicorn, msg: "helm unicorn")
-                    case .at(1, y: 4):
+                    case at(1, y: 4):
                         assertArtifact(id: .breastplateOfPetrifiedWood, msg: "breastplate of pertified wood")
-                    case .at(1, y: 5):
+                    case at(1, y: 5):
                         assertArtifact(id: .sandalsOfTheSaint, msg: "sandals saint")
-                    case .at(1, y: 6):
+                    case at(1, y: 6):
                         assertArtifact(id: .celestialNecklaceOfBliss, msg: "necklace bliss")
-                    case .at(1, y: 7):
+                    case at(1, y: 7):
                         assertArtifact(id: .quietEyeOfTheDragon, msg: "eye dragon")
-                    case .at(1, y: 12):
+                    case at(1, y: 12):
                         assertArtifact(id: .cloakOfTheUndeadKing, msg: "cloak undead king")
-                    case .at(1, y: 14):
+                    case at(1, y: 14):
                         assertRandomArtifact(class: .any, msg: "random", stacks: [
                             (CreatureStacks.Slot.one, .init(creatureID: .archer, quantity: 1)),
                             (CreatureStacks.Slot.seven, .init(creatureID: .archer, quantity: 1))
                         ])
-                    case .at(3, y: 14):
+                    case at(3, y: 14):
                         assertRandomArtifact(class: .treasure, msg:  "random treasure")
-                    case .at(5, y: 14):
+                    case at(5, y: 14):
                         assertRandomArtifact(class: .minor, msg:  "random minor")
-                    case .at(7, y: 14):
+                    case at(7, y: 14):
                         assertRandomArtifact(class: .major, msg:  "random major")
-                    case .at(9, y: 14):
+                    case at(9, y: 14):
                         assertRandomArtifact(class: .relic, msg:  "random relic")
                        
                     default: break
@@ -173,10 +200,11 @@ final class ArtifactsMapTest: BaseMapTest {
             }
         )
         try load(inspector: inspector)
+        waitForExpectations(timeout: 1)
     }
 }
 
-private extension ArtifactsMapTest {
+private extension ArtifactsOnMapTests {
     func load(inspector: Map.Loader.Parser.Inspector) throws {
         try loadMap(named: "artifacts", inspector: inspector)
     }

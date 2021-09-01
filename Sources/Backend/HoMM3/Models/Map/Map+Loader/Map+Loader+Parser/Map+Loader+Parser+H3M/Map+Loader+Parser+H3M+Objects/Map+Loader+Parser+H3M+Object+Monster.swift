@@ -24,9 +24,9 @@ internal extension Map.Loader.Parser.H3M {
             return try reader.readUInt32()
         }()
         
-        let quantity  = try CreatureStack.Quantity(reader.readUInt16())
-        let creatureStack = CreatureStack(creatureID: creatureID, quantity: quantity)
-        let hostility = try Map.Monster.Hostility(integer: reader.readUInt8())
+        let quantityRaw = try reader.readUInt16()
+        let quantity: Map.Monster.Quantity = quantityRaw == 0 ? .random : .custom(quantityRaw)
+        let disposition = try Map.Monster.Disposition(integer: reader.readUInt8())
         let hasMessageOrResourcesOrArtifact = try reader.readBool()
         
         var message: String?
@@ -43,7 +43,8 @@ internal extension Map.Loader.Parser.H3M {
         try reader.skip(byteCount: 2)
         
         return .init(
-            creatureStack: creatureStack,
+            creatureID: creatureID,
+            quantity: quantity,
             missionIdentifier: missionIdentifier,
             message: message,
             
@@ -52,7 +53,7 @@ internal extension Map.Loader.Parser.H3M {
                 resources: resources
             ),
             
-            hostility: hostility,
+            disposition: disposition,
             willNeverFlee: neverFlees,
             doesNotGrowInNumbers: doesNotGrowInNumber
         )

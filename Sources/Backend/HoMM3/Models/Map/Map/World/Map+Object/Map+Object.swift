@@ -126,14 +126,19 @@ public extension Map {
     }
     
     struct Monster: Hashable {
-        public let creatureStack: CreatureStack
+        
+        public let creatureID: Creature.ID
+        
+        public let quantity: Quantity
+        
+        
         /// unique code for this monster (used in missions)
         public let missionIdentifier: UInt32?
         
         public let message: String?
         public let bounty: Bounty?
         
-        public let hostility: Hostility
+        public let disposition: Disposition
         public let willNeverFlee: Bool
         public let doesNotGrowInNumbers: Bool
     }
@@ -144,11 +149,24 @@ public extension Map.Monster {
         public let artifactID: Artifact.ID?
         public let resources: Resources?
     }
-    enum Hostility: UInt8, Hashable, CaseIterable {
-        case compliant,
-             friendly,
-             aggressive,
-             hostile,
-             savage
+    enum Quantity: Hashable {
+        case random, custom(UInt16)
+    }
+    enum Disposition: UInt8, Hashable, CaseIterable {
+        
+        /// Will **always** join hero
+        case compliant
+        
+        /// *Likely* to join hero
+        case friendly
+        
+        /// *May* join hero
+        case aggressive
+        
+        /// *Unlikely* to join hero
+        case hostile
+        
+        /// Will **never** join hero
+        case savage
     }
 }
