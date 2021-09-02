@@ -37,7 +37,7 @@ import Foundation
 
 final class CreaturesOnMapTests: BaseMapTest {
     
-    func testLoad() throws {
+    func testCreaturesOnMap() throws {
         let inspector = Map.Loader.Parser.Inspector(
             basicInfoInspector: .init(
                 onParseFormat: { XCTAssertEqual($0, .shadowOfDeath) },

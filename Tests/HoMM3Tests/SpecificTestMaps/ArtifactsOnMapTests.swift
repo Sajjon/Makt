@@ -37,7 +37,7 @@ import Foundation
 
 final class ArtifactsOnMapTests: BaseMapTest {
     
-    func testLoad() throws {
+    func testArtifactsOnMap() throws {
 
         let inspector = Map.Loader.Parser.Inspector(
             basicInfoInspector: .init(
