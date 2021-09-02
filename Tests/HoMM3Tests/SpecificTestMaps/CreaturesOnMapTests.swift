@@ -102,6 +102,122 @@ final class CreaturesOnMapTests: BaseMapTest {
                     )
                 case at(1, y: 1):
                     assertCreature(.pikeman)
+                case at(3, y: 1):
+                    assertCreature(.halberdier)
+                case at(5, y: 1):
+                    assertCreature(.archer)
+                case at(7, y: 1):
+                    assertCreature(.marksman)
+                case at(9, y: 1):
+                    assertCreature(.griffin)
+                case at(11, y: 1):
+                    assertCreature(.royalGriffin)
+                case at(13, y: 1):
+                    assertCreature(.swordsman)
+                case at(15, y: 1):
+                    assertCreature(.crusader)
+                case at(17, y: 1):
+                    assertCreature(.monk)
+                case at(19, y: 1):
+                    assertCreature(.zealot)
+                case at(21, y: 1):
+                    assertCreature(.cavalier)
+                case at(23, y: 1):
+                    assertCreature(.champion)
+                case at(25, y: 1):
+                    assertCreature(.angel)
+                case at(27, y: 1):
+                    assertCreature(.archangel)
+                case at(1, y: 3):
+                    assertCreature(.centaur)
+                case at(3, y: 3):
+                    assertCreature(.centaurCaptain)
+                case at(5, y: 3):
+                    assertCreature(.dwarf)
+                case at(7, y: 3):
+                    assertCreature(.battleDwarf)
+                case at(9, y: 3):
+                    assertCreature(.woodElf)
+                case at(11, y: 3):
+                    assertCreature(.grandElf)
+                case at(13, y: 3):
+                    assertCreature(.pegasus)
+                case at(15, y: 3):
+                    assertCreature(.silverPegasus)
+                case at(17, y: 3):
+                    assertCreature(.dendroidGuard)
+                case at(19, y: 3):
+                    assertCreature(.dendroidSoldier)
+                case at(21, y: 3):
+                    assertCreature(.unicorn)
+                case at(23, y: 3):
+                    assertCreature(.warUnicorn)
+                case at(25, y: 3):
+                    assertCreature(.greenDragon)
+                case at(27, y: 3):
+                    assertCreature(.goldDragon)
+                    
+                case at(1, y: 5):
+                    assertCreature(.gremlin)
+                case at(3, y: 5):
+                    assertCreature(.masterGremlin)
+                case at(5, y: 5):
+                    assertCreature(.stoneGargoyle)
+                case at(7, y: 5):
+                    assertCreature(.obsidianGargoyle)
+                case at(9, y: 5):
+                    assertCreature(.stoneGolem)
+                case at(11, y: 5):
+                    assertCreature(.ironGolem)
+                case at(13, y: 5):
+                    assertCreature(.mage)
+                case at(15, y: 5):
+                    assertCreature(.archMage)
+                case at(17, y: 5):
+                    assertCreature(.genie)
+                case at(19, y: 5):
+                    assertCreature(.masterGenie)
+                case at(21, y: 5):
+                    assertCreature(.naga)
+                case at(23, y: 5):
+                    assertCreature(.nagaQueen)
+                case at(25, y: 5):
+                    assertCreature(.giant)
+                case at(27, y: 5):
+                    assertCreature(.titan)
+                    
+                 
+                   
+                case at(1, y: 7):
+                    assertCreature(.imp)
+                case at(3, y: 7):
+                    assertCreature(.familiar)
+                case at(5, y: 7):
+                    assertCreature(.gog)
+                case at(7, y: 7):
+                    assertCreature(.magog)
+                case at(9, y: 7):
+                    assertCreature(.hellHound)
+                case at(11, y: 7):
+                    assertCreature(.cerberus)
+                case at(13, y: 7):
+                    assertCreature(.demon)
+                case at(15, y: 7):
+                    assertCreature(.hornedDemon)
+                case at(17, y: 7):
+                    assertCreature(.pitFiend)
+                case at(19, y: 7):
+                    assertCreature(.pitLord)
+                case at(21, y: 7):
+                    assertCreature(.efreeti)
+                case at(23, y: 7):
+                    assertCreature(.efreetSultan)
+                case at(25, y: 7):
+                    assertCreature(.devil)
+                case at(27, y: 7):
+                    assertCreature(.archDevil)
+                    
+                    
                 case at(35, y: 35):
                     assertCreature(
                         .battleDwarf,
