@@ -167,7 +167,11 @@ public extension DataReader {
             return nil
         }
         let data = try read(byteCount: .init(lengthU32))
-        return String(bytes: data, encoding: .utf8)!
+        if let string = String(bytes: data, encoding: .utf8) {
+            return string
+        } else {
+            return String(bytes: data, encoding: .ascii)!
+        }
     }
     
     func readBool() throws -> Bool {

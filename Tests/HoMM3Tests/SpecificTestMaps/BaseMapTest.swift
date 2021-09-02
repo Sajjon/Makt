@@ -12,16 +12,36 @@ import Foundation
 
 class BaseMapTest: XCTestCase {
     
+    private var expectedPositions: [Position: XCTestExpectation] = [:]
+    private var fulfilled = Set<Position>()
+   
     override func setUp() {
         super.setUp()
         continueAfterFailure = false
     }
-    
-    enum Error: Swift.Error {
-        case mapNotFound(named: String)
-        case failedToReadFile(atPath: String)
+}
+
+extension BaseMapTest {
+    func at(_ x: Int32, y: Int32) -> Position {
+        let position = Position(x: x, y: y, inUnderworld: false)
+        if !fulfilled.contains(position) && !expectedPositions.contains(where: { $0.key == position }) {
+            let expectedObjectAt = expectation(description: "Expected object at: (\(x), \(y))")
+            expectedPositions[position] = expectedObjectAt
+        }
+        return position
     }
     
+    func fullfill(object: Map.Object) {
+        let position = object.position
+        guard let expectation = expectedPositions[position] else {
+            return
+        }
+        print("fulfilling expectation: \(expectation)")
+        expectation.fulfill()
+        assert(!fulfilled.contains(position), "Strange to fulfill exp multiple times...")
+        fulfilled.insert(position)
+        expectedPositions.removeValue(forKey: position)
+    }
     
     func pathForTestMap(named mapName: String) throws -> String {
         let bundle = Bundle(for: type(of: self))
@@ -46,4 +66,13 @@ class BaseMapTest: XCTestCase {
         Map.loader.cache.__deleteMap(by: mapID)
         XCTAssertNoThrow(try Map.load(mapID, inspector: inspector))
     }
+}
+
+// MARK: Error
+extension BaseMapTest {
+    enum Error: Swift.Error {
+        case mapNotFound(named: String)
+        case failedToReadFile(atPath: String)
+    }
+    
 }

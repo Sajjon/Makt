@@ -14,9 +14,8 @@ public struct Artifact: Hashable {
         
         /// `nil` means "any class".
         case random(class: Class?)
-        
-        
     }
+    
     public let kind: Kind
     private init(kind: Kind) {
         self.kind = kind

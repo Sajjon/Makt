@@ -38,31 +38,7 @@ import Foundation
 final class ArtifactsOnMapTests: BaseMapTest {
     
     func testLoad() throws {
-        
-        var expectedPositions: [Position: XCTestExpectation] = [:]
-        var fulfilled = Set<Position>()
-        func at(_ x: Int32, y: Int32) -> Position {
-            let position = Position(x: x, y: y, inUnderworld: false)
-            if !fulfilled.contains(position) && !expectedPositions.contains(where: { $0.key == position }) {
-                let expectedObjectAt = expectation(description: "Expected object at: (\(x), \(y))")
-//                expectations.append(expectedObjectAt)
-                expectedPositions[position] = expectedObjectAt
-//                expectedPositions.insert(position)
-            }
-            return position
-        }
-        func fullfill(object: Map.Object) {
-            let position = object.position
-            guard let expectation = expectedPositions[position] else {
-                return
-            }
-            print("fulfilling expectation: \(expectation)")
-            expectation.fulfill()
-            assert(!fulfilled.contains(position), "Strange to fulfill exp multiple times...")
-            fulfilled.insert(position)
-            expectedPositions.removeValue(forKey: position)
-        }
-        
+
         let inspector = Map.Loader.Parser.Inspector(
             basicInfoInspector: .init(
                 onParseFormat: { XCTAssertEqual($0, .shadowOfDeath) },
@@ -72,7 +48,7 @@ final class ArtifactsOnMapTests: BaseMapTest {
                 onParseSize: { XCTAssertEqual($0, .small) },
                 onFinishedParsingBasicInfo: { XCTAssertFalse($0.hasTwoLevels) }
             ),
-            onParseObject: { object in
+            onParseObject: { [self] object in
                 if object.position == at(15, y: 17) {
                     XCTAssertEqual(object.kind, .grail(.init(radius: 5)))
                     fullfill(object: object)

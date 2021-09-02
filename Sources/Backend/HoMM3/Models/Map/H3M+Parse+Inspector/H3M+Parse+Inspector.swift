@@ -63,7 +63,7 @@ public extension Map.Loader.Parser.Inspector {
     typealias OnParseAttributesOfObjects = (Map.AttributesOfObjects) -> Void
     typealias OnParseObject = (Map.Object) -> Void
     typealias OnParseAllObjects = (Map.DetailsAboutObjects) -> Void
-    typealias OnParseEvents = (Map.GlobalEvents) -> Void
+    typealias OnParseEvents = (Map.TimedEvents) -> Void
     
     
     func didParseWorld(_ world: Map.World) {
@@ -82,7 +82,7 @@ public extension Map.Loader.Parser.Inspector {
         onParseAllObjects?(objects)
     }
     
-    func didParseEvents(_ events: Map.GlobalEvents) {
+    func didParseEvents(_ events: Map.TimedEvents) {
         onParseEvents?(events)
     }
 }

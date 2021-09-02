@@ -435,22 +435,22 @@ final class MapTests: XCTestCase {
                 
                 if object.position == .init(x: 50, y: 28, inUnderworld: false) {
                     XCTAssertEqual(object.objectID, .event)
-                    guard case let .event(event) = object.kind else {
+                    guard case let .geoEvent(event) = object.kind else {
                         XCTFail("expected event")
                         return
                     }
                     XCTAssertEqual(event.message, "Warming a freezing old woman she blesses you with good luck for your next battle.")
-                    XCTAssertEqual(event.bounty?.luckToBeGainedOrDrained, 1)
-                    XCTAssertEqual(event.availability.allowedPlayers, [.red, .blue, .tan, .green, .orange])
-                    XCTAssertTrue(event.shouldBeRemovedAfterVisit)
+                    XCTAssertEqual(event.contents?.luckToBeGainedOrDrained, 1)
+                    XCTAssertEqual(event.availability.playersAllowedToTriggerEvent, [.red, .blue, .tan, .green, .orange])
+                    XCTAssertTrue(event.cancelEventAfterFirstVisit)
                 } else if object.position == .init(x: 100, y: 60, inUnderworld: false) {
                     XCTAssertEqual(object.objectID, .event)
-                    guard case let .event(event) = object.kind else {
+                    guard case let .geoEvent(event) = object.kind else {
                         XCTFail("expected event")
                         return
                     }
                     XCTAssertEqual(event.message, "Being so far from home causes your troops to miss their families.")
-                    XCTAssertEqual(event.bounty?.moraleToBeGainedOrDrained, -2)
+                    XCTAssertEqual(event.contents?.moraleToBeGainedOrDrained, -2)
                 }
                 
                 

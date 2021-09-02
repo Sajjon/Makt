@@ -23,7 +23,7 @@ public struct Map: Equatable, Identifiable {
     
     public let attributesOfObjects: Map.AttributesOfObjects
     public let detailsAboutObjects: Map.DetailsAboutObjects
-    public let globalEvents: Map.GlobalEvents
+    public let globalEvents: Map.TimedEvents
 }
 
 

@@ -12,8 +12,9 @@ public extension Map {
         public let objects: [Object]
     }
     
-    struct GlobalEvents: Hashable {
-        public let events: [Event]
+    /// Time based global events, trigger on certain days.
+    struct TimedEvents: Hashable {
+        public let events: [TimedEvent]
     }
   
     struct Object: Hashable, CustomDebugStringConvertible {
@@ -82,7 +83,7 @@ public extension Map.Object {
         case garrison(Map.Garrison)
         case artifact(Map.GuardedArtifact)
         case resource(Map.GuardedResource)
-        case event(Map.Event)
+        case geoEvent(Map.GeoEvent)
         case dwelling(Map.Dwelling)
         case hero(Hero)
         case mine(Map.Mine)
@@ -131,7 +132,6 @@ public extension Map {
         
         public let quantity: Quantity
         
-        
         /// unique code for this monster (used in missions)
         public let missionIdentifier: UInt32?
         
@@ -148,6 +148,12 @@ public extension Map.Monster {
     struct Bounty: Hashable {
         public let artifactID: Artifact.ID?
         public let resources: Resources?
+        
+        public init?(artifactID: Artifact.ID?, resources: Resources?) {
+            if artifactID == nil && resources == nil { return nil }
+            self.artifactID = artifactID
+            self.resources = resources
+        }
     }
     enum Quantity: Hashable {
         case random, custom(UInt16)

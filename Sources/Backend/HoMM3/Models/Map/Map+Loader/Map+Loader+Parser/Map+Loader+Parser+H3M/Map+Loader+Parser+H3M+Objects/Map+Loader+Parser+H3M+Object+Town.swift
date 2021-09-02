@@ -425,22 +425,23 @@ internal extension Map.Loader.Parser.H3M {
         try parseTown(format: format, faction: .random(), allowedSpellsOnMap: allowedSpellsOnMap, availablePlayers: availablePlayers)
     }
     
-    func parseTown(format: Map.Format, faction: Faction, allowedSpellsOnMap: [Spell.ID], availablePlayers: [PlayerColor]) throws -> Map.Town {
+    func parseTown(
+        format: Map.Format,
+        faction: Faction,
+        allowedSpellsOnMap: [Spell.ID],
+        availablePlayers: [PlayerColor]
+    ) throws -> Map.Town {
+        
         let townID: Map.Town.ID = try format > .restorationOfErathia ? .fromMapFile(reader.readUInt32()) : .generated(UUID())
         
         let owner = try parseOwner()
-        print("🏰 town: owner='\(owner)'")
         let hasName = try reader.readBool()
-        print("🏰 town: hasName='\(hasName)'")
         let name: String? = try hasName ? reader.readString(maxByteCount: 32) : nil
-        print("🏰 town: name='\(name)'")
         
         let hasGarrison = try reader.readBool()
-        print("🏰 town: hasGarrison='\(hasGarrison)'")
         let garrison: CreatureStacks? = try hasGarrison ? parseCreatureStacks(format: format, count: 7) : nil
         let formation: Army.Formation = try .init(integer: reader.readUInt8())
         let hasCustomBuildings = try reader.readBool()
-        print("🏰 town: hasCustomBuildings='\(hasCustomBuildings)'")
         let buildings: Map.Town.Buildings = try hasCustomBuildings ? parseTownWithCustomBuildings() : parseSimpleTown()
         
         
@@ -452,47 +453,29 @@ internal extension Map.Loader.Parser.H3M {
         // Read castle events
         let eventCount = try reader.readUInt32()
         assert(eventCount <= 8192, "Cannot be more than 8192 town events... something is wrong. got: \(eventCount)")
-        print("🏰 town: eventCount='\(eventCount)'")
+        
         let events: [Map.Town.Event] = try eventCount.nTimes {
-            let name = try reader.readString()
-            let message = try reader.readString()
-            let resources = try parseResources()
-            let allowedPlayers = try parseAllowedPlayers(availablePlayers: availablePlayers)
-            let canBeActivatedByHuman = try format > .armageddonsBlade ? reader.readBool() : true
-            let canBeActivatedByComputer = try reader.readBool()
-            let firstOccurence = try reader.readUInt16()
-            let nextOccurence = try reader.readUInt8()
-            
-            try reader.skip(byteCount: 17)
+            let timedEvent = try parseTimedEvent(
+                format: format,
+                availablePlayers: availablePlayers
+            )
             
             // New buildings
             let buildings = try parseBuildings()
-            let creatureStackList: [CreatureStack] = try Creature.ID.of(faction: faction, .nonUpgradedOnly).map { creatureID in
+            // Creatures added to generator
+            let creatureStackList: [CreatureStack] = try Creature.ID.of(
+                faction: faction, .nonUpgradedOnly
+            ).map { creatureID in
                 try CreatureStack(creatureID: creatureID, quantity: .init(reader.readUInt16()))
             }
+            
             try reader.skip(byteCount: 4)
 
-            
-            let townEvent = Map.Event(
-                firstOccurence: firstOccurence,
-                nextOccurence: nextOccurence,
-                message: message,
-                bounty: Bounty(
-                    resourcesToBeGained: resources,
-                    creaturesGained: .init(stacks: creatureStackList)
-                ),
-                allowedPlayers: allowedPlayers,
-                canBeActivatedByComputer: canBeActivatedByComputer,
-                shouldBeRemovedAfterVisit: false, // is this correct?
-                canBeActivatedByHuman: canBeActivatedByHuman
-            )
-            
             return Map.Town.Event(
                 townID: townID,
-                name: name,
-                event: townEvent,
-                buildings: buildings
-            )
+                timedEvent: timedEvent,
+                buildings: buildings,
+                creaturesToBeGained: .init(stacks: creatureStackList))
         }
         
         var alignment: Alignment?
@@ -526,9 +509,26 @@ public enum Alignment: UInt8, Hashable, CaseIterable {
 public extension Map.Town {
     struct Event: Hashable {
         public let townID: Map.Town.ID
-        public let name: String
-        public let event: Map.Event
+        
+        /// private because ugly that we piggyback on this TownEvent having the same properties as a timed event. Make use of public computed properties to extract info from this private stored property.
+        private let timedEvent: Map.TimedEvent
+        
         public let buildings: [Buildings.Building]
+        
+        /// MapEditor: "Note the specified creatures will be added to their respective generator building within the town. If the generator has not been built at that time the creatures cannot be added."
+        public let creaturesToBeAddedToRespectiveGenerators: CreatureStacks
+        
+        public init(
+            townID: Map.Town.ID,
+            timedEvent: Map.TimedEvent,
+            buildings: [Buildings.Building],
+            creaturesToBeGained: CreatureStacks
+        ) {
+            self.townID = townID
+            self.timedEvent = timedEvent
+            self.buildings = buildings
+            self.creaturesToBeAddedToRespectiveGenerators = creaturesToBeGained
+        }
     }
 }
 

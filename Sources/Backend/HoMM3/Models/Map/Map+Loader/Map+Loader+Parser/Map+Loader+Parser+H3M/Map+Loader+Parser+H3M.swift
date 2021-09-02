@@ -63,7 +63,7 @@ extension Map.Loader.Parser.H3M {
         print("🔮 Parsed details about objects")
         inspector?.didParseAllObjects(detailsAboutObjects)
         
-        let globalEvents = try parseGlobalEvents(format: format, availablePlayers: playersInfo.availablePlayers)
+        let globalEvents = try parseTimedEvents(format: format, availablePlayers: playersInfo.availablePlayers)
         inspector?.didParseEvents(globalEvents)
         
         return .init(
@@ -283,31 +283,44 @@ private extension Map.Object.Attributes {
 
 
 // MARK: Parse Events
-private extension Map.Loader.Parser.H3M {
-    func parseGlobalEvents(format: Map.Format, availablePlayers: [PlayerColor]) throws -> Map.GlobalEvents {
-        let events: [Map.Event] = try reader.readUInt32().nTimes {
-            let name = try reader.readString()
-            let message = try reader.readString()
-            let resources = try parseResources()
-            let allowedPlayers = try parseAllowedPlayers(availablePlayers: availablePlayers)
-            let canBeActivatedByHuman = try format > .armageddonsBlade ? reader.readBool() : true
-            let canBeActivatedByComputer = try reader.readBool()
-            let firstOcurence = try reader.readUInt16()
-            let nextOcurence = try reader.readUInt8()
+internal extension Map.Loader.Parser.H3M {
+    
+    func parseTimedEvent(
+        format: Map.Format,
+        availablePlayers: [PlayerColor]
+    ) throws -> Map.TimedEvent {
+        let name = try reader.readString(maxByteCount: 8192) // arbitrarily chosen
+        let message = try reader.readString(maxByteCount: 29861) // Cyon: found to be max in Map Editor
+        let resources = try parseResources()
+        let affectedPlayers = try parseAllowedPlayers(availablePlayers: availablePlayers)
+        let appliesToHumanPlayers = try format > .armageddonsBlade ? reader.readBool() : true
+        let appliesToComputerPlayers = try reader.readBool()
+        let firstOccurence = try reader.readUInt16()
+        let subsequentOccurenceRaw = try reader.readUInt8()
+        let subsequentOccurence: Map.TimedEvent.Occurrences.Subsequent? = try subsequentOccurenceRaw == Map.TimedEvent.Occurrences.Subsequent.neverRawValue ? .never : Map.TimedEvent.Occurrences.Subsequent(integer: subsequentOccurenceRaw)
 
-            try reader.skip(byteCount: 17)
-                
-            return Map.Event(
-                name: name,
-                firstOccurence: firstOcurence,
-                nextOccurence: nextOcurence,
-                message: message,
-                bounty: .init(resourcesToBeGained: resources),
-                allowedPlayers: allowedPlayers,
-                canBeActivatedByComputer: canBeActivatedByComputer,
-                shouldBeRemovedAfterVisit: true, // what ?
-                canBeActivatedByHuman: canBeActivatedByHuman
-            )
+        try reader.skip(byteCount: 17)
+        return .init(
+            name: name,
+            message: message,
+            firstOccurence: firstOccurence,
+            subsequentOccurence: subsequentOccurence,
+            affectedPlayers: affectedPlayers,
+            appliesToHumanPlayers: appliesToHumanPlayers,
+            appliesToComputerPlayers: appliesToComputerPlayers,
+            resources: resources
+        )
+    }
+}
+
+internal extension Map.Loader.Parser.H3M {
+    func parseTimedEvents(
+        format: Map.Format,
+        availablePlayers: [PlayerColor]
+    ) throws -> Map.TimedEvents {
+        let eventCount = try reader.readUInt32()
+        let events: [Map.TimedEvent] = try eventCount.nTimes {
+            try parseTimedEvent(format: format, availablePlayers: availablePlayers)
         }
         
         return .init(events: events)

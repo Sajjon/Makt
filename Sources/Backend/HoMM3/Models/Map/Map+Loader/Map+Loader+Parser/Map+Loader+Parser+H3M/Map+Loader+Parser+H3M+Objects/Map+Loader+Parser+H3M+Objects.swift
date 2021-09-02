@@ -135,7 +135,7 @@ internal extension Map.Loader.Parser.H3M {
             // For some reason the creature IDs in the Quest is ALWAYS represented as UInt16, thus we hardcode `shadowOfDeath` as map format which will result in UInt16s being read as rawValue for each creature type.
             questKind  = try .raiseArmy(parseCreatureStacks(format: .shadowOfDeath, count: reader.readUInt8())!)
         case .acquireResources:
-            questKind = try .acquireResources(parseResources())
+            questKind = try .acquireResources(parseResources()!)
         case .beHero:
             questKind = try .beHero(.init(integer: reader.readUInt8()))
         case .bePlayer:
@@ -240,7 +240,7 @@ internal extension Map.Loader.Parser.H3M {
               
                 objectKind = .artifact(guardedArtifact)
             case .event:
-                objectKind = try .event(parseEvent(format: format, availablePlayers: playersInfo.availablePlayers))
+                objectKind = try .geoEvent(parseGeoEvent(format: format, availablePlayers: playersInfo.availablePlayers))
             case .garrison:
                 let owner = try parseOwner()
                 try reader.skip(byteCount: 3)
@@ -632,7 +632,7 @@ internal extension Map.Loader.Parser.H3M {
     
     
     
-    func parseResources() throws -> Resources {
+    func parseResources() throws -> Resources? {
         let resources: [Resource] = try Resource.Kind.allCases.map { kind in
             try .init(kind: kind, amount: .init(reader.readUInt32()))
         }

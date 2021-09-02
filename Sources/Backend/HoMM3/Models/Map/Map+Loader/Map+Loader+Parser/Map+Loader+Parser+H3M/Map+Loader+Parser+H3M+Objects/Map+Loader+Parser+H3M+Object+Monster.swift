@@ -40,6 +40,10 @@ internal extension Map.Loader.Parser.H3M {
         let neverFlees = try reader.readBool()
         let doesNotGrowInNumber = try reader.readBool()
 
+        if quantityRaw != 0 {
+            print("🍄 quantityRaw: \(quantityRaw), creatureID: \(creatureID)")
+        }
+        
         try reader.skip(byteCount: 2)
         
         return .init(

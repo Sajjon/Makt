@@ -6,71 +6,149 @@
 //
 
 import Foundation
+
 public extension Map {
-    // TODO disambiguate between invisible events that might be triggered when walked on a certain tile (or also time based?) and visible event OBJECTs. One is parsed amongst objects in `parseObjects` the other is parsed in `parseEvents`. Should both really share the same struct?
-    struct Event: Hashable {
+    
+    /// A global event that occurs at a certain time.
+    /// Not to be confused with geo event, that is trigger when a player walks on a certain tile with a hero.
+    struct TimedEvent: Hashable {
         
         public let name: String?
  
         public let message: String?
-        public let guards: CreatureStacks?
-        public let bounty: Bounty?
         
-        internal let firstOccurence: UInt16?
-        internal let nextOccurence: UInt8?
-        internal let shouldBeRemovedAfterVisit: Bool
+        /// Resources to be gained OR taken
+        public let resources: Resources?
+        
+        public let occurrences: Occurrences
+        
+        public struct Occurrences: Hashable {
+            public enum Subsequent: UInt8, Hashable, CaseIterable {
+                static let neverRawValue = 0
+                static let never: Self? = nil
+                case everyDay = 1
+                case everyTwoDays = 2
+                case everyThreeDays = 3
+                case everyFourDays = 4
+                case everyFiveDays = 5
+                case everySixDays = 6
+                case everySevenDays = 7
+                case every14Days = 14
+                case every21Days = 21
+                case every28Days = 28
+            }
+            
+            internal let first: UInt16
+            internal let subsequent: Subsequent?
+        }
+        
+ 
+        
         internal let availability: Availability
         
         public init(
             name: String? = nil,
-            firstOccurence: UInt16? = nil,
-            nextOccurence: UInt8? = nil,
-            
             message: String? = nil,
-            guards: CreatureStacks? = nil,
-            bounty: Bounty? = nil,
+
+            firstOccurence: UInt16,
+            subsequentOccurence: Occurrences.Subsequent? = nil,
             
-            allowedPlayers: [PlayerColor] = [],
-            canBeActivatedByComputer: Bool,
-            shouldBeRemovedAfterVisit: Bool,
-            canBeActivatedByHuman: Bool
+            affectedPlayers: [PlayerColor] = [],
+            appliesToHumanPlayers: Bool,
+            appliesToComputerPlayers: Bool,
+            resources: Resources? = nil
         ) {
             self.name = name
-            self.firstOccurence = firstOccurence
-            self.nextOccurence = nextOccurence
+            self.occurrences = .init(first: firstOccurence, subsequent: subsequentOccurence)
         
             self.message = message
-            self.guards = guards
-            self.bounty = bounty
+            self.resources = resources
             
             self.availability = .init(
-                allowedPlayers: allowedPlayers,
-                canBeActivatedByComputer: canBeActivatedByComputer,
-                canBeActivatedByHuman: canBeActivatedByHuman
+                affectedPlayers: affectedPlayers,
+                appliesToHumanPlayers: appliesToHumanPlayers,
+                appliesToComputerPlayers: appliesToComputerPlayers
             )
-            self.shouldBeRemovedAfterVisit = shouldBeRemovedAfterVisit
+        }
+        
+        // MARK: Availability
+        struct Availability: Hashable {
+            
+            /// MapEditor: "Players to which event applies"
+            internal let affectedPlayers: [PlayerColor]
+            
+            /// MapEditor: "Apply event to computer players"
+            internal let appliesToHumanPlayers: Bool
+            
+            /// MapEditor: "Apply event to computer players"
+            internal let appliesToComputerPlayers: Bool
+            
+            public init(
+                affectedPlayers: [PlayerColor],
+                appliesToHumanPlayers: Bool,
+                appliesToComputerPlayers: Bool
+            ) {
+                self.affectedPlayers = affectedPlayers
+                self.appliesToHumanPlayers = appliesToHumanPlayers
+                self.appliesToComputerPlayers = appliesToComputerPlayers
+            }
         }
     }
 }
 
-
-// MARK: Availability
-public extension Map.Event {
+public extension Map {
     
-    
-    struct Availability: Hashable {
-        internal let allowedPlayers: [PlayerColor]
-        internal let canBeActivatedByComputer: Bool
-        internal let canBeActivatedByHuman: Bool
+    /// An event that is positioned at a certain place and that will be trigger when you walk on that position with a hero.
+    /// Not to be confused with time based global events (that has no location and is not triggered by the player).
+    struct GeoEvent: Hashable {
+        
+        public let message: String?
+        
+        public let guardians: CreatureStacks?
+        public let contents: Bounty?
+        
+        internal let cancelEventAfterFirstVisit: Bool
+        internal let availability: Availability
         
         public init(
-            allowedPlayers: [PlayerColor],
-            canBeActivatedByComputer: Bool,
-            canBeActivatedByHuman: Bool
+            message: String? = nil,
+            guardians: CreatureStacks? = nil,
+            contents: Bounty? = nil,
+            
+            playersAllowedToTriggerThisEvent: [PlayerColor] = [],
+            canBeTriggeredByComputerOpponent: Bool,
+            cancelEventAfterFirstVisit: Bool
         ) {
-            self.allowedPlayers = allowedPlayers
-            self.canBeActivatedByComputer = canBeActivatedByComputer
-            self.canBeActivatedByHuman = canBeActivatedByHuman
+            self.message = message
+            self.guardians = guardians
+            self.contents = contents
+            
+            self.availability = .init(
+                playersAllowedToTriggerEvent: playersAllowedToTriggerThisEvent,
+                canBeTriggeredByComputerOpponent: canBeTriggeredByComputerOpponent
+            )
+            self.cancelEventAfterFirstVisit = cancelEventAfterFirstVisit
         }
     }
+    
+    // MARK: Availability
+    struct Availability: Hashable {
+        
+        /// MapEditor: "Players allowed to trigger event"
+        internal let playersAllowedToTriggerEvent: [PlayerColor]
+        
+        /// MapEditor: "Allow computer opponent to trigger event"
+        internal let canBeTriggeredByComputerOpponent: Bool
+        
+        public init(
+            playersAllowedToTriggerEvent: [PlayerColor],
+            canBeTriggeredByComputerOpponent: Bool
+        ) {
+            self.playersAllowedToTriggerEvent = playersAllowedToTriggerEvent
+            self.canBeTriggeredByComputerOpponent = canBeTriggeredByComputerOpponent
+        }
+    }
+
 }
+
+
