@@ -128,7 +128,12 @@ public extension Map {
     
     struct Monster: Hashable {
         
-        public let creatureID: Creature.ID
+        public enum Kind: Hashable {
+            case specific(creatureID: Creature.ID)
+            case random(level: Creature.Level? = .any)
+        }
+        
+        public let kind: Kind
         
         public let quantity: Quantity
         

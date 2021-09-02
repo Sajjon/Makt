@@ -49,9 +49,9 @@ final class CreaturesOnMapTests: BaseMapTest {
             ),
             onParseObject: { [self] object in
                 
-                func assertCreature(
-                    _ creatureID: Creature.ID,
-                    _ quantity: Map.Monster.Quantity = .random,
+                func assertMonster(
+                    kind: Map.Monster.Kind,
+                    quantity: Map.Monster.Quantity = .random,
                     grows: Bool = true,
                     disposition: Map.Monster.Disposition = .aggressive,
                     mayFlee: Bool = true,
@@ -63,7 +63,7 @@ final class CreaturesOnMapTests: BaseMapTest {
                         XCTFail("Expected monster, but got: \(object.kind)")
                         return
                     }
-                    XCTAssertEqual(monster.creatureID, creatureID, line: line)
+                    XCTAssertEqual(monster.kind, kind, line: line)
                     XCTAssertEqual(monster.quantity, quantity, line: line)
                     
                     
@@ -76,11 +76,53 @@ final class CreaturesOnMapTests: BaseMapTest {
                     fullfill(object: object)
                 }
                 
+                func assertCreature(
+                    _ creatureID: Creature.ID,
+                    quantity: Map.Monster.Quantity = .random,
+                    grows: Bool = true,
+                    disposition: Map.Monster.Disposition = .aggressive,
+                    mayFlee: Bool = true,
+                    message: String? = nil,
+                    treasure: Map.Monster.Bounty? = nil,
+                    _ line: UInt = #line
+                ) {
+                    assertMonster(
+                        kind: .specific(creatureID: creatureID),
+                        quantity: quantity,
+                        grows: grows,
+                        disposition: disposition,
+                        mayFlee: mayFlee,
+                        message: message,
+                        treasure: treasure, line
+                    )
+                }
+                
+                func assertRandomMonster(
+                    level: Creature.Level? = .any,
+                    quantity: Map.Monster.Quantity = .random,
+                    grows: Bool = true,
+                    disposition: Map.Monster.Disposition = .aggressive,
+                    mayFlee: Bool = true,
+                    message: String? = nil,
+                    treasure: Map.Monster.Bounty? = nil,
+                    _ line: UInt = #line
+                ) {
+                    assertMonster(
+                        kind: .random(level: level),
+                        quantity: quantity,
+                        grows: grows,
+                        disposition: disposition,
+                        mayFlee: mayFlee,
+                        message: message,
+                        treasure: treasure, line
+                    )
+                }
+                
                 switch object.position {
                 case at(0, y: 0):
                     assertCreature(
                         .dwarf,
-                        .custom(1337),
+                        quantity: .custom(1337),
                         grows: false,
                         disposition: .savage,
                         mayFlee: false,
@@ -279,11 +321,27 @@ final class CreaturesOnMapTests: BaseMapTest {
                 case at(29, y: 19):
                     assertCreature(.troll)
                
+                case at(1, y: 21):
+                    assertRandomMonster(level: .any)
+                case at(3, y: 21):
+                    assertRandomMonster(level: .one)
+                case at(5, y: 21):
+                    assertRandomMonster(level: .two)
+                case at(7, y: 21):
+                    assertRandomMonster(level: .three)
+                case at(9, y: 21):
+                    assertRandomMonster(level: .four)
+                case at(11, y: 21):
+                    assertRandomMonster(level: .five)
+                case at(13, y: 21):
+                    assertRandomMonster(level: .six)
+                case at(15, y: 21):
+                    assertRandomMonster(level: .seven)
                     
                 case at(35, y: 35):
                     assertCreature(
                         .battleDwarf,
-                        .custom(314),
+                        quantity: .custom(314),
                         disposition: .compliant,
                         message: "Added by Cyon: 314 complieant battle dwarves offering the artifact Speculum and 31415 gold.",
                         treasure: .init(

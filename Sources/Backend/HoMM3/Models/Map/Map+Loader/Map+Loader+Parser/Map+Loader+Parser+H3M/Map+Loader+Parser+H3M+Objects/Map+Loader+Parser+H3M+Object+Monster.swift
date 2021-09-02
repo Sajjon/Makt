@@ -9,16 +9,15 @@ import Foundation
 
 
 internal extension Map.Loader.Parser.H3M {
-    
-    func parseRandomMonster(format: Map.Format) throws -> Map.Monster {
-        try parseRandomMonster(format: format, level: .random())
+  
+    func parseRandomMonster(format: Map.Format, level: Creature.Level? = .any) throws -> Map.Monster {
+        try parseMonster(
+            format: format,
+            kind: .random(level: level)
+        )
     }
     
-    func parseRandomMonster(format: Map.Format, level: Creature.Level) throws -> Map.Monster {
-        try parseMonster(format: format, creatureID: Creature.ID.at(level: level, .nonUpgradedAndUpgraded).randomElement()!)
-    }
-    
-    func parseMonster(format: Map.Format, creatureID: Creature.ID) throws -> Map.Monster {
+    func parseMonster(format: Map.Format, kind: Map.Monster.Kind) throws -> Map.Monster {
         let missionIdentifier: UInt32? = try {
             guard format > .restorationOfErathia else { return nil }
             return try reader.readUInt32()
@@ -32,22 +31,20 @@ internal extension Map.Loader.Parser.H3M {
         var message: String?
         var resources: Resources?
         var artifactID: Artifact.ID?
+        
         if hasMessageOrResourcesOrArtifact {
             message = try reader.readString(maxByteCount: 8192)
             resources = try parseResources()
             artifactID = try parseArtifactID(format: format)
         }
+        
         let neverFlees = try reader.readBool()
         let doesNotGrowInNumber = try reader.readBool()
-
-        if quantityRaw != 0 {
-            print("🍄 quantityRaw: \(quantityRaw), creatureID: \(creatureID)")
-        }
         
         try reader.skip(byteCount: 2)
         
         return .init(
-            creatureID: creatureID,
+            kind: kind,
             quantity: quantity,
             missionIdentifier: missionIdentifier,
             message: message,

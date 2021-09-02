@@ -275,7 +275,7 @@ internal extension Map.Loader.Parser.H3M {
                 switch attributesOfObject.objectID {
                 case .monster(let creatureID):
                     objectKind = try .monster(
-                        parseMonster(format: format, creatureID: creatureID)
+                        parseMonster(format: format, kind: .specific(creatureID: creatureID))
                     )
                 case .randomMonsterLevel1:
                     objectKind = try .monster(

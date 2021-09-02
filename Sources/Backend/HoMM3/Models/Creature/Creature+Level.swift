@@ -9,7 +9,7 @@ import Foundation
 
 public extension Creature {
     enum Level: UInt8, Comparable, CaseIterable, CustomDebugStringConvertible {
-        
+        public static let any: Self? = nil
         case one = 0
         case two
         case three
