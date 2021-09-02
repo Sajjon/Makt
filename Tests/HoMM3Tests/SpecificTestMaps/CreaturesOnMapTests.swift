@@ -338,6 +338,38 @@ final class CreaturesOnMapTests: BaseMapTest {
                 case at(15, y: 21):
                     assertRandomMonster(level: .seven)
                     
+                case at(1, y: 25):
+                    assertRandomMonster(disposition: .compliant, message: "compliant")
+                case at(3, y: 25):
+                    assertRandomMonster(disposition: .friendly, message: "friendly")
+                case at(5, y: 25):
+                    assertRandomMonster(disposition: .aggressive, message: "aggressive")
+                case at(7, y: 25):
+                    assertRandomMonster(disposition: .hostile, message: "hostile")
+                case at(9, y: 25):
+                    assertRandomMonster(disposition: .savage, message: "savage")
+                case at(15, y: 25):
+                    assertRandomMonster(mayFlee: false, message: "never flees")
+                case at(18, y: 25):
+                    assertRandomMonster(quantity: .custom(10), grows: false, message: "qty")
+                    
+                case at(22, y: 25):
+                    assertRandomMonster(
+                        message: "treasure",
+                        treasure: .init(
+                            artifactID: .angelWings,
+                            resources: .init(
+                                resources: [
+                                    .init(kind: .wood, amount: 1),
+                                    .init(kind: .mercury, amount: 2),
+                                    .init(kind: .ore, amount: 3),
+                                    .init(kind: .sulfur, amount: 4),
+                                    .init(kind: .crystal, amount: 5),
+                                    .init(kind: .gems, amount: 6),
+                                    .init(kind: .gold, amount: 10),
+                                ]
+                            )))
+                    
                 case at(35, y: 35):
                     assertCreature(
                         .battleDwarf,
