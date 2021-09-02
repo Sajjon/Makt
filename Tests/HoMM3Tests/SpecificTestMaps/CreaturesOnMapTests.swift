@@ -217,6 +217,68 @@ final class CreaturesOnMapTests: BaseMapTest {
                 case at(27, y: 7):
                     assertCreature(.archDevil)
                     
+                   
+                case at(1, y: 17):
+                    assertCreature(.pixie)
+                case at(3, y: 17):
+                    assertCreature(.sprite)
+                case at(5, y: 17):
+                    assertCreature(.waterElemental)
+                case at(7, y: 17):
+                    assertCreature(.iceElemental)
+                case at(9, y: 17):
+                    assertCreature(.earthElemental)
+                case at(11, y: 17):
+                    assertCreature(.magmaElemental)
+                case at(13, y: 17):
+                    assertCreature(.airElemental)
+                case at(15, y: 17):
+                    assertCreature(.stormElemental)
+                case at(17, y: 17):
+                    assertCreature(.fireElemental)
+                case at(19, y: 17):
+                    assertCreature(.energyElemental)
+                case at(21, y: 17):
+                    assertCreature(.psychicElemental)
+                case at(23, y: 17):
+                    assertCreature(.magicElemental)
+                case at(25, y: 17):
+                    assertCreature(.firebird)
+                case at(27, y: 17):
+                    assertCreature(.phoenix)
+                  
+                    
+                case at(1, y: 19):
+                    assertCreature(.goldGolem)
+                case at(3, y: 19):
+                    assertCreature(.diamondGolem)
+                case at(5, y: 19):
+                    assertCreature(.azureDragon)
+                case at(7, y: 19):
+                    assertCreature(.crystalDragon)
+                case at(9, y: 19):
+                    assertCreature(.faerieDragon)
+                case at(11, y: 19):
+                    assertCreature(.rustDragon)
+                case at(13, y: 19):
+                    assertCreature(.enchanter)
+                case at(15, y: 19):
+                    assertCreature(.sharpshooter)
+                case at(17, y: 19):
+                    assertCreature(.halfling)
+                case at(19, y: 19):
+                    assertCreature(.peasant)
+                case at(21, y: 19):
+                    assertCreature(.boar)
+                case at(23, y: 19):
+                    assertCreature(.mummy)
+                case at(25, y: 19):
+                    assertCreature(.nomad)
+                case at(27, y: 19):
+                    assertCreature(.rogue)
+                case at(29, y: 19):
+                    assertCreature(.troll)
+               
                     
                 case at(35, y: 35):
                     assertCreature(
