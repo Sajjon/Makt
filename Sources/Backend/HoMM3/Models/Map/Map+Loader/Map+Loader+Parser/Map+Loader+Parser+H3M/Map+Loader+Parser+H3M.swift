@@ -293,7 +293,7 @@ internal extension Map.Loader.Parser.H3M {
         let message = try reader.readString(maxByteCount: 29861) // Cyon: found to be max in Map Editor
         let resources = try parseResources()
         let affectedPlayers = try parseAllowedPlayers(availablePlayers: availablePlayers)
-        let appliesToHumanPlayers = try format > .armageddonsBlade ? reader.readBool() : true
+        let appliesToHumanPlayers = try format >= .shadowOfDeath ? reader.readBool() : true
         let appliesToComputerPlayers = try reader.readBool()
         let firstOccurence = try reader.readUInt16()
         let subsequentOccurenceRaw = try reader.readUInt8()

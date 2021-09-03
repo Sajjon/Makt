@@ -634,7 +634,7 @@ internal extension Map.Loader.Parser.H3M {
     
     func parseResources() throws -> Resources? {
         let resources: [Resource] = try Resource.Kind.allCases.map { kind in
-            try .init(kind: kind, amount: .init(reader.readUInt32()))
+            try .init(kind: kind, amount: .init(reader.readInt32())) // yes signed u32, can be negative, e.g. in Town Event, where resources are lost, not gained.
         }
         return .init(resources: resources)
     }

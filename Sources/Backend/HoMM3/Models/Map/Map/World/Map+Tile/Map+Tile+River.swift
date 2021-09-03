@@ -53,6 +53,24 @@ public extension Map.Tile.River {
     ///
     /// More info: https://github.com/Sajjon/HoMM3SwiftUI/blob/main/H3M.md#river-properties
     ///
+    ///  In Rust code base: H3MRiverTopology
+    ///    (0x00, Turn1)
+    ///    (0x01, Turn2)
+    ///    (0x02, Turn3)
+    ///    (0x03, Turn4)
+    ///    (0x04, Cross)
+    ///    (0x05, TVert1)
+    ///    (0x06, TVert2)
+    ///    (0x07, THorz1)
+    ///    (0x08, THorz2)
+    ///    (0x09, Vert1)
+    ///    (0x0A, Vert2)
+    ///    (0x0B, Horz1)
+    ///    (0x0C, Horz2)
+    ///
+    ///
+    /// 
+    ///
     struct Direction: Equatable {
         public typealias RawValue = UInt8
         public let frameID: RawValue

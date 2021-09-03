@@ -11,19 +11,10 @@ public extension Map {
     
     /// A global event that occurs at a certain time.
     /// Not to be confused with geo event, that is trigger when a player walks on a certain tile with a hero.
-    struct TimedEvent: Hashable {
-        
-        public let name: String?
- 
-        public let message: String?
-        
-        /// Resources to be gained OR taken
-        public let resources: Resources?
-        
-        public let occurrences: Occurrences
+    struct TimedEvent: Hashable, CustomDebugStringConvertible {
         
         public struct Occurrences: Hashable {
-            public enum Subsequent: UInt8, Hashable, CaseIterable {
+            public enum Subsequent: UInt8, Hashable, CaseIterable, CustomDebugStringConvertible {
                 static let neverRawValue = 0
                 static let never: Self? = nil
                 case everyDay = 1
@@ -36,15 +27,35 @@ public extension Map {
                 case every14Days = 14
                 case every21Days = 21
                 case every28Days = 28
+                
+                public var debugDescription: String {
+                    switch self {
+                    case .everyDay: return "everyDay"
+                    case .everyTwoDays: return "everyTwoDays"
+                    case .everyThreeDays: return "everyThreeDays"
+                    case .everyFourDays: return "everyFourDays"
+                    case .everyFiveDays: return "everyFiveDays"
+                    case .everySixDays: return "everySixDays"
+                    case .everySevenDays: return "everySevenDays"
+                    case .every14Days: return "every14Days"
+                    case .every21Days: return "every21Days"
+                    case .every28Days: return "every28Days"
+                    }
+                }
             }
             
             internal let first: UInt16
             internal let subsequent: Subsequent?
         }
         
- 
+        public let name: String?
+        public let message: String?
         
-        internal let availability: Availability
+        /// Resources to be gained OR taken
+        public let resources: Resources?
+        
+        public let occurrences: Occurrences
+        public let availability: Availability
         
         public init(
             name: String? = nil,
@@ -72,16 +83,16 @@ public extension Map {
         }
         
         // MARK: Availability
-        struct Availability: Hashable {
+        public struct Availability: Hashable, CustomDebugStringConvertible {
             
             /// MapEditor: "Players to which event applies"
-            internal let affectedPlayers: [PlayerColor]
+            public let affectedPlayers: [PlayerColor]
             
             /// MapEditor: "Apply event to computer players"
-            internal let appliesToHumanPlayers: Bool
+            public let appliesToHumanPlayers: Bool
             
             /// MapEditor: "Apply event to computer players"
-            internal let appliesToComputerPlayers: Bool
+            public let appliesToComputerPlayers: Bool
             
             public init(
                 affectedPlayers: [PlayerColor],
@@ -92,8 +103,35 @@ public extension Map {
                 self.appliesToHumanPlayers = appliesToHumanPlayers
                 self.appliesToComputerPlayers = appliesToComputerPlayers
             }
+            
+            public var debugDescription: String {
+                """
+                affectedPlayers: \(affectedPlayers)
+                appliesToHumanPlayers: \(appliesToHumanPlayers)
+                appliesToComputerPlayers: \(appliesToComputerPlayers)
+                """
+            }
+        }
+        
+        public var debugDescription: String {
+//            public let name: String?
+//            public let message: String?
+//
+//            /// Resources to be gained OR taken
+//            public let resources: Resources?
+//
+//            public let occurrences: Occurrences
+//            public let availability: Availability
+            """
+            name: \(name)
+            message: \(message)
+            resources: \(resources)
+            occurrences: \(occurrences)
+            availability: \(availability)
+            """
         }
     }
+    
 }
 
 public extension Map {
@@ -132,7 +170,7 @@ public extension Map {
     }
     
     // MARK: Availability
-    struct Availability: Hashable {
+    struct Availability: Hashable, CustomDebugStringConvertible {
         
         /// MapEditor: "Players allowed to trigger event"
         internal let playersAllowedToTriggerEvent: [PlayerColor]
@@ -146,6 +184,13 @@ public extension Map {
         ) {
             self.playersAllowedToTriggerEvent = playersAllowedToTriggerEvent
             self.canBeTriggeredByComputerOpponent = canBeTriggeredByComputerOpponent
+        }
+        
+        public var debugDescription: String {
+            """
+            playersAllowedToTriggerEvent: \(playersAllowedToTriggerEvent)
+            canBeTriggeredByComputerOpponent: \(canBeTriggeredByComputerOpponent)
+            """
         }
     }
 

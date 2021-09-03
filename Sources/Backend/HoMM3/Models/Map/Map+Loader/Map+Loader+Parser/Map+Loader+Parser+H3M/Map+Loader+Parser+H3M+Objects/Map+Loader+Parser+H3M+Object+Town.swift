@@ -27,7 +27,10 @@ public extension Map {
         }
         
         public let id: ID
-        public let faction: Faction
+        
+        /// nil if random town
+        public let faction: Faction?
+        
         public let owner: PlayerColor?
         public let name: String?
         public let garrison: CreatureStacks?
@@ -41,7 +44,9 @@ public extension Map {
         public let spells: Spells
         
         public let events: [Map.Town.Event]
-        public let alignment: Alignment?
+        
+        /// SOD feature
+        public let alignment: Faction?
     }
 }
 
@@ -63,6 +68,18 @@ public extension Map.Town {
 }
 public extension Map.Town.Buildings {
     enum Building: UInt8, Hashable, CaseIterable, CustomDebugStringConvertible {
+        
+        static let artifactMerchants: Self = .buildingId17
+        
+        static let dwelling1Horde: Self = .buildingId18
+        static let dwelling1UpgradeHorde: Self = .buildingId19
+        static let dwelling2Horde: Self = .buildingId24
+        static let dwelling2UpgradeHorde: Self = .buildingId25
+        static let dwelling3Horde: Self = .buildingId18
+        static let dwelling3UpgradedHorde: Self = .buildingId19
+        static let dwelling5Horde: Self = .buildingId24
+        static let dwelling5UpgradedHorde: Self = .buildingId25
+        
         case mageguildLevel1 = 0,
         mageguildLevel2,
         mageguildLevel3,
@@ -70,7 +87,7 @@ public extension Map.Town.Buildings {
         mageguildLevel5,
         
         tavern,
-        shiphard,
+        shipyard,
         
         fort,
         citadel,
@@ -79,7 +96,7 @@ public extension Map.Town.Buildings {
         villageHall,
         townHall,
         cityHall,
-        capital,
+        capitol,
         
         marketplace,
         resourceSilo,
@@ -97,12 +114,12 @@ public extension Map.Town.Buildings {
         /// Conflux: Artifact Merchant
         case buildingId17
         
-        /// Horde buildings for upgraded creatures
+        /// Horde buildings for non upgraded creatures
         ///
         /// Castle: Grifins
         /// Rampart: Dwarfes
         /// Tower: Stone Gargoyles
-        /// Inferno: IMps
+        /// Inferno: Imps
         /// Necropolis: Skeletons
         /// Dungeon: Troglodytes
         /// Stornghold: Goblins
@@ -200,16 +217,16 @@ public extension Map.Town.Buildings.Building {
            case .mageguildLevel5: return "Mage Guild level 5"
         
         case .tavern: return "Tavern"
-        case .shiphard: return "Shipyard"
+        case .shipyard: return "Shipyard"
         
         case .fort: return "Fort"
         case .citadel: return "Citadel"
              case .castle: return "Castle"
         
-        case .villageHall: return "Villagehall"
-        case .townHall: return "Townhall"
-        case .cityHall: return "Cityhall"
-        case .capital: return "aApital"
+        case .villageHall: return "Village hall"
+        case .townHall: return "Town hall"
+        case .cityHall: return "City hall"
+        case .capitol: return "capitol"
         
         case .marketplace: return "Marketplace"
         case .resourceSilo: return "Resource Silo"
@@ -237,7 +254,7 @@ public extension Map.Town.Buildings.Building {
                     Conflux: Artifact Merchant
             """
         
-        /// Horde buildings for upgraded creatures
+        /// Horde buildings for non upgraded creatures
         ///
         /// Castle: Grifins
         /// Rampart: Dwarfes
@@ -249,7 +266,7 @@ public extension Map.Town.Buildings.Building {
         /// Fortress: Gnolls
         /// Conflux: Pixies
         case .buildingId18: return """
-                    Horde buildings for upgraded creatures
+                    Horde buildings for non upgraded creatures
                     Castle: Grifins
                     Rampart: Dwarfes
                     Tower: Stone Gargoyles
@@ -420,14 +437,21 @@ public extension Map.Town.Buildings.Building {
 internal extension Map.Loader.Parser.H3M {
     
     
-    
-    func parseRandomTown(format: Map.Format, allowedSpellsOnMap: [Spell.ID], availablePlayers: [PlayerColor]) throws -> Map.Town {
-        try parseTown(format: format, faction: .random(), allowedSpellsOnMap: allowedSpellsOnMap, availablePlayers: availablePlayers)
+    func parseRandomTown(
+        format: Map.Format,
+        allowedSpellsOnMap: [Spell.ID],
+        availablePlayers: [PlayerColor]
+    ) throws -> Map.Town {
+        try parseTown(
+            format: format,
+            allowedSpellsOnMap: allowedSpellsOnMap,
+            availablePlayers: availablePlayers
+        )
     }
     
     func parseTown(
         format: Map.Format,
-        faction: Faction,
+        faction: Faction? = nil,
         allowedSpellsOnMap: [Spell.ID],
         availablePlayers: [PlayerColor]
     ) throws -> Map.Town {
@@ -453,20 +477,22 @@ internal extension Map.Loader.Parser.H3M {
         // Read castle events
         let eventCount = try reader.readUInt32()
         assert(eventCount <= 8192, "Cannot be more than 8192 town events... something is wrong. got: \(eventCount)")
-        
+        print("🏰 Found #\(eventCount) events in town, parsing them now")
         let events: [Map.Town.Event] = try eventCount.nTimes {
             let timedEvent = try parseTimedEvent(
                 format: format,
                 availablePlayers: availablePlayers
             )
             
+            print("🏰 parsed TIMED event, as part of this TOWN event (will not contain buildings, will come after): \(timedEvent)")
+            
             // New buildings
             let buildings = try parseBuildings()
+            print("🏰 town event buildings: \(buildings)")
+            
             // Creatures added to generator
-            let creatureStackList: [CreatureStack] = try Creature.ID.of(
-                faction: faction, .nonUpgradedOnly
-            ).map { creatureID in
-                try CreatureStack(creatureID: creatureID, quantity: .init(reader.readUInt16()))
+            let creatureQuantities = try CreatureStacks.Slot.allCases.count.nTimes {
+                CreatureStack.Quantity(try reader.readUInt16())
             }
             
             try reader.skip(byteCount: 4)
@@ -475,13 +501,18 @@ internal extension Map.Loader.Parser.H3M {
                 townID: townID,
                 timedEvent: timedEvent,
                 buildings: buildings,
-                creaturesToBeGained: .init(stacks: creatureStackList))
+                creaturesToBeGained: creatureQuantities
+            )
         }
         
-        var alignment: Alignment?
-        if format > .armageddonsBlade {
-            alignment = try .init(integer: reader.readUInt8())
+        var alignment: Faction?
+        if format >= .shadowOfDeath {
+            alignment = try Faction(integer: reader.readUInt8())
+            if let f = faction, alignment != f {
+                fatalError("What?! Different faction parsed and provided...?")
+            }
         }
+        
         try reader.skip(byteCount: 3)
         
         return Map.Town(
@@ -507,7 +538,7 @@ public enum Alignment: UInt8, Hashable, CaseIterable {
 }
 
 public extension Map.Town {
-    struct Event: Hashable {
+    struct Event: Hashable, CustomDebugStringConvertible {
         public let townID: Map.Town.ID
         
         /// private because ugly that we piggyback on this TownEvent having the same properties as a timed event. Make use of public computed properties to extract info from this private stored property.
@@ -516,29 +547,54 @@ public extension Map.Town {
         public let buildings: [Buildings.Building]
         
         /// MapEditor: "Note the specified creatures will be added to their respective generator building within the town. If the generator has not been built at that time the creatures cannot be added."
-        public let creaturesToBeAddedToRespectiveGenerators: CreatureStacks
+        public let creaturesToBeAddedToRespectiveGenerators: [CreatureStack.Quantity]
         
         public init(
             townID: Map.Town.ID,
             timedEvent: Map.TimedEvent,
-            buildings: [Buildings.Building],
-            creaturesToBeGained: CreatureStacks
+            buildings: [Buildings.Building] = [],
+            creaturesToBeGained: [CreatureStack.Quantity] = .noCreatures
         ) {
+            precondition(creaturesToBeGained.count == CreatureStacks.Slot.allCases.count)
             self.townID = townID
             self.timedEvent = timedEvent
             self.buildings = buildings
             self.creaturesToBeAddedToRespectiveGenerators = creaturesToBeGained
         }
+        
+        public var debugDescription: String {
+            """
+            id: \(townID),
+            \(timedEvent.debugDescription)
+            buildings: \(buildings)
+            creaturesToBeAddedToRespectiveGenerators: \(creaturesToBeAddedToRespectiveGenerators)
+            """
+        }
     }
+}
+
+public extension Array where Element == CreatureStack.Quantity {
+    static let noCreatures = Self(repeating: 0, count: CreatureStacks.Slot.allCases.count)
+}
+
+
+public extension Map.Town.Event {
+    var name: String? { timedEvent.name }
+    var message: String? { timedEvent.message }
+    var resources: Resources? { timedEvent.resources }
+    var occurrences: Map.TimedEvent.Occurrences { timedEvent.occurrences }
+    var availability: Map.TimedEvent.Availability { timedEvent.availability }
 }
 
 // MARK: Private
 private extension Map.Loader.Parser.H3M {
     
     func parseBuildings() throws -> [Map.Town.Buildings.Building] {
-        try reader.readBitArray(byteCount: 6).prefix(Map.Town.Buildings.Building.allCases.count).enumerated().compactMap { (buildingID, isBuilt) in
+        let bitmask = try reader.readBitArray(byteCount: 6)
+        print("🏰 building bitmas: \(bitmask)")
+        return try bitmask.prefix(Map.Town.Buildings.Building.allCases.count).enumerated().compactMap { (buildingID, isBuilt) in
            guard isBuilt else { return nil }
-            return try Map.Town.Buildings.Building(integer: buildingID)
+        return try Map.Town.Buildings.Building(integer: buildingID)
        }
     }
     
@@ -550,7 +606,6 @@ private extension Map.Loader.Parser.H3M {
     
     func parseSimpleTown() throws -> Map.Town.Buildings {
         let hasFort = try reader.readBool()
-        print("🏰 town: simpletown hasFort?='\(hasFort)'")
         let built = Map.Town.Buildings.Building.default(includeFort: hasFort)
         return .init(built: built, forbidden: [])
     }
