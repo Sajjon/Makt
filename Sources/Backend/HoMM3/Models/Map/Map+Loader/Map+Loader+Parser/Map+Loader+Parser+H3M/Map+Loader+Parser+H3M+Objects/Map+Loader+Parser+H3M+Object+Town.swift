@@ -684,11 +684,10 @@ private extension Map.Loader.Parser.H3M {
     
     func parseBuildings() throws -> [Map.Town.Buildings.Building] {
         let rawBytes = try reader.read(byteCount: 6)
-        let bitmaskFromReversedBytes =  BitArray(data: Data(rawBytes.reversed()))
-        let bitmaskFromReversedBytesReversedBits = BitArray(bitmaskFromReversedBytes.reversed())
         
-
-        return try bitmaskFromReversedBytesReversedBits.enumerated().compactMap { (buildingID, isBuilt) in
+        let bitmaskFlipped =  BitArray(data: Data(rawBytes.reversed()))
+        let bitmask = BitArray(bitmaskFlipped.reversed())
+        return try bitmask.enumerated().compactMap { (buildingID, isBuilt) in
            guard isBuilt else { return nil }
         return try Map.Town.Buildings.Building(integer: buildingID)
        }
