@@ -69,6 +69,99 @@ public extension Map.Town {
 public extension Map.Town.Buildings {
     enum Building: UInt8, Hashable, CaseIterable, CustomDebugStringConvertible {
         
+        public var debugDescription: String {
+            switch self {
+            case .townHall: return "townHall"
+            case .cityHall: return "cityHall"
+            case .capitol: return "capitol"
+            case .fort: return "fort"
+            case .citadel: return "citadel"
+            case .castle: return "castle"
+            case .tavern: return "tavern"
+            case .blacksmith: return "blacksmith"
+            case .marketplace: return "marketplace"
+            case .resourceSilo: return "resourceSilo"
+            case .artifactMerchants: return "artifactMerchants"
+            case .mageGuildLevel1: return "mageGuildLevel1"
+            case .mageGuildLevel2: return "mageGuildLevel2"
+            case .mageGuildLevel3: return "mageGuildLevel3"
+            case .mageGuildLevel4: return "mageGuildLevel4"
+            case .mageGuildLevel5: return "mageGuildLevel5"
+            case .shipyard: return "shipyard"
+            case .grail: return "grail"
+            case .special1: return "special1"
+            case .special2: return "special2"
+            case .special3: return "special3"
+            case .special4: return "special4"
+            case .dwelling1: return "dwelling1"
+            case .upgradedDwelling1: return "upgradedDwelling1"
+            case .horde1: return "horde1"
+            case .dwelling2: return "dwelling2"
+            case .upgradedDwelling2: return "upgradedDwelling2"
+            case .horde2: return "horde2"
+            case .dwelling3: return "dwelling3"
+            case .upgradedDwelling3: return "upgradedDwelling3"
+            case .horde3: return "horde3"
+            case .dwelling4: return "dwelling4"
+            case .upgradedDwelling4: return "upgradedDwelling4"
+            case .horde4: return "horde4"
+            case .dwelling5: return "dwelling5"
+            case .upgradedDwelling5: return "upgradedDwelling5"
+            case .horde5: return "horde5"
+            case .dwelling6: return "dwelling6"
+            case .upgradedDwelling6: return "upgradedDwelling6"
+            case .dwelling7: return "dwelling7"
+            case .upgradedDwelling7: return "upgradedDwelling7"
+            }
+        }
+        
+        case townHall
+        case cityHall
+        case capitol
+        case fort
+        case citadel
+        case castle
+        case tavern
+        case blacksmith
+        
+        case marketplace
+        case resourceSilo
+        case artifactMerchants
+        case mageGuildLevel1
+        case mageGuildLevel2
+        case mageGuildLevel3
+        case mageGuildLevel4
+        case mageGuildLevel5
+        
+        case shipyard
+        case grail
+        case special1
+        case special2
+        case special3
+        case special4
+        case dwelling1
+        case upgradedDwelling1
+        case horde1
+        case dwelling2
+        case upgradedDwelling2
+        case horde2
+        case dwelling3
+        case upgradedDwelling3
+        case horde3
+        case dwelling4
+        case upgradedDwelling4
+        case horde4
+        case dwelling5
+        case upgradedDwelling5
+        case horde5
+        case dwelling6
+        case upgradedDwelling6
+        case dwelling7
+        case upgradedDwelling7
+    }
+        
+    enum BuildingDEPRECATED: UInt8, Hashable, CaseIterable, CustomDebugStringConvertible {
+        
         static let artifactMerchants: Self = .buildingId17
         
         static let dwelling1Horde: Self = .buildingId18
@@ -207,7 +300,7 @@ public extension Map.Town.Buildings {
     }
 }
 
-public extension Map.Town.Buildings.Building {
+public extension Map.Town.Buildings.BuildingDEPRECATED {
     var debugDescription: String {
         switch self {
         case .mageguildLevel1: return "Mage Guild level 1"
@@ -423,7 +516,7 @@ public extension Map.Town.Buildings.Building {
         
         return [
             maybeFort,
-            .villageHall,
+//            .villageHall,
             .tavern,
             .dwelling1,
             maybeDwelling2
@@ -484,11 +577,11 @@ internal extension Map.Loader.Parser.H3M {
                 availablePlayers: availablePlayers
             )
             
-            print("🏰 parsed TIMED event, as part of this TOWN event (will not contain buildings, will come after): \(timedEvent)")
+            print("\n\n🏰 parsed TIMED event, as part of this TOWN event (will not contain buildings, will come after): \(timedEvent)")
             
             // New buildings
             let buildings = try parseBuildings()
-            print("🏰 town event buildings: \(buildings)")
+            print("🏰 town event buildings: \(buildings)\n==================")
             
             // Creatures added to generator
             let creatureQuantities = try CreatureStacks.Slot.allCases.count.nTimes {
@@ -590,9 +683,12 @@ public extension Map.Town.Event {
 private extension Map.Loader.Parser.H3M {
     
     func parseBuildings() throws -> [Map.Town.Buildings.Building] {
-        let bitmask = try reader.readBitArray(byteCount: 6)
-        print("🏰 building bitmas: \(bitmask)")
-        return try bitmask.prefix(Map.Town.Buildings.Building.allCases.count).enumerated().compactMap { (buildingID, isBuilt) in
+        let rawBytes = try reader.read(byteCount: 6)
+        let bitmaskFromReversedBytes =  BitArray(data: Data(rawBytes.reversed()))
+        let bitmaskFromReversedBytesReversedBits = BitArray(bitmaskFromReversedBytes.reversed())
+        
+
+        return try bitmaskFromReversedBytesReversedBits.enumerated().compactMap { (buildingID, isBuilt) in
            guard isBuilt else { return nil }
         return try Map.Town.Buildings.Building(integer: buildingID)
        }

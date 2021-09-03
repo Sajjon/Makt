@@ -71,8 +71,8 @@ final class TownEventsOnMapTests: BaseMapTest {
                         func f(_ failure: String) -> String {
                             "Mistmatch in event at index: \(eventIndex): \(failure)"
                         }
-                        XCTAssertEqual(actual.name, expected.name, f("Name"), line: line)
-                        XCTAssertEqual(actual.buildings, expected.buildings, f("building"), line: line)
+                        XCTAssertEqual(expected.name, actual.name, f("Name"), line: line)
+                        XCTAssertEqual(expected.buildings, actual.buildings, f("building"), line: line)
                     }
                
                     
@@ -132,59 +132,62 @@ final class TownEventsOnMapTests: BaseMapTest {
                     )
                 case at(12, y: 5):
                     var day: UInt16 = 1
-                    func buildInTown(_ building: Map.Town.Buildings.Building, _ nameOfBuilding: String? = nil) -> Map.Town.Event {
-                        let buildingName = nameOfBuilding ?? building.debugDescription.titlecased().lowercased()
-                        let name = "build \(buildingName)"
-                        let event: Map.Town.Event = .build(name: name, day: day, building: building)
+                    func builtInTown(_ builtBuildings: [Map.Town.Buildings.Building], _ nameOfBuilding: String) -> Map.Town.Event {
+                        let name = "build \(nameOfBuilding)"
+                        let event: Map.Town.Event = .build(name: name, day: day, builtBuildings: builtBuildings)
                         day += 1
                         return event
+                    }
+                    func buildInTown(_ building: Map.Town.Buildings.Building, _ nameOfBuilding: String? = nil) -> Map.Town.Event {
+                        let buildingName = nameOfBuilding ?? building.debugDescription.titlecased().lowercased()
+                        return builtInTown([building], buildingName)
                     }
                     assertTown(
                         events: [
                             buildInTown(.townHall),
-                            buildInTown(.cityHall),
-                            buildInTown(.capitol),
+                            builtInTown([.townHall, .cityHall], "city hall"),
+                            builtInTown([.townHall, .cityHall, .capitol], "capitol"),
                             buildInTown(.fort),
-                            buildInTown(.citadel),
-                            buildInTown(.castle),
+                            builtInTown([.fort, .citadel], "citadel"),
+                            builtInTown([.fort, .citadel, .castle], "castle"),
                             buildInTown(.tavern),
                             buildInTown(.blacksmith),
                             buildInTown(.marketplace),
-                            buildInTown(.resourceSilo, "risource silo"), // sic
-                            buildInTown(.artifactMerchants, "artifacts merchants"), // sic
-                            buildInTown(.mageguildLevel1, "mage guild 1"),
-                            buildInTown(.mageguildLevel2, "mage guild 2"),
-                            buildInTown(.mageguildLevel3, "mage guild 3"),
-                            buildInTown(.mageguildLevel4, "mage guild 4"),
-                            buildInTown(.mageguildLevel5, "mage guild 5"),
+                            builtInTown([.marketplace, .resourceSilo], "risource silo"), // sic
+                            builtInTown([.marketplace, .artifactMerchants], "artifacts merchants"), // sic
+                            buildInTown(.mageGuildLevel1, "mage guild 1"),
+                            builtInTown([.mageGuildLevel1, .mageGuildLevel2], "mage guild 2"),
+                            builtInTown([.mageGuildLevel1, .mageGuildLevel2, .mageGuildLevel3], "mage guild 3"),
+                            builtInTown([.mageGuildLevel1, .mageGuildLevel2, .mageGuildLevel3, .mageGuildLevel4], "mage guild 4"),
+                            builtInTown([.mageGuildLevel1, .mageGuildLevel2, .mageGuildLevel3, .mageGuildLevel4, .mageGuildLevel5], "mage guild 5"),
                             buildInTown(.shipyard),
                             buildInTown(.grail),
                             
                             buildInTown(.dwelling1, "creature 1"),
-                            buildInTown(.upgradedDwelling1, "creature 1 up"),
-                            buildInTown(.dwelling1Horde, "creature 1 horde"),
+                            builtInTown([.dwelling1, .upgradedDwelling1], "creature 1 up"),
+                            builtInTown([.dwelling1, .horde1], "creature 1 horde"),
                             
                             buildInTown(.dwelling2, "creature 2"),
-                            buildInTown(.upgradedDwelling2, "creature 2 up"),
-                            buildInTown(.dwelling2UpgradeHorde, "creature 2 horde"),
+                            builtInTown([.dwelling2, .upgradedDwelling2], "creature 2 up"),
+                            builtInTown([.dwelling2, .horde2], "creature 2 horde"),
                             
                             buildInTown(.dwelling3, "creature 3"),
-                            buildInTown(.upgradedDwelling3, "creature 3 up"),
-                            buildInTown(.dwelling3Horde, "creature 3 horde"),
+                            builtInTown([.dwelling3, .upgradedDwelling3], "creature 3 up"),
+                            builtInTown([.dwelling3, .horde3], "creature 3 horde"),
                             
                             buildInTown(.dwelling4, "creature 4"),
-                            buildInTown(.upgradedDwelling4, "creature 4 up"),
-                            buildInTown(.dwelling4Horde, "creature 4 horde"),
+                            builtInTown([.dwelling4, .upgradedDwelling4], "creature 4 up"),
+                            builtInTown([.dwelling4, .horde4], "creature 4 horde"),
                             
                             buildInTown(.dwelling5, "creature 5"),
-                            buildInTown(.upgradedDwelling5, "creature 5 up"),
-                            buildInTown(.dwelling5Horde, "creature 5 horde"),
+                            builtInTown([.dwelling5, .upgradedDwelling5], "creature 5 up"),
+                            builtInTown([.dwelling5, .horde5], "creature 5 horde"),
                             
                             buildInTown(.dwelling6, "creature 6"),
-                            buildInTown(.upgradedDwelling6, "creature 6 up"),
+                            builtInTown([.dwelling6, .upgradedDwelling6], "creature 6 up"),
 
                             buildInTown(.dwelling7, "creature 7"),
-                            buildInTown(.upgradedDwelling7, "creature 7 up"),
+                            builtInTown([.dwelling7, .upgradedDwelling7], "creature 7 up"),
                         ]
                     )
                 default:
@@ -217,7 +220,7 @@ private extension Map.Town.Event {
     static func build(
         name: String,
         day: UInt16,
-        building: Map.Town.Buildings.Building,
+        builtBuildings: [Map.Town.Buildings.Building],
         appliesToHumanPlayers: Bool = true,
         appliesToComputerPlayers: Bool = false
     ) -> Self {
@@ -233,7 +236,7 @@ private extension Map.Town.Event {
                 appliesToComputerPlayers: appliesToComputerPlayers,
                 resources: nil
             ),
-            buildings: [building]
+            buildings: builtBuildings
         )
     }
 }
