@@ -133,6 +133,9 @@
 		487C2C4026D4C08900031505 /* Hero+Placeholder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487C2C3F26D4C08900031505 /* Hero+Placeholder.swift */; };
 		487C2C4226D508E500031505 /* Map+Loader+Parser+H3M+CreatureStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487C2C4126D508E500031505 /* Map+Loader+Parser+H3M+CreatureStack.swift */; };
 		48BC466B26D667EE00D435F1 /* Map+Object+ID+Stripped.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48BC466A26D667EE00D435F1 /* Map+Object+ID+Stripped.swift */; };
+		48CC4AB226E3B85700447F77 /* cyon_sod_only_allows_artifacts_starting_with_letter_A.h3m in Resources */ = {isa = PBXBuildFile; fileRef = 48CC4AAE26E3B85600447F77 /* cyon_sod_only_allows_artifacts_starting_with_letter_A.h3m */; };
+		48CC4AB626E3B88100447F77 /* EnabledArtifactsBaseMapTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48CC4AB526E3B88100447F77 /* EnabledArtifactsBaseMapTest.swift */; };
+		48CC4AB826E3C07500447F77 /* ArtifactsStartingWith_A_MapTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48CC4AB726E3C07500447F77 /* ArtifactsStartingWith_A_MapTest.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -276,6 +279,9 @@
 		487C2C3F26D4C08900031505 /* Hero+Placeholder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Hero+Placeholder.swift"; sourceTree = "<group>"; };
 		487C2C4126D508E500031505 /* Map+Loader+Parser+H3M+CreatureStack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Map+Loader+Parser+H3M+CreatureStack.swift"; sourceTree = "<group>"; };
 		48BC466A26D667EE00D435F1 /* Map+Object+ID+Stripped.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Map+Object+ID+Stripped.swift"; sourceTree = "<group>"; };
+		48CC4AAE26E3B85600447F77 /* cyon_sod_only_allows_artifacts_starting_with_letter_A.h3m */ = {isa = PBXFileReference; lastKnownFileType = file; path = cyon_sod_only_allows_artifacts_starting_with_letter_A.h3m; sourceTree = "<group>"; };
+		48CC4AB526E3B88100447F77 /* EnabledArtifactsBaseMapTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnabledArtifactsBaseMapTest.swift; sourceTree = "<group>"; };
+		48CC4AB726E3C07500447F77 /* ArtifactsStartingWith_A_MapTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArtifactsStartingWith_A_MapTest.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -456,6 +462,8 @@
 				487AF9B626DF6DFA0073277F /* BaseMapTest.swift */,
 				483A2D9326DFC81E00EAC052 /* CreaturesOnMapTests.swift */,
 				487058C026E104D600DEEB36 /* TownEventOnMapTests.swift */,
+				48CC4AB526E3B88100447F77 /* EnabledArtifactsBaseMapTest.swift */,
+				48CC4AB726E3C07500447F77 /* ArtifactsStartingWith_A_MapTest.swift */,
 			);
 			path = SpecificTestMaps;
 			sourceTree = "<group>";
@@ -471,6 +479,7 @@
 		487AF98F26DF5CBF0073277F /* TestMaps */ = {
 			isa = PBXGroup;
 			children = (
+				48CC4AAE26E3B85600447F77 /* cyon_sod_only_allows_artifacts_starting_with_letter_A.h3m */,
 				483A2D9726E0140500EAC052 /* creatures-cyon-modified.h3m */,
 				487AF99026DF5CBF0073277F /* town-spells-1-3.h3m */,
 				487AF99126DF5CBF0073277F /* town-events.h3m */,
@@ -896,6 +905,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				48CC4AB226E3B85700447F77 /* cyon_sod_only_allows_artifacts_starting_with_letter_A.h3m in Resources */,
 				487AF9AD26DF5CBF0073277F /* random-RoE.h3m in Resources */,
 				487AF9AA26DF5CBF0073277F /* witch-hut.h3m in Resources */,
 				487AF9A226DF5CBF0073277F /* town-spells-1-3.h3m in Resources */,
@@ -1028,6 +1038,7 @@
 				487C2BB526CC2E8500031505 /* HeroIDTests.swift in Sources */,
 				483A2D9626E002A400EAC052 /* ArtifactsOnMapTests.swift in Sources */,
 				487C2BE926CD4A4500031505 /* SpellIDTests.swift in Sources */,
+				48CC4AB826E3C07500447F77 /* ArtifactsStartingWith_A_MapTest.swift in Sources */,
 				487AF9B726DF6DFA0073277F /* BaseMapTest.swift in Sources */,
 				487C2B8426C936D600031505 /* Map+ID+KnownMaps.swift in Sources */,
 				483A2D9426DFC81E00EAC052 /* CreaturesOnMapTests.swift in Sources */,
@@ -1036,6 +1047,7 @@
 				487058C126E104D600DEEB36 /* TownEventOnMapTests.swift in Sources */,
 				487C2BE026CD3D7400031505 /* ArtifactIDTests.swift in Sources */,
 				487AF96B26D9131C0073277F /* SucceedingMapTests.swift in Sources */,
+				48CC4AB626E3B88100447F77 /* EnabledArtifactsBaseMapTest.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
