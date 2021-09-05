@@ -140,6 +140,8 @@
 		48CC4ABC26E4E52D00447F77 /* cyon_sod_additional_info_heroes_starting_with_letter_A.h3m in Resources */ = {isa = PBXBuildFile; fileRef = 48CC4ABB26E4E52D00447F77 /* cyon_sod_additional_info_heroes_starting_with_letter_A.h3m */; };
 		48CC4AE926E4EBFD00447F77 /* cyon_sod_additional_info_heroes_starting_with_letter_B.h3m in Resources */ = {isa = PBXBuildFile; fileRef = 48CC4AE826E4EBFD00447F77 /* cyon_sod_additional_info_heroes_starting_with_letter_B.h3m */; };
 		48CC4AEB26E4EC0F00447F77 /* HeroesStartingWith_B_MapTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48CC4AEA26E4EC0F00447F77 /* HeroesStartingWith_B_MapTest.swift */; };
+		48CC4AED26E4F03800447F77 /* cyon_sod_only_additional_info_custom_heroes.h3m in Resources */ = {isa = PBXBuildFile; fileRef = 48CC4AEC26E4F03800447F77 /* cyon_sod_only_additional_info_custom_heroes.h3m */; };
+		48CC4AEF26E4F05100447F77 /* CustomizedHeroesSODMapTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48CC4AEE26E4F05100447F77 /* CustomizedHeroesSODMapTest.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -290,6 +292,8 @@
 		48CC4ABB26E4E52D00447F77 /* cyon_sod_additional_info_heroes_starting_with_letter_A.h3m */ = {isa = PBXFileReference; lastKnownFileType = file; path = cyon_sod_additional_info_heroes_starting_with_letter_A.h3m; sourceTree = "<group>"; };
 		48CC4AE826E4EBFD00447F77 /* cyon_sod_additional_info_heroes_starting_with_letter_B.h3m */ = {isa = PBXFileReference; lastKnownFileType = file; path = cyon_sod_additional_info_heroes_starting_with_letter_B.h3m; sourceTree = "<group>"; };
 		48CC4AEA26E4EC0F00447F77 /* HeroesStartingWith_B_MapTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeroesStartingWith_B_MapTest.swift; sourceTree = "<group>"; };
+		48CC4AEC26E4F03800447F77 /* cyon_sod_only_additional_info_custom_heroes.h3m */ = {isa = PBXFileReference; lastKnownFileType = file; path = cyon_sod_only_additional_info_custom_heroes.h3m; sourceTree = "<group>"; };
+		48CC4AEE26E4F05100447F77 /* CustomizedHeroesSODMapTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomizedHeroesSODMapTest.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -473,6 +477,7 @@
 				48CC4AB526E3B88100447F77 /* AdditionalInfoBaseTests.swift */,
 				48CC4AB726E3C07500447F77 /* ArtifactsStartingWith_A_MapTest.swift */,
 				48CC4AB926E4DEBB00447F77 /* HeroesStartingWith_A_MapTest.swift */,
+				48CC4AEE26E4F05100447F77 /* CustomizedHeroesSODMapTest.swift */,
 				48CC4AEA26E4EC0F00447F77 /* HeroesStartingWith_B_MapTest.swift */,
 			);
 			path = SpecificTestMaps;
@@ -489,6 +494,7 @@
 		487AF98F26DF5CBF0073277F /* TestMaps */ = {
 			isa = PBXGroup;
 			children = (
+				48CC4AEC26E4F03800447F77 /* cyon_sod_only_additional_info_custom_heroes.h3m */,
 				48CC4AE826E4EBFD00447F77 /* cyon_sod_additional_info_heroes_starting_with_letter_B.h3m */,
 				48CC4ABB26E4E52D00447F77 /* cyon_sod_additional_info_heroes_starting_with_letter_A.h3m */,
 				48CC4AAE26E3B85600447F77 /* cyon_sod_only_allows_artifacts_starting_with_letter_A.h3m */,
@@ -917,6 +923,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				48CC4AED26E4F03800447F77 /* cyon_sod_only_additional_info_custom_heroes.h3m in Resources */,
 				48CC4AB226E3B85700447F77 /* cyon_sod_only_allows_artifacts_starting_with_letter_A.h3m in Resources */,
 				487AF9AD26DF5CBF0073277F /* random-RoE.h3m in Resources */,
 				487AF9AA26DF5CBF0073277F /* witch-hut.h3m in Resources */,
@@ -1057,6 +1064,7 @@
 				487AF9B726DF6DFA0073277F /* BaseMapTest.swift in Sources */,
 				487C2B8426C936D600031505 /* Map+ID+KnownMaps.swift in Sources */,
 				483A2D9426DFC81E00EAC052 /* CreaturesOnMapTests.swift in Sources */,
+				48CC4AEF26E4F05100447F77 /* CustomizedHeroesSODMapTest.swift in Sources */,
 				481BDFA026C6A4F000C5E335 /* FailingMapTests.swift in Sources */,
 				48CC4ABA26E4DEBB00447F77 /* HeroesStartingWith_A_MapTest.swift in Sources */,
 				487C2BCB26CCF6A600031505 /* CRC32Tests.swift in Sources */,

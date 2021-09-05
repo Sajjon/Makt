@@ -9,7 +9,7 @@ import Foundation
 
 public extension Map.AdditionalInformation {
     struct CustomHero: Hashable {
-        let heroClass: Hero.Class
+        let heroId: Hero.ID?
         let portraitID: Hero.ID?
         let name: String
         let allowedPlayers: [PlayerColor]

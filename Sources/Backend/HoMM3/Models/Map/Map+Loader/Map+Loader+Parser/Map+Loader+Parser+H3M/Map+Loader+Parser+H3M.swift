@@ -106,13 +106,13 @@ internal extension Map.Loader.Parser.H3M {
         return allowedOfAvailable
     }
     
-        
-        func parseHeroClass() throws -> Hero.Class? {
-            let heroClassRaw = try reader.readUInt8()
-            guard heroClassRaw != 0xff else { return nil }
-            return try Hero.Class(integer: heroClassRaw)
-        }
-
+    
+    func parseHeroClass() throws -> Hero.Class? {
+        let heroClassRaw = try reader.readUInt8()
+        guard heroClassRaw != 0xff else { return nil }
+        return try Hero.Class(integer: heroClassRaw)
+    }
+    
 }
 
 

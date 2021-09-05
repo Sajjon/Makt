@@ -14,7 +14,7 @@ final class HeroesStartingWith_B_Tests: AdditionalInfoBaseTests {
     override var mapFileName: String { "cyon_sod_additional_info_heroes_starting_with_letter_B" }
     override var mapName: String { "additional_info_heroes_on_B" }
     
-    func testHeroesStartingWithLetter_A() throws {
+    func test() throws {
         let expectationHeroes = expectation(description: "Heroes")
         try doTestAdidtionalInformation(
             onParseFormat: { XCTAssertEqual($0, .shadowOfDeath) },
