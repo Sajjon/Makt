@@ -10,37 +10,62 @@ import XCTest
 
 @testable import HoMM3SwiftUI
 
-class EnabledArtifactsBaseTests: BaseMapTest {
+class AdditionalInfoBaseTests: BaseMapTest {
     
     var mapFileName: String { "OVERRIDE_THIS_FILE_NAME_PLEASE" }
     var mapName: String { "OVERRIDE_THIS_MAP_NAME_PLEASE" }
     
-    func doTestEnabledArtifacts(expected: [Artifact.ID]) throws {
-        XCTAssertFalse(expected.isEmpty)
+    func doTestAdidtionalInformation(
         
-        let expectationParseAvailableArtifacts = expectation(description: "Available Artifacts")
+        onParseFormat: @escaping Map.Loader.Parser.Inspector.BasicInfoInspector.OnParseFormat,
+        onParseName: @escaping Map.Loader.Parser.Inspector.BasicInfoInspector.OnParseName,
+        onParseDescription: @escaping Map.Loader.Parser.Inspector.BasicInfoInspector.OnParseDescription = { XCTAssertEqual($0, "") },
+        onParseDifficulty: @escaping Map.Loader.Parser.Inspector.BasicInfoInspector.OnParseDifficulty = { XCTAssertEqual($0, .normal) },
+        onParseSize: @escaping Map.Loader.Parser.Inspector.BasicInfoInspector.OnParseSize = { XCTAssertEqual($0, .small) },
+        onFinishedParsingBasicInfo: @escaping Map.Loader.Parser.Inspector.BasicInfoInspector.OnFinishedParsingBasicInfo = { XCTAssertFalse($0.hasTwoLevels) },
+        
+        onParseAvailableHeroes: Map.Loader.Parser.Inspector.AdditionalInfoInspector.OnParseAvailableHeroes? = nil,
+        onParseTeamInfo: Map.Loader.Parser.Inspector.AdditionalInfoInspector.OnParseTeamInfo? = nil,
+        onParseCustomHeroes: Map.Loader.Parser.Inspector.AdditionalInfoInspector.OnParseCustomHeroes? = nil,
+        onParseAvailableArtifacts: Map.Loader.Parser.Inspector.AdditionalInfoInspector.OnParseAvailableArtifacts? = nil,
+        onParseAvailableSpells: Map.Loader.Parser.Inspector.AdditionalInfoInspector.OnParseAvailableSpells? = nil,
+        onParseAvailableSecondarySkills: Map.Loader.Parser.Inspector.AdditionalInfoInspector.OnParseAvailableSecondarySkills? = nil,
+        
+        onParseHeroSettings: Map.Loader.Parser.Inspector.AdditionalInfoInspector.OnParseHeroSettings? = nil
+    ) throws {
+   
+        let expectationVictory = expectation(description: "Parse Victory")
+        let expectationLoss = expectation(description: "Parse Loss")
         let expectationParseObjectSign = expectation(description: "Parse object 'Sign'")
         let expectationRumor = expectation(description: "Parse rumor")
         let expectationGlobalTimedEvent = expectation(description: "Parse timed event")
         
         let inspector = Map.Loader.Parser.Inspector(
             basicInfoInspector: .init(
-                onParseFormat: { XCTAssertEqual($0, .shadowOfDeath) },
-                onParseName: { XCTAssertEqual($0, self.mapName) },
-                onParseDescription: { XCTAssertEqual($0, "") },
-                onParseDifficulty: { XCTAssertEqual($0, .normal) },
-                onParseSize: { XCTAssertEqual($0, .small) },
-                onFinishedParsingBasicInfo: { XCTAssertFalse($0.hasTwoLevels) }
+                onParseFormat: onParseFormat,
+                onParseName: onParseName,
+                onParseDescription: onParseDescription,
+                onParseDifficulty: onParseDifficulty,
+                onParseSize: onParseSize,
+                onFinishedParsingBasicInfo: onFinishedParsingBasicInfo
             ),
             additionalInformationInspector: Map.Loader.Parser.Inspector.AdditionalInfoInspector(
-                onParseAvailableArtifacts: { availableArtifacts in
-                    expectationParseAvailableArtifacts.fulfill()
-                    guard let actual = availableArtifacts?.artifacts else {
-                        XCTFail("Expected to have parsed available artifacts.")
-                        return
+                victoryLossInspector: .init(
+                    onParseVictoryConditions: { victoryConditions in
+                        XCTAssertEqual(victoryConditions.map { $0.kind }, [.acquireSpecificArtifact(.vialOfLifeblood), .standard])
+                        expectationVictory.fulfill()
+                    },
+                    onParseLossConditions: { lossConditions in
+                        XCTAssertEqual(lossConditions, [.init(kind: .timeLimitMonths(9)), .standard])
+                        expectationLoss.fulfill()
                     }
-                    XCTAssertEqual(actual, expected)
-                },
+                ),
+                onParseAvailableHeroes: onParseAvailableHeroes,
+                onParseTeamInfo: onParseTeamInfo,
+                onParseCustomHeroes: onParseCustomHeroes,
+                onParseAvailableArtifacts: onParseAvailableArtifacts,
+                onParseAvailableSpells: onParseAvailableSpells,
+                onParseAvailableSecondarySkills: onParseAvailableSecondarySkills,
                 onParseRumors: { rumors in
                     defer { expectationRumor.fulfill() }
                     guard let rumor = rumors.rumors.first else {
@@ -49,7 +74,8 @@ class EnabledArtifactsBaseTests: BaseMapTest {
                     }
                     XCTAssertEqual(rumor.name, "Marker rumor.")
                     XCTAssertEqual(rumor.text, "This only rumor is used as a shared marker for all maps we are testing. If we successfully parse this message we know that we are at the correct offset at the end of 'Additional Info'/'Map Specifications' struct, and the relevant information we are testing are before this part (rumors).")
-                }
+                },
+                onParseHeroSettings: onParseHeroSettings
             ),
             onParseAllObjects: { objects in
                 defer { expectationParseObjectSign.fulfill() }
@@ -82,7 +108,7 @@ class EnabledArtifactsBaseTests: BaseMapTest {
     }
 }
 
-private extension EnabledArtifactsBaseTests {
+private extension AdditionalInfoBaseTests {
     func load(inspector: Map.Loader.Parser.Inspector) throws {
         try loadMap(named: mapFileName, inspector: inspector)
     }
