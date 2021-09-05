@@ -8,10 +8,17 @@
 import Foundation
 
 public extension Artifact {
-    enum Slot: Hashable {
+    enum Slot: Hashable, CustomDebugStringConvertible {
         case body(Body)
         /// Fits 64 unused artifacts
         case backpack(BackpackSlot)
+        
+        public var debugDescription: String {
+            switch self {
+            case .body(let body): return body.debugDescription
+            case .backpack(let backpack): return backpack.debugDescription
+            }
+        }
     }
 }
 
@@ -37,18 +44,22 @@ public extension Artifact.Slot {
         }
     }
     
-    struct BackpackSlot: Hashable {
+    struct BackpackSlot: Hashable, CustomDebugStringConvertible {
         public let slot: UInt8
         public init?(_ slot: UInt8) {
             guard slot < 64 else { return nil }
             self.slot = slot
+        }
+        
+        public var debugDescription: String {
+            "Backpack slot: \(slot)"
         }
     }
 }
 
 public extension Artifact.Slot {
     
-    enum Body: RawValue, Hashable, Comparable, CaseIterable {
+    enum Body: RawValue, Hashable, Comparable, CaseIterable, CustomDebugStringConvertible {
         /// Helmet
         case head
         
@@ -113,6 +124,30 @@ public extension Artifact.Slot.Body {
     static let ammoCartSlot: Self = .warMachine2
     static let firstAidTentSlot: Self = .warMachine3
     static let catapultSlot: Self = .warMachine4
+    
+    var debugDescription: String {
+        switch self {
+        case .head: return "head"
+        case .shoulders: return "shoulders"
+        case .neck: return "neck"
+        case .rightHand: return "rightHand"
+        case .leftHand: return "leftHand"
+        case .torso: return "torso"
+        case .rightRing: return "rightRing"
+        case .leftRing: return "leftRing"
+        case .feet: return "feet"
+        case .misc1: return "misc1"
+        case .misc2: return "misc2"
+        case .misc3: return "misc3"
+        case .misc4: return "misc4"
+        case .warMachine1: return "warMachine1"
+        case .warMachine2: return "warMachine2"
+        case .warMachine3: return "warMachine3"
+        case .warMachine4: return "warMachine4"
+        case .spellbook: return "spellbook"
+        case .misc5: return "misc5"
+        }
+    }
 }
 
 public extension Artifact.Slot {

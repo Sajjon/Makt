@@ -41,9 +41,29 @@ final class CustomizedHeroesSODMapTest: AdditionalInfoBaseTests {
                 XCTAssertEqual(heroSettings.startingExperiencePoints, self.xp)
                 XCTAssertEqual(heroSettings.biography, self.bio)
                 XCTAssertEqual(heroSettings.customPrimarySkills, self.primarySkills)
-                XCTAssertEqual(heroSettings.startingSecondarySkills, self.secondarySkills)
-                XCTAssertEqual(heroSettings.artifacts, self.artifacts)
-                XCTAssertEqual(heroSettings.customSpells, self.spells)
+                if let secondarySkills = self.secondarySkills {
+                    if let startingSecondarySkills = heroSettings.startingSecondarySkills {
+                        XCTAssertEqual(Set(startingSecondarySkills), Set(secondarySkills))
+                    } else {
+                        XCTFail("Expected to have some starting secondary skills.")
+                    }
+                }
+                
+                if let expectedArtifacts = self.artifacts {
+                    if let actualArtifacts = heroSettings.artifacts {
+                        XCTAssertEqual(Set(actualArtifacts), Set(expectedArtifacts))
+                    } else {
+                        XCTFail("Expected to have some artifacts.")
+                    }
+                }
+                
+                if let expectedSpells = self.spells {
+                    if let actualSpells = heroSettings.customSpells {
+                        XCTAssertEqual(Set(actualSpells), Set(expectedSpells))
+                    } else {
+                        XCTFail("Expected to have some spells.")
+                    }
+                }
             }
             
         }
@@ -71,12 +91,14 @@ final class CustomizedHeroesSODMapTest: AdditionalInfoBaseTests {
                 .init(kind: .estates, level: .expert)
             ],
             artifacts: [
+                .init(slot: .body(.spellbook), artifactID: .spellBook),
+                .init(slot: .body(.catapultSlot), artifactID: .catapult),
                 .init(slot: .body(.head), artifactID: .admiralHat),
                 .init(slot: .body(.misc1), artifactID: .badgeOfCourage),
                 .init(slot: .body(.misc2), artifactID: .birdOfPerception),
                 .init(slot: .body(.misc3), artifactID: .cardsOfProphecy),
-                .init(slot: .backpack(.init(0)!), artifactID: .ambassadorsSash),
-                .init(slot: .backpack(.init(1)!), artifactID: .ladybirdOfLuck)
+                .init(slot: .backpack(.init(0)!), artifactID: .ladybirdOfLuck),
+                .init(slot: .backpack(.init(1)!), artifactID: .ambassadorsSash)
             ],
             spells: [.dimensionDoor, .visions]
         )

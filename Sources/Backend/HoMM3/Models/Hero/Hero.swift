@@ -34,9 +34,13 @@ public struct Hero: Hashable {
 
 public extension Hero {
     
-    struct ArtifactInSlot: Hashable {
+    struct ArtifactInSlot: Hashable, CustomDebugStringConvertible {
         public let slot: Artifact.Slot
         public let artifactID: Artifact.ID
+        
+        public var debugDescription: String {
+            "\(artifactID)@\(slot)"
+        }
     }
     
     var `class`: Hero.Class {

@@ -31,33 +31,6 @@ public extension Map {
         /// SOD feature onlu
         public let heroSettings: HeroSettings?
     }
-        
-//        public init(
-//            summary: Summary,
-//            playersInfo: PlayersInfo,
-//            victoryLossConditions: VictoryLossConditions,
-//            teamInfo: TeamInfo,
-//            allowedHeroes: AllowedHeroes
-//        ) {
-//
-//            precondition(
-//                (teamInfo.teams?.count ?? 0) <= playersInfo.players.count,
-//                "Cannot have more teams than players"
-//            )
-//
-//            func fitsInMap(_ position: Position) {
-//                precondition(position.fitsInMapDescribed(by: summary), "A position must fit inside the map.")
-//            }
-//
-//            playersInfo.players.compactMap({ $0.mainTown }).map({ $0.position }).forEach(fitsInMap)
-//            victoryLossConditions.positions.forEach(fitsInMap)
-//
-//            self.summary = summary
-//            self.playersInfo = playersInfo
-//            self.victoryLossConditions = victoryLossConditions
-//            self.teamInfo = teamInfo
-//            self.allowedHeroes = allowedHeroes
-//        }
 }
 
 public extension Map.AdditionalInformation {
