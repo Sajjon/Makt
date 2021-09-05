@@ -154,11 +154,17 @@ internal extension Map.Loader.Parser.H3M {
     }
     
     func parseCustomSpellsOfHero() throws -> [Spell.ID] {
-        return try Array(
-            reader
-                .readBitArray(byteCount: 9)
-                .prefix(Spell.ID.allCases.count)
-        )
+//        return try Array(
+//            reader
+//                .readBitArray(byteCount: 9)
+//                .prefix(Spell.ID.allCases.count)
+//        )
+        let rawBytes = try reader.read(byteCount: 9)
+        
+        let bitmaskFlipped =  BitArray(data: Data(rawBytes.reversed()))
+        let bitmask = BitArray(bitmaskFlipped.reversed()).prefix(Spell.ID.allCases.count)
+        
+        return bitmask
         .enumerated()
         .compactMap { (spellIDIndex, available) in
             guard available else { return nil }
