@@ -262,7 +262,6 @@ private extension  Map.Loader.Parser.H3M {
         let availableHeroIDs = Hero.ID.playable(in: format)
         
         let byteCount = format == .restorationOfErathia ? 16 : 20
-        
 
         let rawBytes = try reader.read(byteCount: byteCount)
         
@@ -291,9 +290,18 @@ private extension Map.Loader.Parser.H3M {
         guard format >= .restorationOfErathia else { return nil }
         let allAvailable = Artifact.ID.available(in: format)
         
-        let bits = try reader.readBitArray(byteCount: format == .armageddonsBlade ? 17 : 18)
+//        let bits = try reader.readBitArray(byteCount: format == .armageddonsBlade ? 17 : 18)
         
-        let availableArtifactIDs: [Artifact.ID] = bits.prefix(allAvailable.count).enumerated().compactMap { (artifactIDIndex, available) in
+        
+        let byteCount = format == .armageddonsBlade ? 17 : 18
+
+        let rawBytes = try reader.read(byteCount: byteCount)
+        
+        let bitmaskFlipped =  BitArray(data: Data(rawBytes.reversed()))
+        let bitmaskTooMany = BitArray(bitmaskFlipped.reversed())
+        let bitmask = BitArray(bitmaskTooMany.prefix(allAvailable.count))
+                
+        let availableArtifactIDs: [Artifact.ID] = bitmask.enumerated().compactMap { (artifactIDIndex, available) in
             guard available else { return nil }
             return allAvailable[artifactIDIndex]
         }
