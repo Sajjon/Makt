@@ -18,7 +18,7 @@ public extension Hero {
              edric,
              sylvia,
              
-             /// Restoration of Erathia
+             /// ⚠️ Restoration of Erathia ONLY ⚠️ In AB and SoD replaced by Sir Mullich
              lordHaart,
              
              sorsha,

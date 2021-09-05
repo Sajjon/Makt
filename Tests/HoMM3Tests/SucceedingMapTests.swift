@@ -278,20 +278,7 @@ final class MapTests: XCTestCase {
         let additionalInfoInspector = Map.Loader.Parser.Inspector.AdditionalInfoInspector(
             victoryLossInspector: victoryLossInspector,
             onParseAvailableHeroes: { availableHeroes in
-//                var expectedHeroes = Hero.ID.playable(in: .armageddonsBlade)
-//                expectedHeroes.removeAll(where: { $0 == .catherine })
-//                expectedHeroes.removeAll(where: { $0 == .roland })
-//                expectedHeroes.removeAll(where: { $0 == .gelu })
-//                expectedHeroes.removeAll(where: { $0 == .dracon })
-//                expectedHeroes.removeAll(where: { $0 == .xeron })
-//                expectedHeroes.removeAll(where: { $0 == .lordHaartTheDeathKnight })
-//                expectedHeroes.removeAll(where: { $0 == .mutare })
-//                expectedHeroes.removeAll(where: { $0 == .mutareDrake })
-//                expectedHeroes.removeAll(where: { $0 == .kilgor })
-//                expectedHeroes.removeAll(where: { $0 == .boragus })
-//                expectedHeroes.removeAll(where: { $0 == .adrienne })
-//                XCTAssertNotEqual(expectedHeroes, Hero.ID.playable(in: .restorationOfErathia))
-                XCTArraysEqual(availableHeroes.heroIDs, Hero.ID.restorationOfErathiaPlusConflux)
+                XCTArraysEqual(availableHeroes.heroIDs, Hero.ID.restorationOfErathiaPlusConflux + [.sirMullich])
             },
             onParseTeamInfo: { teamInfo in
                 XCTAssertEqual(teamInfo, [[.red, .blue], [.tan, .green]])
