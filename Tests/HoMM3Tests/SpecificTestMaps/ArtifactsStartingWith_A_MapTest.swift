@@ -44,8 +44,7 @@ final class ArtifactsStartingWith_A_Tests: AdditionalInfoBaseTests {
                     XCTFail("Expected available artifacts")
                     return
                 }
-                let defaultArtifacts: [Artifact.ID] = [.catapult, .spellBook, .ballista, .ammoCart, .grail, .firstAidTent, .spellScroll]
-                XCTArraysEqual(actual.sorted(by: \.rawValue), Array(defaultArtifacts + [.admiralHat, .ambassadorsSash, .amuletOfTheUndertaker, .angelFeatherArrows, .angelWings, .angelicAlliance, .armageddonsBlade, .armorOfTheDamned, .armorOfWonder, .armsOfLegion]).sorted(by: \.rawValue))
+                XCTArraysEqual(actual.sorted(by: \.rawValue), Array(Artifact.ID.grailWarmachinesSpells + [.admiralHat, .ambassadorsSash, .amuletOfTheUndertaker, .angelFeatherArrows, .angelWings, .angelicAlliance, .armageddonsBlade, .armorOfTheDamned, .armorOfWonder, .armsOfLegion]).sorted(by: \.rawValue))
             },
             onParseAvailableSpells: { availableSpells in
                 defer { expSpells.fulfill() }

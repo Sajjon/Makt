@@ -562,7 +562,7 @@ internal extension Map.Loader.Parser.H3M {
         let buildings: Map.Town.Buildings = try hasCustomBuildings ? parseTownWithCustomBuildings() : parseSimpleTown()
         
         
-        let obligatorySpells = try format >= .armageddonsBlade ? parseSpellIDs() : []
+        let obligatorySpells = try format >= .armageddonsBlade ? parseSpellIDs(includeIfBitSet: true) : []
         let possibleSpells = try parseSpellIDs(includeIfBitSet: false).filter({ allowedSpellsOnMap.contains($0) })
         
         // TODO add spells from mods.
@@ -570,18 +570,15 @@ internal extension Map.Loader.Parser.H3M {
         // Read castle events
         let eventCount = try reader.readUInt32()
         assert(eventCount <= 8192, "Cannot be more than 8192 town events... something is wrong. got: \(eventCount)")
-        print("🏰 Found #\(eventCount) events in town, parsing them now")
         let events: [Map.Town.Event] = try eventCount.nTimes {
             let timedEvent = try parseTimedEvent(
                 format: format,
                 availablePlayers: availablePlayers
             )
             
-            print("\n\n🏰 parsed TIMED event, as part of this TOWN event (will not contain buildings, will come after): \(timedEvent)")
             
             // New buildings
             let buildings = try parseBuildings()
-            print("🏰 town event buildings: \(buildings)\n==================")
             
             // Creatures added to generator
             let creatureQuantities = try CreatureStacks.Slot.allCases.count.nTimes {

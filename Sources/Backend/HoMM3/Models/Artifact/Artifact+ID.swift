@@ -283,7 +283,8 @@ public extension Artifact.ID {
     }
     
     static let armageddonsBladeAndShadowOfDeathArtifactsOnly = Self.armageddonsBladeArtifactsOnly + Self.shadowOfDeathArtifactsOnly
-
+    
+    static let grailWarmachinesSpells: [Self] = [.catapult, .spellBook, .ballista, .ammoCart, .grail, .firstAidTent, .spellScroll]
 }
 
 public extension Artifact.ID {

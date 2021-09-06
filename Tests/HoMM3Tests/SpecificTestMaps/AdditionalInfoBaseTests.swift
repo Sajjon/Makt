@@ -60,8 +60,8 @@ class AdditionalInfoBaseTests: BaseMapTest {
                         expectationLoss.fulfill()
                     }
                 ),
-                onParseAvailableHeroes: onParseAvailableHeroes,
                 onParseTeamInfo: onParseTeamInfo,
+                onParseAvailableHeroes: onParseAvailableHeroes,
                 onParseCustomHeroes: onParseCustomHeroes,
                 onParseAvailableArtifacts: onParseAvailableArtifacts,
                 onParseAvailableSpells: onParseAvailableSpells,

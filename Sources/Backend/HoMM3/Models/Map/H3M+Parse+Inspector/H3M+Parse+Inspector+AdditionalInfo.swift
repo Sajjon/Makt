@@ -22,8 +22,8 @@ public extension Map.Loader.Parser.Inspector {
         
         public init(
             victoryLossInspector: VictoryLossInspector? = nil,
-            onParseAvailableHeroes: OnParseAvailableHeroes? = nil,
             onParseTeamInfo: OnParseTeamInfo? = nil,
+            onParseAvailableHeroes: OnParseAvailableHeroes? = nil,
             onParseCustomHeroes: OnParseCustomHeroes? = nil,
             onParseAvailableArtifacts: OnParseAvailableArtifacts? = nil,
             onParseAvailableSpells: OnParseAvailableSpells? = nil,

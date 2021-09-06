@@ -19,18 +19,29 @@ extension FromPlayerColor {
     }
 }
 
-func XCTArraysEqual<Element: Hashable>(_ lhs: [Element], _ rhs: [Element], file: StaticString = #file, line: UInt = #line) {
-    if Set(lhs) != Set(rhs) {
-        let lhsSet = Set(lhs)
-        let rhsSet = Set(rhs)
-        let onlyInLHS = lhsSet.subtracting(rhsSet)
-        let onlyInRHS = rhsSet.subtracting(lhsSet)
-        let onlyInLHSDiff = lhs.filter { onlyInLHS.contains($0) }
-        let onlyInRHSDiff = rhs.filter { onlyInRHS.contains($0) }
-        XCTAssertTrue(onlyInLHS.isEmpty, "Expected arrays to equal, but found the following elements in the LHS array that were not found in the RHS array: \(onlyInLHSDiff)", file: file, line: line)
-        XCTAssertTrue(onlyInRHS.isEmpty, "Expected arrays to equal, but found the following elements in the RHS array that were not found in the LHS array: \(onlyInRHSDiff)", file: file, line: line)
+func XCTArraysEqual<Element: Hashable>(_ lhsArray: [Element], _ rhsArray: [Element], file: StaticString = #file, line: UInt = #line) {
+    let lhs = Set(lhsArray)
+    let rhs = Set(rhsArray)
+    if lhs != rhs {
+        let onlyInLHS = lhs.subtracting(rhs)
+        let onlyInRHS = rhs.subtracting(lhs)
+        let onlyInLHSDiff = lhsArray.filter { onlyInLHS.contains($0) }
+        let onlyInRHSDiff = rhsArray.filter { onlyInRHS.contains($0) }
+        
+        XCTAssertTrue(
+            onlyInLHS.isEmpty,
+            "Expected arrays to equal, but found the following elements in the LHS array that were not found in the RHS array: \(onlyInLHSDiff)",
+            file: file, line: line
+        )
+        
+        XCTAssertTrue(
+            onlyInRHS.isEmpty,
+            "Expected arrays to equal, but found the following elements in the RHS array that were not found in the LHS array: \(onlyInRHSDiff)",
+            file: file, line: line
+        )
     } else {
-        XCTAssertEqual(lhs, rhs, file: file, line: line)
+//        XCTAssertEqual(lhsArray, rhsArray, file: file, line: line)
+        XCTAssert(true, "Ignoring order, the arrays equal each other.", file: file, line: line)
     }
 }
 enum TwoPlayer: UInt8, FromPlayerColor {
@@ -205,14 +216,15 @@ final class MapTests: XCTestCase {
         
         let additionalInfoInspector = Map.Loader.Parser.Inspector.AdditionalInfoInspector(
             victoryLossInspector: victoryLossInspector,
-            onParseAvailableHeroes: { availableHeroes in
-                XCTArraysEqual(availableHeroes.heroIDs, Hero.ID.playable(in: .restorationOfErathia))
-                expectationAvailableHeroes.fulfill()
-            },
             onParseTeamInfo: { teamInfo in
                 XCTAssertNil(teamInfo.teams)
                 expectationTeamInfo.fulfill()
             },
+            onParseAvailableHeroes: { availableHeroes in
+                XCTArraysEqual(availableHeroes.heroIDs, Hero.ID.playable(in: .restorationOfErathia))
+                expectationAvailableHeroes.fulfill()
+            },
+       
             onParseCustomHeroes: {
                 XCTAssertNil($0)
                 expectationCustomHeroes.fulfill()
@@ -279,11 +291,11 @@ final class MapTests: XCTestCase {
         
         let additionalInfoInspector = Map.Loader.Parser.Inspector.AdditionalInfoInspector(
             victoryLossInspector: victoryLossInspector,
-            onParseAvailableHeroes: { availableHeroes in
-                XCTArraysEqual(availableHeroes.heroIDs, Hero.ID.restorationOfErathiaPlusConflux + [.sirMullich])
-            },
             onParseTeamInfo: { teamInfo in
                 XCTAssertEqual(teamInfo, [[.red, .blue], [.tan, .green]])
+            },
+            onParseAvailableHeroes: { availableHeroes in
+                XCTArraysEqual(availableHeroes.heroIDs, Hero.ID.restorationOfErathiaPlusConflux)
             },
             onParseCustomHeroes: {
                 XCTAssertNil($0)
@@ -313,7 +325,6 @@ final class MapTests: XCTestCase {
         // Delete any earlier cached maps.
         let mapID: Map.ID = .raceforArdintinny
         Map.loader.cache.__deleteMap(by: mapID)
- 
         let basicInfoInspector = Map.Loader.Parser.Inspector.BasicInfoInspector(
             onParseFormat: { format in
                 XCTAssertEqual(format, .restorationOfErathia)
@@ -384,16 +395,13 @@ final class MapTests: XCTestCase {
         
         let additionalInfoInspector = Map.Loader.Parser.Inspector.AdditionalInfoInspector(
             victoryLossInspector: victoryLossInspector,
-            onParseAvailableHeroes: { availableHeroes in
-                // rumors works below! Team info below as well. Victory and loss condition above works. But not available heroes. hmm.
-//                XCTArraysEqual(availableHeroes.heroIDs, Hero.ID.playable(in: .restorationOfErathia))
-            },
             onParseTeamInfo: { teamInfo in
                 XCTAssertNil(teamInfo.teams)
             },
-            onParseCustomHeroes: {
-                XCTAssertNil($0)
+            onParseAvailableHeroes: { availableHeroes in
+//                XCTArraysEqual(availableHeroes.heroIDs, Hero.ID.playable(in: .restorationOfErathia))
             },
+            onParseCustomHeroes: { XCTAssertNil($0) },
             onParseAvailableArtifacts: { XCTAssertNil($0) },
             onParseAvailableSpells: { XCTAssertNil($0) },
             onParseAvailableSecondarySkills: { XCTAssertNil($0) },
@@ -420,8 +428,6 @@ final class MapTests: XCTestCase {
 //                print(world)
             },
             onParseObject: { object in
-                
-                
                 if object.position == .init(x: 50, y: 28, inUnderworld: false) {
                     XCTAssertEqual(object.objectID, .event)
                     guard case let .geoEvent(event) = object.kind else {
@@ -441,8 +447,6 @@ final class MapTests: XCTestCase {
                     XCTAssertEqual(event.message, "Being so far from home causes your troops to miss their families.")
                     XCTAssertEqual(event.contents?.moraleToBeGainedOrDrained, -2)
                 }
-                
-                
             }
         )
         

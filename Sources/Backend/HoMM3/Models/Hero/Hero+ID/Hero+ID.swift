@@ -271,8 +271,10 @@ public extension Hero.ID {
     }
     
     static let restorationOfErathiaPlusConflux: [Self] = {
-        let roe = playable(in: .restorationOfErathia)
-        return roe + Self.conflux
+        var roe = playable(in: .restorationOfErathia)
+        roe.removeAll(where: { $0 == .lordHaart }) // replaced by Sir Mullich
+        roe.append(.sirMullich)
+        return (roe + Self.conflux).sorted(by: \.rawValue)
     }()
 }
 

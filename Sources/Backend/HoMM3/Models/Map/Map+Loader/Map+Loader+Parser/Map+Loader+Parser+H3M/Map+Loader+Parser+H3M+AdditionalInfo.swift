@@ -14,7 +14,6 @@ extension Map.Loader.Parser.H3M {
         format: Map.Format,
         playersInfo: Map.InformationAboutPlayers
     ) throws -> Map.AdditionalInformation {
-        
         let victoryLossConditions = try parseVictoryLossConditions(
             inspector: inspector?.victoryLossInspector, format: format
         )
@@ -35,7 +34,6 @@ extension Map.Loader.Parser.H3M {
         inspector?.didParseCustomHeroes(customHeroes)
         
         try reader.skip(byteCount: 31) // skip `nil`s
-        
         let availableArtifacts = try parseAvailableArtifacts(format: format)
         inspector?.didParseAvailableArtifacts(availableArtifacts)
         
@@ -262,6 +260,8 @@ private extension  Map.Loader.Parser.H3M {
 
         let rawBytes = try reader.read(byteCount: byteCount)
         
+        print("🎠 available heroes: \(BitArray(data: rawBytes))")
+        
         let bitmaskFlipped =  BitArray(data: Data(rawBytes.reversed()))
         let bitmaskTooMany = BitArray(bitmaskFlipped.reversed())
         let bitmask = BitArray(bitmaskTooMany.prefix(availableHeroIDs.count))
@@ -284,11 +284,8 @@ private extension  Map.Loader.Parser.H3M {
 // MARK: Parse Artifacts
 private extension Map.Loader.Parser.H3M {
     func parseAvailableArtifacts(format: Map.Format) throws -> Map.AdditionalInformation.AvailableArtifacts? {
-        guard format >= .restorationOfErathia else { return nil }
+        guard format > .restorationOfErathia else { return nil }
         let allAvailable = Artifact.ID.available(in: format)
-        
-//        let bits = try reader.readBitArray(byteCount: format == .armageddonsBlade ? 17 : 18)
-        
         
         let byteCount = format == .armageddonsBlade ? 17 : 18
 
