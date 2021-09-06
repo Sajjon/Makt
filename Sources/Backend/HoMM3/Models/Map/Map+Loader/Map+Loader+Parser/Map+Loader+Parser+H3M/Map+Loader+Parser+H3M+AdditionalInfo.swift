@@ -29,10 +29,7 @@ extension Map.Loader.Parser.H3M {
         
         if format > .restorationOfErathia {
             try reader.skip(byteCount: 4)
-            //            let placeholderQuantity = try Int(reader.readUInt32())
-            //            try reader.skip(byteCount: placeholderQuantity)
         }
-        
         
         let customHeroes = try parseCustomHeroes(format: format, availablePlayers: playersInfo.availablePlayers)
         inspector?.didParseCustomHeroes(customHeroes)
@@ -302,7 +299,7 @@ private extension Map.Loader.Parser.H3M {
         let bitmask = BitArray(bitmaskTooMany.prefix(allAvailable.count))
                 
         let availableArtifactIDs: [Artifact.ID] = bitmask.enumerated().compactMap { (artifactIDIndex, available) in
-            guard available else { return nil }
+            guard !available else { return nil }
             return allAvailable[artifactIDIndex]
         }
         
@@ -331,7 +328,7 @@ private extension Map.Loader.Parser.H3M {
     
     func parseAvailableSpells(format: Map.Format) throws -> Map.AdditionalInformation.AvailableSpells? {
         guard format >= .shadowOfDeath else { return nil }
-        let spells = try parseSpellIDs()
+        let spells = try parseSpellIDs(includeIfBitSet: false)
         return .init(spells: spells)
     }
 }

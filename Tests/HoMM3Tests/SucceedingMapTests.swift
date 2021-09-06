@@ -20,13 +20,15 @@ extension FromPlayerColor {
 }
 
 func XCTArraysEqual<Element: Hashable>(_ lhs: [Element], _ rhs: [Element], file: StaticString = #file, line: UInt = #line) {
-    if lhs != rhs {
+    if Set(lhs) != Set(rhs) {
         let lhsSet = Set(lhs)
         let rhsSet = Set(rhs)
         let onlyInLHS = lhsSet.subtracting(rhsSet)
         let onlyInRHS = rhsSet.subtracting(lhsSet)
-        XCTAssertEqual(onlyInLHS, [], "Expected arrays to equal, but found the following elements in the LHS array that were not found in the RHS array: \(onlyInLHS)", file: file, line: line)
-        XCTAssertEqual([], onlyInRHS, "Expected arrays to equal, but found the following elements in the RHS array that were not found in the LHS array: \(onlyInRHS)", file: file, line: line)
+        let onlyInLHSDiff = lhs.filter { onlyInLHS.contains($0) }
+        let onlyInRHSDiff = rhs.filter { onlyInRHS.contains($0) }
+        XCTAssertTrue(onlyInLHS.isEmpty, "Expected arrays to equal, but found the following elements in the LHS array that were not found in the RHS array: \(onlyInLHSDiff)", file: file, line: line)
+        XCTAssertTrue(onlyInRHS.isEmpty, "Expected arrays to equal, but found the following elements in the RHS array that were not found in the LHS array: \(onlyInRHSDiff)", file: file, line: line)
     } else {
         XCTAssertEqual(lhs, rhs, file: file, line: line)
     }

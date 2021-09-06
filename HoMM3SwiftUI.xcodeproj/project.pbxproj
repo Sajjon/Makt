@@ -133,7 +133,6 @@
 		487C2C4026D4C08900031505 /* Hero+Placeholder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487C2C3F26D4C08900031505 /* Hero+Placeholder.swift */; };
 		487C2C4226D508E500031505 /* Map+Loader+Parser+H3M+CreatureStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487C2C4126D508E500031505 /* Map+Loader+Parser+H3M+CreatureStack.swift */; };
 		48BC466B26D667EE00D435F1 /* Map+Object+ID+Stripped.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48BC466A26D667EE00D435F1 /* Map+Object+ID+Stripped.swift */; };
-		48CC4AB226E3B85700447F77 /* cyon_sod_only_allows_artifacts_starting_with_letter_A.h3m in Resources */ = {isa = PBXBuildFile; fileRef = 48CC4AAE26E3B85600447F77 /* cyon_sod_only_allows_artifacts_starting_with_letter_A.h3m */; };
 		48CC4AB626E3B88100447F77 /* AdditionalInfoBaseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48CC4AB526E3B88100447F77 /* AdditionalInfoBaseTests.swift */; };
 		48CC4AB826E3C07500447F77 /* ArtifactsStartingWith_A_MapTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48CC4AB726E3C07500447F77 /* ArtifactsStartingWith_A_MapTest.swift */; };
 		48CC4ABA26E4DEBB00447F77 /* HeroesStartingWith_A_MapTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48CC4AB926E4DEBB00447F77 /* HeroesStartingWith_A_MapTest.swift */; };
@@ -142,6 +141,7 @@
 		48CC4AEB26E4EC0F00447F77 /* HeroesStartingWith_B_MapTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48CC4AEA26E4EC0F00447F77 /* HeroesStartingWith_B_MapTest.swift */; };
 		48CC4AED26E4F03800447F77 /* cyon_sod_only_additional_info_custom_heroes.h3m in Resources */ = {isa = PBXBuildFile; fileRef = 48CC4AEC26E4F03800447F77 /* cyon_sod_only_additional_info_custom_heroes.h3m */; };
 		48CC4AEF26E4F05100447F77 /* CustomizedHeroesSODMapTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48CC4AEE26E4F05100447F77 /* CustomizedHeroesSODMapTest.swift */; };
+		48CC4AF126E5D80E00447F77 /* cyon_sod_only_allows_artifacts_starting_with_letter_A.h3m in Resources */ = {isa = PBXBuildFile; fileRef = 48CC4AF026E5D80E00447F77 /* cyon_sod_only_allows_artifacts_starting_with_letter_A.h3m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -285,7 +285,6 @@
 		487C2C3F26D4C08900031505 /* Hero+Placeholder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Hero+Placeholder.swift"; sourceTree = "<group>"; };
 		487C2C4126D508E500031505 /* Map+Loader+Parser+H3M+CreatureStack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Map+Loader+Parser+H3M+CreatureStack.swift"; sourceTree = "<group>"; };
 		48BC466A26D667EE00D435F1 /* Map+Object+ID+Stripped.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Map+Object+ID+Stripped.swift"; sourceTree = "<group>"; };
-		48CC4AAE26E3B85600447F77 /* cyon_sod_only_allows_artifacts_starting_with_letter_A.h3m */ = {isa = PBXFileReference; lastKnownFileType = file; path = cyon_sod_only_allows_artifacts_starting_with_letter_A.h3m; sourceTree = "<group>"; };
 		48CC4AB526E3B88100447F77 /* AdditionalInfoBaseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdditionalInfoBaseTests.swift; sourceTree = "<group>"; };
 		48CC4AB726E3C07500447F77 /* ArtifactsStartingWith_A_MapTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArtifactsStartingWith_A_MapTest.swift; sourceTree = "<group>"; };
 		48CC4AB926E4DEBB00447F77 /* HeroesStartingWith_A_MapTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeroesStartingWith_A_MapTest.swift; sourceTree = "<group>"; };
@@ -294,6 +293,7 @@
 		48CC4AEA26E4EC0F00447F77 /* HeroesStartingWith_B_MapTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeroesStartingWith_B_MapTest.swift; sourceTree = "<group>"; };
 		48CC4AEC26E4F03800447F77 /* cyon_sod_only_additional_info_custom_heroes.h3m */ = {isa = PBXFileReference; lastKnownFileType = file; path = cyon_sod_only_additional_info_custom_heroes.h3m; sourceTree = "<group>"; };
 		48CC4AEE26E4F05100447F77 /* CustomizedHeroesSODMapTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomizedHeroesSODMapTest.swift; sourceTree = "<group>"; };
+		48CC4AF026E5D80E00447F77 /* cyon_sod_only_allows_artifacts_starting_with_letter_A.h3m */ = {isa = PBXFileReference; lastKnownFileType = file; path = cyon_sod_only_allows_artifacts_starting_with_letter_A.h3m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -494,10 +494,10 @@
 		487AF98F26DF5CBF0073277F /* TestMaps */ = {
 			isa = PBXGroup;
 			children = (
+				48CC4AF026E5D80E00447F77 /* cyon_sod_only_allows_artifacts_starting_with_letter_A.h3m */,
 				48CC4AEC26E4F03800447F77 /* cyon_sod_only_additional_info_custom_heroes.h3m */,
 				48CC4AE826E4EBFD00447F77 /* cyon_sod_additional_info_heroes_starting_with_letter_B.h3m */,
 				48CC4ABB26E4E52D00447F77 /* cyon_sod_additional_info_heroes_starting_with_letter_A.h3m */,
-				48CC4AAE26E3B85600447F77 /* cyon_sod_only_allows_artifacts_starting_with_letter_A.h3m */,
 				483A2D9726E0140500EAC052 /* creatures-cyon-modified.h3m */,
 				487AF99026DF5CBF0073277F /* town-spells-1-3.h3m */,
 				487AF99126DF5CBF0073277F /* town-events.h3m */,
@@ -924,7 +924,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				48CC4AED26E4F03800447F77 /* cyon_sod_only_additional_info_custom_heroes.h3m in Resources */,
-				48CC4AB226E3B85700447F77 /* cyon_sod_only_allows_artifacts_starting_with_letter_A.h3m in Resources */,
 				487AF9AD26DF5CBF0073277F /* random-RoE.h3m in Resources */,
 				487AF9AA26DF5CBF0073277F /* witch-hut.h3m in Resources */,
 				48CC4AE926E4EBFD00447F77 /* cyon_sod_additional_info_heroes_starting_with_letter_B.h3m in Resources */,
@@ -936,6 +935,7 @@
 				487AF9AC26DF5CBF0073277F /* pandora-box.h3m in Resources */,
 				483A2D9826E0140500EAC052 /* creatures-cyon-modified.h3m in Resources */,
 				487AF9AB26DF5CBF0073277F /* resources.h3m in Resources */,
+				48CC4AF126E5D80E00447F77 /* cyon_sod_only_allows_artifacts_starting_with_letter_A.h3m in Resources */,
 				487AF9B126DF5CBF0073277F /* random-SoD.h3m in Resources */,
 				487AF9AF26DF5CBF0073277F /* random-AB.h3m in Resources */,
 				487AF9B326DF5CBF0073277F /* artifacts.h3m in Resources */,
