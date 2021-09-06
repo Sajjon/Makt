@@ -81,7 +81,7 @@ extension Map.BasicInformation {
     var fileName: String { id.fileName }
 }
 
-final class MapTests: XCTestCase {
+final class MapTests: BaseMapTest {
     
     override func setUp() {
         super.setUp()
@@ -301,10 +301,14 @@ final class MapTests: XCTestCase {
                 XCTAssertNil($0)
             },
             onParseAvailableArtifacts: { availableArtifacts in
+                guard let actualArtifacts = availableArtifacts?.artifactIDs.values else {
+                    XCTFail("Expected artifacts")
+                    return
+                }
                 var allButTwo = Artifact.ID.available(in: .armageddonsBlade)
                 allButTwo.removeAll(where: { $0 == .vialOfDragonBlood })
                 allButTwo.removeAll(where: { $0 == .armageddonsBlade })
-                XCTArraysEqual(allButTwo, availableArtifacts?.artifacts ?? [])
+                XCTArraysEqual(allButTwo, actualArtifacts)
             },
             onParseAvailableSpells: { XCTAssertNil($0) },
             onParseAvailableSecondarySkills: { XCTAssertNil($0) },
@@ -344,6 +348,7 @@ final class MapTests: XCTestCase {
             }
         )
         
+        var players: [PlayerColor]!
 
         let playersInfoInspector = Map.Loader.Parser.Inspector.PlayersInfoInspector(
             onParseIsPlayableByHuman: { isPlayableByHuman, player in
@@ -380,9 +385,11 @@ final class MapTests: XCTestCase {
             },
             onParseMainTown: { maybeMainTown, _ in
                 XCTAssertNil(maybeMainTown)
+            },
+            onFinishParsingInformationAboutPlayers:  { informationAboutPlayers in
+                players = informationAboutPlayers.availablePlayers
             }
         )
-        
         
         let victoryLossInspector = Map.Loader.Parser.Inspector.AdditionalInfoInspector.VictoryLossInspector(
             onParseVictoryConditions: { victoryConditions in
@@ -427,30 +434,99 @@ final class MapTests: XCTestCase {
                 XCTAssertNotNil(world.belowGround)
 //                print(world)
             },
-            onParseObject: { object in
-                if object.position == .init(x: 50, y: 28, inUnderworld: false) {
+            onParseObject: { [self] object in
+                func assertEvent(expected: Map.GeoEvent, line: UInt = #line) {
                     XCTAssertEqual(object.objectID, .event)
-                    guard case let .geoEvent(event) = object.kind else {
+                    guard case let .geoEvent(actual) = object.kind else {
                         XCTFail("expected event")
                         return
                     }
-                    XCTAssertEqual(event.message, "Warming a freezing old woman she blesses you with good luck for your next battle.")
-                    XCTAssertEqual(event.contents?.luckToBeGainedOrDrained, 1)
-                    XCTAssertEqual(event.availability.playersAllowedToTriggerEvent, [.red, .blue, .tan, .green, .orange])
-                    XCTAssertTrue(event.cancelEventAfterFirstVisit)
-                } else if object.position == .init(x: 100, y: 60, inUnderworld: false) {
-                    XCTAssertEqual(object.objectID, .event)
-                    guard case let .geoEvent(event) = object.kind else {
-                        XCTFail("expected event")
+                    XCTAssertEqual(expected, actual, line: line)
+                    fullfill(object: object)
+                }
+                
+                func assertHeroOfKind(_ objectKind: Map.Object.ID, expected: Hero, line: UInt = #line) {
+                    XCTAssertEqual(object.objectID, objectKind)
+                    guard case let .hero(actual) = object.kind else {
+                        XCTFail("expected hero")
                         return
                     }
-                    XCTAssertEqual(event.message, "Being so far from home causes your troops to miss their families.")
-                    XCTAssertEqual(event.contents?.moraleToBeGainedOrDrained, -2)
+                    XCTAssertEqual(expected, actual, line: line)
+                    fullfill(object: object)
+                }
+                
+                func assertPrisonHero(expected: Hero, line: UInt = #line) {
+                    assertHeroOfKind(.prison, expected: expected, line: line)
+                }
+                
+                func assertHero(`class`: Hero.Class, expected: Hero, line: UInt = #line) {
+                    assertHeroOfKind(.hero(`class`), expected: expected, line: line)
+                }
+                
+                switch object.position {
+                case at(25, y: 65):
+                    // Aha! The same tile might contain multiple objects!
+                    if case .hero = object.kind {
+                        assertHero(
+                            class: .knight,
+                            expected: Hero(
+                                identifierKind: .specificHeroWithID(.sorsha),
+                                owner: .red,
+                                army: .init(stacks: [
+                                    .init(creatureID: .halberdier, quantity: 30),
+                                    .init(creatureID: .marksman, quantity: 15),
+                                    .init(creatureID: .royalGriffin, quantity: 5)
+                                ]),
+                                artifactsInSlots: .init(values: [
+                                    .init(
+                                        slot: .backpack(.init(0)!),
+                                        artifactID: .bowOfElvenCherrywood
+                                    )
+                                ])
+                            )
+                        )
+                    } else if case let .resource(resource) = object.kind {
+                        XCTAssertEqual(resource.resource.kind, .ore)
+                    } else {
+                        XCTFail("Unexpected object")
+                    }
+                 
+                case at(50, y: 28):
+                    assertEvent(
+                        expected: .init(
+                            message: "Warming a freezing old woman she blesses you with good luck for your next battle.",
+                            contents: .init(luckToBeGainedOrDrained: 1),
+                            playersAllowedToTriggerThisEvent: players
+                        )
+                    )
+                case at(83, y: 110):
+                    assertPrisonHero(
+                        expected: .init(
+                            identifierKind: .specificHeroWithID(Hero.ID.christian)
+                        )
+                    )
+                case at(87, y: 22):
+                    assertEvent(
+                        expected: .init(
+                            message: "Your master always said, \"Before traversing into unknown areas it is wise to be well prepared for the possibility of long arduous battles.\" You have learned through experience that he was right. Maybe it is best to double check your troops, just in case.",
+                            playersAllowedToTriggerThisEvent: [.blue]
+                        )
+                    )
+                case at(100, y: 60):
+                    assertEvent(
+                        expected: .init(
+                            message: "Being so far from home causes your troops to miss their families.",
+                            contents: .init(moraleToBeGainedOrDrained: -2),
+                            playersAllowedToTriggerThisEvent: players
+                        )
+                    )
+                default: break
                 }
             }
         )
         
         XCTAssertNoThrow(try Map.load(mapID, inspector: inspector))
+        waitForExpectations(timeout: 1)
     }
 }
 

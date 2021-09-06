@@ -138,7 +138,7 @@ public extension Map {
     
     /// An event that is positioned at a certain place and that will be trigger when you walk on that position with a hero.
     /// Not to be confused with time based global events (that has no location and is not triggered by the player).
-    struct GeoEvent: Hashable {
+    struct GeoEvent: Hashable, CustomDebugStringConvertible {
         
         public let message: String?
         
@@ -154,8 +154,8 @@ public extension Map {
             contents: Bounty? = nil,
             
             playersAllowedToTriggerThisEvent: [PlayerColor] = [],
-            canBeTriggeredByComputerOpponent: Bool,
-            cancelEventAfterFirstVisit: Bool
+            canBeTriggeredByComputerOpponent: Bool = false,
+            cancelEventAfterFirstVisit: Bool = true
         ) {
             self.message = message
             self.guardians = guardians
@@ -166,6 +166,16 @@ public extension Map {
                 canBeTriggeredByComputerOpponent: canBeTriggeredByComputerOpponent
             )
             self.cancelEventAfterFirstVisit = cancelEventAfterFirstVisit
+        }
+        
+        public var debugDescription: String {
+           [
+            message.map { "message: \($0)" } ?? nil,
+            guardians.map { "guardians: \($0)" } ?? nil,
+            contents.map { "contents: \($0)" } ?? nil,
+            "cancelEventAfterFirstVisit: \(cancelEventAfterFirstVisit)",
+            "availability: \(availability)",
+           ].compactMap({ $0 }).joined(separator: "\n")
         }
     }
     

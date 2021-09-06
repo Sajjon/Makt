@@ -7,16 +7,48 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "76B1647C-D078-4157-8FA5-C97E76CF839B"
-            shouldBeEnabled = "Yes"
+            uuid = "06866E6F-880B-4F8D-BBF7-40F539F801C0"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Sources/Backend/HoMM3/Models/Map/Map/World/Map+Object/Map+Object+ID/Map+Object+ID+ParseFromH3M.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "98"
+            endingLineNumber = "98"
+            landmarkName = "init(stripped:subId:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "867687BF-2CCA-491B-8C06-FECFBCA24675"
+            shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Sources/Backend/HoMM3/Models/Map/Map+Loader/Map+Loader+Parser/Map+Loader+Parser+H3M/Map+Loader+Parser+H3M+Objects/Map+Loader+Parser+H3M+Object+Hero.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "57"
-            endingLineNumber = "57"
-            landmarkName = "_parseHero(class:format:)"
+            startingLineNumber = "52"
+            endingLineNumber = "52"
+            landmarkName = "_parseHero(heroClass:format:isPrison:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "8172D291-EE46-45C4-8D56-F8D277CEBC0A"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Sources/Backend/HoMM3/Models/Map/Map+Loader/Map+Loader+Parser/Map+Loader+Parser+H3M/Map+Loader+Parser+H3M+Objects/Map+Loader+Parser+H3M+Objects.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "264"
+            endingLineNumber = "264"
+            landmarkName = "parseDetailsAboutObjects(inspector:format:playersInfo:additionalMapInformation:attributesOfObjects:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

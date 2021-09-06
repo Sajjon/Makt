@@ -82,28 +82,19 @@ extension Map.Loader.Parser.H3M {
 internal extension Map.Loader.Parser.H3M {
 
 
-    func parseAllowedPlayers(availablePlayers availablePlayersList: [PlayerColor]) throws -> [PlayerColor] {
-        let availablePlayers = Set(availablePlayersList)
-        let rawByte = try reader.readUInt8()
-        let allowedPlayers = BitArray(
-            data: Data([rawByte])
-        )
-        .enumerated()
-        .compactMap { (colorIndex, isAvailable) -> PlayerColor? in
-            guard isAvailable else { return nil }
-            return PlayerColor.allCases[colorIndex]
-        }
+    func parseAllowedPlayers(availablePlayers: [PlayerColor]) throws -> [PlayerColor] {
+        
+        let byteCount = 1
+        let rawBytes = try reader.read(byteCount: byteCount)
+        let bitmaskFlipped =  BitArray(data: Data(rawBytes.reversed()))
+        let bitmaskTooMany = BitArray(bitmaskFlipped.reversed())
+        let bitmask = BitArray(bitmaskTooMany.prefix(availablePlayers.count))
 
-        let alternative = PlayerColor.allCases.filter {
-            (rawByte << $0.rawValue) != 0
+        let allowedPlayers: [PlayerColor] = bitmask.enumerated().compactMap { (idx, allowed) in
+            guard allowed else { return nil }
+            return availablePlayers[idx]
         }
-        
-        
-        assert(alternative == allowedPlayers)
-        
-        let allowedOfAvailable = allowedPlayers.filter { availablePlayers.contains($0) }
-        
-        return allowedOfAvailable
+        return allowedPlayers
     }
     
     
@@ -123,13 +114,12 @@ internal extension Map.Loader.Parser.H3M {
         let bitmaskFlipped =  BitArray(data: Data(rawBytes.reversed()))
         let bitmaskTooMany = BitArray(bitmaskFlipped.reversed())
         let bitmask = BitArray(bitmaskTooMany.prefix(Spell.ID.allCases.count))
-        let alternative: [Spell.ID] = bitmask.enumerated()
+        return bitmask.enumerated()
             .compactMap { (spellIDIndex, available) in
                 guard available == includeIfBitSet else { return nil }
                 return Spell.ID.allCases[spellIDIndex]
             }
         
-        return alternative
     }
 }
     

@@ -40,7 +40,7 @@ final class ArtifactsStartingWith_A_Tests: AdditionalInfoBaseTests {
             },
             onParseAvailableArtifacts: { availableArtifacts in
                 defer { expArtifacts.fulfill() }
-                guard let actual = availableArtifacts?.artifacts else {
+                guard let actual = availableArtifacts?.artifactIDs.values else {
                     XCTFail("Expected available artifacts")
                     return
                 }

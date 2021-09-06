@@ -301,7 +301,8 @@ private extension Map.Loader.Parser.H3M {
         }
         
         // TODO VCMI manually bans combination artifacts according to some logic... needed?
-        return .init(artifacts: availableArtifactIDs)
+        let artifactIDs = ArtifactIDs.init(values: availableArtifactIDs)
+        return Map.AdditionalInformation.AvailableArtifacts(artifactIDs: artifactIDs)
     }
 }
 

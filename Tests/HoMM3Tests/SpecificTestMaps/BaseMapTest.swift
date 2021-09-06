@@ -22,8 +22,8 @@ class BaseMapTest: XCTestCase {
 }
 
 extension BaseMapTest {
-    func at(_ x: Int32, y: Int32) -> Position {
-        let position = Position(x: x, y: y, inUnderworld: false)
+    func at(_ x: Int32, y: Int32, inUnderworld: Bool = false) -> Position {
+        let position = Position(x: x, y: y, inUnderworld: inUnderworld)
         if !fulfilled.contains(position) && !expectedPositions.contains(where: { $0.key == position }) {
             let expectedObjectAt = expectation(description: "Expected object at: (\(x), \(y))")
             expectedPositions[position] = expectedObjectAt

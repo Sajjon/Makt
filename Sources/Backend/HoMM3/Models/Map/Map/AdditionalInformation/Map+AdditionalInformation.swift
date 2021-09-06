@@ -43,7 +43,7 @@ public extension Map.AdditionalInformation {
     }
     
     struct AvailableArtifacts: Hashable {
-        public let artifacts: [Artifact.ID]
+        public let artifactIDs: ArtifactIDs
     }
     
     struct Rumors: Hashable {
@@ -53,4 +53,37 @@ public extension Map.AdditionalInformation {
     struct HeroSettings: Hashable {
         public let settingsForHeroes: [SettingsForHero]
     }
+}
+
+
+public struct CollectionOf<Element, Tag>: Collection {
+    public let values: [Element]
+}
+public extension CollectionOf {
+    typealias Index = Array<Element>.Index
+    var startIndex: Index { values.startIndex }
+    var endIndex: Index { values.endIndex }
+    func index(after index: Index) -> Index {
+        values.index(after: index)
+    }
+    subscript(position: Index) -> Element { values[position] }
+//    The startIndex and endIndex properties
+//    A subscript that provides at least read-only access to your type’s elements
+//    The index(after:) method for advancing an index into your collection
+}
+extension CollectionOf: Equatable where Element: Equatable {}
+extension CollectionOf: Hashable where Element: Hashable {}
+public enum ArtifactIDsTag: Hashable {}
+public typealias ArtifactIDs = CollectionOf<Artifact.ID, ArtifactIDsTag>
+public enum SpellIDsTag: Hashable {}
+public typealias SpellIDs = CollectionOf<Spell.ID, SpellIDsTag>
+//public struct Artifacts: Hashable {
+//    public let artifacts: [Artifact.ID]
+//}
+public extension Hero {
+    enum PrimarySkillsTag: Hashable {}
+    typealias PrimarySkills = CollectionOf<PrimarySkill, PrimarySkillsTag>
+    
+    enum SecondarySkillsTag: Hashable {}
+    typealias SecondarySkills = CollectionOf<SecondarySkill, SecondarySkillsTag>
 }

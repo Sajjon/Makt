@@ -17,6 +17,7 @@ public extension Map.Loader.Parser.Inspector {
         private let onParsePlayableFactions: OnParsePlayableFactions?
         private let onParseHasMainTown: OnParseHasMainTown?
         private let onParseMainTown: OnParseMainTown?
+        private let onFinishParsingInformationAboutPlayers: OnFinishParsingInformationAboutPlayers?
         
         public init(
             onParseIsPlayableByHuman  : OnParseIsPlayableByHuman? = nil,
@@ -24,7 +25,8 @@ public extension Map.Loader.Parser.Inspector {
             onParseAITactic: OnParseAITactic? = nil,
             onParsePlayableFactions: OnParsePlayableFactions? = nil,
             onParseHasMainTown: OnParseHasMainTown? = nil,
-            onParseMainTown: OnParseMainTown? = nil
+            onParseMainTown: OnParseMainTown? = nil,
+            onFinishParsingInformationAboutPlayers: OnFinishParsingInformationAboutPlayers? = nil
         ) {
             self.onParseIsPlayableByHuman = onParseIsPlayableByHuman
             self.onParseIsPlayableByAI = onParseIsPlayableByAI
@@ -32,6 +34,7 @@ public extension Map.Loader.Parser.Inspector {
             self.onParsePlayableFactions = onParsePlayableFactions
             self.onParseHasMainTown = onParseHasMainTown
             self.onParseMainTown = onParseMainTown
+            self.onFinishParsingInformationAboutPlayers = onFinishParsingInformationAboutPlayers
         }
         
     }
@@ -45,6 +48,7 @@ public extension Map.Loader.Parser.Inspector.PlayersInfoInspector {
     typealias OnParsePlayableFactions       = ([Faction], PlayerColor) -> Void
     typealias OnParseHasMainTown            = (Bool, PlayerColor) -> Void
     typealias OnParseMainTown               = (Map.InformationAboutPlayers.PlayerInfo.MainTown?, PlayerColor) -> Void
+    typealias OnFinishParsingInformationAboutPlayers   = (Map.InformationAboutPlayers) -> Void
     
     func didParseIsPlayableByHuman(_ value: Bool, playerColor: PlayerColor) {
         onParseIsPlayableByHuman?(value, playerColor)
@@ -66,4 +70,7 @@ public extension Map.Loader.Parser.Inspector.PlayersInfoInspector {
         onParseMainTown?(value, playerColor)
     }
     
+    func didFinishParsingInformationAboutPlayers(_ value: Map.InformationAboutPlayers) {
+        onFinishParsingInformationAboutPlayers?(value)
+    }
 }

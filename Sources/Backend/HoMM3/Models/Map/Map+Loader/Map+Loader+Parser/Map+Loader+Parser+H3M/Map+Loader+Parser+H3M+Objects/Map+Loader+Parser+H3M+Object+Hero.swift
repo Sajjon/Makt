@@ -15,46 +15,52 @@ internal extension Map.Loader.Parser.H3M {
         heroClass: Hero.Class,
         format: Map.Format
     ) throws -> Hero {
-        try _parseHero(class: heroClass, format: format)
+        try _parseHero(heroClass: heroClass, format: format)
+    }
+    
+    func parsePrisonHero(
+        format: Map.Format
+    ) throws -> Hero {
+        try _parseHero(heroClass: nil, format: format, isPrison: true)
     }
     
     func parseRandomHero(
         format: Map.Format
     ) throws -> Hero {
-        try _parseHero(class: nil, format: format)
+        try _parseHero(heroClass: nil, format: format)
     }
-    
-    func parseOwner() throws -> PlayerColor? {
-        let raw = try reader.readUInt8()
-        return raw != PlayerColor.neutralRawValue ? try PlayerColor(integer: raw) : nil
-    }
-    
-    func parseSpellID() throws -> Spell.ID? {
-        let raw = try reader.readUInt8()
-        return raw != Spell.ID.noneRawValue ? try Spell.ID(integer: raw) : nil
-    }
+
 }
 
 private extension Map.Loader.Parser.H3M {
     
     
-    
     func _parseHero(
-        class maybeExpectedHeroClass: Hero.Class?,
-        format: Map.Format
+        heroClass maybeExpectedHeroClass: Hero.Class?,
+        format: Map.Format,
+        isPrison: Bool = false
     ) throws -> Hero {
         let questIdentifier: UInt32? = format > .restorationOfErathia ? try reader.readUInt32() : nil
         let owner: PlayerColor? = try parseOwner()
         
         let identifierKind: Hero.IdentifierKind = try {
             
-            if let expectedHeroClass = maybeExpectedHeroClass {
+            if let expectedHeroclass = maybeExpectedHeroClass {
                 let heroID = try Hero.ID(integer: reader.readUInt8())
-                assert(heroID.class == expectedHeroClass)
+                assert(heroID.class == expectedHeroclass)
+
+                return Hero.IdentifierKind.specificHeroWithID(heroID)
+            } else if isPrison {
+                let heroID = try Hero.ID(integer: reader.readUInt8())
                 return Hero.IdentifierKind.specificHeroWithID(heroID)
             } else {
-                let heroClass = try Hero.Class(integer: reader.readUInt8())
-                return Hero.IdentifierKind.randomHeroOfClass(heroClass)
+//                let heroClass = try Hero.Class(integer: reader.readUInt8())
+//                return Hero.IdentifierKind.randomHeroOfClass(heroClass)
+                let heroIdThingyRaw = try reader.readUInt8()
+                let randomHeroID: Hero.ID? = try? Hero.ID.init(integer: heroIdThingyRaw)
+                let randomHeroClass: Hero.Class? = try? Hero.Class.init(integer: heroIdThingyRaw)
+                print("randomHeroID: \(randomHeroID), randomHeroClass: \(randomHeroClass)")
+                return .randomHero
             }
             
         }()
@@ -115,7 +121,13 @@ private extension Map.Loader.Parser.H3M {
         
         try reader.skip(byteCount: 16)
         
-   
+        if isPatrolling {
+            assert(patrolRadius > 0 && patrolRadius < 255)
+        }
+        if patrolRadius > 0 && patrolRadius < 255 {
+            assert(isPatrolling)
+        }
+        
         return .init(
             identifierKind: identifierKind,
             questIdentifier: questIdentifier,
@@ -124,12 +136,31 @@ private extension Map.Loader.Parser.H3M {
             owner: owner,
             army: garrison,
             formation: formation,
-            patrolRadius: .init(patrolRadius),
-            isPatroling: isPatrolling,
+            patrol: {
+                guard isPatrolling else { return nil }
+                assert(patrolRadius != 0xff && patrolRadius > 0)
+                return Hero.Patrol(radius: patrolRadius)
+            }(),
             startingExperiencePoints: experiencePoints ?? 0,
-            startingSecondarySkills: startingSecondarySkills,
-            artifacts: artifacts,
-            biography: customBiography, gender: customGender, spells: customSpells, primarySkills: customPrimarySkills)
+            startingSecondarySkills: startingSecondarySkills.map { .init(values: $0) },
+            artifactsInSlots: artifacts.map { .init(values: $0) },
+            biography: customBiography,
+            gender: customGender,
+            spells: customSpells.map { .init(values: $0) },
+            primarySkills: customPrimarySkills.map { .init(values: $0) }
+        )
     }
     
+}
+
+internal extension Map.Loader.Parser.H3M {
+    func parseOwner() throws -> PlayerColor? {
+        let raw = try reader.readUInt8()
+        return raw != PlayerColor.neutralRawValue ? try PlayerColor(integer: raw) : nil
+    }
+    
+    func parseSpellID() throws -> Spell.ID? {
+        let raw = try reader.readUInt8()
+        return raw != Spell.ID.noneRawValue ? try Spell.ID(integer: raw) : nil
+    }
 }

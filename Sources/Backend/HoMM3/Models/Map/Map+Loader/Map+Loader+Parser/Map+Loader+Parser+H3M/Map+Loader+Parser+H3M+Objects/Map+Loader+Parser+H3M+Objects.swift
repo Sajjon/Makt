@@ -317,10 +317,15 @@ internal extension Map.Loader.Parser.H3M {
                 objectKind = .pandorasBox(pandorasBox)
             case .placeholderHero:  fatalError("placeholderHero")
                 
-            case .randomHero: fallthrough
-            case .prison:
+            case .randomHero:
                 objectKind = try .hero(
                     parseRandomHero(
+                        format: format
+                    )
+                )
+            case .prison:
+                objectKind = try .hero(
+                    parsePrisonHero(
                         format: format
                     )
                 )
@@ -534,8 +539,8 @@ internal extension Map.Loader.Parser.H3M {
             
 //            print("🔮 successfully parsed mapObject: \(mapObject), at objectAttributeIndex: \(objectAttributesIndex)")
             
-            inspector?.didParseObject(mapObject)
             objects.append(mapObject)
+            inspector?.didParseObject(mapObject)
         }
         return .init(objects: objects)
     }
@@ -555,7 +560,10 @@ public struct CreatureStack: Hashable, CustomDebugStringConvertible {
 public struct Army: Hashable {
 
     public enum Formation: UInt8, Hashable, CaseIterable {
-        case wide, tight
+        /// Spread/Wide
+        case spread
+        /// Grouped/Tight
+        case grouped
     }
    
     public let formation: Formation?
@@ -598,8 +606,7 @@ public struct CreatureStacks: Hashable, CustomDebugStringConvertible {
     }
     
     public init(stacks: [CreatureStack?]) {
-        precondition(stacks.count == Slot.allCases.count)
-        self.init(stacksAtSlots: Slot.allCases.enumerated().map({ index, slot in
+        self.init(stacksAtSlots: Slot.allCases.prefix(stacks.count).enumerated().map({ index, slot in
             return (key: slot, value: stacks[index])
         }))
     }

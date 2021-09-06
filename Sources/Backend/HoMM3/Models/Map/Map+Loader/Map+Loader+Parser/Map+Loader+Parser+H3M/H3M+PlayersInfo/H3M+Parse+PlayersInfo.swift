@@ -102,12 +102,8 @@ private extension Map.Loader.Parser.H3M {
             try reader.skip(byteCount: 1)
             
             let heroCount = try Int(reader.readUInt8())
-            try reader.skip(byteCount: 3) // same as
-            
-            reader.rewind(byteCount: 4)
-            let heroCountU32 = try Int(reader.readUInt32())
-            assert(heroCountU32 == heroCount, "Just debugging and chechking that in all instances where we just read one byte and skip 3, that we are doing the right thing...")
-            
+            try reader.skip(byteCount: 3)
+        
             let heroes: [Map.InformationAboutPlayers.PlayerInfo.AdditionalInfo.SimpleHero] = try heroCount.nTimes {
                 let faceID = try Hero.ID(integer: reader.readUInt8())
                 let heroName = try reader.readString()
@@ -119,7 +115,7 @@ private extension Map.Loader.Parser.H3M {
             return additionalInfo
         }()
         
-        return Map.InformationAboutPlayers.PlayerInfo(
+        let playersInfo = Map.InformationAboutPlayers.PlayerInfo(
             color: playerColor,
             isPlayableByHuman: isPlayableByHuman,
             aiTactic: isPlayableByAI ? aiTactic : nil,
@@ -135,6 +131,9 @@ private extension Map.Loader.Parser.H3M {
 //                customMainHero: customMainHero,
 //                heroSeeds: heroSeeds
         )
+  
+        
+        return playersInfo
     }
 }
 
@@ -184,7 +183,10 @@ extension Map.Loader.Parser.H3M {
             )
         }
         
-        return .init(players: players)
+        let informationAboutPlayers = Map.InformationAboutPlayers(players: players)
+        inspector?.didFinishParsingInformationAboutPlayers(informationAboutPlayers)
+        
+        return informationAboutPlayers
     }
     
 }
