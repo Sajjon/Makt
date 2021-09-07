@@ -18,8 +18,8 @@ extension Map.Loader.Parser.H3M {
             inspector: inspector?.victoryLossInspector, format: format
         )
         
-        /// The teams might contain non playble colors
-        let teamInfo = try parseTeamInfo(validColors: playersInfo.players.map({ $0.color }))
+        /// The teams might contain non playble players
+        let teamInfo = try parseTeamInfo(validColors: playersInfo.players.map({ $0.player }))
         inspector?.didParseTeamInfo(teamInfo)
         
         let availableHeroes = try parseAvailableHeroes(format: format)
@@ -191,36 +191,36 @@ private extension  Map.Loader.Parser.H3M {
 private extension  Map.Loader.Parser.H3M {
     private final class TempTeam {
         let teamID: UInt8
-        var colors: [PlayerColor]
-        init(teamID: UInt8, color: PlayerColor) {
-            self.colors = [color]
+        var players: [Player]
+        init(teamID: UInt8, player: Player) {
+            self.players = [player]
             self.teamID = teamID
         }
     }
-    func parseTeamInfo(validColors: [PlayerColor]) throws -> Map.TeamInfo {
+    func parseTeamInfo(validColors: [Player]) throws -> Map.TeamInfo {
         let teamCount = try reader.readUInt8()
         guard teamCount > 0 else {
             // No teams/alliances
             return .init(teams: nil)
         }
         let offsetBefore = reader.offset
-        let teamByColor: [PlayerColor: UInt8] = try Dictionary(uniqueKeysWithValues:  PlayerColor.allCases.compactMap { playerColor in
+        let teamByColor: [Player: UInt8] = try Dictionary(uniqueKeysWithValues:  Player.allCases.compactMap { player in
             let teamId = try reader.readUInt8()
-            guard validColors.contains(playerColor) else { return nil }
-            return (key: playerColor, value: teamId)
+            guard validColors.contains(player) else { return nil }
+            return (key: player, value: teamId)
         })
         assert(reader.offset == offsetBefore + 8)
         var teamsByTeamID: [UInt8: TempTeam] = [:]
         
-        teamByColor.forEach({ (color: PlayerColor, teamID: UInt8) in
+        teamByColor.forEach({ (player: Player, teamID: UInt8) in
             if teamsByTeamID[teamID] == nil {
-                teamsByTeamID[teamID] = TempTeam(teamID: teamID, color: color)
+                teamsByTeamID[teamID] = TempTeam(teamID: teamID, player: player)
             } else {
-                teamsByTeamID[teamID]!.colors.append(color)
+                teamsByTeamID[teamID]!.players.append(player)
             }
         })
         
-        let teams: [Map.TeamInfo.Team] = teamsByTeamID.map({ $0.value }).map({ Map.TeamInfo.Team.init(id: Int($0.teamID), players: $0.colors.sorted()) })
+        let teams: [Map.TeamInfo.Team] = teamsByTeamID.map({ $0.value }).map({ Map.TeamInfo.Team.init(id: Int($0.teamID), players: $0.players.sorted()) })
         
         return .init(teams: teams.sorted(by: { $0.id < $1.id }))
     }

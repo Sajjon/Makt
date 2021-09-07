@@ -27,7 +27,7 @@ internal extension Map.Loader.Parser.H3M {
         return (message, guards)
     }
     
-    func parseGeoEvent(format: Map.Format, availablePlayers: [PlayerColor]) throws -> Map.GeoEvent {
+    func parseGeoEvent(format: Map.Format, availablePlayers: [Player]) throws -> Map.GeoEvent {
         let pandorasBox = try parsePandorasBox(format: format)
         
         let playersAllowedToTriggerThisEvent = try parseAllowedPlayers(availablePlayers: availablePlayers)

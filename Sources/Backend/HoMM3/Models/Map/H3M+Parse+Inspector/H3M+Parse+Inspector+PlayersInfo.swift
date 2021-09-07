@@ -42,32 +42,32 @@ public extension Map.Loader.Parser.Inspector {
 }
 
 public extension Map.Loader.Parser.Inspector.PlayersInfoInspector {
-    typealias OnParseIsPlayableByHuman      = (Bool, PlayerColor) -> Void
-    typealias OnParseIsPlayableByAI         = (Bool, PlayerColor) -> Void
-    typealias OnParseAITactic               = (AITactic?, PlayerColor) -> Void
-    typealias OnParsePlayableFactions       = ([Faction], PlayerColor) -> Void
-    typealias OnParseHasMainTown            = (Bool, PlayerColor) -> Void
-    typealias OnParseMainTown               = (Map.InformationAboutPlayers.PlayerInfo.MainTown?, PlayerColor) -> Void
+    typealias OnParseIsPlayableByHuman      = (Bool, Player) -> Void
+    typealias OnParseIsPlayableByAI         = (Bool, Player) -> Void
+    typealias OnParseAITactic               = (AITactic?, Player) -> Void
+    typealias OnParsePlayableFactions       = ([Faction], Player) -> Void
+    typealias OnParseHasMainTown            = (Bool, Player) -> Void
+    typealias OnParseMainTown               = (Map.InformationAboutPlayers.PlayerInfo.MainTown?, Player) -> Void
     typealias OnFinishParsingInformationAboutPlayers   = (Map.InformationAboutPlayers) -> Void
     
-    func didParseIsPlayableByHuman(_ value: Bool, playerColor: PlayerColor) {
-        onParseIsPlayableByHuman?(value, playerColor)
+    func didParseIsPlayableByHuman(_ value: Bool, player: Player) {
+        onParseIsPlayableByHuman?(value, player)
     }
-    func didParseIsPlayableByAI(_ value: Bool, playerColor: PlayerColor) {
-        onParseIsPlayableByAI?(value, playerColor)
+    func didParseIsPlayableByAI(_ value: Bool, player: Player) {
+        onParseIsPlayableByAI?(value, player)
     }
-    func didParseAITactic(_ value: AITactic?, playerColor: PlayerColor) {
-        onParseAITactic?(value, playerColor)
+    func didParseAITactic(_ value: AITactic?, player: Player) {
+        onParseAITactic?(value, player)
     }
-    func didParsePlayableFactions(_ value: [Faction], playerColor: PlayerColor) {
-        onParsePlayableFactions?(value, playerColor)
+    func didParsePlayableFactions(_ value: [Faction], player: Player) {
+        onParsePlayableFactions?(value, player)
     }
-    func didParseHasMainTown(_ value: Bool, playerColor: PlayerColor) {
-        onParseHasMainTown?(value, playerColor)
+    func didParseHasMainTown(_ value: Bool, player: Player) {
+        onParseHasMainTown?(value, player)
     }
 
-    func didParseMainTown(_ value: Map.InformationAboutPlayers.PlayerInfo.MainTown?, playerColor: PlayerColor) {
-        onParseMainTown?(value, playerColor)
+    func didParseMainTown(_ value: Map.InformationAboutPlayers.PlayerInfo.MainTown?, player: Player) {
+        onParseMainTown?(value, player)
     }
     
     func didFinishParsingInformationAboutPlayers(_ value: Map.InformationAboutPlayers) {

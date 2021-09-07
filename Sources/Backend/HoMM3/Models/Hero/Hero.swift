@@ -31,7 +31,7 @@ public struct Hero: Hashable, CustomDebugStringConvertible {
     public let questIdentifier: UInt32?
     public let portraitID: ID?
     public let name: String?
-    public let owner: PlayerColor?
+    public let owner: Player?
     public let army: CreatureStacks?
     public let formation: Army.Formation
     public let patrol: Patrol?
@@ -49,7 +49,7 @@ public struct Hero: Hashable, CustomDebugStringConvertible {
         questIdentifier: UInt32? = nil,
         portraitID: ID? = nil,
         name: String? = nil,
-        owner: PlayerColor? = nil,
+        owner: Player? = nil,
         army: CreatureStacks? = nil,
         formation: Army.Formation = .spread,
         patrol: Patrol? = nil,

@@ -192,7 +192,7 @@ public extension Hero {
              /// AB: Stronghold
              kilgor,
              
-             /// AB: Necreopolis. A variant of ROE Lord Haart but with red eyes. Only available Armageddon's Blade and Shadow of Death,
+             /// AB: Necreopolis. A variant of ROE Lord Haart but with playerOne eyes. Only available Armageddon's Blade and Shadow of Death,
              lordHaartTheDeathKnight,
              
              /// AB: Dungeon
@@ -469,7 +469,7 @@ public extension Hero.ID {
         case .kilgor: return "Kilgor"
             
         // Necropolis
-        /// A variant of ROE Lord Haart but with red eyes. Only available Armageddon's Blade and Shadow of Death: return "_____REPLACE____ME_____"
+        /// A variant of ROE Lord Haart but with playerOne eyes. Only available Armageddon's Blade and Shadow of Death: return "_____REPLACE____ME_____"
         case .lordHaartTheDeathKnight: return "Lord Haart"
             
         // Dungeon

@@ -68,7 +68,7 @@
 		487C2B9B26CAD21000031505 /* Faction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487C2B9A26CAD20F00031505 /* Faction.swift */; };
 		487C2B9D26CAD21F00031505 /* AITactic.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487C2B9C26CAD21F00031505 /* AITactic.swift */; };
 		487C2B9F26CAD22900031505 /* Difficulty.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487C2B9E26CAD22900031505 /* Difficulty.swift */; };
-		487C2BA126CAD23600031505 /* PlayerColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487C2BA026CAD23600031505 /* PlayerColor.swift */; };
+		487C2BA126CAD23600031505 /* Player.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487C2BA026CAD23600031505 /* Player.swift */; };
 		487C2BA326CAD48900031505 /* Size.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487C2BA226CAD48900031505 /* Size.swift */; };
 		487C2BA526CB8EC700031505 /* Map+VictoryCondition.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487C2BA426CB8EC700031505 /* Map+VictoryCondition.swift */; };
 		487C2BA726CB94CA00031505 /* Resource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487C2BA626CB94CA00031505 /* Resource.swift */; };
@@ -222,7 +222,7 @@
 		487C2B9A26CAD20F00031505 /* Faction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Faction.swift; sourceTree = "<group>"; };
 		487C2B9C26CAD21F00031505 /* AITactic.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AITactic.swift; sourceTree = "<group>"; };
 		487C2B9E26CAD22900031505 /* Difficulty.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Difficulty.swift; sourceTree = "<group>"; };
-		487C2BA026CAD23600031505 /* PlayerColor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerColor.swift; sourceTree = "<group>"; };
+		487C2BA026CAD23600031505 /* Player.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Player.swift; sourceTree = "<group>"; };
 		487C2BA226CAD48900031505 /* Size.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Size.swift; sourceTree = "<group>"; };
 		487C2BA426CB8EC700031505 /* Map+VictoryCondition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Map+VictoryCondition.swift"; sourceTree = "<group>"; };
 		487C2BA626CB94CA00031505 /* Resource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Resource.swift; sourceTree = "<group>"; };
@@ -689,7 +689,7 @@
 				487C2B9A26CAD20F00031505 /* Faction.swift */,
 				487C2B9C26CAD21F00031505 /* AITactic.swift */,
 				487C2B9E26CAD22900031505 /* Difficulty.swift */,
-				487C2BA026CAD23600031505 /* PlayerColor.swift */,
+				487C2BA026CAD23600031505 /* Player.swift */,
 				487C2BA226CAD48900031505 /* Size.swift */,
 				487C2BE126CD464E00031505 /* Version.swift */,
 			);
@@ -986,7 +986,7 @@
 				487C2BF926CD919B00031505 /* Hero+PrimarySkill.swift in Sources */,
 				487C2C3A26D26DEC00031505 /* Map+Loader+Parser+H3M+Object+Town.swift in Sources */,
 				487C2B9726CAD1E400031505 /* Hero.swift in Sources */,
-				487C2BA126CAD23600031505 /* PlayerColor.swift in Sources */,
+				487C2BA126CAD23600031505 /* Player.swift in Sources */,
 				487AF98426DC049F0073277F /* H3M+Parse+Inspector+BasicInfo.swift in Sources */,
 				4814630026C9041200431960 /* Map+About+Summary.swift in Sources */,
 				487C2BA726CB94CA00031505 /* Resource.swift in Sources */,

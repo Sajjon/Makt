@@ -10,7 +10,7 @@ import Foundation
 public extension Map {
     struct InformationAboutPlayers: Hashable {
         public let players: [PlayerInfo]
-        public var availablePlayers: [PlayerColor] { players.map { $0.color } } 
+        public var availablePlayers: [Player] { players.map { $0.player } } 
     }
 }
 
@@ -18,7 +18,7 @@ public extension Map.InformationAboutPlayers {
     struct PlayerInfo: Hashable {
 
        
-        public let color: PlayerColor  // Not parsed, but set during for-loop
+        public let player: Player  // Not parsed, but set during for-loop
 
         public let isPlayableByHuman: Bool
         public let aiTactic: AITactic? // set if is playable by AI

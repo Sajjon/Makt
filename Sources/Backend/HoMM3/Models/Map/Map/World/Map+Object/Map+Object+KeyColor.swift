@@ -14,11 +14,11 @@ public extension Map.Object {
     
     enum KeyColor: UInt8, Equatable, CaseIterable {
        case lightBlue
-       case green
-       case red
+       case playerFour
+       case playerOne
        case darkBlue
        case brown
-       case purple
+       case playerSix
        case white
        case black
     }

@@ -11,7 +11,7 @@ public extension Hero {
     ///  "Hero Placeholders are essential when creating campaign scenarios, but completely useless in normal scenarios (maps)."
     ///  source: http://www.heroesofmightandmagic.com/heroes3ab/mapeditors.shtml
     struct Placeholder: Hashable {
-        public let owner: PlayerColor
+        public let owner: Player
         public let identity: Identity
         public enum Identity: Hashable {
             case anyHero(powerRating: PowerRating)

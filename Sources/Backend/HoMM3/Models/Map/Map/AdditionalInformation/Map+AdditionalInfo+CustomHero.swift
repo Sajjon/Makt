@@ -12,7 +12,7 @@ public extension Map.AdditionalInformation {
         let heroId: Hero.ID?
         let portraitID: Hero.ID?
         let name: String
-        let allowedPlayers: [PlayerColor]
+        let allowedPlayers: [Player]
     }
     
     struct CustomHeroes: Hashable {

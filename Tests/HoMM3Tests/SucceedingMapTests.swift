@@ -9,13 +9,13 @@ import XCTest
 import Foundation
 @testable import HoMM3SwiftUI
     
-protocol FromPlayerColor: Equatable, RawRepresentable where RawValue == UInt8 {
-    init?(playerColor: PlayerColor)
+protocol FromPlayer: Equatable, RawRepresentable where RawValue == UInt8 {
+    init?(player: Player)
 }
 
-extension FromPlayerColor {
-    init?(playerColor: PlayerColor) {
-        self.init(rawValue: playerColor.rawValue)
+extension FromPlayer {
+    init?(player: Player) {
+        self.init(rawValue: player.rawValue)
     }
 }
 
@@ -40,37 +40,37 @@ func XCTArraysEqual<S: Sequence>(_ lhsArray: S, _ rhsArray: S, file: StaticStrin
         XCTAssert(true, "Ignoring order, the arrays equal each other.", file: file, line: line)
     }
 }
-enum TwoPlayer: UInt8, FromPlayerColor {
-    case red, blue
+enum TwoPlayer: UInt8, FromPlayer {
+    case playerOne, playerTwo
 }
 
-enum ThreePlayer: UInt8, FromPlayerColor {
-    case red, blue, tan
+enum ThreePlayer: UInt8, FromPlayer {
+    case playerOne, playerTwo, playerThree
 }
 
-enum FivePlayer: UInt8, FromPlayerColor {
-    case red, blue, tan, green, orange
+enum FivePlayer: UInt8, FromPlayer {
+    case playerOne, playerTwo, playerThree, playerFour, playerFive
 }
 
-enum SixPlayer: UInt8, FromPlayerColor {
-    case red, blue, tan, green, orange, purple
+enum SixPlayer: UInt8, FromPlayer {
+    case playerOne, playerTwo, playerThree, playerFour, playerFive, playerSix
 }
 
 
-func twoPlayer(_ player: PlayerColor) throws -> TwoPlayer {
-    try XCTUnwrap(TwoPlayer(playerColor: player), "Expected only player Red and blue, but got: \(player)")
+func twoPlayer(_ player: Player) throws -> TwoPlayer {
+    try XCTUnwrap(TwoPlayer(player: player), "Expected only player Red and playerTwo, but got: \(player)")
 }
 
-func threePlayers(_ player: PlayerColor) throws -> ThreePlayer {
-    try XCTUnwrap(ThreePlayer(playerColor: player), "Expected only player Red, Blue and Tan, but got: \(player)")
+func threePlayers(_ player: Player) throws -> ThreePlayer {
+    try XCTUnwrap(ThreePlayer(player: player), "Expected only player Red, Blue and Tan, but got: \(player)")
 }
 
-func fivePlayers(_ player: PlayerColor) throws -> FivePlayer {
-    try XCTUnwrap(FivePlayer(playerColor: player), "Expected only player Red, Blue, Tan, Green and Orange, but got: \(player)")
+func fivePlayers(_ player: Player) throws -> FivePlayer {
+    try XCTUnwrap(FivePlayer(player: player), "Expected only player Red, Blue, Tan, Green and Orange, but got: \(player)")
 }
 
-func sixPlayers(_ player: PlayerColor) throws -> SixPlayer {
-    try XCTUnwrap(.init(playerColor: player), "Expected only player Red, Blue, Tan, Green, Orange and Purple, but got: \(player)")
+func sixPlayers(_ player: Player) throws -> SixPlayer {
+    try XCTUnwrap(.init(player: player), "Expected only player Red, Blue, Tan, Green, Orange and Purple, but got: \(player)")
 }
 
 extension Map.BasicInformation {
@@ -138,44 +138,44 @@ final class MapTests: BaseMapTest {
         let playersInfoInspector = Map.Loader.Parser.Inspector.PlayersInfoInspector(
             onParseIsPlayableByHuman: { isPlayableByHuman, player in
                 switch try! threePlayers(player) {
-                case .red: XCTAssertFalse(isPlayableByHuman); expectationPlayerRedCanBeHuman.fulfill()
-                case .blue: XCTAssertTrue(isPlayableByHuman); expectationPlayerBlueCanBeHuman.fulfill()
-                case .tan: XCTAssertFalse(isPlayableByHuman)
+                case .playerOne: XCTAssertFalse(isPlayableByHuman); expectationPlayerRedCanBeHuman.fulfill()
+                case .playerTwo: XCTAssertTrue(isPlayableByHuman); expectationPlayerBlueCanBeHuman.fulfill()
+                case .playerThree: XCTAssertFalse(isPlayableByHuman)
                 }
             },
             onParseIsPlayableByAI:  { isPlayableByAI, player in
                 switch try! threePlayers(player) {
-                case .red: XCTAssertTrue(isPlayableByAI); expectationPlayerRedCanBeAI.fulfill()
-                case .blue: XCTAssertTrue(isPlayableByAI); expectationPlayerBlueCanBeAI.fulfill()
-                case .tan: XCTAssertFalse(isPlayableByAI)
+                case .playerOne: XCTAssertTrue(isPlayableByAI); expectationPlayerRedCanBeAI.fulfill()
+                case .playerTwo: XCTAssertTrue(isPlayableByAI); expectationPlayerBlueCanBeAI.fulfill()
+                case .playerThree: XCTAssertFalse(isPlayableByAI)
                 }
             },
             onParseAITactic: { aiTactic, player in
                 switch try! twoPlayer(player) {
-                case .red:
+                case .playerOne:
                     XCTAssertEqual(aiTactic, .builder) // found this expected value by opening this map in `Map Editor`
                     expectationPlayerRedAITactic.fulfill()
-                case .blue:
+                case .playerTwo:
                     XCTAssertEqual(aiTactic, .random) // found this expected value by opening this map in `Map Editor`
                     expectationPlayerBlueAITactic.fulfill()
                 }
             },
             onParsePlayableFactions: { playableFactions, player in
                 switch try! twoPlayer(player) {
-                case .red:
+                case .playerOne:
                     XCTAssertEqual(playableFactions, [.inferno]) // found this expected value by opening this map in `Map Editor`
                     expectationPlayerRedPlayableFactions.fulfill()
-                case .blue:
+                case .playerTwo:
                     XCTAssertEqual(playableFactions, [.castle]) // found this expected value by opening this map in `Map Editor`
                     expectationPlayerBluePlayableFactions.fulfill()
                 }
             },
             onParseHasMainTown: { hasMainTown, player in
                 switch try! twoPlayer(player) {
-                case .red:
+                case .playerOne:
                     XCTAssertFalse(hasMainTown) // found this expected value by opening this map in `Map Editor`
                     expectationPlayerRedHasMainTown.fulfill()
-                case .blue:
+                case .playerTwo:
                     XCTAssertFalse(hasMainTown)  // found this expected value by opening this map in `Map Editor`
                     expectationPlayerBlueHasMainTown.fulfill()
                 }
@@ -183,9 +183,9 @@ final class MapTests: BaseMapTest {
             onParseMainTown: { (maybeMainTown: Map.InformationAboutPlayers.PlayerInfo.MainTown?, player) in
                 XCTAssertNil(maybeMainTown)
                 switch try! twoPlayer(player) {
-                case .red:
+                case .playerOne:
                     expectationPlayerRedMainTown.fulfill()
-                case .blue:
+                case .playerTwo:
                     expectationPlayerBlueMainTown.fulfill()
                 }
             }
@@ -250,7 +250,7 @@ final class MapTests: BaseMapTest {
                         expected: .init(
                             id: .position(.init(x: 72, y: 66, inUnderworld: false)),
                             faction: .castle,
-                            owner: .blue,
+                            owner: .playerTwo,
                             buildings: .init(
                                 built: [.fort],
                                 forbidden: [.tavern]
@@ -269,7 +269,7 @@ final class MapTests: BaseMapTest {
                                 .init(
                                 id: .position(.init(x: 90, y: 33, inUnderworld: true)),
                                     faction: .inferno,
-                                    owner: .red,
+                                    owner: .playerOne,
                                     buildings: .init(
                                         built: [.fort],
                                         forbidden: [.tavern]
@@ -345,7 +345,7 @@ final class MapTests: BaseMapTest {
         let additionalInfoInspector = Map.Loader.Parser.Inspector.AdditionalInfoInspector(
             victoryLossInspector: victoryLossInspector,
             onParseTeamInfo: { teamInfo in
-                XCTAssertEqual(teamInfo, [[.red, .blue], [.tan, .green]])
+                XCTAssertEqual(teamInfo, [[.playerOne, .playerTwo], [.playerThree, .playerFour]])
             },
             onParseAvailableHeroes: { availableHeroes in
                 XCTArraysEqual(availableHeroes.heroIDs, Hero.ID.restorationOfErathiaPlusConflux)
@@ -401,18 +401,18 @@ final class MapTests: BaseMapTest {
             }
         )
         
-        var players: [PlayerColor]!
+        var players: [Player]!
 
         let playersInfoInspector = Map.Loader.Parser.Inspector.PlayersInfoInspector(
             onParseIsPlayableByHuman: { isPlayableByHuman, player in
                 switch try! sixPlayers(player) {
-                case .purple: XCTAssertFalse(isPlayableByHuman)
+                case .playerSix: XCTAssertFalse(isPlayableByHuman)
                 default: XCTAssertTrue(isPlayableByHuman)
                 }
             },
             onParseIsPlayableByAI:  { isPlayableByAI, player in
                 switch try! sixPlayers(player) {
-                case .purple: XCTAssertFalse(isPlayableByAI)
+                case .playerSix: XCTAssertFalse(isPlayableByAI)
                 default: XCTAssertTrue(isPlayableByAI)
                 }
             },
@@ -421,15 +421,15 @@ final class MapTests: BaseMapTest {
             },
             onParsePlayableFactions: { playableFactions, player in
                 switch try! fivePlayers(player) {
-                case .red:
+                case .playerOne:
                     XCTAssertEqual(playableFactions, [.castle]) // found this expected value by opening this map in `Map Editor`
-                case .blue:
+                case .playerTwo:
                     XCTAssertEqual(playableFactions, [.tower]) // found this expected value by opening this map in `Map Editor`
-                case .tan:
+                case .playerThree:
                     XCTAssertEqual(playableFactions, [.inferno]) // found this expected value by opening this map in `Map Editor`
-                case .green:
+                case .playerFour:
                     XCTAssertEqual(playableFactions, [.fortress]) // found this expected value by opening this map in `Map Editor`
-                case .orange:
+                case .playerFive:
                     XCTAssertEqual(playableFactions, [.stronghold]) // found this expected value by opening this map in `Map Editor`
                 }
             },
@@ -509,7 +509,7 @@ final class MapTests: BaseMapTest {
                             class: .knight,
                             expected: Hero(
                                 identifierKind: .specificHeroWithID(.sorsha),
-                                owner: .red,
+                                owner: .playerOne,
                                 army: .init(stacks: [
                                     .init(creatureID: .halberdier, quantity: 30),
                                     .init(creatureID: .marksman, quantity: 15),
@@ -547,7 +547,7 @@ final class MapTests: BaseMapTest {
                     assertEvent(
                         expected: .init(
                             message: "Your master always said, \"Before traversing into unknown areas it is wise to be well prepared for the possibility of long arduous battles.\" You have learned through experience that he was right. Maybe it is best to double check your troops, just in case.",
-                            playersAllowedToTriggerThisEvent: [.blue]
+                            playersAllowedToTriggerThisEvent: [.playerTwo]
                         )
                     )
                 case at(100, y: 60):

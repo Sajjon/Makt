@@ -41,7 +41,7 @@ private extension Map.Loader.Parser.H3M {
         isPrison: Bool = false
     ) throws -> Hero {
         let questIdentifier: UInt32? = format > .restorationOfErathia ? try reader.readUInt32() : nil
-        let owner: PlayerColor? = try parseOwner()
+        let owner: Player? = try parseOwner()
         
         let identifierKind: Hero.IdentifierKind = try {
             
@@ -54,12 +54,9 @@ private extension Map.Loader.Parser.H3M {
                 let heroID = try Hero.ID(integer: reader.readUInt8())
                 return Hero.IdentifierKind.specificHeroWithID(heroID)
             } else {
-//                let heroClass = try Hero.Class(integer: reader.readUInt8())
-//                return Hero.IdentifierKind.randomHeroOfClass(heroClass)
                 let heroIdThingyRaw = try reader.readUInt8()
                 let randomHeroID: Hero.ID? = try? Hero.ID.init(integer: heroIdThingyRaw)
                 let randomHeroClass: Hero.Class? = try? Hero.Class.init(integer: heroIdThingyRaw)
-                print("randomHeroID: \(randomHeroID), randomHeroClass: \(randomHeroClass)")
                 return .randomHero
             }
             
@@ -146,9 +143,9 @@ private extension Map.Loader.Parser.H3M {
 }
 
 internal extension Map.Loader.Parser.H3M {
-    func parseOwner() throws -> PlayerColor? {
+    func parseOwner() throws -> Player? {
         let raw = try reader.readUInt8()
-        return raw != PlayerColor.neutralRawValue ? try PlayerColor(integer: raw) : nil
+        return raw != Player.neutralRawValue ? try Player(integer: raw) : nil
     }
     
     func parseSpellID() throws -> Spell.ID? {

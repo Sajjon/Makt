@@ -82,7 +82,7 @@ extension Map.Loader.Parser.H3M {
 internal extension Map.Loader.Parser.H3M {
 
 
-    func parseAllowedPlayers(availablePlayers: [PlayerColor]) throws -> [PlayerColor] {
+    func parseAllowedPlayers(availablePlayers: [Player]) throws -> [Player] {
         
         let byteCount = 1
         let rawBytes = try reader.read(byteCount: byteCount)
@@ -90,7 +90,7 @@ internal extension Map.Loader.Parser.H3M {
         let bitmaskTooMany = BitArray(bitmaskFlipped.reversed())
         let bitmask = BitArray(bitmaskTooMany.prefix(availablePlayers.count))
 
-        let allowedPlayers: [PlayerColor] = bitmask.enumerated().compactMap { (idx, allowed) in
+        let allowedPlayers: [Player] = bitmask.enumerated().compactMap { (idx, allowed) in
             guard allowed else { return nil }
             return availablePlayers[idx]
         }
@@ -281,7 +281,7 @@ internal extension Map.Loader.Parser.H3M {
     
     func parseTimedEvent(
         format: Map.Format,
-        availablePlayers: [PlayerColor]
+        availablePlayers: [Player]
     ) throws -> Map.TimedEvent {
         let name = try reader.readString(maxByteCount: 8192) // arbitrarily chosen
         let message = try reader.readString(maxByteCount: 29861) // Cyon: found to be max in Map Editor
@@ -310,7 +310,7 @@ internal extension Map.Loader.Parser.H3M {
 internal extension Map.Loader.Parser.H3M {
     func parseTimedEvents(
         format: Map.Format,
-        availablePlayers: [PlayerColor]
+        availablePlayers: [Player]
     ) throws -> Map.TimedEvents {
         let eventCount = try reader.readUInt32()
         let events: [Map.TimedEvent] = try eventCount.nTimes {

@@ -12,14 +12,14 @@ public extension Map {
         public let teams: [Team]?
         public struct Team: Hashable, CustomStringConvertible {
             public let id: Int
-            public let players: [PlayerColor]
+            public let players: [Player]
         }
     }
 }
 
 // MARK: ExpressibleByArrayLiteral
 extension Map.TeamInfo: ExpressibleByArrayLiteral {
-    public typealias ArrayLiteralElement = Array<PlayerColor>
+    public typealias ArrayLiteralElement = Array<Player>
     public init(arrayLiteral elements: ArrayLiteralElement...) {
         self.init(teams: elements.enumerated().map({
             Map.TeamInfo.Team.init(id: $0.offset, players: $0.element)

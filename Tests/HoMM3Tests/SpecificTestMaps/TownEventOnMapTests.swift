@@ -51,7 +51,7 @@ final class TownEventsOnMapTests: BaseMapTest {
             onParseObject: { [self] object in
                 
                 func assertTown(
-                    owner: PlayerColor = .red,
+                    owner: Player = .playerOne,
                     events expectedEvents: [Map.Town.Event],
                     _ line: UInt = #line
                 ) {
@@ -90,7 +90,7 @@ final class TownEventsOnMapTests: BaseMapTest {
                                     name: "give",
                                     firstOccurence: 10-1,
                                     subsequentOccurence: .every14Days,
-                                    affectedPlayers: [.red],
+                                    affectedPlayers: [.playerOne],
                                     appliesToHumanPlayers: true,
                                     appliesToComputerPlayers: true,
                                     resources: .init(
@@ -113,7 +113,7 @@ final class TownEventsOnMapTests: BaseMapTest {
                                     name: "take",
                                     firstOccurence: 15-1,
                                     subsequentOccurence: .everySevenDays,
-                                    affectedPlayers: [.red],
+                                    affectedPlayers: [.playerOne],
                                     appliesToHumanPlayers: true,
                                     appliesToComputerPlayers: true,
                                     resources: .init(
@@ -232,7 +232,7 @@ private extension Map.Town.Event {
                 message: nil,
                 firstOccurence: day - 1,
                 subsequentOccurence: nil,
-                affectedPlayers: [.red],
+                affectedPlayers: [.playerOne],
                 appliesToHumanPlayers: appliesToHumanPlayers,
                 appliesToComputerPlayers: appliesToComputerPlayers,
                 resources: nil

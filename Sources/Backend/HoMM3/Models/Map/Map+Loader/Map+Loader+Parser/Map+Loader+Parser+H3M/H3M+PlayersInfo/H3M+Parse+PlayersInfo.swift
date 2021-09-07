@@ -11,7 +11,7 @@ private extension Map.Loader.Parser.H3M {
     func parsePlayer(
         inspector: Map.Loader.Parser.Inspector.PlayersInfoInspector? = nil,
         format: Map.Format,
-        playerColor: PlayerColor,
+        player: Player,
         isPlayableByHuman: Bool,
         isPlayableByAI: Bool,
         assertIsPlayable: Bool = true
@@ -23,7 +23,7 @@ private extension Map.Loader.Parser.H3M {
         let aiTactic: AITactic = try AITactic(integer: reader.readUInt8())
         
         if isPlayable {
-            inspector?.didParseAITactic(aiTactic, playerColor: playerColor)
+            inspector?.didParseAITactic(aiTactic, player: player)
         }
         
         let allowedAlignments: UInt8? = try format >= .shadowOfDeath ? reader.readUInt8() : nil
@@ -45,13 +45,13 @@ private extension Map.Loader.Parser.H3M {
         }()
         
         if isPlayable {
-            inspector?.didParsePlayableFactions(playableFactions, playerColor: playerColor)
+            inspector?.didParsePlayableFactions(playableFactions, player: player)
         }
         
         let _ = try reader.readBool() // `hasRandomTown`
         
         let hasMainTown = try reader.readBool()
-        inspector?.didParseHasMainTown(hasMainTown, playerColor: playerColor)
+        inspector?.didParseHasMainTown(hasMainTown, player: player)
         
     
         let maybeMainTown: Map.InformationAboutPlayers.PlayerInfo.MainTown? = hasMainTown ? try {
@@ -65,7 +65,7 @@ private extension Map.Loader.Parser.H3M {
             let mainTown = Map.InformationAboutPlayers.PlayerInfo.MainTown.init(generateHeroInThisTown: generateHeroAtMainTown, faction: townFaction, position: positionOfMainTown)
             return mainTown
         }() : nil
-        inspector?.didParseMainTown(maybeMainTown, playerColor: playerColor)
+        inspector?.didParseMainTown(maybeMainTown, player: player)
         
         
         let hasRandomHero = try reader.readBool()
@@ -102,7 +102,7 @@ private extension Map.Loader.Parser.H3M {
         }()
         
         let playersInfo = Map.InformationAboutPlayers.PlayerInfo(
-            color: playerColor,
+            player: player,
             isPlayableByHuman: isPlayableByHuman,
             aiTactic: isPlayableByAI ? aiTactic : nil,
             allowedAlignments: allowedAlignments,
@@ -126,17 +126,17 @@ extension Map.Loader.Parser.H3M {
         format: Map.Format
     ) throws -> Map.InformationAboutPlayers {
         var parsedLastPlayer = false
-        let players: [Map.InformationAboutPlayers.PlayerInfo] = try PlayerColor.allCases.compactMap { playerColor in
+        let players: [Map.InformationAboutPlayers.PlayerInfo] = try Player.allCases.compactMap { player in
             let isPlayableByHuman = try reader.readBool()
             if !parsedLastPlayer {
-                print("♕ \(playerColor): isPlayableByHuman=\(isPlayableByHuman)")
-                inspector?.didParseIsPlayableByHuman(isPlayableByHuman, playerColor: playerColor)
+                print("♕ \(player): isPlayableByHuman=\(isPlayableByHuman)")
+                inspector?.didParseIsPlayableByHuman(isPlayableByHuman, player: player)
             }
             
             let isPlayableByAI = try reader.readBool()
             if !parsedLastPlayer {
-                print("♕ \(playerColor): isPlayableByAI=\(isPlayableByAI)")
-                inspector?.didParseIsPlayableByAI(isPlayableByAI, playerColor: playerColor)
+                print("♕ \(player): isPlayableByAI=\(isPlayableByAI)")
+                inspector?.didParseIsPlayableByAI(isPlayableByAI, player: player)
             }
             
             let playerIsPlayable = isPlayableByAI || isPlayableByHuman
@@ -146,7 +146,7 @@ extension Map.Loader.Parser.H3M {
                 let _ = try? parsePlayer(
                     inspector: nil,
                     format: format,
-                    playerColor: playerColor,
+                    player: player,
                     isPlayableByHuman: false,
                     isPlayableByAI: false,
                     assertIsPlayable: false
@@ -158,7 +158,7 @@ extension Map.Loader.Parser.H3M {
             return try parsePlayer(
                 inspector: inspector,
                 format: format,
-                playerColor: playerColor,
+                player: player,
                 isPlayableByHuman: isPlayableByHuman,
                 isPlayableByAI: isPlayableByAI
             )

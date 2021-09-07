@@ -64,7 +64,7 @@ public extension Map {
             firstOccurence: UInt16,
             subsequentOccurence: Occurrences.Subsequent? = nil,
             
-            affectedPlayers: [PlayerColor] = [],
+            affectedPlayers: [Player] = [],
             appliesToHumanPlayers: Bool,
             appliesToComputerPlayers: Bool,
             resources: Resources? = nil
@@ -86,7 +86,7 @@ public extension Map {
         public struct Availability: Hashable, CustomDebugStringConvertible {
             
             /// MapEditor: "Players to which event applies"
-            public let affectedPlayers: [PlayerColor]
+            public let affectedPlayers: [Player]
             
             /// MapEditor: "Apply event to computer players"
             public let appliesToHumanPlayers: Bool
@@ -95,7 +95,7 @@ public extension Map {
             public let appliesToComputerPlayers: Bool
             
             public init(
-                affectedPlayers: [PlayerColor],
+                affectedPlayers: [Player],
                 appliesToHumanPlayers: Bool,
                 appliesToComputerPlayers: Bool
             ) {
@@ -153,7 +153,7 @@ public extension Map {
             guardians: CreatureStacks? = nil,
             contents: Bounty? = nil,
             
-            playersAllowedToTriggerThisEvent: [PlayerColor] = [],
+            playersAllowedToTriggerThisEvent: [Player] = [],
             canBeTriggeredByComputerOpponent: Bool = false,
             cancelEventAfterFirstVisit: Bool = true
         ) {
@@ -183,13 +183,13 @@ public extension Map {
     struct Availability: Hashable, CustomDebugStringConvertible {
         
         /// MapEditor: "Players allowed to trigger event"
-        internal let playersAllowedToTriggerEvent: [PlayerColor]
+        internal let playersAllowedToTriggerEvent: [Player]
         
         /// MapEditor: "Allow computer opponent to trigger event"
         internal let canBeTriggeredByComputerOpponent: Bool
         
         public init(
-            playersAllowedToTriggerEvent: [PlayerColor],
+            playersAllowedToTriggerEvent: [Player],
             canBeTriggeredByComputerOpponent: Bool
         ) {
             self.playersAllowedToTriggerEvent = playersAllowedToTriggerEvent

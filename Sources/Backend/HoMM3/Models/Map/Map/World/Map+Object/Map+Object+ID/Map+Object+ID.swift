@@ -9,11 +9,11 @@ public extension Map {
     struct Mine: Hashable {
         /// nil means `abandoned mine`
         public let kind: Kind?
-        public let owner: PlayerColor?
+        public let owner: Player?
     }
     
     struct Shipyard: Hashable {
-        public let owner: PlayerColor?
+        public let owner: Player?
     }
     
     struct Shrine: Hashable {
@@ -66,10 +66,10 @@ public extension Map.Object {
     enum OneWayMonolith: UInt8, Hashable, CaseIterable {
         
         /// Blue (Starfield)
-        case blue,
+        case playerTwo,
              
              /// Red (white vortex)
-             red,
+             playerOne,
              
              /// Yellow (gold/brown)
              yellow,
@@ -87,10 +87,10 @@ public extension Map.Object {
         case greenLighting,
              
         /// Orange (bubbles)
-        orange,
+        playerFive,
         
         /// Purple (ripples)
-        purple,
+        playerSix,
         
         /// Brown(ish)
         brown,

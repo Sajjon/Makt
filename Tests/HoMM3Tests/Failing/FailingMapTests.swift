@@ -1,5 +1,5 @@
 //
-//  Tests.swift
+//  GoodToGoMapTest.swift
 //  Tests
 //
 //  Created by Alexander Cyon on 2021-08-13.
@@ -9,310 +9,144 @@ import XCTest
 @testable import HoMM3SwiftUI
 
 
-final class FailingMapTests: XCTestCase {
-
+final class GoodToGoMapTest: BaseMapTest {
     
-    /*
-    func test_test_map_all_water_but_the_corners_no_objects() throws {
-        let mapLoader = Map.Loader.init(config: Config.init(gamesFilesDirectories: .init(maps: .custom("/Users/sajjon/Developer/Fun/Games/HoMM/HoMM3SwiftUI/Tests/TestMaps/"))))
-        let mapFile = "cyon_roe_small_1lvl_all_water_but_the_corners_no_objects.h3m"
-        let mapID = Map.ID.init(fileName: mapFile)
-        
-        let inspector = Map.Loader.Parser.Inspector(
-            settings: .init(),
-            onParseAbout: { about in
-                let summary = about.summary
-                XCTAssertEqual(summary.fileName, "cyon_roe_small_1lvl_all_water_but_the_corners_no_objects.h3m")
-                XCTAssertEqual(summary.format, .restorationOfErathia)
-                XCTAssertEqual(summary.fileSizeCompressed, 1_324)
-            },
-            onParseDisposedHeroes: { disposedHeroes in
-                XCTAssertTrue(disposedHeroes.isEmpty)
-            },
-            onParseAllowedArtifacts: { allowedArtifacts in
-                XCTAssertEqual(allowedArtifacts, Artifact.ID.available(in: .restorationOfErathia))
-            },
-            onParseAllowedSpells: { allowedSpells in
-                XCTAssertEqual(allowedSpells, Spell.ID.allCases)
-            },
-            onParseAllowedHeroAbilities: { allowedSeconarySkills in
-                XCTAssertEqual(allowedSeconarySkills, Hero.SecondarySkill.Kind.allCases)
-            },
-            onParseRumors: { rumors in
-                XCTAssertTrue(rumors.isEmpty)
-            },
-            onParsePredefinedHeroes: { predefinedHeroes in
-                XCTAssertTrue(predefinedHeroes.isEmpty)
-            },
-            onParseWorld: { world in
-                XCTAssertNil(world.belowGround)
-                XCTAssertFalse(world.above.isUnderworld)
-                let tiles = world.above.tiles
-                XCTAssertEqual(tiles.count, 36*36)
-                XCTAssertEqual(tiles.filter({ $0.terrain.kind == .water }).count, tiles.count - 4) // the four corners contain: [snow, dirt, lava, rough]
-                XCTAssertEqual(tiles[0].terrain.kind, .snow)
-                XCTAssertEqual(tiles[35].terrain.kind, .dirt)
-                XCTAssertEqual(tiles[36*35].terrain.kind, .lava)
-                XCTAssertEqual(tiles[36*36 - 1].terrain.kind, .rough)
-
-                XCTAssertEqual(tiles.prefix(Size.small.height).map({ $0.position.y }), (0...35).map({ .init($0) }))
-                
-                XCTAssertTrue(tiles.prefix(Size.small.height).map({ $0.position.x }).allSatisfy({ $0 == 0 }))
-            },
-            onParseAttributes: { attributes in
-                XCTAssertEqual(attributes.attributes.count, 0, "Expected 0 attributes but got #\(attributes.attributes.count), more specifically these:\n\(attributes.attributes)\n")
-            },
-            onParseObject: { object in
-                XCTFail("Expected zero objects.")
-            })
-        
-        XCTAssertNoThrow(try mapLoader.load(id: mapID, inspector: inspector))
-    }
-    
-    func test_test_map_ab_all_water() throws {
-        let mapLoader = Map.Loader.init(config: Config.init(gamesFilesDirectories: .init(maps: .custom("/Users/sajjon/Developer/Fun/Games/HoMM/HoMM3SwiftUI/Tests/TestMaps/"))))
-        let mapFile = "cyon_ab_small_1lvl_all_water_no_objects.h3m"
-        let mapID = Map.ID(fileName: mapFile)
-        
-        let inspector = Map.Loader.Parser.Inspector(
-            settings: .init(),
-            onParseAbout: { about in
-                let summary = about.summary
-                XCTAssertEqual(summary.format, .armageddonsBlade)
-                XCTAssertEqual(summary.fileName, mapFile)
-                XCTAssertEqual(summary.fileSizeCompressed, 1272)
-            },
-            onParseDisposedHeroes: { disposedHeroes in
-                XCTAssertTrue(disposedHeroes.isEmpty)
-            },
-            onParseAllowedArtifacts: { allowedArtifacts in
-//                XCTAssertEqual(allowedArtifacts, Artifact.ID.available(in: .shadowOfDeath))
-                XCTAssertFalse(allowedArtifacts.isEmpty)
-            },
-            onParseAllowedSpells: { allowedSpells in
-                XCTAssertFalse(allowedSpells.isEmpty)
-            },
-            onParseAllowedHeroAbilities: { allowedSeconarySkills in
-                XCTAssertFalse(allowedSeconarySkills.isEmpty)
-            },
-            onParseRumors: { rumors in
-                XCTAssertTrue(rumors.isEmpty)
-            },
-            onParsePredefinedHeroes: { predefinedHeroes in
-                XCTAssertTrue(predefinedHeroes.isEmpty)
-            },
-            onParseWorld: { world in
-                XCTAssertNil(world.belowGround)
-                XCTAssertFalse(world.above.isUnderworld)
-                let tiles = world.above.tiles
-                XCTAssertEqual(tiles.count, 36*36)
-                XCTAssertTrue(tiles.allSatisfy({ $0.terrain.kind == .water }))
-
-                XCTAssertEqual(tiles.prefix(Size.small.height).map({ $0.position.y }), (0...35).map({ .init($0) }))
-                
-                XCTAssertTrue(tiles.prefix(Size.small.height).map({ $0.position.x }).allSatisfy({ $0 == 0 }))
-            },
-            onParseAttributes: { attributes in
-                XCTAssertEqual(attributes.attributes.count, 0, "Expected 0 attributes but got #\(attributes.attributes.count), more specifically these:\n\(attributes.attributes)\n")
-            },
-            onParseObject: { object in
-                XCTFail("Expected zero objects.")
-            })
-        
-        XCTAssertNoThrow(try mapLoader.load(id: mapID, inspector: inspector))
-    }
-    
-    func test_test_map_sod_all_water() throws {
-        let mapLoader = Map.Loader.init(config: Config.init(gamesFilesDirectories: .init(maps: .custom("/Users/sajjon/Developer/Fun/Games/HoMM/HoMM3SwiftUI/Tests/TestMaps/"))))
-        let mapFile = "cyon_sod_small_1lvl_all_water_no_objects.h3m"
-        let mapID = Map.ID(fileName: mapFile)
-        
-        let inspector = Map.Loader.Parser.Inspector(
-            settings: .init(),
-            onParseAbout: { about in
-                let summary = about.summary
-                XCTAssertEqual(summary.format, .shadowOfDeath)
-                XCTAssertEqual(summary.fileName, "cyon_sod_small_1lvl_all_water_no_objects.h3m")
-                XCTAssertEqual(summary.fileSizeCompressed, 1311)
-            },
-            onParseDisposedHeroes: { disposedHeroes in
-                XCTAssertTrue(disposedHeroes.isEmpty)
-            },
-            onParseAllowedArtifacts: { allowedArtifacts in
-//                XCTAssertEqual(allowedArtifacts, Artifact.ID.available(in: .shadowOfDeath))
-                XCTAssertFalse(allowedArtifacts.isEmpty)
-            },
-            onParseAllowedSpells: { allowedSpells in
-                XCTAssertTrue(allowedSpells.isEmpty)
-            },
-            onParseAllowedHeroAbilities: { allowedSeconarySkills in
-                XCTAssertTrue(allowedSeconarySkills.isEmpty)
-            },
-            onParseRumors: { rumors in
-                XCTAssertTrue(rumors.isEmpty)
-            },
-            onParsePredefinedHeroes: { predefinedHeroes in
-                XCTAssertTrue(predefinedHeroes.isEmpty)
-            },
-            onParseWorld: { world in
-                XCTAssertNil(world.belowGround)
-                XCTAssertFalse(world.above.isUnderworld)
-                let tiles = world.above.tiles
-                XCTAssertEqual(tiles.count, 36*36)
-                XCTAssertTrue(tiles.allSatisfy({ $0.terrain.kind == .water }))
-
-                XCTAssertEqual(tiles.prefix(Size.small.height).map({ $0.position.y }), (0...35).map({ .init($0) }))
-                
-                XCTAssertTrue(tiles.prefix(Size.small.height).map({ $0.position.x }).allSatisfy({ $0 == 0 }))
-            },
-            onParseAttributes: { attributes in
-                XCTAssertEqual(attributes.attributes.count, 0, "Expected 0 attributes but got #\(attributes.attributes.count), more specifically these:\n\(attributes.attributes)\n")
-            },
-            onParseObject: { object in
-                XCTFail("Expected zero objects.")
-            })
-        
-        XCTAssertNoThrow(try mapLoader.load(id: mapID, inspector: inspector))
-    }
-    
-    
-    func test_test_map_all_water() throws {
-        let mapLoader = Map.Loader.init(config: Config.init(gamesFilesDirectories: .init(maps: .custom("/Users/sajjon/Developer/Fun/Games/HoMM/HoMM3SwiftUI/Tests/TestMaps/"))))
-        let mapFile = "cyon_roe_small_1lvl_all_water_no_objects.h3m"
-        let mapID = Map.ID.init(fileName: mapFile)
-        
-        let inspector = Map.Loader.Parser.Inspector(
-            settings: .init(),
-            onParseAbout: { about in
-                let summary = about.summary
-                XCTAssertEqual(summary.format, .restorationOfErathia)
-                XCTAssertEqual(summary.fileName, "cyon_roe_small_1lvl_all_water_no_objects.h3m")
-                XCTAssertEqual(summary.fileSizeCompressed, 1_252)
-            },
-            onParseDisposedHeroes: { disposedHeroes in
-                XCTAssertTrue(disposedHeroes.isEmpty)
-            },
-            onParseAllowedArtifacts: { allowedArtifacts in
-                XCTAssertEqual(allowedArtifacts, Artifact.ID.available(in: .restorationOfErathia))
-            },
-            onParseAllowedSpells: { allowedSpells in
-                XCTAssertEqual(allowedSpells, Spell.ID.allCases)
-            },
-            onParseAllowedHeroAbilities: { allowedSeconarySkills in
-                XCTAssertEqual(allowedSeconarySkills, Hero.SecondarySkill.Kind.allCases)
-            },
-            onParseRumors: { rumors in
-                XCTAssertTrue(rumors.isEmpty)
-            },
-            onParsePredefinedHeroes: { predefinedHeroes in
-                XCTAssertTrue(predefinedHeroes.isEmpty)
-            },
-            onParseWorld: { world in
-                XCTAssertNil(world.belowGround)
-                XCTAssertFalse(world.above.isUnderworld)
-                let tiles = world.above.tiles
-                XCTAssertEqual(tiles.count, 36*36)
-                XCTAssertTrue(tiles.allSatisfy({ $0.terrain.kind == .water }))
-
-                XCTAssertEqual(tiles.prefix(Size.small.height).map({ $0.position.y }), (0...35).map({ .init($0) }))
-                
-                XCTAssertTrue(tiles.prefix(Size.small.height).map({ $0.position.x }).allSatisfy({ $0 == 0 }))
-            },
-            onParseAttributes: { attributes in
-                XCTAssertEqual(attributes.attributes.count, 0, "Expected 0 attributes but got #\(attributes.attributes.count), more specifically these:\n\(attributes.attributes)\n")
-            },
-            onParseObject: { object in
-                XCTFail("Expected zero objects.")
-            })
-        
-        XCTAssertNoThrow(try mapLoader.load(id: mapID, inspector: inspector))
-    }
     
     /// Smallest compressed file size
     func test_assert_a_really_small_map_good_to_go() throws {
         let inspector = Map.Loader.Parser.Inspector(
-            settings: .init(),
-            onParseAbout: { about in
-                let summary = about.summary
-                XCTAssertEqual(summary.fileName, "Good to Go.h3m")
-                XCTAssertEqual(summary.fileSizeCompressed, 4_982)
-                XCTAssertEqual(summary.fileSize, 23_852)
-                XCTAssertEqual(summary.format, .restorationOfErathia)
+            basicInfoInspector: .init(onParseFormat: {
+                XCTAssertEqual($0, .restorationOfErathia)
             },
-            onParseDisposedHeroes: { disposedHeroes in
-                XCTAssertTrue(disposedHeroes.isEmpty)
-            },
-            onParseAllowedArtifacts: { allowedArtifacts in
-                XCTAssertEqual(allowedArtifacts, Artifact.ID.available(in: .restorationOfErathia))
-            },
-            onParseAllowedSpells: { allowedSpells in
-                XCTAssertEqual(allowedSpells, Spell.ID.allCases)
-            },
-            onParseAllowedHeroAbilities: { allowedSeconarySkills in
-                XCTAssertEqual(allowedSeconarySkills, Hero.SecondarySkill.Kind.allCases)
-            },
-            onParseRumors: { rumors in
-                XCTAssertTrue(rumors.isEmpty)
-            },
-            onParsePredefinedHeroes: { predefinedHeroes in
-                XCTAssertTrue(predefinedHeroes.isEmpty)
-            },
-            onParseWorld: { world in
-                print(world.above)
-                XCTAssertNil(world.belowGround)
-                XCTAssertFalse(world.above.isUnderworld)
-                let tiles = world.above.tiles
-                XCTAssertEqual(tiles.count, 36*36)
-            },
-            onParseAttributes: { attributes in
-                XCTAssertEqual(attributes.attributes.count, 138)
+            onParseName: { XCTAssertEqual($0, "Good to Go") },
+            onParseDescription: {  XCTAssertEqual($0, "In an effort to reduce the frequency of wars between the various nations, the Emperor has set aside a small region to be used as a battleground to settle differences between quarreling Lords. Your castle starts fully constructed so that you may concentrate on defeating your opponent. Good luck!") },
+            onParseDifficulty: { XCTAssertEqual($0, .normal) },
+            onParseSize: { XCTAssertEqual($0, .small) }),
+            
+            additionalInformationInspector: .init(
+                onParseTeamInfo: { XCTAssertEqual($0, [[1], [2], [4, 5]]) }
+            ),
+            onParseObject: { [self] object in
+                switch object.position {
+                case at(5, y: 5):
+                    if object.objectID.stripped == .randomTown {
+                        assertObjectRandomTown(expected: .init(
+                            id: .position(.init(x: 5, y: 5, inUnderworld: false)),
+                            owner: .red,
+                            buildings: .init(built: Map.Town.Buildings.Building.all(but: [.shipyard, .special1, .special2, .special3, .special4]), forbidden: [.shipyard]),
+                            spells: .init(
+                                possible: .init(
+                                    values: Spell.ID.all(
+                                        but: [.summonBoat, .scuttleBoat, .waterWalk]
+                                    )
+                                )
+                            )
+                        ), actual: object)
+                    } else if object.objectID.stripped == .randomHero {
+                        assertObjectRandomHero(expected: .init(identifierKind: .randomHero, owner: .red, startingExperiencePoints: 6_000), actual: object)
+                    } else {
+                        XCTFail("Unexpected object of kind: \(object.kind).")
+                    }
+                case at(26, y: 6):
+                    assertObjectHero(
+                        class: .beastmaster,
+                        expected: .init(
+                            identifierKind: .specificHeroWithID(.korbac),
+                            owner: .green,
+                            army: .init(stacks: [
+                                .init(creatureID: .gnoll, quantity: 100),
+                                .init(creatureID: .gnoll, quantity: 100)
+                            ]),
+                            startingExperiencePoints: 18_500
+                        ),
+                        actual: object)
+                case at(33, y: 8):
+                    assertObjectHero(
+                        class: .witch,
+                        expected: .init(
+                            identifierKind: .specificHeroWithID(.verdish),
+                            owner: .green,
+                            army: .init(stacks: [
+                                .init(creatureID: .gnoll, quantity: 100),
+                                .init(creatureID: .gnoll, quantity: 100)
+                            ]),
+                            startingExperiencePoints: 18_500
+                        ),
+                        actual: object)
+                default: break
+                }
                 
-                print(attributes.attributes)
-                let heroObjectIDs = attributes.attributes.map({ $0.objectID }).filter({ $0.stripped == .hero })
-                XCTAssertEqual(heroObjectIDs.count, 4)
-                XCTAssertTrue(heroObjectIDs.contains(.hero(.barbarian)))
-                XCTAssertTrue(heroObjectIDs.contains(.hero(.battleMage)))
-                XCTAssertTrue(heroObjectIDs.contains(.hero(.beastmaster)))
-                XCTAssertTrue(heroObjectIDs.contains(.hero(.witch)))
-//                              XCTAssertTrue(heroObjectIDs.contains(Hero.Class.)
-//                XCTAssertTrue(heroObjectIDs.contains(Map.Object.ID.hero(.korbac)))
-//                XCTAssertTrue(heroObjectIDs.contains(Map.Object.ID.hero(.yog)))
-//                XCTAssertTrue(heroObjectIDs.contains(Map.Object.ID.hero(.oris)))
             },
-            onParseObject: { object in
-            })
-        
-            let _ = try Map.load(.goodToGo, inspector: inspector)
-
+        onParseEvents: {
+            let events = $0.events
+            XCTAssertEqual(events.count, 2)
+            
+            XCTAssertEqual(
+                events[0],
+                .init(
+                    name: "Starting Resources",
+                    message: "The duel has begun, and will end only when one of you remains. As part of the ritual of combat in this region, you are provided with enough supplies with which to wage war.",
+                    firstOccurence: 1-1,
+                    affectedPlayers: [1, 2, 4, 5],
+                    appliesToHumanPlayers: true,
+                    appliesToComputerPlayers: true,
+                    resources: .init(resources: [
+                        .init(kind: .wood, amount: 75),
+                        .init(kind: .mercury, amount: 50),
+                        .init(kind: .ore, amount: 75),
+                        .init(kind: .sulfur, amount: 50),
+                        .init(kind: .crystal, amount: 50),
+                        .init(kind: .gems, amount: 50),
+                        .init(kind: .gold, amount: 50_000),
+                    ])
+                )
+            )
+            
+            XCTAssertEqual(
+                events[1],
+                .init(
+                    name: "Warning",
+                    message: "You must also be careful, as the natives will try to stop both you and your opponent from winning!",
+                    firstOccurence: 1-1,
+                    affectedPlayers: [1, 2, 4, 5],
+                    appliesToHumanPlayers: true,
+                    appliesToComputerPlayers: true
+                )
+            )
+        }
+        )
+        try loadMap(id: .goodToGo, inspector: inspector)
+        waitForExpectations(timeout: 1)
     }
-    
-    
+}
+
+    /*
     func test_assert_small_map_kneeDeepInTheDead() throws {
         let map = try Map.load(.kneeDeepInTheDead)
         XCTAssertEqual(map.about.summary.fileName, "Knee Deep in the Dead.h3m")
         XCTAssertEqual(map.about.summary.fileSizeCompressed, 6_909)
         XCTAssertEqual(map.about.summary.fileSize, 1)
     }
-    
+
     func test_assert_small_map_tooManyMonsters() throws {
         let map = try Map.load(.tooManyMonsters)
         XCTAssertEqual(map.about.summary.fileName, "Too Many Monsters.h3m")
         XCTAssertEqual(map.about.summary.fileSizeCompressed, 7_569)
         XCTAssertEqual(map.about.summary.fileSize, 1)
     }
-    
+
     func test_assert_small_map_forSale() throws {
         let map = try Map.load(.forSale)
         XCTAssertEqual(map.about.summary.fileName, "For Sale.h3m")
         XCTAssertEqual(map.about.summary.fileSizeCompressed, 8_434)
         XCTAssertEqual(map.about.summary.fileSize, 1)
     }
-    
+
     /// After `goodToGo` and `elbowRoom`: smallest compressed file size
     func test_assert_a_really_small_map_judgementDay() throws {
-        
 
-        
+
+
         let inspector = Map.Loader.Parser.Inspector(
             settings: .init(),
             onParseAbout: { about in
@@ -350,22 +184,22 @@ final class FailingMapTests: XCTestCase {
             },
             onParseAttributes: { attributes in
                 XCTAssertEqual(attributes.attributes.count, 111)
-  
+
             },
             onParseObject: { object in
             })
-        
+
         do {
             let _ = try Map.load(.judgementDay, inspector: inspector)
         } catch {
             // errors are ignored for now.
         }
     }
-    
+
     /// After `goodToGo`: smallest compressed file size
     func test_assert_a_really_small_map_elbowRoom() throws {
 
-        
+
         let inspector = Map.Loader.Parser.Inspector(
             settings: .init(),
             onParseAbout: { about in
@@ -404,11 +238,11 @@ final class FailingMapTests: XCTestCase {
                 XCTAssertEqual(attributes.attributes.count, 121)
             },
             onParseObject: { object in
-               
+
             })
-        
+
             let _ = try Map.load(.elbowRoom, inspector: inspector)
-     
+
     }
 
     func test_assert_can_load_map_by_id__tutorial_map() throws {
@@ -417,7 +251,7 @@ final class FailingMapTests: XCTestCase {
         XCTAssertEqual(map.about.summary.fileSizeCompressed, 6_152)
         XCTAssertEqual(map.about.summary.fileSize, 27_972)
     }
-  
+
     func test_assert_can_load_map_by_id__titans_winter() throws {
         // Delete any earlier cached maps.
         Map.loader.cache .__deleteMap(by: .titansWinter)
@@ -432,18 +266,18 @@ final class FailingMapTests: XCTestCase {
         XCTAssertEqual(map.about.summary.difficulty, .hard)
         XCTAssertEqual(map.about.summary.size, .large)
         XCTAssertEqual(map.about.playersInfo.players.count, 6)
-        XCTAssertEqual(map.about.playersInfo.players.map { $0.color }, [.red, .blue, .tan, .green, .orange, .purple])
+        XCTAssertEqual(map.about.playersInfo.players.map { $0.player }, [.playerOne, .playerTwo, .playerThree, .playerFour, .playerFive, .playerSix])
         XCTAssertEqual(map.about.playersInfo.players[0].isPlayableBothByHumanAndAI, true)
         XCTAssertEqual(map.about.playersInfo.players[1].isPlayableBothByHumanAndAI, true)
         XCTAssertEqual(map.about.playersInfo.players[2].isPlayableBothByHumanAndAI, true)
-        
+
         XCTAssertEqual(map.about.playersInfo.players[0].playableFactions, [.tower])
         XCTAssertEqual(map.about.playersInfo.players[1].playableFactions, [.tower])
         XCTAssertEqual(map.about.playersInfo.players[2].playableFactions, [.tower])
         XCTAssertEqual(map.about.playersInfo.players[3].playableFactions, [.stronghold])
         XCTAssertEqual(map.about.playersInfo.players[4].playableFactions, [.dungeon])
         XCTAssertEqual(map.about.playersInfo.players[5].playableFactions, [.castle])
-        
+
         XCTAssertEqual(map.about.victoryLossConditions.victoryConditions, [.standard])
         XCTAssertEqual(map.about.victoryLossConditions.lossConditions, [.standard])
     }
@@ -455,25 +289,25 @@ final class FailingMapTests: XCTestCase {
         Map.loader.cache.__deleteMap(by: mapID)
 
         XCTAssertNil(Map.loader.cache.load(id: mapID))
-        
+
         var start: DispatchTime
         var end: DispatchTime
-        
+
         start = .now()
         let _ = try Map.load(mapID)
         end = .now()
         let timeNonCached = end.uptimeNanoseconds - start.uptimeNanoseconds
-        
+
         start = .now()
         let _ = try Map.load(mapID) // Should find map in cache
         end = .now()
         let timeCached = end.uptimeNanoseconds - start.uptimeNanoseconds
-        
+
         // Should be faster to load cached map.about.
         XCTAssertLessThan(timeCached, timeNonCached)
-        
+
     }
-    
+
     func test_assert_can_load_map_by_id__vikingWeShallGo() throws {
         // Delete any earlier cached maps.
         Map.loader.cache.__deleteMap(by: .vikingWeShallGo)
@@ -493,20 +327,20 @@ final class FailingMapTests: XCTestCase {
         XCTAssertEqual(map.about.summary.difficulty, .normal)
         XCTAssertEqual(map.about.summary.size, .extraLarge)
         XCTAssertEqual(map.about.playersInfo.players.count, 6)
-     
+
         XCTAssertTrue(map.about.playersInfo.players.prefix(5).allSatisfy({ $0.isPlayableBothByHumanAndAI }))
         XCTAssertTrue(map.about.playersInfo.players[5].isPlayableOnlyByAI)
-        
+
         XCTAssertEqual(
             map.about.playersInfo.players.flatMap({ $0.playableFactions }),
             [.stronghold, .necropolis, .castle, .rampart, .castle, .inferno]
         )
-        
+
         XCTAssertEqual(map.about.victoryLossConditions.victoryConditions.map { $0.kind.stripped }, [.standard])
         XCTAssertEqual(map.about.victoryLossConditions.lossConditions.map { $0.kind.stripped }, [.standard])
     }
-    
-    
+
+
     func test_assert_can_load_map_by_id__mandateOfHeaven() throws {
         // Delete any earlier cached maps.
         Map.loader.cache.__deleteMap(by: .theMandateOfHeaven)
@@ -521,24 +355,24 @@ final class FailingMapTests: XCTestCase {
         XCTAssertEqual(map.about.summary.difficulty, .expert)
         XCTAssertEqual(map.about.summary.size, .extraLarge)
         XCTAssertEqual(map.about.playersInfo.players.count, 5)
-       
+
         XCTAssertTrue(map.about.playersInfo.players[0].isPlayableBothByHumanAndAI)
         XCTAssertTrue(map.about.playersInfo.players.suffix(4).allSatisfy({ $0.isPlayableOnlyByAI }))
-        
+
         XCTAssertEqual(map.about.playersInfo.players[0].playableFactions, [.castle])
         XCTAssertEqual(map.about.playersInfo.players[1].playableFactions, [.necropolis])
         XCTAssertEqual(map.about.playersInfo.players[2].playableFactions, [.inferno])
         XCTAssertEqual(map.about.playersInfo.players[3].playableFactions, [.dungeon])
         XCTAssertEqual(map.about.playersInfo.players[4].playableFactions, [.dungeon])
-        
+
         XCTAssertFalse(map.about.playersInfo.players[2].hasRandomHero)
         XCTAssertEqual(map.about.playersInfo.players[2].customMainHero?.name, "The Queen")
         XCTAssertEqual(map.about.playersInfo.players[2].customMainHero?.portraitId, .calid)
-        
+
         XCTAssertEqual(map.about.victoryLossConditions.victoryConditions.map { $0.kind.stripped }, [.captureSpecificTown])
         XCTAssertEqual(map.about.victoryLossConditions.lossConditions.map { $0.kind.stripped }, [.standard])
     }
-    
+
     func test_assert_can_load_map_by_id__rebellion() throws {
         // Delete any earlier cached maps.
         Map.loader.cache.__deleteMap(by: .rebellion)
@@ -553,17 +387,17 @@ final class FailingMapTests: XCTestCase {
         XCTAssertEqual(map.about.summary.difficulty, .normal)
         XCTAssertEqual(map.about.summary.size, .medium)
         XCTAssertEqual(map.about.playersInfo.players.count, 3)
-       
+
         XCTAssertTrue(map.about.playersInfo.players.allSatisfy({ $0.isPlayableBothByHumanAndAI }))
-        
+
         XCTAssertEqual(map.about.playersInfo.players[0].playableFactions, Faction.playable(in: .restorationOfErathia))
         XCTAssertEqual(map.about.playersInfo.players[1].playableFactions, [.inferno])
         XCTAssertEqual(map.about.playersInfo.players[2].playableFactions, [.stronghold])
-        
+
         XCTAssertEqual(map.about.victoryLossConditions.victoryConditions.map { $0.kind.stripped }, [.buildGrailBuilding, .standard])
         XCTAssertEqual(map.about.victoryLossConditions.lossConditions.map { $0.kind.stripped }, [.standard])
     }
-    
+
     func test_assert_can_load_map_by_id__noahsArk() throws {
         // Delete any earlier cached maps.
         Map.loader.cache.__deleteMap(by: .noahsArk)
@@ -578,18 +412,18 @@ final class FailingMapTests: XCTestCase {
         XCTAssertEqual(map.about.summary.difficulty, .normal)
         XCTAssertEqual(map.about.summary.size, .large)
         XCTAssertEqual(map.about.playersInfo.players.count, 3)
-       
+
         XCTAssertTrue(map.about.playersInfo.players.prefix(2).allSatisfy({ $0.isPlayableBothByHumanAndAI }))
         XCTAssertTrue(map.about.playersInfo.players[2].isPlayableOnlyByAI)
-        
+
         XCTAssertEqual(map.about.playersInfo.players[0].playableFactions, Faction.playable(in: .restorationOfErathia))
         XCTAssertEqual(map.about.playersInfo.players[1].playableFactions, Faction.playable(in: .restorationOfErathia))
         XCTAssertEqual(map.about.playersInfo.players[2].playableFactions, Faction.playable(in: .restorationOfErathia))
-        
+
         XCTAssertEqual(map.about.victoryLossConditions.victoryConditions.map { $0.kind.stripped }, [.flagAllCreatureDwellings, .standard])
         XCTAssertEqual(map.about.victoryLossConditions.lossConditions.map { $0.kind.stripped }, [.standard])
     }
-    
+
     func test_assert_can_load_map_by_id__overthrowThyNeighbour() throws {
         // Delete any earlier cached maps.
         Map.loader.cache.__deleteMap(by: .overthrowThyNeighbour)
@@ -604,17 +438,17 @@ final class FailingMapTests: XCTestCase {
         XCTAssertEqual(map.about.summary.difficulty, .normal)
         XCTAssertEqual(map.about.summary.size, .medium)
         XCTAssertEqual(map.about.playersInfo.players.count, 3)
-       
+
         XCTAssertTrue(map.about.playersInfo.players.allSatisfy({ $0.isPlayableBothByHumanAndAI }))
-        
+
         XCTAssertEqual(map.about.playersInfo.players[0].playableFactions, [.inferno])
         XCTAssertEqual(map.about.playersInfo.players[1].playableFactions, [.stronghold])
         XCTAssertEqual(map.about.playersInfo.players[2].playableFactions, [.castle])
-        
+
         XCTAssertEqual(map.about.victoryLossConditions.victoryConditions.map { $0.kind.stripped }, [.flagAllMines, .standard])
         XCTAssertEqual(map.about.victoryLossConditions.lossConditions.map { $0.kind.stripped }, [.standard])
     }
-    
+
     func test_assert_can_load_map_by_id__mythAndLegend() throws {
         // Delete any earlier cached maps.
         Map.loader.cache.__deleteMap(by: .mythAndLegend)
@@ -629,10 +463,10 @@ final class FailingMapTests: XCTestCase {
         XCTAssertEqual(map.about.summary.difficulty, .normal)
         XCTAssertEqual(map.about.summary.size, .extraLarge)
         XCTAssertEqual(map.about.playersInfo.players.count, 8)
-       
+
         XCTAssertTrue(map.about.playersInfo.players.prefix(3).allSatisfy({ $0.isPlayableOnlyByAI }))
         XCTAssertTrue(map.about.playersInfo.players.suffix(5).allSatisfy({ $0.isPlayableBothByHumanAndAI }))
-        
+
         XCTAssertEqual(map.about.playersInfo.players[0].playableFactions, [.castle])
         XCTAssertEqual(map.about.playersInfo.players[1].playableFactions, [.dungeon])
         XCTAssertEqual(map.about.playersInfo.players[2].playableFactions, [.inferno])
@@ -641,11 +475,11 @@ final class FailingMapTests: XCTestCase {
         XCTAssertEqual(map.about.playersInfo.players[5].playableFactions, [.dungeon])
         XCTAssertEqual(map.about.playersInfo.players[6].playableFactions, [.tower])
         XCTAssertEqual(map.about.playersInfo.players[7].playableFactions, [.rampart])
-        
+
         XCTAssertEqual(map.about.victoryLossConditions.victoryConditions.map { $0.kind.stripped }, [.acquireSpecificArtifact, .standard])
         XCTAssertEqual(map.about.victoryLossConditions.lossConditions.map { $0.kind.stripped }, [.standard])
     }
-        
+
     func test_assert_can_load_map_by_id__thousandIslands_allies() throws {
         // Delete any earlier cached maps.
         Map.loader.cache.__deleteMap(by: .thousandIslandsAllies)
@@ -660,19 +494,19 @@ final class FailingMapTests: XCTestCase {
         XCTAssertEqual(map.about.summary.difficulty, .normal)
         XCTAssertEqual(map.about.summary.size, .extraLarge)
         XCTAssertEqual(map.about.playersInfo.players.count, 7)
-       
+
         XCTAssertTrue(map.about.playersInfo.players.prefix(5).allSatisfy({ $0.isPlayableBothByHumanAndAI }))
         XCTAssertTrue(map.about.playersInfo.players[5].isPlayableOnlyByAI)
         XCTAssertTrue(map.about.playersInfo.players[6].isPlayableBothByHumanAndAI)
-        
+
         XCTAssertTrue(map.about.playersInfo.players.allSatisfy({ $0.playableFactions == Faction.playable(in: .restorationOfErathia) }))
 
         XCTAssertEqual(map.about.victoryLossConditions.victoryConditions.map { $0.kind.stripped }, [.defeatSpecificHero])
         XCTAssertEqual(map.about.victoryLossConditions.lossConditions.map { $0.kind.stripped }, [.standard])
-        
-        XCTAssertEqual(map.about.teamInfo, [[.red, .blue], [.tan, .green], [.orange, .teal], [.purple]])
+
+        XCTAssertEqual(map.about.teamInfo, [[.playerOne, .playerTwo], [.playerThree, .playerFour], [.playerFive, .playerSeven], [.playerSix]])
     }
-    
+
     func test_assert_can_load_map_by_id__reclamation_allies() throws {
         // Delete any earlier cached maps.
         Map.loader.cache.__deleteMap(by: .reclamationAllies)
@@ -687,18 +521,18 @@ final class FailingMapTests: XCTestCase {
         XCTAssertEqual(map.about.summary.difficulty, .normal)
         XCTAssertEqual(map.about.summary.size, .extraLarge)
         XCTAssertEqual(map.about.playersInfo.players.count, 7)
-       
+
         XCTAssertTrue(map.about.playersInfo.players.allSatisfy({ $0.isPlayableBothByHumanAndAI }))
-        
+
         XCTAssertTrue(map.about.playersInfo.players.allSatisfy({ $0.playableFactions == Faction.playable(in: .shadowOfDeath) }))
 
         XCTAssertEqual(map.about.victoryLossConditions.victoryConditions.map { $0.kind.stripped }, [.standard])
         XCTAssertEqual(map.about.victoryLossConditions.lossConditions.map { $0.kind.stripped }, [.standard])
-        
+
         XCTAssertEqual(map.about.teamInfo.teams?.count, 3)
-        XCTAssertEqual(map.about.teamInfo, [[.red, .tan], [.blue, .teal], [.green, .orange, .purple]])
+        XCTAssertEqual(map.about.teamInfo, [[.playerOne, .playerThree], [.playerTwo, .playerSeven], [.playerFour, .playerFive, .playerSix]])
     }
-    
+
     func test_assert_can_load_map_by_id__peacefulEnding_allies() throws {
         // Delete any earlier cached maps.
         Map.loader.cache.__deleteMap(by: .peacefulEndingAllies)
@@ -713,19 +547,19 @@ final class FailingMapTests: XCTestCase {
         XCTAssertEqual(map.about.summary.difficulty, .hard)
         XCTAssertEqual(map.about.summary.size, .large)
         XCTAssertEqual(map.about.playersInfo.players.count, 6)
-       
+
         XCTAssertTrue(map.about.playersInfo.players.allSatisfy({ $0.isPlayableBothByHumanAndAI }))
         XCTAssertTrue(map.about.playersInfo.players.allSatisfy({ $0.isRandomFaction }))
-        
+
         XCTAssertTrue(map.about.playersInfo.players.allSatisfy({ $0.playableFactions == Faction.playable(in: .shadowOfDeath) }))
 
         XCTAssertEqual(map.about.victoryLossConditions.victoryConditions.map { $0.kind.stripped }, [.standard])
         XCTAssertEqual(map.about.victoryLossConditions.lossConditions.map { $0.kind.stripped }, [.standard])
-        
+
         XCTAssertEqual(map.about.teamInfo.teams?.count, 3)
-        XCTAssertEqual(map.about.teamInfo, [[.red, .purple], [.blue, .orange], [.tan, .green]])
+        XCTAssertEqual(map.about.teamInfo, [[.playerOne, .playerSix], [.playerTwo, .playerFive], [.playerThree, .playerFour]])
     }
-    
+
     func test_assert_can_load_map_by_id__heroesOffMightNotMagic_allies() throws {
         // Delete any earlier cached maps.
         Map.loader.cache.__deleteMap(by: .heroesOfMightNotMagicAllies)
@@ -740,7 +574,7 @@ final class FailingMapTests: XCTestCase {
         XCTAssertEqual(map.about.summary.difficulty, .normal)
         XCTAssertEqual(map.about.summary.size, .medium)
         XCTAssertEqual(map.about.playersInfo.players.count, 6)
-       
+
         XCTAssertTrue(map.about.playersInfo.players.allSatisfy({ $0.isPlayableBothByHumanAndAI }))
         XCTAssertTrue(map.about.playersInfo.players.allSatisfy({ $0.hasRandomHero }))
         XCTAssertFalse(map.about.playersInfo.players[0].isRandomFaction)
@@ -751,7 +585,6 @@ final class FailingMapTests: XCTestCase {
 
         XCTAssertEqual(map.about.victoryLossConditions.victoryConditions.map { $0.kind.stripped }, [.standard])
         XCTAssertEqual(map.about.victoryLossConditions.lossConditions.map { $0.kind.stripped }, [.standard])
-        XCTAssertEqual(map.about.teamInfo, [[.red, .orange], [.blue, .green], [.purple, .teal]])
+        XCTAssertEqual(map.about.teamInfo, [[.playerOne, .playerFive], [.playerTwo, .playerFour], [.playerSix, .playerSeven]])
     }
     */
-}

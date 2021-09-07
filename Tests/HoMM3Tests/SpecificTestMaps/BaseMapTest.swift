@@ -38,6 +38,23 @@ extension BaseMapTest {
         fulfill(object: object)
     }
     
+    
+    func assertObjectRandomTown(
+        expected: Map.Town,
+        actual object: Map.Object,
+        file: StaticString = #file,
+        line: UInt = #line
+    ) {
+        XCTAssertEqual(object.objectID.stripped, .randomTown, file: file, line: line)
+        guard case let .town(actual) = object.kind else {
+            XCTFail("expected random town", file: file, line: line)
+            return
+        }
+        
+        XCTAssertEqual(expected, actual, file: file, line: line)
+        fulfill(object: object)
+    }
+    
     func assertObjectTown(
         expected: Map.Town,
         actual object: Map.Object,
@@ -82,48 +99,6 @@ extension BaseMapTest {
         fulfill(object: object)
     }
     
-//    func assertCreature(
-//        _ creatureID: Creature.ID,
-//        quantity: Quantity = .random,
-//        grows: Bool = true,
-//        disposition: Map.Monster.Disposition = .aggressive,
-//        mayFlee: Bool = true,
-//        message: String? = nil,
-//        treasure: Map.Monster.Bounty? = nil,
-//        _ line: UInt = #line
-//    ) {
-//        assertMonster(
-//            kind: .specific(creatureID: creatureID),
-//            quantity: quantity,
-//            grows: grows,
-//            disposition: disposition,
-//            mayFlee: mayFlee,
-//            message: message,
-//            treasure: treasure, line
-//        )
-//    }
-//    
-//    func assertRandomMonster(
-//        level: Creature.Level? = .any,
-//        quantity: Quantity = .random,
-//        grows: Bool = true,
-//        disposition: Map.Monster.Disposition = .aggressive,
-//        mayFlee: Bool = true,
-//        message: String? = nil,
-//        treasure: Map.Monster.Bounty? = nil,
-//        _ line: UInt = #line
-//    ) {
-//        assertMonster(
-//            kind: .random(level: level),
-//            quantity: quantity,
-//            grows: grows,
-//            disposition: disposition,
-//            mayFlee: mayFlee,
-//            message: message,
-//            treasure: treasure, line
-//        )
-//    }
-    
     func assertObjectSpellScroll(
         expected: Map.SpellScroll,
         actual object: Map.Object,
@@ -156,6 +131,15 @@ extension BaseMapTest {
         line: UInt = #line
     ) {
         assertObjectHeroOfKind(.prison, expected: expected, actual: object, file: file, line: line)
+    }
+    
+    func assertObjectRandomHero(
+        expected: Hero,
+        actual object: Map.Object,
+        file: StaticString = #file,
+        line: UInt = #line
+    ) {
+        assertObjectHeroOfKind(.randomHero, expected: expected, actual: object, file: file, line: line)
     }
     
     func assertObjectHero(
@@ -207,6 +191,10 @@ extension BaseMapTest {
     
     func loadMap(named: String, inspector: Map.Loader.Parser.Inspector) throws {
         let mapID = try idOfMap(named: named)
+        try loadMap(id: mapID, inspector: inspector)
+    }
+    
+    func loadMap(id mapID: Map.ID, inspector: Map.Loader.Parser.Inspector) throws {
         // Delete any earlier cached maps.
         Map.loader.cache.__deleteMap(by: mapID)
         XCTAssertNoThrow(try Map.load(mapID, inspector: inspector))

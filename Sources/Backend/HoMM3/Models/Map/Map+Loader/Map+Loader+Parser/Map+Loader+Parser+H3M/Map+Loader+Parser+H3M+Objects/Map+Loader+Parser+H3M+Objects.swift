@@ -53,7 +53,7 @@ public struct Quest: Hashable {
         case raiseArmy(CreatureStacks)
         case acquireResources(Resources)
         case beHero(Hero.ID)
-        case bePlayer(PlayerColor)
+        case bePlayer(Player)
     }
 }
 
@@ -550,7 +550,7 @@ internal extension Map.Loader.Parser.H3M {
             inspector?.didParseObject(mapObject)
         }
         let detailsAboutObjects = Map.DetailsAboutObjects(objects: objects)
-//        print("objects: \(detailsAboutObjects.objects.suffix(30))")
+        print("objects: \(detailsAboutObjects.objects.suffix(30))")
         return detailsAboutObjects
     }
 }

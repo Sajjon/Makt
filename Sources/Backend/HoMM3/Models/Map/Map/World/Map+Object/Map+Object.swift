@@ -49,7 +49,7 @@ public extension Map {
     }
     
     struct Dwelling: Hashable {
-        public let owner: PlayerColor?
+        public let owner: Player?
         public let id: Object.ID
     }
     
@@ -76,7 +76,7 @@ public extension Map {
     }
     
     struct Garrison: Hashable {
-        let owner: PlayerColor?
+        let owner: Player?
         let creatures: CreatureStacks?
         let areCreaturesRemovable: Bool
     }
@@ -158,7 +158,7 @@ public extension Map {
     }
     
     struct Lighthouse: Hashable {
-        public let owner: PlayerColor?
+        public let owner: Player?
     }
     
     struct SpellScroll: Hashable {

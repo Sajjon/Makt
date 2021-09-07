@@ -37,7 +37,7 @@ public extension Map {
         /// nil if random town
         public let faction: Faction?
         
-        public let owner: PlayerColor?
+        public let owner: Player?
         public let name: String?
         public let garrison: CreatureStacks?
         public let formation: Army.Formation
@@ -75,7 +75,7 @@ public extension Map {
         public init(
             id: ID,
             faction: Faction? = nil,
-            owner: PlayerColor? = nil,
+            owner: Player? = nil,
             name: String? = nil,
             garrison: CreatureStacks? = nil,
             formation: Army.Formation = .spread,
@@ -591,7 +591,7 @@ internal extension Map.Loader.Parser.H3M {
         format: Map.Format,
         position: Position,
         allowedSpellsOnMap: [Spell.ID],
-        availablePlayers: [PlayerColor]
+        availablePlayers: [Player]
     ) throws -> Map.Town {
         try parseTown(
             format: format,
@@ -606,7 +606,7 @@ internal extension Map.Loader.Parser.H3M {
         faction: Faction? = nil,
         position: Position,
         allowedSpellsOnMap: [Spell.ID],
-        availablePlayers: [PlayerColor]
+        availablePlayers: [Player]
     ) throws -> Map.Town {
         
         let townID: Map.Town.ID = try format > .restorationOfErathia ? .fromMapFile(reader.readUInt32()) : .position(position)

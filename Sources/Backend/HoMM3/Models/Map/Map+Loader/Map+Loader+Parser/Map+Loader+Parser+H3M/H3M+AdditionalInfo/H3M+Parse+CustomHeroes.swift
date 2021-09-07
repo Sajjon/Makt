@@ -10,7 +10,7 @@ import Foundation
 // MARK: Parse Custom Heros
 extension Map.Loader.Parser.H3M {
     
-    func parseCustomHeroes(format: Map.Format, availablePlayers: [PlayerColor]) throws -> Map.AdditionalInformation.CustomHeroes? {
+    func parseCustomHeroes(format: Map.Format, availablePlayers: [Player]) throws -> Map.AdditionalInformation.CustomHeroes? {
         guard format >= .shadowOfDeath else { return nil }
         let customHeroes: [Map.AdditionalInformation.CustomHero] = try reader.readUInt8().nTimes {
             let heroIdRaw = try reader.readUInt8()
