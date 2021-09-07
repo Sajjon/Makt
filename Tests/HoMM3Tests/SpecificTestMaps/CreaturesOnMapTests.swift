@@ -50,84 +50,42 @@ final class CreaturesOnMapTests: BaseMapTest {
             onParseObject: { [self] object in
                 
                 func assertMonster(
-                    kind: Map.Monster.Kind,
-                    quantity: Quantity = .random,
-                    grows growsInNumbers: Bool = true,
-                    disposition: Map.Monster.Disposition = .aggressive,
-                    mayFlee mightFlee: Bool = true,
-                    message: String? = nil,
-                    treasure: Map.Monster.Bounty? = nil,
-                    _ line: UInt = #line
+                    expected: Map.Monster,
+                    line: UInt = #line
                 ) {
-                    guard case let .monster(monster) = object.kind else {
-                        XCTFail("Expected monster, but got: \(object.kind)")
-                        return
-                    }
-                    XCTAssertEqual(monster.kind, kind, line: line)
-                    XCTAssertEqual(monster.quantity, quantity, line: line)
-                    
-                    
-                    XCTAssertEqual(monster.growsInNumbers, growsInNumbers, "Expected `growsInNumbers` to be \(growsInNumbers).", line: line)
-                    XCTAssertEqual(monster.mightFlee, mightFlee, "Expected `mightFlee` to be \(mightFlee).", line: line)
-                    XCTAssertEqual(monster.disposition, disposition, line: line)
-                    XCTAssertEqual(monster.bounty, treasure, line: line)
-                    XCTAssertEqual(monster.message, message, line: line)
-                    XCTAssertNotNil(monster.missionIdentifier, line: line)
-                    fullfill(object: object)
+                    assertObjectMonster(expected: expected, actual: object, line: line)
                 }
                 
-                func assertCreature(
-                    _ creatureID: Creature.ID,
-                    quantity: Quantity = .random,
-                    grows: Bool = true,
-                    disposition: Map.Monster.Disposition = .aggressive,
-                    mayFlee: Bool = true,
-                    message: String? = nil,
-                    treasure: Map.Monster.Bounty? = nil,
-                    _ line: UInt = #line
-                ) {
+                func assertMonster(_ creatureID: Creature.ID, missionId: UInt32? = nil, line: UInt = #line) {
                     assertMonster(
-                        kind: .specific(creatureID: creatureID),
-                        quantity: quantity,
-                        grows: grows,
-                        disposition: disposition,
-                        mayFlee: mayFlee,
-                        message: message,
-                        treasure: treasure, line
+                        expected: .init(.specific(creatureID: creatureID), missionIdentifier: missionId),
+                        line: line
                     )
                 }
                 
                 func assertRandomMonster(
                     level: Creature.Level? = .any,
-                    quantity: Quantity = .random,
-                    grows: Bool = true,
+                    missionId: UInt32? = nil,
                     disposition: Map.Monster.Disposition = .aggressive,
-                    mayFlee: Bool = true,
                     message: String? = nil,
-                    treasure: Map.Monster.Bounty? = nil,
-                    _ line: UInt = #line
+                    line: UInt = #line
                 ) {
+                    
                     assertMonster(
-                        kind: .random(level: level),
-                        quantity: quantity,
-                        grows: grows,
-                        disposition: disposition,
-                        mayFlee: mayFlee,
-                        message: message,
-                        treasure: treasure, line
+                        expected: .init(.random(level: level), missionIdentifier: missionId, message: message, disposition: disposition),
+                        line: line
                     )
+                    
                 }
-                
+
                 switch object.position {
                 case at(0, y: 0):
-                    assertCreature(
-                        .dwarf,
+                    assertMonster(expected: .init(
+                        .specific(creatureID: .dwarf),
                         quantity: .specified(1337),
-                        grows: false,
-                        disposition: .savage,
-                        mayFlee: false,
+                        missionIdentifier: 4147361380,
                         message: "Added by Cyon: Dwarfes, 1337 of them and savage! Also never flees. Rewarded with Shackles of War artifact and 40 wood, 50 mercury, 60 ore, 70 sulfur, 80 crystal, 90 gems and 100 gold. Make sure 100 gold is not counted as just 1 gold. Parsed number should be multiplied by one hundred I think.",
-                        treasure: .init(
+                        bounty: .init(
                             artifactID: .shacklesOfWar,
                             resources: .init(
                                 resources: [
@@ -140,249 +98,279 @@ final class CreaturesOnMapTests: BaseMapTest {
                                     .init(kind: .gold, amount: 100),
                                 ]
                             )
-                        )
+                        ),
+                        disposition: .savage,
+                        mightFlee: false,
+                        growsInNumbers: false
+                    )
                     )
                 case at(1, y: 1):
-                    assertCreature(.pikeman)
+                    assertMonster(.pikeman, missionId: 372972907)
                 case at(3, y: 1):
-                    assertCreature(.halberdier)
+                    assertMonster(.halberdier, missionId: 372972908)
                 case at(5, y: 1):
-                    assertCreature(.archer)
+                    assertMonster(.archer, missionId: 372972909)
                 case at(7, y: 1):
-                    assertCreature(.marksman)
+                    assertMonster(.marksman, missionId: 372972910)
                 case at(9, y: 1):
-                    assertCreature(.griffin)
+                    assertMonster(.griffin, missionId: 372972911)
                 case at(11, y: 1):
-                    assertCreature(.royalGriffin)
+                    assertMonster(.royalGriffin, missionId: 372972912)
                 case at(13, y: 1):
-                    assertCreature(.swordsman)
+                    assertMonster(.swordsman, missionId: 372972913)
                 case at(15, y: 1):
-                    assertCreature(.crusader)
+                    assertMonster(.crusader, missionId: 372972914)
                 case at(17, y: 1):
-                    assertCreature(.monk)
+                    assertMonster(.monk, missionId: 372972915)
                 case at(19, y: 1):
-                    assertCreature(.zealot)
+                    assertMonster(.zealot, missionId: 372972916)
                 case at(21, y: 1):
-                    assertCreature(.cavalier)
+                    assertMonster(.cavalier, missionId: 372972917)
                 case at(23, y: 1):
-                    assertCreature(.champion)
+                    assertMonster(.champion, missionId: 372972918)
                 case at(25, y: 1):
-                    assertCreature(.angel)
+                    assertMonster(.angel, missionId: 372972919)
                 case at(27, y: 1):
-                    assertCreature(.archangel)
+                    assertMonster(.archangel, missionId: 372972920)
                 case at(1, y: 3):
-                    assertCreature(.centaur)
+                    assertMonster(.centaur, missionId: 372972921)
                 case at(3, y: 3):
-                    assertCreature(.centaurCaptain)
+                    assertMonster(.centaurCaptain, missionId: 372972922)
                 case at(5, y: 3):
-                    assertCreature(.dwarf)
+                    assertMonster(.dwarf, missionId: 372972923)
                 case at(7, y: 3):
-                    assertCreature(.battleDwarf)
+                    assertMonster(.battleDwarf, missionId: 372972924)
                 case at(9, y: 3):
-                    assertCreature(.woodElf)
+                    assertMonster(.woodElf, missionId: 372972925)
                 case at(11, y: 3):
-                    assertCreature(.grandElf)
+                    assertMonster(.grandElf, missionId: 372972926)
                 case at(13, y: 3):
-                    assertCreature(.pegasus)
+                    assertMonster(.pegasus, missionId: 372972927)
                 case at(15, y: 3):
-                    assertCreature(.silverPegasus)
+                    assertMonster(.silverPegasus, missionId: 372972928)
                 case at(17, y: 3):
-                    assertCreature(.dendroidGuard)
+                    assertMonster(.dendroidGuard, missionId: 372972929)
                 case at(19, y: 3):
-                    assertCreature(.dendroidSoldier)
+                    assertMonster(.dendroidSoldier, missionId: 372972930)
                 case at(21, y: 3):
-                    assertCreature(.unicorn)
+                    assertMonster(.unicorn, missionId: 372972932)
                 case at(23, y: 3):
-                    assertCreature(.warUnicorn)
+                    assertMonster(.warUnicorn, missionId: 372972933)
                 case at(25, y: 3):
-                    assertCreature(.greenDragon)
+                    assertMonster(.greenDragon, missionId: 372972934)
                 case at(27, y: 3):
-                    assertCreature(.goldDragon)
-                    
+                    assertMonster(.goldDragon, missionId: 372972935)
+
                 case at(1, y: 5):
-                    assertCreature(.gremlin)
+                    assertMonster(.gremlin, missionId: 372972936)
                 case at(3, y: 5):
-                    assertCreature(.masterGremlin)
+                    assertMonster(.masterGremlin, missionId: 372972937)
                 case at(5, y: 5):
-                    assertCreature(.stoneGargoyle)
+                    assertMonster(.stoneGargoyle, missionId: 372972938)
                 case at(7, y: 5):
-                    assertCreature(.obsidianGargoyle)
+                    assertMonster(.obsidianGargoyle, missionId: 372972939)
                 case at(9, y: 5):
-                    assertCreature(.stoneGolem)
+                    assertMonster(.stoneGolem, missionId: 372972940)
                 case at(11, y: 5):
-                    assertCreature(.ironGolem)
+                    assertMonster(.ironGolem, missionId: 372972941)
                 case at(13, y: 5):
-                    assertCreature(.mage)
+                    assertMonster(.mage, missionId: 372972942)
                 case at(15, y: 5):
-                    assertCreature(.archMage)
+                    assertMonster(.archMage, missionId: 372972943)
                 case at(17, y: 5):
-                    assertCreature(.genie)
+                    assertMonster(.genie, missionId: 372972944)
                 case at(19, y: 5):
-                    assertCreature(.masterGenie)
+                    assertMonster(.masterGenie, missionId: 372972945)
                 case at(21, y: 5):
-                    assertCreature(.naga)
+                    assertMonster(.naga, missionId: 372972946)
                 case at(23, y: 5):
-                    assertCreature(.nagaQueen)
+                    assertMonster(.nagaQueen, missionId: 372972947)
                 case at(25, y: 5):
-                    assertCreature(.giant)
+                    assertMonster(.giant, missionId: 372972948)
                 case at(27, y: 5):
-                    assertCreature(.titan)
+                    assertMonster(.titan, missionId: 372972949)
                     
                  
                    
                 case at(1, y: 7):
-                    assertCreature(.imp)
+                    assertMonster(.imp, missionId: 372972950)
                 case at(3, y: 7):
-                    assertCreature(.familiar)
+                    assertMonster(.familiar, missionId: 372972951)
                 case at(5, y: 7):
-                    assertCreature(.gog)
+                    assertMonster(.gog, missionId: 372972952)
                 case at(7, y: 7):
-                    assertCreature(.magog)
+                    assertMonster(.magog, missionId: 372972953)
                 case at(9, y: 7):
-                    assertCreature(.hellHound)
+                    assertMonster(.hellHound, missionId: 372972954)
                 case at(11, y: 7):
-                    assertCreature(.cerberus)
+                    assertMonster(.cerberus, missionId: 372972955)
                 case at(13, y: 7):
-                    assertCreature(.demon)
+                    assertMonster(.demon, missionId: 372972956)
                 case at(15, y: 7):
-                    assertCreature(.hornedDemon)
+                    assertMonster(.hornedDemon, missionId: 372972957)
                 case at(17, y: 7):
-                    assertCreature(.pitFiend)
+                    assertMonster(.pitFiend, missionId: 372972958)
                 case at(19, y: 7):
-                    assertCreature(.pitLord)
+                    assertMonster(.pitLord, missionId: 372972959)
                 case at(21, y: 7):
-                    assertCreature(.efreeti)
+                    assertMonster(.efreeti, missionId: 372972960)
                 case at(23, y: 7):
-                    assertCreature(.efreetSultan)
+                    assertMonster(.efreetSultan, missionId: 372972961)
                 case at(25, y: 7):
-                    assertCreature(.devil)
+                    assertMonster(.devil, missionId: 372972962)
                 case at(27, y: 7):
-                    assertCreature(.archDevil)
+                    assertMonster(.archDevil, missionId: 372972963)
                     
                    
                 case at(1, y: 17):
-                    assertCreature(.pixie)
+                    assertMonster(.pixie, missionId: 372973020)
                 case at(3, y: 17):
-                    assertCreature(.sprite)
+                    assertMonster(.sprite, missionId: 372973021)
                 case at(5, y: 17):
-                    assertCreature(.waterElemental)
+                    assertMonster(.waterElemental, missionId: 372973022)
                 case at(7, y: 17):
-                    assertCreature(.iceElemental)
+                    assertMonster(.iceElemental, missionId: 372973023)
                 case at(9, y: 17):
-                    assertCreature(.earthElemental)
+                    assertMonster(.earthElemental, missionId: 372973024)
                 case at(11, y: 17):
-                    assertCreature(.magmaElemental)
+                    assertMonster(.magmaElemental, missionId: 372973025)
                 case at(13, y: 17):
-                    assertCreature(.airElemental)
+                    assertMonster(.airElemental, missionId: 372973026)
                 case at(15, y: 17):
-                    assertCreature(.stormElemental)
+                    assertMonster(.stormElemental, missionId: 372973027)
                 case at(17, y: 17):
-                    assertCreature(.fireElemental)
+                    assertMonster(.fireElemental, missionId: 372973028)
                 case at(19, y: 17):
-                    assertCreature(.energyElemental)
+                    assertMonster(.energyElemental, missionId: 372973029)
                 case at(21, y: 17):
-                    assertCreature(.psychicElemental)
+                    assertMonster(.psychicElemental, missionId: 372973030)
                 case at(23, y: 17):
-                    assertCreature(.magicElemental)
+                    assertMonster(.magicElemental, missionId: 372973031)
                 case at(25, y: 17):
-                    assertCreature(.firebird)
+                    assertMonster(.firebird, missionId: 372973032)
                 case at(27, y: 17):
-                    assertCreature(.phoenix)
+                    assertMonster(.phoenix, missionId: 372973033)
                   
                     
                 case at(1, y: 19):
-                    assertCreature(.goldGolem)
+                    assertMonster(.goldGolem, missionId: 372973034)
                 case at(3, y: 19):
-                    assertCreature(.diamondGolem)
+                    assertMonster(.diamondGolem, missionId: 372973035)
                 case at(5, y: 19):
-                    assertCreature(.azureDragon)
+                    assertMonster(.azureDragon, missionId: 372973036)
                 case at(7, y: 19):
-                    assertCreature(.crystalDragon)
+                    assertMonster(.crystalDragon, missionId: 372973037)
                 case at(9, y: 19):
-                    assertCreature(.faerieDragon)
+                    assertMonster(.faerieDragon, missionId: 372973038)
                 case at(11, y: 19):
-                    assertCreature(.rustDragon)
+                    assertMonster(.rustDragon, missionId: 372973039)
                 case at(13, y: 19):
-                    assertCreature(.enchanter)
+                    assertMonster(.enchanter, missionId: 372973040)
                 case at(15, y: 19):
-                    assertCreature(.sharpshooter)
+                    assertMonster(.sharpshooter, missionId: 372973041)
                 case at(17, y: 19):
-                    assertCreature(.halfling)
+                    assertMonster(.halfling, missionId: 372973042)
                 case at(19, y: 19):
-                    assertCreature(.peasant)
+                    assertMonster(.peasant, missionId: 372973043)
                 case at(21, y: 19):
-                    assertCreature(.boar)
+                    assertMonster(.boar, missionId: 372973044)
                 case at(23, y: 19):
-                    assertCreature(.mummy)
+                    assertMonster(.mummy, missionId: 372973045)
                 case at(25, y: 19):
-                    assertCreature(.nomad)
+                    assertMonster(.nomad, missionId: 372973046)
                 case at(27, y: 19):
-                    assertCreature(.rogue)
+                    assertMonster(.rogue, missionId: 372973047)
                 case at(29, y: 19):
-                    assertCreature(.troll)
+                    assertMonster(.troll, missionId: 372973048)
                
                 case at(1, y: 21):
-                    assertRandomMonster(level: .any)
+                    assertRandomMonster(level: .any, missionId: 372973049)
                 case at(3, y: 21):
-                    assertRandomMonster(level: .one)
+                    assertRandomMonster(level: .one, missionId: 372973050)
                 case at(5, y: 21):
-                    assertRandomMonster(level: .two)
+                    assertRandomMonster(level: .two, missionId: 372973051)
                 case at(7, y: 21):
-                    assertRandomMonster(level: .three)
+                    assertRandomMonster(level: .three, missionId: 372973052)
                 case at(9, y: 21):
-                    assertRandomMonster(level: .four)
+                    assertRandomMonster(level: .four, missionId: 372973053)
                 case at(11, y: 21):
-                    assertRandomMonster(level: .five)
+                    assertRandomMonster(level: .five, missionId: 372973054)
                 case at(13, y: 21):
-                    assertRandomMonster(level: .six)
+                    assertRandomMonster(level: .six, missionId: 372973055)
                 case at(15, y: 21):
-                    assertRandomMonster(level: .seven)
+                    assertRandomMonster(level: .seven, missionId: 372973056)
                     
                 case at(1, y: 25):
-                    assertRandomMonster(disposition: .compliant, message: "compliant")
+                    assertRandomMonster(missionId: 372973057, disposition: .compliant, message: "compliant")
                 case at(3, y: 25):
-                    assertRandomMonster(disposition: .friendly, message: "friendly")
+                    assertRandomMonster(missionId: 372973058, disposition: .friendly, message: "friendly")
                 case at(5, y: 25):
-                    assertRandomMonster(disposition: .aggressive, message: "aggressive")
+                    assertRandomMonster(missionId: 372973059, disposition: .aggressive, message: "aggressive")
                 case at(7, y: 25):
-                    assertRandomMonster(disposition: .hostile, message: "hostile")
+                    assertRandomMonster(missionId: 372973060, disposition: .hostile, message: "hostile")
                 case at(9, y: 25):
-                    assertRandomMonster(disposition: .savage, message: "savage")
+                    assertRandomMonster(missionId: 372973061, disposition: .savage, message: "savage")
                 case at(15, y: 25):
-                    assertRandomMonster(mayFlee: false, message: "never flees")
+                
+                    assertMonster(
+                        expected: .init(
+                            .random(level: .any),
+                            missionIdentifier: 372973062,
+                            message: "never flees",
+                            mightFlee: false
+                        )
+                    )
+                
                 case at(18, y: 25):
-                    assertRandomMonster(quantity: .specified(10), grows: false, message: "qty")
+                    assertMonster(
+                        expected: .init(
+                            .random(level: .any),
+                            quantity: .specified(10),
+                            missionIdentifier: 372973063,
+                            message: "qty",
+                            growsInNumbers: false
+                        )
+                    )
                     
                 case at(22, y: 25):
-                    assertRandomMonster(
-                        message: "treasure",
-                        treasure: .init(
-                            artifactID: .angelWings,
-                            resources: .init(
-                                resources: [
-                                    .init(kind: .wood, amount: 1),
-                                    .init(kind: .mercury, amount: 2),
-                                    .init(kind: .ore, amount: 3),
-                                    .init(kind: .sulfur, amount: 4),
-                                    .init(kind: .crystal, amount: 5),
-                                    .init(kind: .gems, amount: 6),
-                                    .init(kind: .gold, amount: 10),
-                                ]
-                            )))
+                    assertMonster(
+                        expected: .init(
+                            .random(level: .any),
+                            missionIdentifier: 372973064,
+                            message: "treasure",
+                            bounty: .init(
+                                artifactID: .angelWings,
+                                resources: .init(
+                                    resources: [
+                                        .init(kind: .wood, amount: 1),
+                                        .init(kind: .mercury, amount: 2),
+                                        .init(kind: .ore, amount: 3),
+                                        .init(kind: .sulfur, amount: 4),
+                                        .init(kind: .crystal, amount: 5),
+                                        .init(kind: .gems, amount: 6),
+                                        .init(kind: .gold, amount: 10),
+                                    ]
+                                )
+                            )
+                        )
+                        )
                     
                 case at(35, y: 35):
-                    assertCreature(
-                        .battleDwarf,
-                        quantity: .specified(314),
-                        disposition: .compliant,
-                        message: "Added by Cyon: 314 complieant battle dwarves offering the artifact Speculum and 31415 gold.",
-                        treasure: .init(
-                            artifactID: .speculum,
-                            resources: .init(
-                                resources: [
-                                    .init(kind: .gold, amount: 31415),
-                                ]
-                            )
+                    assertMonster(
+                        expected: .init(
+                            .specific(creatureID: .battleDwarf),
+                            quantity: .specified(314),
+                            missionIdentifier: 2459446112,
+                            message: "Added by Cyon: 314 complieant battle dwarves offering the artifact Speculum and 31415 gold.",
+                            bounty: .init(
+                                artifactID: .speculum,
+                                resources: .init(
+                                    resources: [
+                                        .init(kind: .gold, amount: 31415),
+                                    ]
+                                )
+                            ),
+                            disposition: .compliant
                         )
                     )
                 default: break

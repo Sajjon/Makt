@@ -22,6 +22,152 @@ class BaseMapTest: XCTestCase {
 }
 
 extension BaseMapTest {
+    
+    func assertObjectEvent(
+        expected: Map.GeoEvent,
+        actual object: Map.Object,
+        file: StaticString = #file,
+        line: UInt = #line
+    ) {
+        XCTAssertEqual(object.objectID, .event, file: file, line: line)
+        guard case let .geoEvent(actual) = object.kind else {
+            XCTFail("expected event")
+            return
+        }
+        XCTAssertEqual(expected, actual, file: file, line: line)
+        fullfill(object: object)
+    }
+    
+    func assertObjectTown(
+        expected: Map.Town,
+        actual object: Map.Object,
+        file: StaticString = #file,
+        line: UInt = #line
+    ) {
+        XCTAssertEqual(object.objectID, .town(.castle), file: file, line: line)
+        guard case let .town(actual) = object.kind else {
+            XCTFail("expected town", file: file, line: line)
+            return
+        }
+        
+        XCTAssertEqual(expected, actual, file: file, line: line)
+        fullfill(object: object)
+    }
+    
+    func assertObjectArtifact(
+        expected: Map.GuardedArtifact,
+        actual object: Map.Object,
+        file: StaticString = #file,
+        line: UInt = #line
+    ) {
+        guard case let .artifact(actual) = object.kind else {
+            XCTFail("Expected artifact, but got: \(object.kind)", file: file, line: line)
+            return
+        }
+        XCTAssertEqual(actual, expected, file: file, line: line)
+        fullfill(object: object)
+    }
+    
+    func assertObjectMonster(
+        expected: Map.Monster,
+        actual object: Map.Object,
+        file: StaticString = #file,
+        line: UInt = #line
+    ) {
+        guard case let .monster(actual) = object.kind else {
+            XCTFail("Expected monster, but got: \(object.kind)", file: file, line: line)
+            return
+        }
+        XCTAssertEqual(actual, expected, file: file, line: line)
+        fullfill(object: object)
+    }
+    
+//    func assertCreature(
+//        _ creatureID: Creature.ID,
+//        quantity: Quantity = .random,
+//        grows: Bool = true,
+//        disposition: Map.Monster.Disposition = .aggressive,
+//        mayFlee: Bool = true,
+//        message: String? = nil,
+//        treasure: Map.Monster.Bounty? = nil,
+//        _ line: UInt = #line
+//    ) {
+//        assertMonster(
+//            kind: .specific(creatureID: creatureID),
+//            quantity: quantity,
+//            grows: grows,
+//            disposition: disposition,
+//            mayFlee: mayFlee,
+//            message: message,
+//            treasure: treasure, line
+//        )
+//    }
+//    
+//    func assertRandomMonster(
+//        level: Creature.Level? = .any,
+//        quantity: Quantity = .random,
+//        grows: Bool = true,
+//        disposition: Map.Monster.Disposition = .aggressive,
+//        mayFlee: Bool = true,
+//        message: String? = nil,
+//        treasure: Map.Monster.Bounty? = nil,
+//        _ line: UInt = #line
+//    ) {
+//        assertMonster(
+//            kind: .random(level: level),
+//            quantity: quantity,
+//            grows: grows,
+//            disposition: disposition,
+//            mayFlee: mayFlee,
+//            message: message,
+//            treasure: treasure, line
+//        )
+//    }
+    
+    func assertObjectSpellScroll(
+        expected: Map.SpellScroll,
+        actual object: Map.Object,
+        file: StaticString = #file,
+        line: UInt = #line
+    ) {
+        guard case let .spellScroll(actual) = object.kind else {
+            XCTFail("Expected spellScroll, but got: \(object.kind)", file: file, line: line)
+            return
+        }
+        XCTAssertEqual(actual, expected, file: file, line: line)
+        fullfill(object: object)
+    }
+
+    
+    private func assertObjectHeroOfKind(_ objectKind: Map.Object.ID, expected: Hero, actual object: Map.Object, file: StaticString = #file, line: UInt = #line) {
+        XCTAssertEqual(object.objectID, objectKind, file: file, line: line)
+        guard case let .hero(actual) = object.kind else {
+            XCTFail("expected hero", file: file, line: line)
+            return
+        }
+        XCTAssertEqual(expected, actual, file: file, line: line)
+        fullfill(object: object)
+    }
+    
+    func assertObjectPrisonHero(
+        expected: Hero,
+        actual object: Map.Object,
+        file: StaticString = #file,
+        line: UInt = #line
+    ) {
+        assertObjectHeroOfKind(.prison, expected: expected, actual: object, file: file, line: line)
+    }
+    
+    func assertObjectHero(
+        `class`: Hero.Class,
+        expected: Hero,
+        actual object: Map.Object,
+        file: StaticString = #file,
+        line: UInt = #line
+    ) {
+        assertObjectHeroOfKind(.hero(`class`), expected: expected, actual: object, file: file, line: line)
+    }
+    
     func at(_ x: Int32, y: Int32, inUnderworld: Bool = false) -> Position {
         let position = Position(x: x, y: y, inUnderworld: inUnderworld)
         if !fulfilled.contains(position) && !expectedPositions.contains(where: { $0.key == position }) {

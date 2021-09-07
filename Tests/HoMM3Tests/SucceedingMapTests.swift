@@ -239,38 +239,16 @@ final class MapTests: BaseMapTest {
             playersInfoInspector: playersInfoInspector,
             additionalInformationInspector: additionalInfoInspector,
             onParseObject: { [self] object in
-                func assertEvent(expected: Map.GeoEvent, line: UInt = #line) {
-                    XCTAssertEqual(object.objectID, .event)
-                    guard case let .geoEvent(actual) = object.kind else {
-                        XCTFail("expected event")
-                        return
-                    }
-                    XCTAssertEqual(expected, actual, line: line)
-                    fullfill(object: object)
-                }
-                
+               
                 func assertTown(expected: Map.Town, line: UInt = #line) {
-                    XCTAssertEqual(object.objectID, .town(.castle))
-                    guard case let .town(actual) = object.kind else {
-                        XCTFail("expected town")
-                        return
-                    }
-//                    XCTAssertEqual(expected, actual, line: line)
-                    XCTAssertEqual(expected.name, actual.name, line: line)
-                    XCTAssertEqual(expected.owner, actual.owner, line: line)
-                    XCTAssertEqual(expected.faction, actual.faction, line: line)
-                    XCTAssertEqual(expected.buildings, actual.buildings, line: line)
-                    XCTAssertNil(actual.spells.obligatory, line: line)
-                    XCTArraysEqual(expected.spells.possible, actual.spells.possible, line: line)
-                    XCTAssertEqual(expected.garrison, actual.garrison, line: line)
-                    fullfill(object: object)
+                    assertObjectTown(expected: expected, actual: object, line: line)
                 }
                 
                 switch object.position {
                 case at(72, y: 66):
                     assertTown(
                         expected: .init(
-                            id: .fromMapFile(1234),
+                            id: .position(.init(x: 72, y: 66, inUnderworld: false)),
                             faction: .castle,
                             owner: .blue,
                             buildings: .init(
@@ -487,31 +465,16 @@ final class MapTests: BaseMapTest {
             },
             onParseObject: { [self] object in
                 func assertEvent(expected: Map.GeoEvent, line: UInt = #line) {
-                    XCTAssertEqual(object.objectID, .event)
-                    guard case let .geoEvent(actual) = object.kind else {
-                        XCTFail("expected event")
-                        return
-                    }
-                    XCTAssertEqual(expected, actual, line: line)
-                    fullfill(object: object)
+                    assertObjectEvent(expected: expected, actual: object, line: line)
                 }
                 
-                func assertHeroOfKind(_ objectKind: Map.Object.ID, expected: Hero, line: UInt = #line) {
-                    XCTAssertEqual(object.objectID, objectKind)
-                    guard case let .hero(actual) = object.kind else {
-                        XCTFail("expected hero")
-                        return
-                    }
-                    XCTAssertEqual(expected, actual, line: line)
-                    fullfill(object: object)
-                }
                 
                 func assertPrisonHero(expected: Hero, line: UInt = #line) {
-                    assertHeroOfKind(.prison, expected: expected, line: line)
+                    assertObjectPrisonHero(expected: expected, actual: object, line: line)
                 }
                 
                 func assertHero(`class`: Hero.Class, expected: Hero, line: UInt = #line) {
-                    assertHeroOfKind(.hero(`class`), expected: expected, line: line)
+                    assertObjectHero(class: `class`, expected: expected, actual: object, line: line)
                 }
                 
                 switch object.position {
@@ -537,7 +500,7 @@ final class MapTests: BaseMapTest {
                             )
                         )
                     } else if case let .resource(resource) = object.kind {
-                        XCTAssertEqual(resource.resource.kind, .ore)
+                        XCTAssertEqual(resource.resourceKind, .ore)
                     } else {
                         XCTFail("Unexpected object")
                     }

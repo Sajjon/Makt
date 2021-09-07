@@ -36,6 +36,16 @@ public extension Map {
             self.message = message
             self.guards = guards
         }
+        
+        static func specific(id artifactID: Artifact.ID, message: String? = nil, guards: CreatureStacks? = nil) -> Self {
+            .init(.specific(id: artifactID), message: message, guards: guards)
+        }
+        static func random(`class`: Artifact.Class?, message: String? = nil, guards: CreatureStacks? = nil) -> Self {
+            .init(.random(class: `class`), message: message, guards: guards)
+        }
+        static func scroll(spell spellID: Spell.ID, message: String? = nil, guards: CreatureStacks? = nil) -> Self {
+            .init(.scroll(spell: spellID), message: message, guards: guards)
+        }
     }
     
     struct Dwelling: Hashable {
@@ -43,10 +53,26 @@ public extension Map {
         public let id: Object.ID
     }
     
-    struct GuardedResource: Hashable {
+    struct GuardedResource: Hashable, CustomDebugStringConvertible {
         public let message: String?
         public let guards: CreatureStacks?
-        public let resource: Resource
+        public let resourceKind: Resource.Kind
+        public let resourceQuantity: Quantity
+        
+        public var debugDescription: String {
+            let resourceString: String = {
+                switch resourceQuantity {
+                case .random: return "random amount of \(resourceKind)"
+                case .specified(let quantity): return "\(quantity) \(resourceKind)"
+                }
+            }()
+            let stringOptionals: [String?] = [
+                resourceString,
+                message.map { "message: \($0)" },
+                guards.map { "guards: \($0)" }
+            ]
+            return stringOptionals.filterNils().joined(separator: "\n")
+        }
     }
     
     struct Garrison: Hashable {
@@ -59,6 +85,25 @@ public extension Map {
     struct Grail: Hashable {
         /// Map Editor "select allowable placement radius"
         public let radius: UInt32
+    }
+}
+
+public protocol OptionalType {
+    associatedtype Wrapped
+    var wrapped: Wrapped? { get }
+}
+extension Optional: OptionalType {
+    public var wrapped: Wrapped? {
+        switch self {
+        case .none: return nil
+        case .some(let wrapped): return wrapped
+        }
+        
+    }
+}
+public extension Sequence where Element: OptionalType {
+    func filterNils() -> [Element.Wrapped] {
+        compactMap({ $0.wrapped })
     }
 }
 
@@ -153,13 +198,17 @@ public extension Map {
         
         public init(
             _ kind: Kind,
-            quantity: Quantity,
+            quantity: Quantity = .random,
             missionIdentifier: UInt32? = nil,
             message: String? = nil,
             bounty: Bounty? = nil,
             disposition: Disposition = .aggressive,
-            mightFlee: Bool = false,
-            growsInNumbers: Bool = false
+            
+            // Map Editor default is `true`
+            mightFlee: Bool = true,
+            
+            // Map Editor default is `true`
+            growsInNumbers: Bool = true
         ) {
             self.kind = kind
             self.quantity = quantity

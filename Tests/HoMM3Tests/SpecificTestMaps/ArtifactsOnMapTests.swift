@@ -53,122 +53,64 @@ final class ArtifactsOnMapTests: BaseMapTest {
                     XCTAssertEqual(object.kind, .grail(.init(radius: 5)))
                     fullfill(object: object)
                 } else {
-                    func assertArtifact(
-                        id artifactID: Artifact.ID,
-                        msg message: String? = nil,
-                        stacks maybeStacks: [(CreatureStacks.Slot, CreatureStack)]? = nil,
-                        line: UInt = #line
-                    ) {
-                        guard case let .artifact(guardedArtifact) = object.kind else {
-                            XCTFail("Expected artifact, but got: \(object.kind)")
-                            return
-                        }
-                        XCTAssertEqual(guardedArtifact.message, message, line: line)
-                        if let stacks = maybeStacks {
-                            let expectedCreatureStacks = CreatureStacks(stacksAtSlots: stacks)
-                            XCTAssertEqual(guardedArtifact.guards, expectedCreatureStacks, line: line)
-                        } else {
-                            XCTAssertNil(guardedArtifact.guards, line: line)
-                        }
-
-                        let artifact = guardedArtifact.artifact
-                        guard case let .specific(artifactID) = artifact.kind else {
-                            XCTFail("Expected specific artifact id, but got: \(artifact.kind)")
-                            return
-                        }
-                        XCTAssertEqual(artifactID, artifactID, line: line)
-                        fullfill(object: object)
+                    
+                    func assertArtifact(expected: Map.GuardedArtifact, line: UInt = #line) {
+                        assertObjectArtifact(expected: expected, actual: object, line: line)
                     }
                     
-                    func assertRandomArtifact(
-                        `class` randomArtifactClass: Artifact.Class?,
-                        msg message: String? = nil,
-                        stacks maybeStacks: [(CreatureStacks.Slot, CreatureStack)]? = nil,
-                        line: UInt = #line
-                    ) {
-                        if let artifactClass = randomArtifactClass {
-                            switch artifactClass {
-                            case .major:  XCTAssertEqual(object.attributes.objectID, .randomMajorArtifact)
-                            case .relic:  XCTAssertEqual(object.attributes.objectID, .randomRelic)
-                            case .minor:  XCTAssertEqual(object.attributes.objectID, .randomMinorArtifact)
-                            case .treasure:  XCTAssertEqual(object.attributes.objectID, .randomTreasureArtifact)
-                            }
-                           
-                        } else {
-                            XCTAssertEqual(object.attributes.objectID, .randomArtifact)
-                        }
-                        
-                        guard case let .artifact(guardedArtifact) = object.kind else {
-                            XCTFail("Expected artifact, but got: \(object.kind)")
-                            return
-                        }
-                        XCTAssertEqual(guardedArtifact.message, message, line: line)
-                        if let stacks = maybeStacks {
-                            let expectedCreatureStacks = CreatureStacks(stacksAtSlots: stacks)
-                            XCTAssertEqual(guardedArtifact.guards, expectedCreatureStacks, line: line)
-                        } else {
-                            XCTAssertNil(guardedArtifact.guards, line: line)
-                        }
-
-                        let artifact = guardedArtifact.artifact
-                        guard case let .random(maybeRandomArtifactClass) = artifact.kind else {
-                            XCTFail("Expected random artifact, but got: \(artifact.kind)")
-                            return
-                        }
-                        XCTAssertEqual(randomArtifactClass, maybeRandomArtifactClass, line: line)
-                        fullfill(object: object)
+                    func assertSpellScroll(expected: Map.SpellScroll, line: UInt = #line) {
+                        assertObjectSpellScroll(expected: expected, actual: object, line: line)
                     }
-                    
+
                     switch object.position {
                     case at(1, y: 0):
-                        XCTAssertSpellScroll(object) { spellScroll in
-                            XCTAssertEqual(spellScroll, .init(id: .slow, message: "spell scroll slow"))
-                        }
-                        fullfill(object: object)
+                        assertSpellScroll(expected: .init(id: .slow, message: "spell scroll slow"))
                     case at(3, y: 0):
-                        XCTAssertSpellScroll(object) { spellScroll in
-                            XCTAssertEqual(
-                                spellScroll,
-                                .init(
-                                    id: .visions,
-                                    message: "spellscrol guardians",
-                                    guardians: .init(creatureStackAtSlot: [
-                                        .one: .init(creatureID: .griffin, quantity: 1),
-                                        .six: .init(creatureID: .swordsman, quantity: 1)
-                                    ])
+                        assertSpellScroll(expected: .init(
+                            id: .visions,
+                            message: "spellscrol guardians",
+                            guardians: .init(creatureStackAtSlot: [
+                                .one: .init(creatureID: .griffin, quantity: 1),
+                                .six: .init(creatureID: .swordsman, quantity: 1)
+                            ])
+                        ))
+                    case at(1, y: 1):
+                        assertArtifact(expected: .specific(id: .centaurAxe, message: "centaurus axe"))
+                    case at(1, y: 2):
+                        assertArtifact(expected: .specific(id: .shieldOfTheDwarvenLords, message: "shield dwarven lords"))
+                    case at(1, y: 3):
+                        assertArtifact(expected: .specific(id: .helmOfTheAlabasterUnicorn, message: "helm unicorn"))
+                    case at(1, y: 4):
+                        assertArtifact(expected: .specific(id: .breastplateOfPetrifiedWood, message: "breastplate of pertified wood"))
+                    case at(1, y: 5):
+                        assertArtifact(expected: .specific(id: .sandalsOfTheSaint, message: "sandals saint"))
+                    case at(1, y: 6):
+                        assertArtifact(expected: .specific(id: .celestialNecklaceOfBliss, message: "necklace bliss"))
+                    case at(1, y: 7):
+                        assertArtifact(expected: .specific(id: .quietEyeOfTheDragon, message: "eye dragon"))
+                    case at(1, y: 12):
+                        assertArtifact(expected: .specific(id: .cloakOfTheUndeadKing, message: "cloak undead king"))
+                    case at(1, y: 14):
+                        assertArtifact(
+                            expected: .random(
+                                class: Artifact.Class.any,
+                                message: "random",
+                                guards: .init(
+                                    stacksAtSlots: [
+                                        (CreatureStacks.Slot.one, .init(creatureID: .archer, quantity: 1)),
+                                        (CreatureStacks.Slot.seven, .init(creatureID: .archer, quantity: 1))
+                                    ]
                                 )
                             )
-                        }
-                        fullfill(object: object)
-                    case at(1, y: 1):
-                        assertArtifact(id: .centaurAxe, msg: "centaurus axe")
-                    case at(1, y: 2):
-                        assertArtifact(id: .shieldOfTheDwarvenLords, msg: "shield dwarven lords")
-                    case at(1, y: 3):
-                        assertArtifact(id: .helmOfTheAlabasterUnicorn, msg: "helm unicorn")
-                    case at(1, y: 4):
-                        assertArtifact(id: .breastplateOfPetrifiedWood, msg: "breastplate of pertified wood")
-                    case at(1, y: 5):
-                        assertArtifact(id: .sandalsOfTheSaint, msg: "sandals saint")
-                    case at(1, y: 6):
-                        assertArtifact(id: .celestialNecklaceOfBliss, msg: "necklace bliss")
-                    case at(1, y: 7):
-                        assertArtifact(id: .quietEyeOfTheDragon, msg: "eye dragon")
-                    case at(1, y: 12):
-                        assertArtifact(id: .cloakOfTheUndeadKing, msg: "cloak undead king")
-                    case at(1, y: 14):
-                        assertRandomArtifact(class: .any, msg: "random", stacks: [
-                            (CreatureStacks.Slot.one, .init(creatureID: .archer, quantity: 1)),
-                            (CreatureStacks.Slot.seven, .init(creatureID: .archer, quantity: 1))
-                        ])
+                        )
                     case at(3, y: 14):
-                        assertRandomArtifact(class: .treasure, msg:  "random treasure")
+                        assertArtifact(expected: .random(class: .treasure, message: "random treasure"))
                     case at(5, y: 14):
-                        assertRandomArtifact(class: .minor, msg:  "random minor")
+                        assertArtifact(expected: .random(class: .minor, message: "random minor"))
                     case at(7, y: 14):
-                        assertRandomArtifact(class: .major, msg:  "random major")
+                        assertArtifact(expected: .random(class: .major, message: "random major"))
                     case at(9, y: 14):
-                        assertRandomArtifact(class: .relic, msg:  "random relic")
+                        assertArtifact(expected: .random(class: .relic, message: "random relic"))
                        
                     default: break
                     }
@@ -186,18 +128,4 @@ private extension ArtifactsOnMapTests {
     }
 }
 
-func XCTAssertSpellScroll(_ object: Map.Object, assert: (Map.SpellScroll) -> Void) {
-    guard case let .spellScroll(spellScroll) = object.kind else {
-        XCTFail("Expected spellScroll, but got: \(object.kind)")
-        return
-    }
-    assert(spellScroll)
-}
 
-func XCTAssertArtifact(_ object: Map.Object, assert: (Map.GuardedArtifact) -> Void) {
-    guard case let .artifact(artifact) = object.kind else {
-        XCTFail("Expected artifact, but got: \(object.kind)")
-        return
-    }
-    assert(artifact)
-}

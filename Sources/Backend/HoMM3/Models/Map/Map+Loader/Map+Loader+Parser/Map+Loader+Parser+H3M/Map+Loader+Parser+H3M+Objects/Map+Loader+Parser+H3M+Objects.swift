@@ -342,8 +342,8 @@ internal extension Map.Loader.Parser.H3M {
                 
             case .resource:
                 let (message, guards) = try parseMessageAndGuards(format: format)
-                let quantityBase = try reader.readUInt32()
-                try reader.skip(byteCount: 4)
+                let quantityBase = try Int32(reader.readUInt32()) // 4 bytes quantity
+                try reader.skip(byteCount: 4) // 4 bytes unknown
                 
                 let resourceKind: Resource.Kind
                 if case let .resource(kind) = attributesOfObject.objectID {
@@ -354,10 +354,15 @@ internal extension Map.Loader.Parser.H3M {
                 }
                 
                 // Gold is always multiplied by 100
-                let amount = Resource.Amount(resourceKind == .gold ? quantityBase * 100 : quantityBase)
-                let resource = Resource(kind: resourceKind, amount: amount)
+                let resourceQuantity: Quantity = quantityBase == 0 ? .random : .specified((resourceKind == .gold ? quantityBase * 100 : quantityBase))
                 
-                let guardedResource = Map.GuardedResource(message: message, guards: guards, resource: resource)
+                
+                let guardedResource = Map.GuardedResource(
+                    message: message,
+                    guards: guards,
+                    resourceKind: resourceKind,
+                    resourceQuantity: resourceQuantity
+                )
                 objectKind = .resource(guardedResource)
            
             case .resourceGenerator:
@@ -505,6 +510,7 @@ internal extension Map.Loader.Parser.H3M {
                         parseTown(
                             format: format,
                             faction: faction,
+                            position: position, // used as ID if Map file does not specify one.
                             allowedSpellsOnMap: allowedSpellsOnMap,
                             availablePlayers: playersInfo.availablePlayers
                         )
@@ -514,6 +520,7 @@ internal extension Map.Loader.Parser.H3M {
                     objectKind = try .town(
                         parseRandomTown(
                             format: format,
+                            position: position, // used as ID if Map file does not specify one.
                             allowedSpellsOnMap: allowedSpellsOnMap,
                             availablePlayers: playersInfo.availablePlayers
                         )
@@ -543,7 +550,7 @@ internal extension Map.Loader.Parser.H3M {
             inspector?.didParseObject(mapObject)
         }
         let detailsAboutObjects = Map.DetailsAboutObjects(objects: objects)
-        print("objects: \(detailsAboutObjects.objects.suffix(30))")
+//        print("objects: \(detailsAboutObjects.objects.suffix(30))")
         return detailsAboutObjects
     }
 }
