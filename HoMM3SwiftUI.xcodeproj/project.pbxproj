@@ -22,6 +22,7 @@
 		483A2D9426DFC81E00EAC052 /* CreaturesOnMapTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 483A2D9326DFC81E00EAC052 /* CreaturesOnMapTests.swift */; };
 		483A2D9626E002A400EAC052 /* ArtifactsOnMapTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 483A2D9526E002A400EAC052 /* ArtifactsOnMapTests.swift */; };
 		483A2D9826E0140500EAC052 /* creatures-cyon-modified.h3m in Resources */ = {isa = PBXBuildFile; fileRef = 483A2D9726E0140500EAC052 /* creatures-cyon-modified.h3m */; };
+		483D8EBE26E7CDDC00CEB85A /* Creature+ID+CustomDebugStringConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 483D8EBD26E7CDDC00CEB85A /* Creature+ID+CustomDebugStringConvertible.swift */; };
 		487058C126E104D600DEEB36 /* TownEventOnMapTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487058C026E104D600DEEB36 /* TownEventOnMapTests.swift */; };
 		487AF96826D7B9C30073277F /* Hero+ID+HeroClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487AF96726D7B9C30073277F /* Hero+ID+HeroClass.swift */; };
 		487AF96B26D9131C0073277F /* SucceedingMapTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487AF96A26D9131C0073277F /* SucceedingMapTests.swift */; };
@@ -176,6 +177,7 @@
 		483A2D9326DFC81E00EAC052 /* CreaturesOnMapTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreaturesOnMapTests.swift; sourceTree = "<group>"; };
 		483A2D9526E002A400EAC052 /* ArtifactsOnMapTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ArtifactsOnMapTests.swift; sourceTree = "<group>"; };
 		483A2D9726E0140500EAC052 /* creatures-cyon-modified.h3m */ = {isa = PBXFileReference; lastKnownFileType = file; path = "creatures-cyon-modified.h3m"; sourceTree = "<group>"; };
+		483D8EBD26E7CDDC00CEB85A /* Creature+ID+CustomDebugStringConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Creature+ID+CustomDebugStringConvertible.swift"; sourceTree = "<group>"; };
 		487058C026E104D600DEEB36 /* TownEventOnMapTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TownEventOnMapTests.swift; sourceTree = "<group>"; };
 		487AF96726D7B9C30073277F /* Hero+ID+HeroClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Hero+ID+HeroClass.swift"; sourceTree = "<group>"; };
 		487AF96A26D9131C0073277F /* SucceedingMapTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SucceedingMapTests.swift; sourceTree = "<group>"; };
@@ -795,6 +797,7 @@
 				487C2BA826CB94D900031505 /* Creature.swift */,
 				487C2C2626CFC69E00031505 /* Creature+Level.swift */,
 				487C2C2426CF913100031505 /* Creature+ID.swift */,
+				483D8EBD26E7CDDC00CEB85A /* Creature+ID+CustomDebugStringConvertible.swift */,
 			);
 			path = Creature;
 			sourceTree = "<group>";
@@ -1019,6 +1022,7 @@
 				487C2C3326D2368D00031505 /* Map+Loader+Parser+H3M+Objects.swift in Sources */,
 				487C2C1926CEDD4C00031505 /* Map+Object+ID.swift in Sources */,
 				487C2C2726CFC69E00031505 /* Creature+Level.swift in Sources */,
+				483D8EBE26E7CDDC00CEB85A /* Creature+ID+CustomDebugStringConvertible.swift in Sources */,
 				487C2BF426CD916C00031505 /* Artifact+Slot.swift in Sources */,
 				487C2C1126CECEBC00031505 /* Map+Tile+Rotation.swift in Sources */,
 				487C2C0B26CECE2000031505 /* Map+Tile+Terrain.swift in Sources */,

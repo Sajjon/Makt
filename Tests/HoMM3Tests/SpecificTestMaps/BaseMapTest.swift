@@ -35,7 +35,7 @@ extension BaseMapTest {
             return
         }
         XCTAssertEqual(expected, actual, file: file, line: line)
-        fullfill(object: object)
+        fulfill(object: object)
     }
     
     func assertObjectTown(
@@ -51,7 +51,7 @@ extension BaseMapTest {
         }
         
         XCTAssertEqual(expected, actual, file: file, line: line)
-        fullfill(object: object)
+        fulfill(object: object)
     }
     
     func assertObjectArtifact(
@@ -65,7 +65,7 @@ extension BaseMapTest {
             return
         }
         XCTAssertEqual(actual, expected, file: file, line: line)
-        fullfill(object: object)
+        fulfill(object: object)
     }
     
     func assertObjectMonster(
@@ -79,7 +79,7 @@ extension BaseMapTest {
             return
         }
         XCTAssertEqual(actual, expected, file: file, line: line)
-        fullfill(object: object)
+        fulfill(object: object)
     }
     
 //    func assertCreature(
@@ -135,7 +135,7 @@ extension BaseMapTest {
             return
         }
         XCTAssertEqual(actual, expected, file: file, line: line)
-        fullfill(object: object)
+        fulfill(object: object)
     }
 
     
@@ -146,7 +146,7 @@ extension BaseMapTest {
             return
         }
         XCTAssertEqual(expected, actual, file: file, line: line)
-        fullfill(object: object)
+        fulfill(object: object)
     }
     
     func assertObjectPrisonHero(
@@ -177,12 +177,11 @@ extension BaseMapTest {
         return position
     }
     
-    func fullfill(object: Map.Object) {
+    func fulfill(object: Map.Object) {
         let position = object.position
         guard let expectation = expectedPositions[position] else {
             return
         }
-        print("fulfilling expectation: \(expectation)")
         expectation.fulfill()
         assert(!fulfilled.contains(position), "Strange to fulfill exp multiple times...")
         fulfilled.insert(position)

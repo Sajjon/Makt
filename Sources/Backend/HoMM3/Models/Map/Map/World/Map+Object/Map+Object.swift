@@ -115,12 +115,12 @@ public extension Map.Object {
 
     var debugDescription: String {
         """
+        \n\n
         =========================================
         \(objectID.name)@\(position)
         -----------------------------------------
         \(kind)
         =========================================
-        \n\n
         """
     }
     
@@ -173,8 +173,6 @@ public extension Map {
     }
     
     struct Monster: Hashable, CustomDebugStringConvertible {
-        
-        
         
         public enum Kind: Hashable {
             case specific(creatureID: Creature.ID)

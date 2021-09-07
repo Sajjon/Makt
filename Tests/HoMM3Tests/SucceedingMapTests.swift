@@ -275,6 +275,18 @@ final class MapTests: BaseMapTest {
                                         forbidden: [.tavern]
                                     ),
                                     spells: .init(possible: .init(values: Spell.ID.all(but: [.protectionFromWater, .summonBoat, .viewAir, .lightningBolt, .protectionFromAir, .airShield, .chainLightning, .meteorShower, .townPortal, .waterWalk, .dimensionDoor, .fly])))))
+                    
+                case at(67, y: 90, inUnderworld: true):
+                    assertObjectMonster(
+                        expected: .init(
+                            .specific(creatureID: .angel),
+                            quantity: .specified(1),
+                            message: "Shame on you! Don't follow the sulfur, follow the gems to your salvation!",
+                            disposition: .compliant,
+                            mightFlee: false,
+                            growsInNumbers: false
+                        ), actual: object
+                    )
                 default: break
                     
                     

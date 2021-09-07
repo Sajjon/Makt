@@ -51,7 +51,7 @@ final class ArtifactsOnMapTests: BaseMapTest {
             onParseObject: { [self] object in
                 if object.position == at(15, y: 17) {
                     XCTAssertEqual(object.kind, .grail(.init(radius: 5)))
-                    fullfill(object: object)
+                    fulfill(object: object)
                 } else {
                     
                     func assertArtifact(expected: Map.GuardedArtifact, line: UInt = #line) {

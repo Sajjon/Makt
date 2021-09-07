@@ -77,7 +77,7 @@ final class TownEventsOnMapTests: BaseMapTest {
                     }
                
                     
-                    fullfill(object: object)
+                    fulfill(object: object)
                 }
                 
                 switch object.position {
