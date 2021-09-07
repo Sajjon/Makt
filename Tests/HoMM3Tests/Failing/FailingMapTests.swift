@@ -73,6 +73,54 @@ final class GoodToGoMapTest: BaseMapTest {
                             startingExperiencePoints: 18_500
                         ),
                         actual: object)
+                case at(2, y: 28):
+                    assertObjectHero(
+                        class: .barbarian,
+                        expected: .init(
+                            identifierKind: .specificHeroWithID(.yog),
+                            owner: .orange,
+                            army: .init(stacks: [
+                                .init(creatureID: .goblin, quantity: 100),
+                                .init(creatureID: .goblin, quantity: 100)
+                            ]),
+                            startingExperiencePoints: 18_500
+                        ),
+                        actual: object)
+                    
+                case at(7, y: 35):
+                    assertObjectHero(
+                        class: .battleMage,
+                        expected: .init(
+                            identifierKind: .specificHeroWithID(.oris),
+                            owner: .orange,
+                            army: .init(stacks: [
+                                .init(creatureID: .goblin, quantity: 100),
+                                .init(creatureID: .goblin, quantity: 100)
+                            ]),
+                            startingExperiencePoints: 18_500
+                        ),
+                        actual: object)
+                    
+                case at(34, y: 33):
+                    if object.objectID.stripped == .randomTown {
+                        assertObjectRandomTown(expected: .init(
+                            id: .position(.init(x: 34, y: 33, inUnderworld: false)),
+                            owner: .blue,
+                            buildings: .init(built: Map.Town.Buildings.Building.all(but: [.shipyard, .special1, .special2, .special3, .special4]), forbidden: [.shipyard]),
+                            spells: .init(
+                                possible: .init(
+                                    values: Spell.ID.all(
+                                        but: [.summonBoat, .scuttleBoat, .waterWalk]
+                                    )
+                                )
+                            )
+                        ), actual: object)
+                    } else if object.objectID.stripped == .randomHero {
+                        assertObjectRandomHero(expected: .init(identifierKind: .randomHero, owner: .blue, startingExperiencePoints: 6_000), actual: object)
+                    } else {
+                        XCTFail("Unexpected object of kind: \(object.kind).")
+                    }
+                    
                 default: break
                 }
                 
