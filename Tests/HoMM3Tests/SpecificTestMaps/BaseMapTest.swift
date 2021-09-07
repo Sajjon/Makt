@@ -44,7 +44,7 @@ extension BaseMapTest {
         file: StaticString = #file,
         line: UInt = #line
     ) {
-        XCTAssertEqual(object.objectID, .town(.castle), file: file, line: line)
+        XCTAssertEqual(object.objectID.stripped, .town, file: file, line: line)
         guard case let .town(actual) = object.kind else {
             XCTFail("expected town", file: file, line: line)
             return
