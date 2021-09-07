@@ -542,7 +542,9 @@ internal extension Map.Loader.Parser.H3M {
             objects.append(mapObject)
             inspector?.didParseObject(mapObject)
         }
-        return .init(objects: objects)
+        let detailsAboutObjects = Map.DetailsAboutObjects(objects: objects)
+        print("objects: \(detailsAboutObjects.objects.suffix(30))")
+        return detailsAboutObjects
     }
 }
 
@@ -634,7 +636,6 @@ public struct CreatureStacks: Hashable, CustomDebugStringConvertible {
 }
 
 
-// TODO: Extract to separate another (separate?) file?
 internal extension Map.Loader.Parser.H3M {
     
     

@@ -13,6 +13,12 @@ public extension CaseIterable {
     }
 }
 
+public extension RawRepresentable where Self: CaseIterable, Self.AllCases == [Self], Self: Equatable {
+    static func all<S>(but exclusion: S) -> [Self] where S: Sequence, S.Element == Self {
+        allCases.filter({ element in !exclusion.contains(where: { $0 == element }) })
+    }
+}
+
 
 public extension Map {
     struct Town: Hashable, Identifiable, CustomDebugStringConvertible {
@@ -38,27 +44,78 @@ public extension Map {
         public let buildings: Map.Town.Buildings
         
         public struct Spells: Hashable {
-            public let obligatory: [Spell.ID]
-            public let possible: [Spell.ID]
+            
+            /// Map Editor: "Spells which MAY appear in the mage guild"
+            public let possible: SpellIDs
+            
+            
+            /// Map Editor: "Spells which MUST appear in the mage guild"
+            ///
+            /// Only for SoD maps
+            public let obligatory: SpellIDs?
+            
+            public init(
+                possible: SpellIDs,
+                obligatory: SpellIDs? = nil
+            ) {
+                self.possible = possible
+                self.obligatory = obligatory?.isEmpty == true ? nil : obligatory
+            }
         }
         public let spells: Spells
         
-        public let events: [Map.Town.Event]
+        public enum EventsTag: Hashable {}
+        public typealias Events = CollectionOf<Map.Town.Event, EventsTag>
+        
+        public let events: Events?
         
         /// SOD feature
         public let alignment: Faction?
+        
+        public init(
+            id: ID,
+            faction: Faction? = nil,
+            owner: PlayerColor? = nil,
+            name: String? = nil,
+            garrison: CreatureStacks? = nil,
+            formation: Army.Formation = .spread,
+            buildings: Map.Town.Buildings,
+            spells: Spells,
+            events: Events? = nil,
+            alignment: Faction? = nil
+        ) {
+            self.id = id
+            self.faction = faction
+            self.owner = owner
+            self.name = name
+            self.garrison = garrison
+            self.formation = formation
+            self.buildings = buildings
+            self.spells = spells
+            self.events = events
+            self.alignment = alignment
+        }
     }
 }
 
 public extension Map.Town {
     
     var debugDescription: String {
-        let nameOrEmpty = name.map({ "name: \($0) "}) ?? ""
-        return """
-        \(faction) town
-        owner: \(owner)
-        \(nameOrEmpty)
-        """
+        let optionalStrings: [String?] = [
+            "id: \(id)",
+            faction.map { "faction: \($0)" } ?? nil,
+            owner.map { "owner: \($0)" } ?? nil,
+            name.map { "name: \($0)" } ?? nil,
+            garrison.map { "garrison: \($0)" } ?? nil,
+            "formation: \(formation)",
+            "buildings: \(buildings)",
+            "spells: \(spells)",
+            events.map { "events: \($0)" } ?? nil,
+            alignment.map { "alignment: \($0)" } ?? nil,
+            
+        ]
+        
+        return optionalStrings.compactMap({ $0 }).joined(separator: "\n")
     }
     
     struct Buildings: Hashable {
@@ -614,10 +671,10 @@ internal extension Map.Loader.Parser.H3M {
             formation: formation,
             buildings: buildings,
             spells: .init(
-                obligatory: obligatorySpells,
-                possible: possibleSpells
+                possible: .init(values: possibleSpells),
+                obligatory: .init(values: obligatorySpells)
             ),
-            events: events,
+            events: events.isEmpty ? nil : .init(values: events),
             alignment: alignment
         )
     }

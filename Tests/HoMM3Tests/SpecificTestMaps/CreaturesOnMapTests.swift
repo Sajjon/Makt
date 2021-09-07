@@ -51,10 +51,10 @@ final class CreaturesOnMapTests: BaseMapTest {
                 
                 func assertMonster(
                     kind: Map.Monster.Kind,
-                    quantity: Map.Monster.Quantity = .random,
-                    grows: Bool = true,
+                    quantity: Quantity = .random,
+                    grows growsInNumbers: Bool = true,
                     disposition: Map.Monster.Disposition = .aggressive,
-                    mayFlee: Bool = true,
+                    mayFlee mightFlee: Bool = true,
                     message: String? = nil,
                     treasure: Map.Monster.Bounty? = nil,
                     _ line: UInt = #line
@@ -67,8 +67,8 @@ final class CreaturesOnMapTests: BaseMapTest {
                     XCTAssertEqual(monster.quantity, quantity, line: line)
                     
                     
-                    XCTAssertEqual(monster.doesNotGrowInNumbers, !grows, "Expected `doesNotGrowInNumbers` to be \(!grows).", line: line)
-                    XCTAssertEqual(monster.willNeverFlee, !mayFlee, "Expected `willNeverFlee` to be \(!mayFlee).", line: line)
+                    XCTAssertEqual(monster.growsInNumbers, growsInNumbers, "Expected `growsInNumbers` to be \(growsInNumbers).", line: line)
+                    XCTAssertEqual(monster.mightFlee, mightFlee, "Expected `mightFlee` to be \(mightFlee).", line: line)
                     XCTAssertEqual(monster.disposition, disposition, line: line)
                     XCTAssertEqual(monster.bounty, treasure, line: line)
                     XCTAssertEqual(monster.message, message, line: line)
@@ -78,7 +78,7 @@ final class CreaturesOnMapTests: BaseMapTest {
                 
                 func assertCreature(
                     _ creatureID: Creature.ID,
-                    quantity: Map.Monster.Quantity = .random,
+                    quantity: Quantity = .random,
                     grows: Bool = true,
                     disposition: Map.Monster.Disposition = .aggressive,
                     mayFlee: Bool = true,
@@ -99,7 +99,7 @@ final class CreaturesOnMapTests: BaseMapTest {
                 
                 func assertRandomMonster(
                     level: Creature.Level? = .any,
-                    quantity: Map.Monster.Quantity = .random,
+                    quantity: Quantity = .random,
                     grows: Bool = true,
                     disposition: Map.Monster.Disposition = .aggressive,
                     mayFlee: Bool = true,
@@ -122,7 +122,7 @@ final class CreaturesOnMapTests: BaseMapTest {
                 case at(0, y: 0):
                     assertCreature(
                         .dwarf,
-                        quantity: .custom(1337),
+                        quantity: .specified(1337),
                         grows: false,
                         disposition: .savage,
                         mayFlee: false,
@@ -351,7 +351,7 @@ final class CreaturesOnMapTests: BaseMapTest {
                 case at(15, y: 25):
                     assertRandomMonster(mayFlee: false, message: "never flees")
                 case at(18, y: 25):
-                    assertRandomMonster(quantity: .custom(10), grows: false, message: "qty")
+                    assertRandomMonster(quantity: .specified(10), grows: false, message: "qty")
                     
                 case at(22, y: 25):
                     assertRandomMonster(
@@ -373,7 +373,7 @@ final class CreaturesOnMapTests: BaseMapTest {
                 case at(35, y: 35):
                     assertCreature(
                         .battleDwarf,
-                        quantity: .custom(314),
+                        quantity: .specified(314),
                         disposition: .compliant,
                         message: "Added by Cyon: 314 complieant battle dwarves offering the artifact Speculum and 31415 gold.",
                         treasure: .init(

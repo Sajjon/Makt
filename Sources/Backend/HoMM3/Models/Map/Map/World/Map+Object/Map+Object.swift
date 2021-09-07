@@ -71,10 +71,11 @@ public extension Map.Object {
     var debugDescription: String {
         """
         =========================================
-        \(objectID.name) @ \(position)
+        \(objectID.name)@\(position)
         -----------------------------------------
-            \(kind)
+        \(kind)
         =========================================
+        \n\n
         """
     }
     
@@ -126,7 +127,9 @@ public extension Map {
         }
     }
     
-    struct Monster: Hashable {
+    struct Monster: Hashable, CustomDebugStringConvertible {
+        
+        
         
         public enum Kind: Hashable {
             case specific(creatureID: Creature.ID)
@@ -144,8 +147,57 @@ public extension Map {
         public let bounty: Bounty?
         
         public let disposition: Disposition
-        public let willNeverFlee: Bool
-        public let doesNotGrowInNumbers: Bool
+        
+        public let mightFlee: Bool
+        public let growsInNumbers: Bool
+        
+        public init(
+            _ kind: Kind,
+            quantity: Quantity,
+            missionIdentifier: UInt32? = nil,
+            message: String? = nil,
+            bounty: Bounty? = nil,
+            disposition: Disposition = .aggressive,
+            mightFlee: Bool = false,
+            growsInNumbers: Bool = false
+        ) {
+            self.kind = kind
+            self.quantity = quantity
+            self.missionIdentifier = missionIdentifier
+            self.message = message
+            self.bounty = bounty
+            self.disposition = disposition
+            self.mightFlee = mightFlee
+            self.growsInNumbers = growsInNumbers
+        }
+        
+        public var debugDescription: String {
+            let optionalStrings: [String?] = [
+                "kind: \(kind)",
+                "quantity: \(quantity)",
+                missionIdentifier.map { "missionIdentifier: \($0)" } ?? nil,
+                message.map { "message: \($0)" } ?? nil,
+                bounty.map { "bounty: \($0)" } ?? nil,
+                "disposition: \(disposition)",
+                "mightFlee: \(mightFlee)",
+                "growsInNumbers: \(growsInNumbers)"
+           ]
+            
+            return optionalStrings.compactMap({ $0 }).joined(separator: "\n")
+        }
+    }
+}
+
+/// Used by Map.Monster and GuardedResource (resources on Map)
+public enum Quantity: Hashable, CustomDebugStringConvertible {
+    case random, specified(Int32) // might be negative
+    
+    public var debugDescription: String {
+        switch self {
+        case .random: return "random"
+        case .specified(let quantity): return "#\(quantity)"
+        }
+        
     }
 }
 
@@ -160,9 +212,7 @@ public extension Map.Monster {
             self.resources = resources
         }
     }
-    enum Quantity: Hashable {
-        case random, custom(UInt16)
-    }
+
     enum Disposition: UInt8, Hashable, CaseIterable {
         
         /// Will **always** join hero

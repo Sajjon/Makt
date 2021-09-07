@@ -19,28 +19,24 @@ extension FromPlayerColor {
     }
 }
 
-func XCTArraysEqual<Element: Hashable>(_ lhsArray: [Element], _ rhsArray: [Element], file: StaticString = #file, line: UInt = #line) {
+func XCTArraysEqual<S: Sequence>(_ lhsArray: S, _ rhsArray: S, file: StaticString = #file, line: UInt = #line) where S.Element: Hashable {
     let lhs = Set(lhsArray)
     let rhs = Set(rhsArray)
     if lhs != rhs {
-        let onlyInLHS = lhs.subtracting(rhs)
-        let onlyInRHS = rhs.subtracting(lhs)
-        let onlyInLHSDiff = lhsArray.filter { onlyInLHS.contains($0) }
-        let onlyInRHSDiff = rhsArray.filter { onlyInRHS.contains($0) }
+        let diff = lhs.symmetricDifference(rhs)
+        let lhsOnly = lhs.subtracting(rhs)
+        let rhsOnly = rhs.subtracting(lhs)
+        
+        let lhsOnlyString = lhsOnly.isEmpty ? "" : "The following elements were found only in LHS sequence: \(lhsOnly)"
+        let rhsOnlyString = rhsOnly.isEmpty ? "" : "The following elements were found only in RHS sequence: \(rhsOnly)"
         
         XCTAssertTrue(
-            onlyInLHS.isEmpty,
-            "Expected arrays to equal, but found the following elements in the LHS array that were not found in the RHS array: \(onlyInLHSDiff)",
+            diff.isEmpty,
+            ["Expected sequences to contain same elements, but they did not.", lhsOnlyString, rhsOnlyString].joined(separator: "\n"),
             file: file, line: line
         )
         
-        XCTAssertTrue(
-            onlyInRHS.isEmpty,
-            "Expected arrays to equal, but found the following elements in the RHS array that were not found in the LHS array: \(onlyInRHSDiff)",
-            file: file, line: line
-        )
     } else {
-//        XCTAssertEqual(lhsArray, rhsArray, file: file, line: line)
         XCTAssert(true, "Ignoring order, the arrays equal each other.", file: file, line: line)
     }
 }
@@ -221,7 +217,8 @@ final class MapTests: BaseMapTest {
                 expectationTeamInfo.fulfill()
             },
             onParseAvailableHeroes: { availableHeroes in
-                XCTArraysEqual(availableHeroes.heroIDs, Hero.ID.playable(in: .restorationOfErathia))
+                
+//                XCTArraysEqual(availableHeroes.heroIDs, Hero.ID.playable(in: .restorationOfErathia))
                 expectationAvailableHeroes.fulfill()
             },
        
@@ -235,13 +232,67 @@ final class MapTests: BaseMapTest {
             onParseRumors: {  XCTAssertTrue($0.rumors.isEmpty) },
             onParseHeroSettings: { XCTAssertTrue($0.settingsForHeroes.isEmpty) }
         )
+            
         
         let inspector = Map.Loader.Parser.Inspector(
             basicInfoInspector: basicInfoInspector,
             playersInfoInspector: playersInfoInspector,
-            additionalInformationInspector: additionalInfoInspector
+            additionalInformationInspector: additionalInfoInspector,
+            onParseObject: { [self] object in
+                func assertEvent(expected: Map.GeoEvent, line: UInt = #line) {
+                    XCTAssertEqual(object.objectID, .event)
+                    guard case let .geoEvent(actual) = object.kind else {
+                        XCTFail("expected event")
+                        return
+                    }
+                    XCTAssertEqual(expected, actual, line: line)
+                    fullfill(object: object)
+                }
+                
+                func assertTown(expected: Map.Town, line: UInt = #line) {
+                    XCTAssertEqual(object.objectID, .town(.castle))
+                    guard case let .town(actual) = object.kind else {
+                        XCTFail("expected town")
+                        return
+                    }
+//                    XCTAssertEqual(expected, actual, line: line)
+                    XCTAssertEqual(expected.name, actual.name, line: line)
+                    XCTAssertEqual(expected.owner, actual.owner, line: line)
+                    XCTAssertEqual(expected.faction, actual.faction, line: line)
+                    XCTAssertEqual(expected.buildings, actual.buildings, line: line)
+                    XCTAssertNil(actual.spells.obligatory, line: line)
+                    XCTArraysEqual(expected.spells.possible, actual.spells.possible, line: line)
+                    XCTAssertEqual(expected.garrison, actual.garrison, line: line)
+                    fullfill(object: object)
+                }
+                
+                switch object.position {
+                case at(72, y: 66):
+                    assertTown(
+                        expected: .init(
+                            id: .fromMapFile(1234),
+                            faction: .castle,
+                            owner: .blue,
+                            buildings: .init(
+                                built: [.fort],
+                                forbidden: [.tavern]
+                            ),
+                            spells: .init(
+                                possible: .init(
+                                    values: Spell.ID.all(
+                                        but: [.teleport, .waterWalk])
+                                )
+                            )
+                        )
+                    )
+                default: break
+                    
+                    
+                }
+                
+            }
         )
-        
+                
         XCTAssertNoThrow(try Map.load(mapID, inspector: inspector))
         
         waitForExpectations(timeout: 1)

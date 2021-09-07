@@ -52,7 +52,7 @@ final class TownEventsOnMapTests: BaseMapTest {
                 
                 func assertTown(
                     owner: PlayerColor = .red,
-                    events: [Map.Town.Event],
+                    events expectedEvents: [Map.Town.Event],
                     _ line: UInt = #line
                 ) {
                     guard case let .town(town) = object.kind else {
@@ -60,14 +60,15 @@ final class TownEventsOnMapTests: BaseMapTest {
                         return
                     }
                     XCTAssertEqual(town.owner, owner)
-//                    XCTAssertEqual(town.events, events)
-                    guard town.events.count == events.count else {
+                    guard
+                        let actualEvents = town.events,
+                        actualEvents.count == expectedEvents.count else {
                         XCTFail("town event count mismatch", line: line)
                         return
                     }
-                    XCTAssertEqual(town.events.map({ $0.occurrences.first }).sorted(), town.events.map({ $0.occurrences.first }), "Events should be sorted on first occurence day.")
-                    events.enumerated().forEach { eventIndex, expected in
-                        let actual = town.events[eventIndex]
+                    XCTAssertEqual(actualEvents.map({ $0.occurrences.first }).sorted(), actualEvents.map({ $0.occurrences.first }), "Events should be sorted on first occurence day.")
+                    expectedEvents.enumerated().forEach { eventIndex, expected in
+                        let actual = actualEvents[eventIndex]
                         func f(_ failure: String) -> String {
                             "Mistmatch in event at index: \(eventIndex): \(failure)"
                         }

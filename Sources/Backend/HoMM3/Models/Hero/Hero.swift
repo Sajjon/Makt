@@ -13,8 +13,18 @@ public struct Hero: Hashable, CustomDebugStringConvertible {
         case specificHeroWithID(Hero.ID)
     }
     
-    public struct Patrol: Hashable {
-        public let radius: UInt8
+    public enum Patrol: UInt8, CaseIterable, Hashable {
+        case standstill = 0
+        case oneSquare
+        case twoSquares
+        case threeSquares
+        case fourSquares
+        case fiveSquares
+        case sixSquares
+        case sevenSquares
+        case eightSquares
+        case nineSquares
+        case tenSquares
     }
     
     public let identifierKind: IdentifierKind

@@ -142,6 +142,7 @@
 		48CC4AED26E4F03800447F77 /* cyon_sod_only_additional_info_custom_heroes.h3m in Resources */ = {isa = PBXBuildFile; fileRef = 48CC4AEC26E4F03800447F77 /* cyon_sod_only_additional_info_custom_heroes.h3m */; };
 		48CC4AEF26E4F05100447F77 /* CustomizedHeroesSODMapTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48CC4AEE26E4F05100447F77 /* CustomizedHeroesSODMapTest.swift */; };
 		48CC4AF126E5D80E00447F77 /* cyon_sod_only_allows_artifacts_starting_with_letter_A.h3m in Resources */ = {isa = PBXBuildFile; fileRef = 48CC4AF026E5D80E00447F77 /* cyon_sod_only_allows_artifacts_starting_with_letter_A.h3m */; };
+		48F2150A26E729EB00F06762 /* Spell+ID+Level.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48F2150926E729EB00F06762 /* Spell+ID+Level.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -294,6 +295,7 @@
 		48CC4AEC26E4F03800447F77 /* cyon_sod_only_additional_info_custom_heroes.h3m */ = {isa = PBXFileReference; lastKnownFileType = file; path = cyon_sod_only_additional_info_custom_heroes.h3m; sourceTree = "<group>"; };
 		48CC4AEE26E4F05100447F77 /* CustomizedHeroesSODMapTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomizedHeroesSODMapTest.swift; sourceTree = "<group>"; };
 		48CC4AF026E5D80E00447F77 /* cyon_sod_only_allows_artifacts_starting_with_letter_A.h3m */ = {isa = PBXFileReference; lastKnownFileType = file; path = cyon_sod_only_allows_artifacts_starting_with_letter_A.h3m; sourceTree = "<group>"; };
+		48F2150926E729EB00F06762 /* Spell+ID+Level.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Spell+ID+Level.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -708,6 +710,7 @@
 			children = (
 				487C2BE426CD49BA00031505 /* Spell.swift */,
 				487C2BE626CD49CD00031505 /* Spell+ID.swift */,
+				48F2150926E729EB00F06762 /* Spell+ID+Level.swift */,
 			);
 			path = Spell;
 			sourceTree = "<group>";
@@ -961,6 +964,7 @@
 				487AF98026DC039A0073277F /* H3M+Parse+Inspector+PlayersInfo.swift in Sources */,
 				487C2BDE26CD3D0200031505 /* Artifact+ID.swift in Sources */,
 				487C2BEC26CD746800031505 /* Hero+SecondarySkill.swift in Sources */,
+				48F2150A26E729EB00F06762 /* Spell+ID+Level.swift in Sources */,
 				487C2BA526CB8EC700031505 /* Map+VictoryCondition.swift in Sources */,
 				487C2BA326CAD48900031505 /* Size.swift in Sources */,
 				4814630626C9054900431960 /* Map+Loader+Reader.swift in Sources */,

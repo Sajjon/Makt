@@ -84,8 +84,10 @@ private extension Map.Loader.Parser.H3M {
         let garrison: CreatureStacks? = try reader.readBool() ? parseCreatureStacks(format: format, count: 7) : nil
         let formation = try Army.Formation(integer: reader.readUInt8())
         let artifacts = try parseArtifactsOfHero(format: format)
-        let patrolRadius = try reader.readUInt8()
-        let isPatrolling = patrolRadius != 0xff
+        
+        /// 0xff == do NOT patrol, 0x00 == "Patrol while Stand still" (weird...)
+        let patrolRadiusRaw = try reader.readUInt8()
+        let patrol: Hero.Patrol? = try patrolRadiusRaw != 0xff ? .init(integer: patrolRadiusRaw) : nil
         
         let customBiography: String? = try {
             guard format > .restorationOfErathia else { return nil }
@@ -121,13 +123,7 @@ private extension Map.Loader.Parser.H3M {
         
         try reader.skip(byteCount: 16)
         
-        if isPatrolling {
-            assert(patrolRadius > 0 && patrolRadius < 255)
-        }
-        if patrolRadius > 0 && patrolRadius < 255 {
-            assert(isPatrolling)
-        }
-        
+    
         return .init(
             identifierKind: identifierKind,
             questIdentifier: questIdentifier,
@@ -136,11 +132,7 @@ private extension Map.Loader.Parser.H3M {
             owner: owner,
             army: garrison,
             formation: formation,
-            patrol: {
-                guard isPatrolling else { return nil }
-                assert(patrolRadius != 0xff && patrolRadius > 0)
-                return Hero.Patrol(radius: patrolRadius)
-            }(),
+            patrol: patrol,
             startingExperiencePoints: experiencePoints ?? 0,
             startingSecondarySkills: startingSecondarySkills.map { .init(values: $0) },
             artifactsInSlots: artifacts.map { .init(values: $0) },

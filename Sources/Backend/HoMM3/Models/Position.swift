@@ -29,7 +29,7 @@ public extension Position {
     var debugDescription: String {
         let underworldString = inUnderworld ? " ⤵️🌍" : ""
         return """
-        (\(x), \(y)\(underworldString)
+        (\(x), \(y)\(underworldString))
         """
     }
     

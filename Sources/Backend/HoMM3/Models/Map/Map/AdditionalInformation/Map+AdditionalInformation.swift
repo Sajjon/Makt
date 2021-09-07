@@ -56,7 +56,10 @@ public extension Map.AdditionalInformation {
 }
 
 
-public struct CollectionOf<Element, Tag>: Collection {
+public struct CollectionOf<Element, Tag>: Collection, CustomDebugStringConvertible {
+    public var debugDescription: String {
+        values.map { String(describing: $0) }.joined(separator: ", ")
+    }
     public let values: [Element]
 }
 public extension CollectionOf {
