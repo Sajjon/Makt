@@ -21,13 +21,18 @@ public extension Map.InformationAboutPlayers {
         public let player: Player  // Not parsed, but set during for-loop
 
         public let isPlayableByHuman: Bool
-        public let aiTactic: AITactic? // set if is playable by AI
+        public let behaviour: Behaviour? // set if is playable by AI
 
         /// SOD only
-        public let allowedAlignments: UInt8?
+        public enum AllowedAlignment: Hashable {
+            case random
+            case followingFactions([Faction])
+        }
+        /// SOD only
+        public let allowedAlignments: AllowedAlignment?
 
-        public let playableFactions: [Faction] // "townTypes"
-//        public let townConflux: Bool // ABSOD (removed because will be merged into playableFactions)
+        public let townTypes: [Faction] // "townTypes"
+//        public let townConflux: Bool // ABSOD (removed because will be merged into townTypes)
         
         public let mainTown: MainTown? // if `"hasMainTown"`
         public let hasRandomHero: Bool
@@ -39,7 +44,13 @@ public extension Map.InformationAboutPlayers {
     }
 }
 
+
+
 public extension Map.InformationAboutPlayers.PlayerInfo {
+    var isPlayableByAI: Bool { behaviour != nil }
+    var isPlayableBothByHumanAndAI: Bool { isPlayableByHuman && isPlayableByAI }
+    var isPlayableOnlyByAI: Bool { !isPlayableByHuman && isPlayableByAI }
+    var isPlayableOnlyByHuman: Bool { isPlayableByHuman && !isPlayableByAI }
     
     struct MainHero: Hashable {
         let heroID: Hero.ID?

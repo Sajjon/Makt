@@ -101,7 +101,8 @@ public extension Quest.Kind {
 public extension Map.Seershut.Bounty {
     
     enum Stripped: UInt8, Hashable, CaseIterable {
-        case experience
+        // 0 is none
+        case experience = 1
         case manaPoints
         case moraleBonus
         case luckBonus
@@ -208,6 +209,8 @@ internal extension Map.Loader.Parser.H3M {
             let attributesOfObject = attributesOfObjects.attributes[.init(objectAttributesIndex)]
             
             let objectKind: Map.Object.Kind
+            
+            inspector?.willParseObject(at:  position, attributes: attributesOfObject)
             
             switch attributesOfObject.objectID.class {
             
@@ -405,6 +408,8 @@ internal extension Map.Loader.Parser.H3M {
                         integer: reader.readUInt8()
                     )
                     
+                    print("🛖 bountyStripped: \(bountyStripped)")
+                    
                     let bounty: Map.Seershut.Bounty
                     
                     switch bountyStripped {
@@ -460,6 +465,7 @@ internal extension Map.Loader.Parser.H3M {
                             )
                         )
                     }
+                    print("🛖 bounty: \(bounty)")
                     return bounty
                 }
                 
@@ -467,6 +473,7 @@ internal extension Map.Loader.Parser.H3M {
                 
                 if format > .restorationOfErathia {
                     let quest = try parseQuest()
+                    print("🛖 quest: \(quest)")
                     seershut = try .init(quest: quest, bounty: bounty())
                 } else {
                     assert(format == .restorationOfErathia)

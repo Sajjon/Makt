@@ -13,8 +13,8 @@ public extension Map.Loader.Parser.Inspector {
         
         private let onParseIsPlayableByHuman  : OnParseIsPlayableByHuman?
         private let onParseIsPlayableByAI: OnParseIsPlayableByAI?
-        private let onParseAITactic: OnParseAITactic?
-        private let onParsePlayableFactions: OnParsePlayableFactions?
+        private let onParseBehaviour: OnParseBehaviour?
+        private let onParseTownTypes: OnParseTownTypes?
         private let onParseHasMainTown: OnParseHasMainTown?
         private let onParseMainTown: OnParseMainTown?
         private let onFinishParsingInformationAboutPlayers: OnFinishParsingInformationAboutPlayers?
@@ -22,16 +22,16 @@ public extension Map.Loader.Parser.Inspector {
         public init(
             onParseIsPlayableByHuman  : OnParseIsPlayableByHuman? = nil,
             onParseIsPlayableByAI: OnParseIsPlayableByAI? = nil,
-            onParseAITactic: OnParseAITactic? = nil,
-            onParsePlayableFactions: OnParsePlayableFactions? = nil,
+            onParseBehaviour: OnParseBehaviour? = nil,
+            onParseTownTypes: OnParseTownTypes? = nil,
             onParseHasMainTown: OnParseHasMainTown? = nil,
             onParseMainTown: OnParseMainTown? = nil,
             onFinishParsingInformationAboutPlayers: OnFinishParsingInformationAboutPlayers? = nil
         ) {
             self.onParseIsPlayableByHuman = onParseIsPlayableByHuman
             self.onParseIsPlayableByAI = onParseIsPlayableByAI
-            self.onParseAITactic = onParseAITactic
-            self.onParsePlayableFactions = onParsePlayableFactions
+            self.onParseBehaviour = onParseBehaviour
+            self.onParseTownTypes = onParseTownTypes
             self.onParseHasMainTown = onParseHasMainTown
             self.onParseMainTown = onParseMainTown
             self.onFinishParsingInformationAboutPlayers = onFinishParsingInformationAboutPlayers
@@ -44,8 +44,8 @@ public extension Map.Loader.Parser.Inspector {
 public extension Map.Loader.Parser.Inspector.PlayersInfoInspector {
     typealias OnParseIsPlayableByHuman      = (Bool, Player) -> Void
     typealias OnParseIsPlayableByAI         = (Bool, Player) -> Void
-    typealias OnParseAITactic               = (AITactic?, Player) -> Void
-    typealias OnParsePlayableFactions       = ([Faction], Player) -> Void
+    typealias OnParseBehaviour               = (Behaviour?, Player) -> Void
+    typealias OnParseTownTypes       = ([Faction], Player) -> Void
     typealias OnParseHasMainTown            = (Bool, Player) -> Void
     typealias OnParseMainTown               = (Map.InformationAboutPlayers.PlayerInfo.MainTown?, Player) -> Void
     typealias OnFinishParsingInformationAboutPlayers   = (Map.InformationAboutPlayers) -> Void
@@ -56,11 +56,11 @@ public extension Map.Loader.Parser.Inspector.PlayersInfoInspector {
     func didParseIsPlayableByAI(_ value: Bool, player: Player) {
         onParseIsPlayableByAI?(value, player)
     }
-    func didParseAITactic(_ value: AITactic?, player: Player) {
-        onParseAITactic?(value, player)
+    func didParseBehaviour(_ value: Behaviour?, player: Player) {
+        onParseBehaviour?(value, player)
     }
-    func didParsePlayableFactions(_ value: [Faction], player: Player) {
-        onParsePlayableFactions?(value, player)
+    func didParseTownTypes(_ value: [Faction], player: Player) {
+        onParseTownTypes?(value, player)
     }
     func didParseHasMainTown(_ value: Bool, player: Player) {
         onParseHasMainTown?(value, player)

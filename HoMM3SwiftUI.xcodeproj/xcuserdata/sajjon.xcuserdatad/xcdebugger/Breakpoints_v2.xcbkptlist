@@ -46,8 +46,8 @@
             filePath = "Sources/Backend/HoMM3/Models/Map/Map+Loader/Map+Loader+Parser/Map+Loader+Parser+H3M/Map+Loader+Parser+H3M+Objects/Map+Loader+Parser+H3M+Objects.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "264"
-            endingLineNumber = "264"
+            startingLineNumber = "267"
+            endingLineNumber = "267"
             landmarkName = "parseDetailsAboutObjects(inspector:format:playersInfo:additionalMapInformation:attributesOfObjects:)"
             landmarkType = "7">
          </BreakpointContent>

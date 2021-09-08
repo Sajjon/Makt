@@ -16,6 +16,7 @@ public extension Map.Loader.Parser {
         
         private let onParseWorld: OnParseWorld?
         private let onParseAttributesOfObjects: OnParseAttributesOfObjects?
+        private let willParseObject: WillParseObject?
         private let onParseObject: OnParseObject?
         private let onParseAllObjects: OnParseAllObjects?
         private let onParseEvents: OnParseEvents?
@@ -29,6 +30,7 @@ public extension Map.Loader.Parser {
             additionalInformationInspector: AdditionalInfoInspector? = nil,
             onParseWorld: OnParseWorld? = nil,
             onParseAttributesOfObjects: OnParseAttributesOfObjects? = nil,
+            willParseObject: WillParseObject? = nil,
             onParseObject: OnParseObject? = nil,
             onParseAllObjects: OnParseAllObjects? = nil,
             onParseEvents: OnParseEvents? = nil
@@ -42,6 +44,7 @@ public extension Map.Loader.Parser {
             
             self.onParseWorld = onParseWorld
             self.onParseAttributesOfObjects = onParseAttributesOfObjects
+            self.willParseObject = willParseObject
             self.onParseObject = onParseObject
             self.onParseAllObjects = onParseAllObjects
             self.onParseEvents = onParseEvents
@@ -61,6 +64,7 @@ public extension Map.Loader.Parser.Inspector {
     typealias OnParseBasicInfo = (Map.BasicInformation) -> Void
     typealias OnParseWorld = (Map.World) -> Void
     typealias OnParseAttributesOfObjects = (Map.AttributesOfObjects) -> Void
+    typealias WillParseObject = (Position, Map.Object.Attributes) -> Void
     typealias OnParseObject = (Map.Object) -> Void
     typealias OnParseAllObjects = (Map.DetailsAboutObjects) -> Void
     typealias OnParseEvents = (Map.TimedEvents) -> Void
@@ -72,6 +76,11 @@ public extension Map.Loader.Parser.Inspector {
     
     func didParseAttributesOfObjects(_ attributesOfObjects: Map.AttributesOfObjects) {
         onParseAttributesOfObjects?(attributesOfObjects)
+    }
+    
+    
+    func willParseObject(at position: Position, attributes: Map.Object.Attributes) {
+        willParseObject?(position, attributes)
     }
     
     func didParseObject(_ object: Map.Object) {

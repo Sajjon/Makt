@@ -13,7 +13,7 @@ enum Error: Swift.Error {
     case failedToReadHeaderVersion
     case unsupportedFormat(Map.Format)
     case unrecognizedDifficulty(Difficulty.RawValue)
-    case unrecognizedAITactic(AITactic.RawValue)
+    case unrecognizedBehaviour(Behaviour.RawValue)
     case unrecognizedFaction(Faction.RawValue)
     case unrecognizedTerrainKind(Map.Tile.Terrain.Kind.RawValue)
     case unrecognizedHeroID(Hero.ID.RawValue)

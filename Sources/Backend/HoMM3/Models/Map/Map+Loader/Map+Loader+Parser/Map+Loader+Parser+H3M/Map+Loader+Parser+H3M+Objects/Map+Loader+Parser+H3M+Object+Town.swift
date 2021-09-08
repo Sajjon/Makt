@@ -17,6 +17,23 @@ public extension Array where Element: Equatable {
     func all<S>(but exclusion: S) -> [Element] where S: Sequence, S.Element == Self.Element {
         filter({ element in !exclusion.contains(where: { $0 == element }) })
     }
+    
+    func all<S, Member>(
+        but exclusion: S,
+        map: (Element) -> Member
+    ) -> [Element] where S: Sequence, S.Element == Member, Member: Equatable {
+        filter({ element in
+            let member = map(element)
+            return !exclusion.contains(where: { $0 == member })
+        })
+    }
+    
+    func all<S, Member>(
+        member keyPath: KeyPath<Element, Member>,
+        but exclusion: S
+    ) -> [Element] where S: Sequence, S.Element == Member, Member: Equatable {
+        all(but: exclusion) { $0[keyPath: keyPath] }
+    }
 }
 
 public extension RawRepresentable where Self: CaseIterable, Self.AllCases == [Self], Self: Equatable {
@@ -75,8 +92,13 @@ public extension Map {
         
         public let events: Events?
         
+        public enum Alignment: Hashable {
+            case sameAsOwnerOrRandom
+            case sameAs(player: Player)
+        }
+        
         /// SOD feature
-        public let alignment: Faction?
+        public let alignment: Alignment?
         
         public init(
             id: ID,
@@ -88,7 +110,7 @@ public extension Map {
             buildings: Map.Town.Buildings = .init(),
             spells: Spells = .init(),
             events: Events? = nil,
-            alignment: Faction? = nil
+            alignment: Alignment? = nil
         ) {
             self.id = id
             self.faction = faction
@@ -682,12 +704,10 @@ internal extension Map.Loader.Parser.H3M {
             )
         }
         
-        var alignment: Faction?
+        var alignment: Map.Town.Alignment?
         if format >= .shadowOfDeath {
-            alignment = try Faction(integer: reader.readUInt8())
-            if let f = faction, alignment != f {
-                fatalError("What?! Different faction parsed and provided...?")
-            }
+            let alignmentRaw = try reader.readUInt8()
+            alignment = alignmentRaw == 0xff ? .sameAsOwnerOrRandom : .sameAs(player: try Player(integer: alignmentRaw))
         }
         
         try reader.skip(byteCount: 3)
@@ -708,10 +728,6 @@ internal extension Map.Loader.Parser.H3M {
             alignment: alignment
         )
     }
-}
-
-public enum Alignment: UInt8, Hashable, CaseIterable {
-    case good, evil, neutral
 }
 
 public extension Map.Town {
@@ -768,7 +784,6 @@ private extension Map.Loader.Parser.H3M {
     
     func parseBuildings() throws -> [Map.Town.Buildings.Building] {
         let rawBytes = try reader.read(byteCount: 6)
-        
         let bitmaskFlipped =  BitArray(data: Data(rawBytes.reversed()))
         let bitmask = BitArray(bitmaskFlipped.reversed())
         return try bitmask.enumerated().compactMap { (buildingID, isBuilt) in

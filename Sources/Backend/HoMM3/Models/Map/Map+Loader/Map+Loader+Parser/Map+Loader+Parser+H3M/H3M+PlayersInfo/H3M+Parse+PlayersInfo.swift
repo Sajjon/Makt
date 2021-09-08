@@ -20,32 +20,42 @@ private extension Map.Loader.Parser.H3M {
         if assertIsPlayable {
             precondition(isPlayable)
         }
-        let aiTactic: AITactic = try AITactic(integer: reader.readUInt8())
+        let behaviour: Behaviour = try Behaviour(integer: reader.readUInt8())
         
         if isPlayable {
-            inspector?.didParseAITactic(aiTactic, player: player)
+            inspector?.didParseBehaviour(behaviour, player: player)
         }
         
-        let allowedAlignments: UInt8? = try format >= .shadowOfDeath ? reader.readUInt8() : nil
+        let allowedAlignments: Map.InformationAboutPlayers.PlayerInfo.AllowedAlignment? = try format >= .shadowOfDeath ? {
+            let rawByte = try reader.readUInt8()
+            guard rawByte != 0x00 else { return .random }
+            let bitmaskFlipped = Bitmask(data: Data([rawByte]))
+            let bitmask = BitArray(bitmaskFlipped.reversed())
+            let factions: [Faction] = try bitmask.enumerated().compactMap { (factionID, isAllowed) in
+                guard isAllowed else { return nil }
+                return try Faction(integer: factionID)
+            }
+            return .followingFactions(factions)
+        }() : nil
        
         
         // Factions this player can choose
-        let playableFactions: [Faction] = try {
+        let townTypes: [Faction] = try {
             var playableFactionsBitmask = try UInt16(reader.readUInt8())
             
             if format != .restorationOfErathia {
                 playableFactionsBitmask += try 256 * UInt16(reader.readUInt8())
             }
             
-            let playableFactions: [Faction] = Faction.playable(in: format)
+            let townTypes: [Faction] = Faction.playable(in: format)
         
-            return playableFactions.filter {
+            return townTypes.filter {
                 playableFactionsBitmask & (1 << $0.rawValue) != 0
             }
         }()
         
         if isPlayable {
-            inspector?.didParsePlayableFactions(playableFactions, player: player)
+            inspector?.didParseTownTypes(townTypes, player: player)
         }
         
         let _ = try reader.readBool() // `hasRandomTown`
@@ -104,9 +114,9 @@ private extension Map.Loader.Parser.H3M {
         let playersInfo = Map.InformationAboutPlayers.PlayerInfo(
             player: player,
             isPlayableByHuman: isPlayableByHuman,
-            aiTactic: isPlayableByAI ? aiTactic : nil,
+            behaviour: isPlayableByAI ? behaviour : nil,
             allowedAlignments: allowedAlignments,
-            playableFactions: playableFactions,
+            townTypes: townTypes,
             mainTown: maybeMainTown,
             hasRandomHero: hasRandomHero,
             mainHero: mainHero,

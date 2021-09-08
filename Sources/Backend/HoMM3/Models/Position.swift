@@ -14,13 +14,13 @@ public struct Position: Hashable, CustomDebugStringConvertible {
     public let y: Scalar
     public let inUnderworld: Bool
     
-    public init(x: Scalar, y: Scalar, inUnderworld: Bool) {
+    public init(x: Scalar, y: Scalar, inUnderworld: Bool = false) {
         self.x = x
         self.y = y
         self.inUnderworld = inUnderworld
     }
     
-    public init(column: Scalar, row: Scalar, inUnderworld: Bool) {
+    public init(column: Scalar, row: Scalar, inUnderworld: Bool = false) {
         self.init(x: column, y: row, inUnderworld: inUnderworld)
     }
 }

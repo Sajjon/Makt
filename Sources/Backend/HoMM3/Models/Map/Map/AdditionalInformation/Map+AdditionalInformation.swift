@@ -56,7 +56,11 @@ public extension Map.AdditionalInformation {
 }
 
 
-public struct CollectionOf<Element, Tag>: Collection, CustomDebugStringConvertible {
+public struct CollectionOf<Element, Tag>: Collection, CustomDebugStringConvertible, ExpressibleByArrayLiteral {
+    public typealias ArrayLiteralElement = Element
+    public init(arrayLiteral elements: ArrayLiteralElement...) {
+        self.init(values: elements)
+    }
     public var debugDescription: String {
         values.map { String(describing: $0) }.joined(separator: ", ")
     }

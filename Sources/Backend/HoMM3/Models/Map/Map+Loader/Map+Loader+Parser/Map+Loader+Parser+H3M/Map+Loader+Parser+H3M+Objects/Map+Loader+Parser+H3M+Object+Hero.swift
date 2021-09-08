@@ -44,19 +44,20 @@ private extension Map.Loader.Parser.H3M {
         let owner: Player? = try parseOwner()
         
         let identifierKind: Hero.IdentifierKind = try {
-            
+            let heroIdThingyRaw = try reader.readUInt8()
             if let expectedHeroclass = maybeExpectedHeroClass {
-                let heroID = try Hero.ID(integer: reader.readUInt8())
+                let heroID = try Hero.ID(integer: heroIdThingyRaw)
                 assert(heroID.class == expectedHeroclass)
 
                 return Hero.IdentifierKind.specificHeroWithID(heroID)
             } else if isPrison {
-                let heroID = try Hero.ID(integer: reader.readUInt8())
+                let heroID = try Hero.ID(integer: heroIdThingyRaw)
                 return Hero.IdentifierKind.specificHeroWithID(heroID)
             } else {
-                let heroIdThingyRaw = try reader.readUInt8()
+              
                 let randomHeroID: Hero.ID? = try? Hero.ID.init(integer: heroIdThingyRaw)
                 let randomHeroClass: Hero.Class? = try? Hero.Class.init(integer: heroIdThingyRaw)
+                print("heroIdThingyRaw: \(heroIdThingyRaw), randomHeroID: \(randomHeroID), randomHeroClass: \(randomHeroClass)")
                 return .randomHero
             }
             
@@ -65,7 +66,7 @@ private extension Map.Loader.Parser.H3M {
         let name: String? = try reader.readBool() ? reader.readString() : nil
         
         let experiencePoints: UInt32? = try {
-            if format > .armageddonsBlade {
+            if format >= .shadowOfDeath {
                 return try reader.readBool() ? reader.readUInt32() : nil
             } else {
                 let xp = try reader.readUInt32()
@@ -93,8 +94,7 @@ private extension Map.Loader.Parser.H3M {
         
         let customGender: Hero.Gender? = try {
             guard format > .restorationOfErathia else { return nil }
-            guard try reader.readBool() else { /* does NOT have custom gender */ return nil }
-            return Hero.Gender(rawValue: try reader.readUInt8())
+            return try Hero.Gender(integer: reader.readUInt8())
         }() ?? nil
         
         let customSpells: [Spell.ID]? = try {

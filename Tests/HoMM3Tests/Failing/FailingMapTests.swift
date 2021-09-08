@@ -5,213 +5,6 @@
 //  Created by Alexander Cyon on 2021-08-13.
 //
 
-import XCTest
-@testable import HoMM3SwiftUI
-
-
-final class GoodToGoMapTest: BaseMapTest {
-    
-    
-    /// Smallest compressed file size
-    func test_assert_a_really_small_map_good_to_go() throws {
-        let inspector = Map.Loader.Parser.Inspector(
-            basicInfoInspector: .init(onParseFormat: {
-                XCTAssertEqual($0, .restorationOfErathia)
-            },
-            onParseName: { XCTAssertEqual($0, "Good to Go") },
-            onParseDescription: {  XCTAssertEqual($0, "In an effort to reduce the frequency of wars between the various nations, the Emperor has set aside a small region to be used as a battleground to settle differences between quarreling Lords. Your castle starts fully constructed so that you may concentrate on defeating your opponent. Good luck!") },
-            onParseDifficulty: { XCTAssertEqual($0, .normal) },
-            onParseSize: { XCTAssertEqual($0, .small) }),
-            
-            additionalInformationInspector: .init(
-                onParseTeamInfo: { XCTAssertEqual($0, [[1], [2], [4, 5]]) }
-            ),
-            onParseObject: { [self] object in
-                switch object.position {
-                case at(34, y: 4):
-                    assertObjectTown(
-                        expected: .init(
-                            id: .position(.init(x: 34, y: 4, inUnderworld: false)),
-                            faction: .fortress,
-                            owner: .green,
-                            buildings: .init(
-                                built: [
-                                    .townHall, .cityHall, .capitol,
-                                    .fort, .citadel, .castle,
-                                    .tavern, .blacksmith, .marketplace, .resourceSilo,
-                                    .mageGuildLevel1, .mageGuildLevel2, .mageGuildLevel3,
-                                    .special1, .special2, .special3,
-                                    .dwelling1, .upgradedDwelling1, .horde1,
-                                    .dwelling2, .upgradedDwelling2,
-                                    .dwelling3, .upgradedDwelling3,
-                                    .dwelling4, .upgradedDwelling4
-                                ]
-                            )),
-                        actual: object
-                    )
-                case at(5, y: 5):
-                    if object.objectID.stripped == .randomTown {
-                        assertObjectRandomTown(expected: .init(
-                            id: .position(.init(x: 5, y: 5, inUnderworld: false)),
-                            owner: .red,
-                            buildings: .init(built: Map.Town.Buildings.Building.all(but: [.shipyard, .special1, .special2, .special3, .special4]), forbidden: [.shipyard]),
-                            spells: .init(
-                                possible: .init(
-                                    values: Spell.ID.all(
-                                        but: [.summonBoat, .scuttleBoat, .waterWalk]
-                                    )
-                                )
-                            )
-                        ), actual: object)
-                    } else if object.objectID.stripped == .randomHero {
-                        assertObjectRandomHero(expected: .init(identifierKind: .randomHero, owner: .red, startingExperiencePoints: 6_000), actual: object)
-                    } else {
-                        XCTFail("Unexpected object of kind: \(object.kind).")
-                    }
-                    
-                    
-                case at(5, y: 33):
-                    assertObjectTown(
-                        expected: .init(
-                            id: .position(.init(x: 5, y: 33, inUnderworld: false)),
-                            faction: .stronghold,
-                            owner: .orange,
-                            buildings: .init(
-                                built: [
-                                    .townHall, .cityHall, .capitol,
-                                    .fort, .citadel, .castle,
-                                    .tavern, .blacksmith, .marketplace, .resourceSilo,
-                                    .mageGuildLevel1, .mageGuildLevel2, .mageGuildLevel3,
-                                    .special1, .special2, .special3, .special4,
-                                    .dwelling1, .upgradedDwelling1, .horde1,
-                                    .dwelling2, .upgradedDwelling2,
-                                    .dwelling3, .upgradedDwelling3,
-                                    .dwelling4, .upgradedDwelling4
-                                ]
-                            )),
-                        actual: object
-                    )
-                    
-                case at(26, y: 6):
-                    assertObjectHero(
-                        class: .beastmaster,
-                        expected: .init(
-                            identifierKind: .specificHeroWithID(.korbac),
-                            owner: .green,
-                            army: .init(stacks: [
-                                .init(creatureID: .gnoll, quantity: 100),
-                                .init(creatureID: .gnoll, quantity: 100)
-                            ]),
-                            startingExperiencePoints: 18_500
-                        ),
-                        actual: object)
-                case at(33, y: 8):
-                    assertObjectHero(
-                        class: .witch,
-                        expected: .init(
-                            identifierKind: .specificHeroWithID(.verdish),
-                            owner: .green,
-                            army: .init(stacks: [
-                                .init(creatureID: .gnoll, quantity: 100),
-                                .init(creatureID: .gnoll, quantity: 100)
-                            ]),
-                            startingExperiencePoints: 18_500
-                        ),
-                        actual: object)
-                case at(2, y: 28):
-                    assertObjectHero(
-                        class: .barbarian,
-                        expected: .init(
-                            identifierKind: .specificHeroWithID(.yog),
-                            owner: .orange,
-                            army: .init(stacks: [
-                                .init(creatureID: .goblin, quantity: 100),
-                                .init(creatureID: .goblin, quantity: 100)
-                            ]),
-                            startingExperiencePoints: 18_500
-                        ),
-                        actual: object)
-                    
-                case at(7, y: 35):
-                    assertObjectHero(
-                        class: .battleMage,
-                        expected: .init(
-                            identifierKind: .specificHeroWithID(.oris),
-                            owner: .orange,
-                            army: .init(stacks: [
-                                .init(creatureID: .goblin, quantity: 100),
-                                .init(creatureID: .goblin, quantity: 100)
-                            ]),
-                            startingExperiencePoints: 18_500
-                        ),
-                        actual: object)
-                    
-                case at(34, y: 33):
-                    if object.objectID.stripped == .randomTown {
-                        assertObjectRandomTown(expected: .init(
-                            id: .position(.init(x: 34, y: 33, inUnderworld: false)),
-                            owner: .blue,
-                            buildings: .init(built: Map.Town.Buildings.Building.all(but: [.shipyard, .special1, .special2, .special3, .special4]), forbidden: [.shipyard]),
-                            spells: .init(
-                                possible: .init(
-                                    values: Spell.ID.all(
-                                        but: [.summonBoat, .scuttleBoat, .waterWalk]
-                                    )
-                                )
-                            )
-                        ), actual: object)
-                    } else if object.objectID.stripped == .randomHero {
-                        assertObjectRandomHero(expected: .init(identifierKind: .randomHero, owner: .blue, startingExperiencePoints: 6_000), actual: object)
-                    } else {
-                        XCTFail("Unexpected object of kind: \(object.kind).")
-                    }
-                    
-                default: break
-                }
-                
-            },
-        onParseEvents: {
-            let events = $0.events
-            XCTAssertEqual(events.count, 2)
-            
-            XCTAssertEqual(
-                events[0],
-                .init(
-                    name: "Starting Resources",
-                    message: "The duel has begun, and will end only when one of you remains. As part of the ritual of combat in this region, you are provided with enough supplies with which to wage war.",
-                    firstOccurence: 1-1,
-                    affectedPlayers: [1, 2, 4, 5],
-                    appliesToHumanPlayers: true,
-                    appliesToComputerPlayers: true,
-                    resources: .init(resources: [
-                        .init(kind: .wood, amount: 75),
-                        .init(kind: .mercury, amount: 50),
-                        .init(kind: .ore, amount: 75),
-                        .init(kind: .sulfur, amount: 50),
-                        .init(kind: .crystal, amount: 50),
-                        .init(kind: .gems, amount: 50),
-                        .init(kind: .gold, amount: 50_000),
-                    ])
-                )
-            )
-            
-            XCTAssertEqual(
-                events[1],
-                .init(
-                    name: "Warning",
-                    message: "You must also be careful, as the natives will try to stop both you and your opponent from winning!",
-                    firstOccurence: 1-1,
-                    affectedPlayers: [1, 2, 4, 5],
-                    appliesToHumanPlayers: true,
-                    appliesToComputerPlayers: true
-                )
-            )
-        }
-        )
-        try loadMap(id: .goodToGo, inspector: inspector)
-        waitForExpectations(timeout: 1)
-    }
-}
 
     /*
     func test_assert_small_map_kneeDeepInTheDead() throws {
@@ -364,42 +157,18 @@ final class GoodToGoMapTest: BaseMapTest {
         XCTAssertEqual(map.about.playersInfo.players[1].isPlayableBothByHumanAndAI, true)
         XCTAssertEqual(map.about.playersInfo.players[2].isPlayableBothByHumanAndAI, true)
 
-        XCTAssertEqual(map.about.playersInfo.players[0].playableFactions, [.tower])
-        XCTAssertEqual(map.about.playersInfo.players[1].playableFactions, [.tower])
-        XCTAssertEqual(map.about.playersInfo.players[2].playableFactions, [.tower])
-        XCTAssertEqual(map.about.playersInfo.players[3].playableFactions, [.stronghold])
-        XCTAssertEqual(map.about.playersInfo.players[4].playableFactions, [.dungeon])
-        XCTAssertEqual(map.about.playersInfo.players[5].playableFactions, [.castle])
+        XCTAssertEqual(map.about.playersInfo.players[0].townTypes, [.tower])
+        XCTAssertEqual(map.about.playersInfo.players[1].townTypes, [.tower])
+        XCTAssertEqual(map.about.playersInfo.players[2].townTypes, [.tower])
+        XCTAssertEqual(map.about.playersInfo.players[3].townTypes, [.stronghold])
+        XCTAssertEqual(map.about.playersInfo.players[4].townTypes, [.dungeon])
+        XCTAssertEqual(map.about.playersInfo.players[5].townTypes, [.castle])
 
         XCTAssertEqual(map.about.victoryLossConditions.victoryConditions, [.standard])
         XCTAssertEqual(map.about.victoryLossConditions.lossConditions, [.standard])
     }
 
-    func test_assert_maps_are_lazy_loaded_and_cached() throws {
-        let mapID: Map.ID = .titansWinter
 
-        // Delete any earlier cached maps.
-        Map.loader.cache.__deleteMap(by: mapID)
-
-        XCTAssertNil(Map.loader.cache.load(id: mapID))
-
-        var start: DispatchTime
-        var end: DispatchTime
-
-        start = .now()
-        let _ = try Map.load(mapID)
-        end = .now()
-        let timeNonCached = end.uptimeNanoseconds - start.uptimeNanoseconds
-
-        start = .now()
-        let _ = try Map.load(mapID) // Should find map in cache
-        end = .now()
-        let timeCached = end.uptimeNanoseconds - start.uptimeNanoseconds
-
-        // Should be faster to load cached map.about.
-        XCTAssertLessThan(timeCached, timeNonCached)
-
-    }
 
     func test_assert_can_load_map_by_id__vikingWeShallGo() throws {
         // Delete any earlier cached maps.
@@ -425,7 +194,7 @@ final class GoodToGoMapTest: BaseMapTest {
         XCTAssertTrue(map.about.playersInfo.players[5].isPlayableOnlyByAI)
 
         XCTAssertEqual(
-            map.about.playersInfo.players.flatMap({ $0.playableFactions }),
+            map.about.playersInfo.players.flatMap({ $0.townTypes }),
             [.stronghold, .necropolis, .castle, .rampart, .castle, .inferno]
         )
 
@@ -452,11 +221,11 @@ final class GoodToGoMapTest: BaseMapTest {
         XCTAssertTrue(map.about.playersInfo.players[0].isPlayableBothByHumanAndAI)
         XCTAssertTrue(map.about.playersInfo.players.suffix(4).allSatisfy({ $0.isPlayableOnlyByAI }))
 
-        XCTAssertEqual(map.about.playersInfo.players[0].playableFactions, [.castle])
-        XCTAssertEqual(map.about.playersInfo.players[1].playableFactions, [.necropolis])
-        XCTAssertEqual(map.about.playersInfo.players[2].playableFactions, [.inferno])
-        XCTAssertEqual(map.about.playersInfo.players[3].playableFactions, [.dungeon])
-        XCTAssertEqual(map.about.playersInfo.players[4].playableFactions, [.dungeon])
+        XCTAssertEqual(map.about.playersInfo.players[0].townTypes, [.castle])
+        XCTAssertEqual(map.about.playersInfo.players[1].townTypes, [.necropolis])
+        XCTAssertEqual(map.about.playersInfo.players[2].townTypes, [.inferno])
+        XCTAssertEqual(map.about.playersInfo.players[3].townTypes, [.dungeon])
+        XCTAssertEqual(map.about.playersInfo.players[4].townTypes, [.dungeon])
 
         XCTAssertFalse(map.about.playersInfo.players[2].hasRandomHero)
         XCTAssertEqual(map.about.playersInfo.players[2].customMainHero?.name, "The Queen")
@@ -483,9 +252,9 @@ final class GoodToGoMapTest: BaseMapTest {
 
         XCTAssertTrue(map.about.playersInfo.players.allSatisfy({ $0.isPlayableBothByHumanAndAI }))
 
-        XCTAssertEqual(map.about.playersInfo.players[0].playableFactions, Faction.playable(in: .restorationOfErathia))
-        XCTAssertEqual(map.about.playersInfo.players[1].playableFactions, [.inferno])
-        XCTAssertEqual(map.about.playersInfo.players[2].playableFactions, [.stronghold])
+        XCTAssertEqual(map.about.playersInfo.players[0].townTypes, Faction.playable(in: .restorationOfErathia))
+        XCTAssertEqual(map.about.playersInfo.players[1].townTypes, [.inferno])
+        XCTAssertEqual(map.about.playersInfo.players[2].townTypes, [.stronghold])
 
         XCTAssertEqual(map.about.victoryLossConditions.victoryConditions.map { $0.kind.stripped }, [.buildGrailBuilding, .standard])
         XCTAssertEqual(map.about.victoryLossConditions.lossConditions.map { $0.kind.stripped }, [.standard])
@@ -509,9 +278,9 @@ final class GoodToGoMapTest: BaseMapTest {
         XCTAssertTrue(map.about.playersInfo.players.prefix(2).allSatisfy({ $0.isPlayableBothByHumanAndAI }))
         XCTAssertTrue(map.about.playersInfo.players[2].isPlayableOnlyByAI)
 
-        XCTAssertEqual(map.about.playersInfo.players[0].playableFactions, Faction.playable(in: .restorationOfErathia))
-        XCTAssertEqual(map.about.playersInfo.players[1].playableFactions, Faction.playable(in: .restorationOfErathia))
-        XCTAssertEqual(map.about.playersInfo.players[2].playableFactions, Faction.playable(in: .restorationOfErathia))
+        XCTAssertEqual(map.about.playersInfo.players[0].townTypes, Faction.playable(in: .restorationOfErathia))
+        XCTAssertEqual(map.about.playersInfo.players[1].townTypes, Faction.playable(in: .restorationOfErathia))
+        XCTAssertEqual(map.about.playersInfo.players[2].townTypes, Faction.playable(in: .restorationOfErathia))
 
         XCTAssertEqual(map.about.victoryLossConditions.victoryConditions.map { $0.kind.stripped }, [.flagAllCreatureDwellings, .standard])
         XCTAssertEqual(map.about.victoryLossConditions.lossConditions.map { $0.kind.stripped }, [.standard])
@@ -534,9 +303,9 @@ final class GoodToGoMapTest: BaseMapTest {
 
         XCTAssertTrue(map.about.playersInfo.players.allSatisfy({ $0.isPlayableBothByHumanAndAI }))
 
-        XCTAssertEqual(map.about.playersInfo.players[0].playableFactions, [.inferno])
-        XCTAssertEqual(map.about.playersInfo.players[1].playableFactions, [.stronghold])
-        XCTAssertEqual(map.about.playersInfo.players[2].playableFactions, [.castle])
+        XCTAssertEqual(map.about.playersInfo.players[0].townTypes, [.inferno])
+        XCTAssertEqual(map.about.playersInfo.players[1].townTypes, [.stronghold])
+        XCTAssertEqual(map.about.playersInfo.players[2].townTypes, [.castle])
 
         XCTAssertEqual(map.about.victoryLossConditions.victoryConditions.map { $0.kind.stripped }, [.flagAllMines, .standard])
         XCTAssertEqual(map.about.victoryLossConditions.lossConditions.map { $0.kind.stripped }, [.standard])
@@ -560,14 +329,14 @@ final class GoodToGoMapTest: BaseMapTest {
         XCTAssertTrue(map.about.playersInfo.players.prefix(3).allSatisfy({ $0.isPlayableOnlyByAI }))
         XCTAssertTrue(map.about.playersInfo.players.suffix(5).allSatisfy({ $0.isPlayableBothByHumanAndAI }))
 
-        XCTAssertEqual(map.about.playersInfo.players[0].playableFactions, [.castle])
-        XCTAssertEqual(map.about.playersInfo.players[1].playableFactions, [.dungeon])
-        XCTAssertEqual(map.about.playersInfo.players[2].playableFactions, [.inferno])
-        XCTAssertEqual(map.about.playersInfo.players[3].playableFactions, [.castle])
-        XCTAssertEqual(map.about.playersInfo.players[4].playableFactions, [.rampart])
-        XCTAssertEqual(map.about.playersInfo.players[5].playableFactions, [.dungeon])
-        XCTAssertEqual(map.about.playersInfo.players[6].playableFactions, [.tower])
-        XCTAssertEqual(map.about.playersInfo.players[7].playableFactions, [.rampart])
+        XCTAssertEqual(map.about.playersInfo.players[0].townTypes, [.castle])
+        XCTAssertEqual(map.about.playersInfo.players[1].townTypes, [.dungeon])
+        XCTAssertEqual(map.about.playersInfo.players[2].townTypes, [.inferno])
+        XCTAssertEqual(map.about.playersInfo.players[3].townTypes, [.castle])
+        XCTAssertEqual(map.about.playersInfo.players[4].townTypes, [.rampart])
+        XCTAssertEqual(map.about.playersInfo.players[5].townTypes, [.dungeon])
+        XCTAssertEqual(map.about.playersInfo.players[6].townTypes, [.tower])
+        XCTAssertEqual(map.about.playersInfo.players[7].townTypes, [.rampart])
 
         XCTAssertEqual(map.about.victoryLossConditions.victoryConditions.map { $0.kind.stripped }, [.acquireSpecificArtifact, .standard])
         XCTAssertEqual(map.about.victoryLossConditions.lossConditions.map { $0.kind.stripped }, [.standard])
@@ -592,7 +361,7 @@ final class GoodToGoMapTest: BaseMapTest {
         XCTAssertTrue(map.about.playersInfo.players[5].isPlayableOnlyByAI)
         XCTAssertTrue(map.about.playersInfo.players[6].isPlayableBothByHumanAndAI)
 
-        XCTAssertTrue(map.about.playersInfo.players.allSatisfy({ $0.playableFactions == Faction.playable(in: .restorationOfErathia) }))
+        XCTAssertTrue(map.about.playersInfo.players.allSatisfy({ $0.townTypes == Faction.playable(in: .restorationOfErathia) }))
 
         XCTAssertEqual(map.about.victoryLossConditions.victoryConditions.map { $0.kind.stripped }, [.defeatSpecificHero])
         XCTAssertEqual(map.about.victoryLossConditions.lossConditions.map { $0.kind.stripped }, [.standard])
@@ -617,7 +386,7 @@ final class GoodToGoMapTest: BaseMapTest {
 
         XCTAssertTrue(map.about.playersInfo.players.allSatisfy({ $0.isPlayableBothByHumanAndAI }))
 
-        XCTAssertTrue(map.about.playersInfo.players.allSatisfy({ $0.playableFactions == Faction.playable(in: .shadowOfDeath) }))
+        XCTAssertTrue(map.about.playersInfo.players.allSatisfy({ $0.townTypes == Faction.playable(in: .shadowOfDeath) }))
 
         XCTAssertEqual(map.about.victoryLossConditions.victoryConditions.map { $0.kind.stripped }, [.standard])
         XCTAssertEqual(map.about.victoryLossConditions.lossConditions.map { $0.kind.stripped }, [.standard])
@@ -644,7 +413,7 @@ final class GoodToGoMapTest: BaseMapTest {
         XCTAssertTrue(map.about.playersInfo.players.allSatisfy({ $0.isPlayableBothByHumanAndAI }))
         XCTAssertTrue(map.about.playersInfo.players.allSatisfy({ $0.isRandomFaction }))
 
-        XCTAssertTrue(map.about.playersInfo.players.allSatisfy({ $0.playableFactions == Faction.playable(in: .shadowOfDeath) }))
+        XCTAssertTrue(map.about.playersInfo.players.allSatisfy({ $0.townTypes == Faction.playable(in: .shadowOfDeath) }))
 
         XCTAssertEqual(map.about.victoryLossConditions.victoryConditions.map { $0.kind.stripped }, [.standard])
         XCTAssertEqual(map.about.victoryLossConditions.lossConditions.map { $0.kind.stripped }, [.standard])
@@ -653,31 +422,5 @@ final class GoodToGoMapTest: BaseMapTest {
         XCTAssertEqual(map.about.teamInfo, [[.playerOne, .playerSix], [.playerTwo, .playerFive], [.playerThree, .playerFour]])
     }
 
-    func test_assert_can_load_map_by_id__heroesOffMightNotMagic_allies() throws {
-        // Delete any earlier cached maps.
-        Map.loader.cache.__deleteMap(by: .heroesOfMightNotMagicAllies)
-        let map = try Map.load(.heroesOfMightNotMagicAllies)
-        XCTAssertEqual(map.about.summary.fileName, "Heroes of Might not Magic Allied.h3m")
-        XCTAssertEqual(map.about.summary.name, "Heroes of Might, Not Magic (A)")
-        XCTAssertEqual(map.about.summary.description, "An evil sorcerer has siphoned all the magic from this land into his Vial of Dragon Blood.  The only way to get the magic back is to unite all the towns in battle against him.  However, each town thinks they can rule this land better than the other.")
-        XCTAssertEqual(map.about.summary.fileSizeCompressed, 32_417)
-        XCTAssertEqual(map.about.summary.fileSize, 142_048)
-        XCTAssertTrue(map.about.summary.hasTwoLevels)
-        XCTAssertEqual(map.about.summary.format, .shadowOfDeath)
-        XCTAssertEqual(map.about.summary.difficulty, .normal)
-        XCTAssertEqual(map.about.summary.size, .medium)
-        XCTAssertEqual(map.about.playersInfo.players.count, 6)
-
-        XCTAssertTrue(map.about.playersInfo.players.allSatisfy({ $0.isPlayableBothByHumanAndAI }))
-        XCTAssertTrue(map.about.playersInfo.players.allSatisfy({ $0.hasRandomHero }))
-        XCTAssertFalse(map.about.playersInfo.players[0].isRandomFaction)
-        XCTAssertTrue(map.about.playersInfo.players[1].isRandomFaction)
-        map.about.playersInfo.players.suffix(4).forEach {
-            XCTAssertFalse($0.isRandomFaction)
-        }
-
-        XCTAssertEqual(map.about.victoryLossConditions.victoryConditions.map { $0.kind.stripped }, [.standard])
-        XCTAssertEqual(map.about.victoryLossConditions.lossConditions.map { $0.kind.stripped }, [.standard])
-        XCTAssertEqual(map.about.teamInfo, [[.playerOne, .playerFive], [.playerTwo, .playerFour], [.playerSix, .playerSeven]])
-    }
+    
     */
