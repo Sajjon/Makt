@@ -203,37 +203,6 @@
     }
 
 
-    func test_assert_can_load_map_by_id__mandateOfHeaven() throws {
-        // Delete any earlier cached maps.
-        Map.loader.cache.__deleteMap(by: .theMandateOfHeaven)
-        let map = try Map.load(.theMandateOfHeaven)
-        XCTAssertEqual(map.about.summary.fileName, "The Mandate of Heaven.h3m")
-        XCTAssertEqual(map.about.summary.name, "The Mandate of Heaven")
-        XCTAssertEqual(map.about.summary.description, "Devils have invaded and it is up to you to win back the Mandate of Heaven for the faltering Ironfist Dynasty")
-        XCTAssertEqual(map.about.summary.fileSizeCompressed, 70_517 )
-        XCTAssertEqual(map.about.summary.fileSize, 399_506)
-        XCTAssertTrue(map.about.summary.hasTwoLevels)
-        XCTAssertEqual(map.about.summary.format, .restorationOfErathia)
-        XCTAssertEqual(map.about.summary.difficulty, .expert)
-        XCTAssertEqual(map.about.summary.size, .extraLarge)
-        XCTAssertEqual(map.about.playersInfo.players.count, 5)
-
-        XCTAssertTrue(map.about.playersInfo.players[0].isPlayableBothByHumanAndAI)
-        XCTAssertTrue(map.about.playersInfo.players.suffix(4).allSatisfy({ $0.isPlayableOnlyByAI }))
-
-        XCTAssertEqual(map.about.playersInfo.players[0].townTypes, [.castle])
-        XCTAssertEqual(map.about.playersInfo.players[1].townTypes, [.necropolis])
-        XCTAssertEqual(map.about.playersInfo.players[2].townTypes, [.inferno])
-        XCTAssertEqual(map.about.playersInfo.players[3].townTypes, [.dungeon])
-        XCTAssertEqual(map.about.playersInfo.players[4].townTypes, [.dungeon])
-
-        XCTAssertFalse(map.about.playersInfo.players[2].hasRandomHero)
-        XCTAssertEqual(map.about.playersInfo.players[2].customMainHero?.name, "The Queen")
-        XCTAssertEqual(map.about.playersInfo.players[2].customMainHero?.portraitId, .calid)
-
-        XCTAssertEqual(map.about.victoryLossConditions.victoryConditions.map { $0.kind.stripped }, [.captureSpecificTown])
-        XCTAssertEqual(map.about.victoryLossConditions.lossConditions.map { $0.kind.stripped }, [.standard])
-    }
 
     func test_assert_can_load_map_by_id__rebellion() throws {
         // Delete any earlier cached maps.

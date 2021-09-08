@@ -30,6 +30,7 @@
 		483D8EC926E879EE00CEB85A /* VictoryLossConditions+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 483D8EC826E879EE00CEB85A /* VictoryLossConditions+Extension.swift */; };
 		483D8ECD26E87A3600CEB85A /* CacheTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 483D8ECC26E87A3600CEB85A /* CacheTests.swift */; };
 		483D8ECF26E87B0900CEB85A /* HeroesOfMighNotMagicAlliesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 483D8ECE26E87B0900CEB85A /* HeroesOfMighNotMagicAlliesTests.swift */; };
+		483D8ED126E8A2BB00CEB85A /* MandateOfHeavenTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 483D8ED026E8A2BB00CEB85A /* MandateOfHeavenTests.swift */; };
 		487058C126E104D600DEEB36 /* TownEventOnMapTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487058C026E104D600DEEB36 /* TownEventOnMapTests.swift */; };
 		487AF96826D7B9C30073277F /* Hero+ID+HeroClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487AF96726D7B9C30073277F /* Hero+ID+HeroClass.swift */; };
 		487AF96B26D9131C0073277F /* RaceForArdintinnyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487AF96A26D9131C0073277F /* RaceForArdintinnyTests.swift */; };
@@ -192,6 +193,7 @@
 		483D8EC826E879EE00CEB85A /* VictoryLossConditions+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "VictoryLossConditions+Extension.swift"; sourceTree = "<group>"; };
 		483D8ECC26E87A3600CEB85A /* CacheTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CacheTests.swift; sourceTree = "<group>"; };
 		483D8ECE26E87B0900CEB85A /* HeroesOfMighNotMagicAlliesTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeroesOfMighNotMagicAlliesTests.swift; sourceTree = "<group>"; };
+		483D8ED026E8A2BB00CEB85A /* MandateOfHeavenTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MandateOfHeavenTests.swift; sourceTree = "<group>"; };
 		487058C026E104D600DEEB36 /* TownEventOnMapTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TownEventOnMapTests.swift; sourceTree = "<group>"; };
 		487AF96726D7B9C30073277F /* Hero+ID+HeroClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Hero+ID+HeroClass.swift"; sourceTree = "<group>"; };
 		487AF96A26D9131C0073277F /* RaceForArdintinnyTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RaceForArdintinnyTests.swift; sourceTree = "<group>"; };
@@ -451,6 +453,7 @@
 				483D8EC426E8794F00CEB85A /* UnholyQuestTests.swift */,
 				483D8EC626E8799000CEB85A /* TaleOfTwoLandsTests.swift */,
 				483D8ECE26E87B0900CEB85A /* HeroesOfMighNotMagicAlliesTests.swift */,
+				483D8ED026E8A2BB00CEB85A /* MandateOfHeavenTests.swift */,
 			);
 			path = BundledMaps;
 			sourceTree = "<group>";
@@ -1123,6 +1126,7 @@
 				48CC4AEF26E4F05100447F77 /* CustomizedHeroesSODMapTest.swift in Sources */,
 				481BDFA026C6A4F000C5E335 /* FailingMapTests.swift in Sources */,
 				48CC4ABA26E4DEBB00447F77 /* HeroesStartingWith_A_MapTest.swift in Sources */,
+				483D8ED126E8A2BB00CEB85A /* MandateOfHeavenTests.swift in Sources */,
 				483D8EC126E8790500CEB85A /* GoodToGoTests.swift in Sources */,
 				483D8EC726E8799000CEB85A /* TaleOfTwoLandsTests.swift in Sources */,
 				483D8EC926E879EE00CEB85A /* VictoryLossConditions+Extension.swift in Sources */,
