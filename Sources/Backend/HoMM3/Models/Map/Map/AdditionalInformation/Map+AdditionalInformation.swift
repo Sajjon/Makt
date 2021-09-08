@@ -61,6 +61,9 @@ public struct CollectionOf<Element, Tag>: Collection, CustomDebugStringConvertib
         values.map { String(describing: $0) }.joined(separator: ", ")
     }
     public let values: [Element]
+    public init(values: [Element]) {
+        self.values = values
+    }
 }
 public extension CollectionOf {
     typealias Index = Array<Element>.Index
@@ -70,9 +73,6 @@ public extension CollectionOf {
         values.index(after: index)
     }
     subscript(position: Index) -> Element { values[position] }
-//    The startIndex and endIndex properties
-//    A subscript that provides at least read-only access to your type’s elements
-//    The index(after:) method for advancing an index into your collection
 }
 extension CollectionOf: Equatable where Element: Equatable {}
 extension CollectionOf: Hashable where Element: Hashable {}
@@ -80,9 +80,7 @@ public enum ArtifactIDsTag: Hashable {}
 public typealias ArtifactIDs = CollectionOf<Artifact.ID, ArtifactIDsTag>
 public enum SpellIDsTag: Hashable {}
 public typealias SpellIDs = CollectionOf<Spell.ID, SpellIDsTag>
-//public struct Artifacts: Hashable {
-//    public let artifacts: [Artifact.ID]
-//}
+
 public extension Hero {
     enum PrimarySkillsTag: Hashable {}
     typealias PrimarySkills = CollectionOf<PrimarySkill, PrimarySkillsTag>

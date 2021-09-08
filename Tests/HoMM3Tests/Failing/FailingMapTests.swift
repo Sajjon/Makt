@@ -28,6 +28,27 @@ final class GoodToGoMapTest: BaseMapTest {
             ),
             onParseObject: { [self] object in
                 switch object.position {
+                case at(34, y: 4):
+                    assertObjectTown(
+                        expected: .init(
+                            id: .position(.init(x: 34, y: 4, inUnderworld: false)),
+                            faction: .fortress,
+                            owner: .green,
+                            buildings: .init(
+                                built: [
+                                    .townHall, .cityHall, .capitol,
+                                    .fort, .citadel, .castle,
+                                    .tavern, .blacksmith, .marketplace, .resourceSilo,
+                                    .mageGuildLevel1, .mageGuildLevel2, .mageGuildLevel3,
+                                    .special1, .special2, .special3,
+                                    .dwelling1, .upgradedDwelling1, .horde1,
+                                    .dwelling2, .upgradedDwelling2,
+                                    .dwelling3, .upgradedDwelling3,
+                                    .dwelling4, .upgradedDwelling4
+                                ]
+                            )),
+                        actual: object
+                    )
                 case at(5, y: 5):
                     if object.objectID.stripped == .randomTown {
                         assertObjectRandomTown(expected: .init(
@@ -47,6 +68,30 @@ final class GoodToGoMapTest: BaseMapTest {
                     } else {
                         XCTFail("Unexpected object of kind: \(object.kind).")
                     }
+                    
+                    
+                case at(5, y: 33):
+                    assertObjectTown(
+                        expected: .init(
+                            id: .position(.init(x: 5, y: 33, inUnderworld: false)),
+                            faction: .stronghold,
+                            owner: .orange,
+                            buildings: .init(
+                                built: [
+                                    .townHall, .cityHall, .capitol,
+                                    .fort, .citadel, .castle,
+                                    .tavern, .blacksmith, .marketplace, .resourceSilo,
+                                    .mageGuildLevel1, .mageGuildLevel2, .mageGuildLevel3,
+                                    .special1, .special2, .special3, .special4,
+                                    .dwelling1, .upgradedDwelling1, .horde1,
+                                    .dwelling2, .upgradedDwelling2,
+                                    .dwelling3, .upgradedDwelling3,
+                                    .dwelling4, .upgradedDwelling4
+                                ]
+                            )),
+                        actual: object
+                    )
+                    
                 case at(26, y: 6):
                     assertObjectHero(
                         class: .beastmaster,

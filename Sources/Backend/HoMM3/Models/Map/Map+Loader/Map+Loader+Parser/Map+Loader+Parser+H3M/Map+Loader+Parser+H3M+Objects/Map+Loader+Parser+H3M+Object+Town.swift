@@ -13,9 +13,15 @@ public extension CaseIterable {
     }
 }
 
+public extension Array where Element: Equatable {
+    func all<S>(but exclusion: S) -> [Element] where S: Sequence, S.Element == Self.Element {
+        filter({ element in !exclusion.contains(where: { $0 == element }) })
+    }
+}
+
 public extension RawRepresentable where Self: CaseIterable, Self.AllCases == [Self], Self: Equatable {
     static func all<S>(but exclusion: S) -> [Self] where S: Sequence, S.Element == Self {
-        allCases.filter({ element in !exclusion.contains(where: { $0 == element }) })
+        allCases.all(but: exclusion)
     }
 }
 
@@ -55,7 +61,7 @@ public extension Map {
             public let obligatory: SpellIDs?
             
             public init(
-                possible: SpellIDs,
+                possible: SpellIDs = .init(values: Spell.ID.allCases),
                 obligatory: SpellIDs? = nil
             ) {
                 self.possible = possible
@@ -79,8 +85,8 @@ public extension Map {
             name: String? = nil,
             garrison: CreatureStacks? = nil,
             formation: Army.Formation = .spread,
-            buildings: Map.Town.Buildings,
-            spells: Spells,
+            buildings: Map.Town.Buildings = .init(),
+            spells: Spells = .init(),
             events: Events? = nil,
             alignment: Faction? = nil
         ) {
@@ -121,6 +127,14 @@ public extension Map.Town {
     struct Buildings: Hashable {
         public let built: [Building]
         public let forbidden: [Building]
+        
+        public init(
+            built: [Building] = [.fort],
+            forbidden: [Building] = []
+        ) {
+            self.built = built
+            self.forbidden = forbidden
+        }
     }
 }
 public extension Map.Town.Buildings {
@@ -192,10 +206,23 @@ public extension Map.Town.Buildings {
         
         case shipyard
         case grail
+        
+        /// Fortress: `Blood obelisk` (? or special2 or special3)
+        /// Stronghold: `Escape tunnel` (?)
         case special1
+        
+        /// Fortress: `Glyphs of fear` (? or special1 or special3)
+        /// Stronghold: `Ballista Yard` (?)
         case special2
+        
+        /// Fortress: `Cage of warlords` (? or special2 or special1)
+        /// Stronghold: `Freelancer's guild` (?)
         case special3
+        
+        /// Fortress: `Carnivorous Plant`
+        /// Stronghold: `Hall of Valhalla` (?)
         case special4
+        
         case dwelling1
         case upgradedDwelling1
         case horde1
