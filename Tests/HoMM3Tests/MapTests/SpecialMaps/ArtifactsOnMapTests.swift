@@ -70,8 +70,8 @@ final class ArtifactsOnMapTests: BaseMapTest {
                             id: .visions,
                             message: "spellscrol guardians",
                             guardians: .init(creatureStackAtSlot: [
-                                .one: .init(creatureID: .griffin, quantity: 1),
-                                .six: .init(creatureID: .swordsman, quantity: 1)
+                                .one: .specific(id: .griffin, quantity: 1),
+                                .six: .specific(id: .swordsman, quantity: 1)
                             ])
                         ))
                     case at(1, y: 1):
@@ -97,8 +97,8 @@ final class ArtifactsOnMapTests: BaseMapTest {
                                 message: "random",
                                 guards: .init(
                                     stacksAtSlots: [
-                                        (CreatureStacks.Slot.one, .init(creatureID: .archer, quantity: 1)),
-                                        (CreatureStacks.Slot.seven, .init(creatureID: .archer, quantity: 1))
+                                        (CreatureStacks.Slot.one, .specific(id: .archer, quantity: 1)),
+                                        (CreatureStacks.Slot.seven, .specific(id: .archer, quantity: 1))
                                     ]
                                 )
                             )

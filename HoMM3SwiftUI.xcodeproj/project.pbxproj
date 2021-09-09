@@ -17,7 +17,6 @@
 		481BDF6726C5942000C5E335 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 481BDF6626C5942000C5E335 /* ContentView.swift */; };
 		481BDF6926C5942200C5E335 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 481BDF6826C5942200C5E335 /* Assets.xcassets */; };
 		481BDF6C26C5942200C5E335 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 481BDF6B26C5942200C5E335 /* Preview Assets.xcassets */; };
-		481BDFA026C6A4F000C5E335 /* FailingMapTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 481BDF9F26C6A4F000C5E335 /* FailingMapTests.swift */; };
 		483A2D9226DFBE2500EAC052 /* Artifact+ID+CustomDebugStringConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 483A2D9126DFBE2500EAC052 /* Artifact+ID+CustomDebugStringConvertible.swift */; };
 		483A2D9426DFC81E00EAC052 /* CreaturesOnMapTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 483A2D9326DFC81E00EAC052 /* CreaturesOnMapTests.swift */; };
 		483A2D9626E002A400EAC052 /* ArtifactsOnMapTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 483A2D9526E002A400EAC052 /* ArtifactsOnMapTests.swift */; };
@@ -35,6 +34,17 @@
 		483D8ED526E9290C00CEB85A /* ElbowRoomTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 483D8ED426E9290C00CEB85A /* ElbowRoomTests.swift */; };
 		483D8ED726E9C22D00CEB85A /* VikingWeShallGoTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 483D8ED626E9C22D00CEB85A /* VikingWeShallGoTests.swift */; };
 		483D8ED926E9E62200CEB85A /* RebellionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 483D8ED826E9E62200CEB85A /* RebellionTests.swift */; };
+		483D8EDB26E9EBC700CEB85A /* NoahsArkTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 483D8EDA26E9EBC700CEB85A /* NoahsArkTests.swift */; };
+		483D8EDD26E9EC1700CEB85A /* JudgementDayTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 483D8EDC26E9EC1700CEB85A /* JudgementDayTests.swift */; };
+		483D8EDF26E9EC4100CEB85A /* ForSaleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 483D8EDE26E9EC4100CEB85A /* ForSaleTests.swift */; };
+		483D8EE126E9EC5500CEB85A /* TooManyMonstersTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 483D8EE026E9EC5500CEB85A /* TooManyMonstersTests.swift */; };
+		483D8EE326E9EC6D00CEB85A /* KneeDeepInTheDeadTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 483D8EE226E9EC6D00CEB85A /* KneeDeepInTheDeadTests.swift */; };
+		483D8EE526E9EEBE00CEB85A /* TutorialMapTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 483D8EE426E9EEBE00CEB85A /* TutorialMapTests.swift */; };
+		483D8EE726E9EEF700CEB85A /* TitansWinterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 483D8EE626E9EEF700CEB85A /* TitansWinterTests.swift */; };
+		483D8EE926E9EF2100CEB85A /* OverthrowThyNeightbourTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 483D8EE826E9EF2100CEB85A /* OverthrowThyNeightbourTests.swift */; };
+		483D8EEB26E9EF4900CEB85A /* MythAndLegendTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 483D8EEA26E9EF4900CEB85A /* MythAndLegendTests.swift */; };
+		483D8EED26E9EF7400CEB85A /* ReclamationAlliesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 483D8EEC26E9EF7400CEB85A /* ReclamationAlliesTests.swift */; };
+		483D8EEF26E9EFBC00CEB85A /* PeacefulEndingAlliesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 483D8EEE26E9EFBC00CEB85A /* PeacefulEndingAlliesTests.swift */; };
 		487058C126E104D600DEEB36 /* TownEventOnMapTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487058C026E104D600DEEB36 /* TownEventOnMapTests.swift */; };
 		487AF96826D7B9C30073277F /* Hero+ID+HeroClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487AF96726D7B9C30073277F /* Hero+ID+HeroClass.swift */; };
 		487AF96B26D9131C0073277F /* RaceForArdintinnyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487AF96A26D9131C0073277F /* RaceForArdintinnyTests.swift */; };
@@ -183,7 +193,6 @@
 		481BDF6D26C5942200C5E335 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		481BDF6E26C5942200C5E335 /* HoMM3SwiftUI.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = HoMM3SwiftUI.entitlements; sourceTree = "<group>"; };
 		481BDF9D26C6A4F000C5E335 /* Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = Tests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		481BDF9F26C6A4F000C5E335 /* FailingMapTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FailingMapTests.swift; sourceTree = "<group>"; };
 		481BDFA126C6A4F000C5E335 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		483A2D9126DFBE2500EAC052 /* Artifact+ID+CustomDebugStringConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Artifact+ID+CustomDebugStringConvertible.swift"; sourceTree = "<group>"; };
 		483A2D9326DFC81E00EAC052 /* CreaturesOnMapTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreaturesOnMapTests.swift; sourceTree = "<group>"; };
@@ -202,6 +211,17 @@
 		483D8ED426E9290C00CEB85A /* ElbowRoomTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ElbowRoomTests.swift; sourceTree = "<group>"; };
 		483D8ED626E9C22D00CEB85A /* VikingWeShallGoTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VikingWeShallGoTests.swift; sourceTree = "<group>"; };
 		483D8ED826E9E62200CEB85A /* RebellionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RebellionTests.swift; sourceTree = "<group>"; };
+		483D8EDA26E9EBC700CEB85A /* NoahsArkTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoahsArkTests.swift; sourceTree = "<group>"; };
+		483D8EDC26E9EC1700CEB85A /* JudgementDayTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JudgementDayTests.swift; sourceTree = "<group>"; };
+		483D8EDE26E9EC4100CEB85A /* ForSaleTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForSaleTests.swift; sourceTree = "<group>"; };
+		483D8EE026E9EC5500CEB85A /* TooManyMonstersTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TooManyMonstersTests.swift; sourceTree = "<group>"; };
+		483D8EE226E9EC6D00CEB85A /* KneeDeepInTheDeadTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KneeDeepInTheDeadTests.swift; sourceTree = "<group>"; };
+		483D8EE426E9EEBE00CEB85A /* TutorialMapTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TutorialMapTests.swift; sourceTree = "<group>"; };
+		483D8EE626E9EEF700CEB85A /* TitansWinterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TitansWinterTests.swift; sourceTree = "<group>"; };
+		483D8EE826E9EF2100CEB85A /* OverthrowThyNeightbourTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverthrowThyNeightbourTests.swift; sourceTree = "<group>"; };
+		483D8EEA26E9EF4900CEB85A /* MythAndLegendTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MythAndLegendTests.swift; sourceTree = "<group>"; };
+		483D8EEC26E9EF7400CEB85A /* ReclamationAlliesTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReclamationAlliesTests.swift; sourceTree = "<group>"; };
+		483D8EEE26E9EFBC00CEB85A /* PeacefulEndingAlliesTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PeacefulEndingAlliesTests.swift; sourceTree = "<group>"; };
 		487058C026E104D600DEEB36 /* TownEventOnMapTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TownEventOnMapTests.swift; sourceTree = "<group>"; };
 		487AF96726D7B9C30073277F /* Hero+ID+HeroClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Hero+ID+HeroClass.swift"; sourceTree = "<group>"; };
 		487AF96A26D9131C0073277F /* RaceForArdintinnyTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RaceForArdintinnyTests.swift; sourceTree = "<group>"; };
@@ -465,7 +485,18 @@
 				483D8ED226E8D15200CEB85A /* ThousandIslandsTests.swift */,
 				483D8ED426E9290C00CEB85A /* ElbowRoomTests.swift */,
 				483D8ED626E9C22D00CEB85A /* VikingWeShallGoTests.swift */,
+				483D8EE826E9EF2100CEB85A /* OverthrowThyNeightbourTests.swift */,
+				483D8EEE26E9EFBC00CEB85A /* PeacefulEndingAlliesTests.swift */,
+				483D8EE426E9EEBE00CEB85A /* TutorialMapTests.swift */,
+				483D8EEA26E9EF4900CEB85A /* MythAndLegendTests.swift */,
+				483D8EEC26E9EF7400CEB85A /* ReclamationAlliesTests.swift */,
+				483D8EE626E9EEF700CEB85A /* TitansWinterTests.swift */,
+				483D8EE226E9EC6D00CEB85A /* KneeDeepInTheDeadTests.swift */,
 				483D8ED826E9E62200CEB85A /* RebellionTests.swift */,
+				483D8EDA26E9EBC700CEB85A /* NoahsArkTests.swift */,
+				483D8EDC26E9EC1700CEB85A /* JudgementDayTests.swift */,
+				483D8EDE26E9EC4100CEB85A /* ForSaleTests.swift */,
+				483D8EE026E9EC5500CEB85A /* TooManyMonstersTests.swift */,
 			);
 			path = BundledMaps;
 			sourceTree = "<group>";
@@ -485,14 +516,6 @@
 				487AF96726D7B9C30073277F /* Hero+ID+HeroClass.swift */,
 			);
 			path = "Hero+ID";
-			sourceTree = "<group>";
-		};
-		487AF96926D9130B0073277F /* Failing */ = {
-			isa = PBXGroup;
-			children = (
-				481BDF9F26C6A4F000C5E335 /* FailingMapTests.swift */,
-			);
-			path = Failing;
 			sourceTree = "<group>";
 		};
 		487AF97826DA1FFD0073277F /* PlayersInfo */ = {
@@ -677,7 +700,6 @@
 			isa = PBXGroup;
 			children = (
 				483D8EBF26E878F100CEB85A /* MapTests */,
-				487AF96926D9130B0073277F /* Failing */,
 				487C2BB426CC2E8500031505 /* HeroIDTests.swift */,
 				487C2BDF26CD3D7400031505 /* ArtifactIDTests.swift */,
 				487C2BE826CD4A4500031505 /* SpellIDTests.swift */,
@@ -1130,27 +1152,37 @@
 				487C2BB526CC2E8500031505 /* HeroIDTests.swift in Sources */,
 				483A2D9626E002A400EAC052 /* ArtifactsOnMapTests.swift in Sources */,
 				487C2BE926CD4A4500031505 /* SpellIDTests.swift in Sources */,
+				483D8EE326E9EC6D00CEB85A /* KneeDeepInTheDeadTests.swift in Sources */,
 				48CC4AB826E3C07500447F77 /* ArtifactsStartingWith_A_MapTest.swift in Sources */,
 				48CC4AEB26E4EC0F00447F77 /* HeroesStartingWith_B_MapTest.swift in Sources */,
 				487AF9B726DF6DFA0073277F /* BaseMapTest.swift in Sources */,
+				483D8EE526E9EEBE00CEB85A /* TutorialMapTests.swift in Sources */,
 				483D8EC326E8792D00CEB85A /* Player+DifferentCount.swift in Sources */,
+				483D8EE126E9EC5500CEB85A /* TooManyMonstersTests.swift in Sources */,
 				483D8ED926E9E62200CEB85A /* RebellionTests.swift in Sources */,
 				487C2B8426C936D600031505 /* Map+ID+KnownMaps.swift in Sources */,
 				483A2D9426DFC81E00EAC052 /* CreaturesOnMapTests.swift in Sources */,
 				48CC4AEF26E4F05100447F77 /* CustomizedHeroesSODMapTest.swift in Sources */,
-				481BDFA026C6A4F000C5E335 /* FailingMapTests.swift in Sources */,
+				483D8EE726E9EEF700CEB85A /* TitansWinterTests.swift in Sources */,
 				483D8ED326E8D15200CEB85A /* ThousandIslandsTests.swift in Sources */,
+				483D8EEF26E9EFBC00CEB85A /* PeacefulEndingAlliesTests.swift in Sources */,
 				48CC4ABA26E4DEBB00447F77 /* HeroesStartingWith_A_MapTest.swift in Sources */,
+				483D8EE926E9EF2100CEB85A /* OverthrowThyNeightbourTests.swift in Sources */,
+				483D8EDF26E9EC4100CEB85A /* ForSaleTests.swift in Sources */,
 				483D8ED126E8A2BB00CEB85A /* MandateOfHeavenTests.swift in Sources */,
 				483D8EC126E8790500CEB85A /* GoodToGoTests.swift in Sources */,
 				483D8EC726E8799000CEB85A /* TaleOfTwoLandsTests.swift in Sources */,
+				483D8EDB26E9EBC700CEB85A /* NoahsArkTests.swift in Sources */,
 				483D8EC926E879EE00CEB85A /* VictoryLossConditions+Extension.swift in Sources */,
 				487C2BCB26CCF6A600031505 /* CRC32Tests.swift in Sources */,
 				487058C126E104D600DEEB36 /* TownEventOnMapTests.swift in Sources */,
 				487C2BE026CD3D7400031505 /* ArtifactIDTests.swift in Sources */,
+				483D8EEB26E9EF4900CEB85A /* MythAndLegendTests.swift in Sources */,
 				487AF96B26D9131C0073277F /* RaceForArdintinnyTests.swift in Sources */,
 				483D8ECF26E87B0900CEB85A /* HeroesOfMighNotMagicAlliesTests.swift in Sources */,
 				48CC4AB626E3B88100447F77 /* AdditionalInfoBaseTests.swift in Sources */,
+				483D8EED26E9EF7400CEB85A /* ReclamationAlliesTests.swift in Sources */,
+				483D8EDD26E9EC1700CEB85A /* JudgementDayTests.swift in Sources */,
 				483D8ED726E9C22D00CEB85A /* VikingWeShallGoTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -23,22 +23,6 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "867687BF-2CCA-491B-8C06-FECFBCA24675"
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Sources/Backend/HoMM3/Models/Map/Map+Loader/Map+Loader+Parser/Map+Loader+Parser+H3M/Map+Loader+Parser+H3M+Objects/Map+Loader+Parser+H3M+Object+Hero.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "52"
-            endingLineNumber = "52"
-            landmarkName = "_parseHero(heroClass:format:isPrison:)"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
             uuid = "8172D291-EE46-45C4-8D56-F8D277CEBC0A"
             shouldBeEnabled = "No"
             ignoreCount = "0"

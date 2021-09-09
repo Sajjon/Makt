@@ -144,9 +144,9 @@ final class RaceForArdintinnyTests: BaseMapTest {
                                 identifierKind: .specificHeroWithID(.sorsha),
                                 owner: .playerOne,
                                 army: .init(stacks: [
-                                    .init(creatureID: .halberdier, quantity: 30),
-                                    .init(creatureID: .marksman, quantity: 15),
-                                    .init(creatureID: .royalGriffin, quantity: 5)
+                                    .specific(id: .halberdier, quantity: 30),
+                                    .specific(id: .marksman, quantity: 15),
+                                    .specific(id: .royalGriffin, quantity: 5)
                                 ]),
                                 artifactsInSlots: .init(values: [
                                     .init(

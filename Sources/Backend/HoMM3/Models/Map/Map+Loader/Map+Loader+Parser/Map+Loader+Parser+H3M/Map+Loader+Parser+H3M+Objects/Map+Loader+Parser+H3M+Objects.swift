@@ -458,9 +458,7 @@ internal extension Map.Loader.Parser.H3M {
                         let creatureID = try format == .restorationOfErathia ? Creature.ID(integer: reader.readInt8()) : .init(integer: reader.readInt16())
                         
                         bounty = try .creature(
-                            .init(creatureID: creatureID,
-                                  quantity: .init(reader.readUInt16())
-                            )
+                            .specific(id: creatureID, quantity: .init(reader.readUInt16()))
                         )
                     }
                     return bounty
@@ -560,11 +558,34 @@ internal extension Map.Loader.Parser.H3M {
 
 public struct CreatureStack: Hashable, CustomDebugStringConvertible {
     public typealias Quantity = Int
-    public let creatureID: Creature.ID
+    
+    public enum Kind: Hashable, CustomDebugStringConvertible {
+        case specific(creatureID: Creature.ID)
+
+        /// Used in as garrison in e.g. Random Towns
+        case placeholder(level: Creature.Level, upgraded: Bool)
+        
+        public var debugDescription: String {
+            switch self {
+            case .placeholder(let level, let upgraded): return "level: \(level), upgraded: \(upgraded)"
+            case .specific(let creatureID): return "\(creatureID)"
+            }
+        }
+    }
+    
+    public let kind: Kind
     public let quantity: Quantity
     
     public var debugDescription: String {
-        "\(creatureID): \(quantity)"
+        "\(kind): \(quantity)"
+    }
+    
+    public static func specific(id creatureID: Creature.ID, quantity: Quantity) -> Self {
+        .init(kind: .specific(creatureID: creatureID), quantity: quantity)
+    }
+    
+    public static func placeholder(level: Creature.Level, upgraded: Bool, quantity: Quantity) -> Self {
+        .init(kind: .placeholder(level: level, upgraded: upgraded), quantity: quantity)
     }
 }
 

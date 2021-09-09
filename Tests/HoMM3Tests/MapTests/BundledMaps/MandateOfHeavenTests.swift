@@ -52,10 +52,10 @@ final class MandateOfHeavenTests: BaseMapTest {
                         owner: .red,
                         name: "New Sorpigal",
                         garrison: .init(stacks: [
-                            .init(creatureID: .archer, quantity: 5),
-                            .init(creatureID: .archer, quantity: 5),
-                            .init(creatureID: .pikeman, quantity: 10),
-                            .init(creatureID: .pikeman, quantity: 10)
+                            .specific(id: .archer, quantity: 5),
+                            .specific(id: .archer, quantity: 5),
+                            .specific(id: .pikeman, quantity: 10),
+                            .specific(id: .pikeman, quantity: 10)
                         ]),
                         buildings: .custom(.init(built: [
                             .townHall, .tavern, .mageGuildLevel1, .shipyard, .dwelling1, .dwelling2

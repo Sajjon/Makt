@@ -98,8 +98,8 @@ final class GoodToGoMapTest: BaseMapTest {
                             identifierKind: .specificHeroWithID(.korbac),
                             owner: .green,
                             army: .init(stacks: [
-                                .init(creatureID: .gnoll, quantity: 100),
-                                .init(creatureID: .gnoll, quantity: 100)
+                                .specific(id: .gnoll, quantity: 100),
+                                .specific(id: .gnoll, quantity: 100)
                             ]),
                             startingExperiencePoints: 18_500
                         ),
@@ -111,8 +111,8 @@ final class GoodToGoMapTest: BaseMapTest {
                             identifierKind: .specificHeroWithID(.verdish),
                             owner: .green,
                             army: .init(stacks: [
-                                .init(creatureID: .gnoll, quantity: 100),
-                                .init(creatureID: .gnoll, quantity: 100)
+                                .specific(id: .gnoll, quantity: 100),
+                                .specific(id: .gnoll, quantity: 100)
                             ]),
                             startingExperiencePoints: 18_500
                         ),
@@ -124,8 +124,8 @@ final class GoodToGoMapTest: BaseMapTest {
                             identifierKind: .specificHeroWithID(.yog),
                             owner: .orange,
                             army: .init(stacks: [
-                                .init(creatureID: .goblin, quantity: 100),
-                                .init(creatureID: .goblin, quantity: 100)
+                                .specific(id: .goblin, quantity: 100),
+                                .specific(id: .goblin, quantity: 100)
                             ]),
                             startingExperiencePoints: 18_500
                         ),
@@ -138,8 +138,8 @@ final class GoodToGoMapTest: BaseMapTest {
                             identifierKind: .specificHeroWithID(.oris),
                             owner: .orange,
                             army: .init(stacks: [
-                                .init(creatureID: .goblin, quantity: 100),
-                                .init(creatureID: .goblin, quantity: 100)
+                                .specific(id: .goblin, quantity: 100),
+                                .specific(id: .goblin, quantity: 100)
                             ]),
                             startingExperiencePoints: 18_500
                         ),
