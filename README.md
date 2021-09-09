@@ -1,5 +1,8 @@
-# HoMM3 
-This is an open source implementation of classic game Heroes Of Might and Magic III (HoMM3) Complete in Swift.
+# ⚔️ Makt 🛡
+This is an open source implementation of classic game *Heroes of Might and Magic III Complete* (HoMM3) "backend" (fully functional (well work in progress) game engine, without graphics) in pure Swift.
+
+# Etymology
+"Makt" means "Might" in Swedish 🇸🇪
 
 # H3M Map File structure
 Do check out [H3M.md](H3M.md) for map file structure.
