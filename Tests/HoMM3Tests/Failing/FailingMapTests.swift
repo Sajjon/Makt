@@ -125,30 +125,7 @@
 
 
 
-    func test_assert_can_load_map_by_id__rebellion() throws {
-        // Delete any earlier cached maps.
-        Map.loader.cache.__deleteMap(by: .rebellion)
-        let map = try Map.load(.rebellion)
-        XCTAssertEqual(map.about.summary.fileName, "Rebellion.h3m")
-        XCTAssertEqual(map.about.summary.name, "Rebellion")
-        XCTAssertEqual(map.about.summary.description, "The peasants are revolting, just when you need them to fight a war.  The only hope for peace lies in finding the Grail.")
-        XCTAssertEqual(map.about.summary.fileSizeCompressed, 18_107)
-        XCTAssertEqual(map.about.summary.fileSize, 81_093)
-        XCTAssertFalse(map.about.summary.hasTwoLevels)
-        XCTAssertEqual(map.about.summary.format, .restorationOfErathia)
-        XCTAssertEqual(map.about.summary.difficulty, .normal)
-        XCTAssertEqual(map.about.summary.size, .medium)
-        XCTAssertEqual(map.about.playersInfo.players.count, 3)
 
-        XCTAssertTrue(map.about.playersInfo.players.allSatisfy({ $0.isPlayableBothByHumanAndAI }))
-
-        XCTAssertEqual(map.about.playersInfo.players[0].townTypes, Faction.playable(in: .restorationOfErathia))
-        XCTAssertEqual(map.about.playersInfo.players[1].townTypes, [.inferno])
-        XCTAssertEqual(map.about.playersInfo.players[2].townTypes, [.stronghold])
-
-        XCTAssertEqual(map.about.victoryLossConditions.victoryConditions.map { $0.kind.stripped }, [.buildGrailBuilding, .standard])
-        XCTAssertEqual(map.about.victoryLossConditions.lossConditions.map { $0.kind.stripped }, [.standard])
-    }
 
     func test_assert_can_load_map_by_id__noahsArk() throws {
         // Delete any earlier cached maps.

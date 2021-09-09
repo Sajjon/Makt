@@ -10,6 +10,11 @@ public extension Map {
         /// nil means `abandoned mine`
         public let kind: Kind?
         public let owner: Player?
+        
+        public init(kind: Kind?, owner: Player? = nil) {
+            self.kind = kind
+            self.owner = owner
+        }
     }
     
     struct Shipyard: Hashable {

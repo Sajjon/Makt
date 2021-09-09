@@ -38,6 +38,37 @@ extension BaseMapTest {
         fulfill(object: object)
     }
     
+    func assertObjectMine(
+        expected: Map.Mine,
+        actual object: Map.Object,
+        file: StaticString = #file,
+        line: UInt = #line
+    ) {
+        XCTAssertEqual(object.objectID.stripped, .mine, file: file, line: line)
+        guard case let .mine(actual) = object.kind else {
+            XCTFail("expected mine")
+            return
+        }
+        XCTAssertEqual(expected, actual, file: file, line: line)
+        fulfill(object: object)
+    }
+    
+    
+    func assertObjectScholar(
+        expected: Map.Scholar,
+        actual object: Map.Object,
+        file: StaticString = #file,
+        line: UInt = #line
+    ) {
+        XCTAssertEqual(object.objectID.stripped, .scholar, file: file, line: line)
+        guard case let .scholar(actual) = object.kind else {
+            XCTFail("expected scholar")
+            return
+        }
+        XCTAssertEqual(expected, actual, file: file, line: line)
+        fulfill(object: object)
+    }
+    
     
     func assertObjectRandomTown(
         expected: Map.Town,

@@ -34,6 +34,7 @@
 		483D8ED326E8D15200CEB85A /* ThousandIslandsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 483D8ED226E8D15200CEB85A /* ThousandIslandsTests.swift */; };
 		483D8ED526E9290C00CEB85A /* ElbowRoomTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 483D8ED426E9290C00CEB85A /* ElbowRoomTests.swift */; };
 		483D8ED726E9C22D00CEB85A /* VikingWeShallGoTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 483D8ED626E9C22D00CEB85A /* VikingWeShallGoTests.swift */; };
+		483D8ED926E9E62200CEB85A /* RebellionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 483D8ED826E9E62200CEB85A /* RebellionTests.swift */; };
 		487058C126E104D600DEEB36 /* TownEventOnMapTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487058C026E104D600DEEB36 /* TownEventOnMapTests.swift */; };
 		487AF96826D7B9C30073277F /* Hero+ID+HeroClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487AF96726D7B9C30073277F /* Hero+ID+HeroClass.swift */; };
 		487AF96B26D9131C0073277F /* RaceForArdintinnyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487AF96A26D9131C0073277F /* RaceForArdintinnyTests.swift */; };
@@ -200,6 +201,7 @@
 		483D8ED226E8D15200CEB85A /* ThousandIslandsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThousandIslandsTests.swift; sourceTree = "<group>"; };
 		483D8ED426E9290C00CEB85A /* ElbowRoomTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ElbowRoomTests.swift; sourceTree = "<group>"; };
 		483D8ED626E9C22D00CEB85A /* VikingWeShallGoTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VikingWeShallGoTests.swift; sourceTree = "<group>"; };
+		483D8ED826E9E62200CEB85A /* RebellionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RebellionTests.swift; sourceTree = "<group>"; };
 		487058C026E104D600DEEB36 /* TownEventOnMapTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TownEventOnMapTests.swift; sourceTree = "<group>"; };
 		487AF96726D7B9C30073277F /* Hero+ID+HeroClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Hero+ID+HeroClass.swift"; sourceTree = "<group>"; };
 		487AF96A26D9131C0073277F /* RaceForArdintinnyTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RaceForArdintinnyTests.swift; sourceTree = "<group>"; };
@@ -463,6 +465,7 @@
 				483D8ED226E8D15200CEB85A /* ThousandIslandsTests.swift */,
 				483D8ED426E9290C00CEB85A /* ElbowRoomTests.swift */,
 				483D8ED626E9C22D00CEB85A /* VikingWeShallGoTests.swift */,
+				483D8ED826E9E62200CEB85A /* RebellionTests.swift */,
 			);
 			path = BundledMaps;
 			sourceTree = "<group>";
@@ -1131,6 +1134,7 @@
 				48CC4AEB26E4EC0F00447F77 /* HeroesStartingWith_B_MapTest.swift in Sources */,
 				487AF9B726DF6DFA0073277F /* BaseMapTest.swift in Sources */,
 				483D8EC326E8792D00CEB85A /* Player+DifferentCount.swift in Sources */,
+				483D8ED926E9E62200CEB85A /* RebellionTests.swift in Sources */,
 				487C2B8426C936D600031505 /* Map+ID+KnownMaps.swift in Sources */,
 				483A2D9426DFC81E00EAC052 /* CreaturesOnMapTests.swift in Sources */,
 				48CC4AEF26E4F05100447F77 /* CustomizedHeroesSODMapTest.swift in Sources */,
