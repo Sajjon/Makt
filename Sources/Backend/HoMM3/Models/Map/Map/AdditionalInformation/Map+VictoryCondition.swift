@@ -13,6 +13,10 @@ public extension Map {
     struct VictoryCondition: Hashable {
         public let kind: Kind
         public let appliesToAI: Bool
+        public init(kind: Kind, appliesToAI: Bool = false) {
+            self.kind = kind
+            self.appliesToAI = appliesToAI
+        }
     }
 }
 

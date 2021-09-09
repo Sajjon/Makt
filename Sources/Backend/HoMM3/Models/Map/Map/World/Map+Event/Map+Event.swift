@@ -64,9 +64,9 @@ public extension Map {
             firstOccurence: UInt16,
             subsequentOccurence: Occurrences.Subsequent? = nil,
             
-            affectedPlayers: [Player] = [],
-            appliesToHumanPlayers: Bool,
-            appliesToComputerPlayers: Bool,
+            affectedPlayers: [Player],
+            appliesToHumanPlayers: Bool = true,
+            appliesToComputerPlayers: Bool = false,
             resources: Resources? = nil
         ) {
             self.name = name

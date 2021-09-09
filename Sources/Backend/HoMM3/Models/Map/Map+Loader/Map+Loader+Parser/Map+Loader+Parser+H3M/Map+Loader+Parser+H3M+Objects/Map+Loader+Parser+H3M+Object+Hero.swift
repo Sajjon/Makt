@@ -107,7 +107,7 @@ private extension Map.Loader.Parser.H3M {
                 assert(format == .armageddonsBlade, "Incorrect implementation")
                 // In AB only a single spell can be specified here, 0xFE is default, 0xFF none
                 let buff = try reader.readUInt8()
-                guard buff < 255 else { return nil } //255 means no spells
+                guard buff < 254 else { return nil } // 0xFE is default, 0xFF none
                 return [try Spell.ID(integer: buff)]
             }
         }() ?? nil

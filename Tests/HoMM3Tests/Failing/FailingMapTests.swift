@@ -82,55 +82,7 @@
         }
     }
 
-    /// After `goodToGo`: smallest compressed file size
-    func test_assert_a_really_small_map_elbowRoom() throws {
-
-
-        let inspector = Map.Loader.Parser.Inspector(
-            settings: .init(),
-            onParseAbout: { about in
-                let summary = about.summary
-                XCTAssertEqual(summary.fileName, "Elbow Room.h3m")
-                XCTAssertEqual(summary.fileSizeCompressed, 4_996)
-                XCTAssertEqual(summary.fileSize, 24_590)
-                XCTAssertEqual(summary.format, .armageddonsBlade)
-            },
-            onParseDisposedHeroes: { disposedHeroes in
-                XCTAssertTrue(disposedHeroes.isEmpty)
-            },
-            onParseAllowedArtifacts: { allowedArtifacts in
-                XCTAssertFalse(allowedArtifacts.isEmpty)
-            },
-            onParseAllowedSpells: { allowedSpells in
-                XCTAssertEqual(allowedSpells, Spell.ID.allCases)
-            },
-            onParseAllowedHeroAbilities: { allowedSeconarySkills in
-                XCTAssertEqual(allowedSeconarySkills, Hero.SecondarySkill.Kind.allCases)
-            },
-            onParseRumors: { rumors in
-                XCTAssertTrue(rumors.isEmpty)
-            },
-            onParsePredefinedHeroes: { predefinedHeroes in
-                XCTAssertTrue(predefinedHeroes.isEmpty)
-            },
-            onParseWorld: { world in
-                print(world.above)
-                XCTAssertNil(world.belowGround)
-                XCTAssertFalse(world.above.isUnderworld)
-                let tiles = world.above.tiles
-                XCTAssertEqual(tiles.count, 36*36)
-            },
-            onParseAttributes: { attributes in
-                XCTAssertEqual(attributes.attributes.count, 121)
-            },
-            onParseObject: { object in
-
-            })
-
-            let _ = try Map.load(.elbowRoom, inspector: inspector)
-
-    }
-
+  
     func test_assert_can_load_map_by_id__tutorial_map() throws {
         let map = try Map.load(.tutorial)
         XCTAssertEqual(map.about.summary.fileName, "Tutorial.tut")
@@ -311,32 +263,7 @@
         XCTAssertEqual(map.about.victoryLossConditions.lossConditions.map { $0.kind.stripped }, [.standard])
     }
 
-    func test_assert_can_load_map_by_id__thousandIslands_allies() throws {
-        // Delete any earlier cached maps.
-        Map.loader.cache.__deleteMap(by: .thousandIslandsAllies)
-        let map = try Map.load(.thousandIslandsAllies)
-        XCTAssertEqual(map.about.summary.fileName, "Thousand Islands (allies).h3m")
-        XCTAssertEqual(map.about.summary.name, "Thousand Islands (Allies)")
-        XCTAssertEqual(map.about.summary.description, "An evil wizard has cast a spell that has caused volcanoes to erupt on the islands of Norkko. The people are in a state of panic and no one knows who the evil wizard is. These vicious volcanoes destroy entire towns. Someone must find him and destroy him.")
-        XCTAssertEqual(map.about.summary.fileSizeCompressed, 50_765)
-        XCTAssertEqual(map.about.summary.fileSize, 240_048)
-        XCTAssertFalse(map.about.summary.hasTwoLevels)
-        XCTAssertEqual(map.about.summary.format, .armageddonsBlade)
-        XCTAssertEqual(map.about.summary.difficulty, .normal)
-        XCTAssertEqual(map.about.summary.size, .extraLarge)
-        XCTAssertEqual(map.about.playersInfo.players.count, 7)
-
-        XCTAssertTrue(map.about.playersInfo.players.prefix(5).allSatisfy({ $0.isPlayableBothByHumanAndAI }))
-        XCTAssertTrue(map.about.playersInfo.players[5].isPlayableOnlyByAI)
-        XCTAssertTrue(map.about.playersInfo.players[6].isPlayableBothByHumanAndAI)
-
-        XCTAssertTrue(map.about.playersInfo.players.allSatisfy({ $0.townTypes == Faction.playable(in: .restorationOfErathia) }))
-
-        XCTAssertEqual(map.about.victoryLossConditions.victoryConditions.map { $0.kind.stripped }, [.defeatSpecificHero])
-        XCTAssertEqual(map.about.victoryLossConditions.lossConditions.map { $0.kind.stripped }, [.standard])
-
-        XCTAssertEqual(map.about.teamInfo, [[.playerOne, .playerTwo], [.playerThree, .playerFour], [.playerFive, .playerSeven], [.playerSix]])
-    }
+ 
 
     func test_assert_can_load_map_by_id__reclamation_allies() throws {
         // Delete any earlier cached maps.

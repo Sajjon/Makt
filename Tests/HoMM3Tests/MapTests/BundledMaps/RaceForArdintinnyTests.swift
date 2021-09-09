@@ -11,7 +11,7 @@ import Foundation
     
 final class RaceForArdintinnyTests: BaseMapTest {
     
-    func test_assert_can_load_map_by_id__raceForArdintinny() throws {
+    func test_raceForArdintinny() throws {
         // Delete any earlier cached maps.
         let mapID: Map.ID = .raceforArdintinny
         Map.loader.cache.__deleteMap(by: mapID)
