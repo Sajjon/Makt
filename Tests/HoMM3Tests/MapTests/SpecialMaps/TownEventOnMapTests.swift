@@ -133,13 +133,13 @@ final class TownEventsOnMapTests: BaseMapTest {
                     )
                 case at(12, y: 5):
                     var day: UInt16 = 1
-                    func builtInTown(_ builtBuildings: [Map.Town.Buildings.Building], _ nameOfBuilding: String) -> Map.Town.Event {
+                    func builtInTown(_ builtBuildings: [Map.Town.Building], _ nameOfBuilding: String) -> Map.Town.Event {
                         let name = "build \(nameOfBuilding)"
                         let event: Map.Town.Event = .build(name: name, day: day, builtBuildings: builtBuildings)
                         day += 1
                         return event
                     }
-                    func buildInTown(_ building: Map.Town.Buildings.Building, _ nameOfBuilding: String? = nil) -> Map.Town.Event {
+                    func buildInTown(_ building: Map.Town.Building, _ nameOfBuilding: String? = nil) -> Map.Town.Event {
                         let buildingName = nameOfBuilding ?? building.debugDescription.titlecased().lowercased()
                         return builtInTown([building], buildingName)
                     }
@@ -221,7 +221,7 @@ private extension Map.Town.Event {
     static func build(
         name: String,
         day: UInt16,
-        builtBuildings: [Map.Town.Buildings.Building],
+        builtBuildings: [Map.Town.Building],
         appliesToHumanPlayers: Bool = true,
         appliesToComputerPlayers: Bool = false
     ) -> Self {
@@ -243,7 +243,7 @@ private extension Map.Town.Event {
 }
 
 
-private extension Map.Town.Buildings.Building {
+private extension Map.Town.Building {
     
     /// WRONG, just a placeholder
     static let dwelling4Horde: Self = .grail

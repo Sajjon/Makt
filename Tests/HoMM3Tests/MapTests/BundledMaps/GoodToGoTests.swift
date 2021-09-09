@@ -33,7 +33,7 @@ final class GoodToGoMapTest: BaseMapTest {
                             id: .position(.init(x: 34, y: 4, inUnderworld: false)),
                             faction: .fortress,
                             owner: .green,
-                            buildings: .init(
+                            buildings: .custom(.init(
                                 built: [
                                     .townHall, .cityHall, .capitol,
                                     .fort, .citadel, .castle,
@@ -45,7 +45,7 @@ final class GoodToGoMapTest: BaseMapTest {
                                     .dwelling3, .upgradedDwelling3,
                                     .dwelling4, .upgradedDwelling4
                                 ]
-                            )),
+                            ))),
                         actual: object
                     )
                 case at(5, y: 5):
@@ -53,7 +53,7 @@ final class GoodToGoMapTest: BaseMapTest {
                         assertObjectRandomTown(expected: .init(
                             id: .position(.init(x: 5, y: 5, inUnderworld: false)),
                             owner: .red,
-                            buildings: .init(built: Map.Town.Buildings.Building.all(but: [.shipyard, .special1, .special2, .special3, .special4]), forbidden: [.shipyard]),
+                            buildings: .custom(.init(built: Map.Town.Building.all(but: [.shipyard, .special1, .special2, .special3, .special4]), forbidden: [.shipyard])),
                             spells: .init(
                                 possible: .init(
                                     values: Spell.ID.all(
@@ -75,7 +75,7 @@ final class GoodToGoMapTest: BaseMapTest {
                             id: .position(.init(x: 5, y: 33, inUnderworld: false)),
                             faction: .stronghold,
                             owner: .orange,
-                            buildings: .init(
+                            buildings: .custom(.init(
                                 built: [
                                     .townHall, .cityHall, .capitol,
                                     .fort, .citadel, .castle,
@@ -87,7 +87,7 @@ final class GoodToGoMapTest: BaseMapTest {
                                     .dwelling3, .upgradedDwelling3,
                                     .dwelling4, .upgradedDwelling4
                                 ]
-                            )),
+                            ))),
                         actual: object
                     )
                     
@@ -150,7 +150,7 @@ final class GoodToGoMapTest: BaseMapTest {
                         assertObjectRandomTown(expected: .init(
                             id: .position(.init(x: 34, y: 33, inUnderworld: false)),
                             owner: .blue,
-                            buildings: .init(built: Map.Town.Buildings.Building.all(but: [.shipyard, .special1, .special2, .special3, .special4]), forbidden: [.shipyard]),
+                            buildings: .custom(.init(built: Map.Town.Building.all(but: [.shipyard, .special1, .special2, .special3, .special4]), forbidden: [.shipyard])),
                             spells: .init(
                                 possible: .init(
                                     values: Spell.ID.all(

@@ -107,7 +107,7 @@ public extension Map {
             name: String? = nil,
             garrison: CreatureStacks? = nil,
             formation: Army.Formation = .spread,
-            buildings: Map.Town.Buildings = .init(),
+            buildings: Map.Town.Buildings = .simple(hasFort: true),
             spells: Spells = .init(),
             events: Events? = nil,
             alignment: Alignment? = nil
@@ -134,11 +134,14 @@ public extension Map.Town {
             faction.map { "faction: \($0)" } ?? nil,
             owner.map { "owner: \($0)" } ?? nil,
             name.map { "name: \($0)" } ?? nil,
-            garrison.map { "garrison: \($0)" } ?? nil,
+            garrison.map { "\ngarrison: \($0)\n" } ?? nil,
             "formation: \(formation)",
+            
             "buildings: \(buildings)",
+            
             "spells: \(spells)",
-            events.map { "events: \($0)" } ?? nil,
+            
+            events.map { "events: \($0)\n" } ?? nil,
             alignment.map { "alignment: \($0)" } ?? nil,
             
         ]
@@ -146,7 +149,12 @@ public extension Map.Town {
         return optionalStrings.compactMap({ $0 }).joined(separator: "\n")
     }
     
-    struct Buildings: Hashable {
+    enum Buildings: Hashable {
+        case simple(hasFort: Bool)
+        case custom(CustomBuildings)
+    }
+    
+    struct CustomBuildings: Hashable {
         public let built: [Building]
         public let forbidden: [Building]
         
@@ -159,7 +167,7 @@ public extension Map.Town {
         }
     }
 }
-public extension Map.Town.Buildings {
+public extension Map.Town {
     enum Building: UInt8, Hashable, CaseIterable, CustomDebugStringConvertible {
         
         public var debugDescription: String {
@@ -266,370 +274,32 @@ public extension Map.Town.Buildings {
         case upgradedDwelling7
     }
         
-    enum BuildingDEPRECATED: UInt8, Hashable, CaseIterable, CustomDebugStringConvertible {
-        
-        static let artifactMerchants: Self = .buildingId17
-        
-        static let dwelling1Horde: Self = .buildingId18
-        static let dwelling1UpgradeHorde: Self = .buildingId19
-        static let dwelling2Horde: Self = .buildingId24
-        static let dwelling2UpgradeHorde: Self = .buildingId25
-        static let dwelling3Horde: Self = .buildingId18
-        static let dwelling3UpgradedHorde: Self = .buildingId19
-        static let dwelling5Horde: Self = .buildingId24
-        static let dwelling5UpgradedHorde: Self = .buildingId25
-        
-        case mageguildLevel1 = 0,
-        mageguildLevel2,
-        mageguildLevel3,
-        mageguildLevel4,
-        mageguildLevel5,
-        
-        tavern,
-        shipyard,
-        
-        fort,
-        citadel,
-        castle,
-        
-        villageHall,
-        townHall,
-        cityHall,
-        capitol,
-        
-        marketplace,
-        resourceSilo,
-        blacksmith
-        
-        
-        /// Castle: Lighthouse
-        /// Rampart: Mystic pind
-        /// Tower: Artifact Merchant
-        /// Inferno: N/A
-        /// Necropolis: Veil of darkness
-        /// Dungeon: Artifact Merchant
-        /// Stornghold: Escape tunnel
-        /// Fortress: Cage of warlords
-        /// Conflux: Artifact Merchant
-        case buildingId17
-        
-        /// Horde buildings for non upgraded creatures
-        ///
-        /// Castle: Grifins
-        /// Rampart: Dwarfes
-        /// Tower: Stone Gargoyles
-        /// Inferno: Imps
-        /// Necropolis: Skeletons
-        /// Dungeon: Troglodytes
-        /// Stornghold: Goblins
-        /// Fortress: Gnolls
-        /// Conflux: Pixies
-        case buildingId18
-        
-        /// Horde buildings for upgraded creatures
-        ///
-        /// Castle: Royale Griffins
-        /// Rampart: Battle Dwarfes
-        /// Tower: Obsidian Gargoyles
-        /// Inferno: Familars
-        /// Necropolis: Skeleton Warrios
-        /// Dungeon: Infernal Troglodytes
-        /// Stornghold:Hobgoblins
-        /// Fortress: Gnoll MArauders
-        /// Conflux: Sprites
-        case buildingId19
-        
-        case shipAtTheShipyard = 20
-
-        /// Castle: Stables
-        /// Rampart: Fountain of Fortune
-        /// Tower: Lookout Tower
-        /// Inferno: Brimstone Clouds
-        /// Necropolis: Necromancy Amplifier
-        /// Dungeon: Mana Vortex
-        /// Stornghold: Freelancer's Guild
-        /// Fortress: Glyphs Of Fear
-        /// Conflux: Magic University
-        case buildingId21
-        
-        /// Castle: Brotherhood of Sword
-        /// Rampart: Dwarfen Treasure
-        /// Tower: Library
-        /// Inferno: Castle Gates
-        /// Necropolis: Skeleton Transformer
-        /// Dungeon: Portal Of Summoning
-        /// Stornghold: Ballista Yard
-        /// Fortress: Blood Obelisk
-        /// Conflux: N/A
-        case buildingId22
-        
-        /// Tower: Wall Of Knowledge
-        /// Inferno: Order of fire
-        /// Dungeon: Academy Of Battle Scholars
-        /// Stornghold: Hall Of Valhalla
-        /// Castle, Rampart, Necropolis, Fortress, Conflux: N/A
-        case buildingId23
-        
-        /// Horde Buildings For Non-Upgraded Creatures:
-        /// Rampart: Dendroid Guards
-        /// Inferno: Hell Hounds
-        /// REST: N/A
-        case buildingId24
-        
-        /// Horde Buildings For Upgraded Creatures:
-        /// Rampart: Dendroid Soldiers,
-        /// Inferno: Cerberi
-        /// REST: N/A
-        case buildingId25
-        
-        case grail = 26,
-        
-        housesNearCityHall,
-        housesNearMunicipal,
-        housesNearCapitol,
-        
-        dwelling1,
-        dwelling2,
-        dwelling3,
-        dwelling4,
-        dwelling5,
-        dwelling6,
-        dwelling7,
-        upgradedDwelling1,
-        upgradedDwelling2,
-        upgradedDwelling3,
-        upgradedDwelling4,
-        upgradedDwelling5,
-        upgradedDwelling6,
-        upgradedDwelling7
-        
-    }
 }
 
-public extension Map.Town.Buildings.BuildingDEPRECATED {
-    var debugDescription: String {
-        switch self {
-        case .mageguildLevel1: return "Mage Guild level 1"
-           case .mageguildLevel2: return "Mage Guild level 2"
-           case .mageguildLevel3: return "Mage Guild level 3"
-           case .mageguildLevel4: return "Mage Guild level 4"
-           case .mageguildLevel5: return "Mage Guild level 5"
-        
-        case .tavern: return "Tavern"
-        case .shipyard: return "Shipyard"
-        
-        case .fort: return "Fort"
-        case .citadel: return "Citadel"
-             case .castle: return "Castle"
-        
-        case .villageHall: return "Village hall"
-        case .townHall: return "Town hall"
-        case .cityHall: return "City hall"
-        case .capitol: return "capitol"
-        
-        case .marketplace: return "Marketplace"
-        case .resourceSilo: return "Resource Silo"
-        case .blacksmith: return "Blacksmith"
-        
-        
-        /// Castle: Lighthouse
-        /// Rampart: Mystic pind
-        /// Tower: Artifact Merchant
-        /// Inferno: N/A
-        /// Necropolis: Veil of darkness
-        /// Dungeon: Artifact Merchant
-        /// Stornghold: Escape tunnel
-        /// Fortress: Cage of warlords
-        /// Conflux: Artifact Merchant
-        case .buildingId17: return """
-                    Castle: Lighthouse
-                    Rampart: Mystic pind
-                    Tower: Artifact Merchant
-                    Inferno: N/A
-                    Necropolis: Veil of darkness
-                    Dungeon: Artifact Merchant
-                    Stornghold: Escape tunnel
-                    Fortress: Cage of warlords
-                    Conflux: Artifact Merchant
-            """
-        
-        /// Horde buildings for non upgraded creatures
-        ///
-        /// Castle: Grifins
-        /// Rampart: Dwarfes
-        /// Tower: Stone Gargoyles
-        /// Inferno: IMps
-        /// Necropolis: Skeletons
-        /// Dungeon: Troglodytes
-        /// Stornghold: Goblins
-        /// Fortress: Gnolls
-        /// Conflux: Pixies
-        case .buildingId18: return """
-                    Horde buildings for non upgraded creatures
-                    Castle: Grifins
-                    Rampart: Dwarfes
-                    Tower: Stone Gargoyles
-                    Inferno: IMps
-                    Necropolis: Skeletons
-                    Dungeon: Troglodytes
-                    Stornghold: Goblins
-                    Fortress: Gnolls
-                    Conflux: Pixies
-            """
-        
-        /// Horde buildings for upgraded creatures
-        ///
-        /// Castle: Royale Griffins
-        /// Rampart: Battle Dwarfes
-        /// Tower: Obsidian Gargoyles
-        /// Inferno: Familars
-        /// Necropolis: Skeleton Warrios
-        /// Dungeon: Infernal Troglodytes
-        /// Stornghold:Hobgoblins
-        /// Fortress: Gnoll MArauders
-        /// Conflux: Sprites
-        case .buildingId19: return """
-                    Horde buildings for upgraded creatures
-                    Castle: Royale Griffins
-                    Rampart: Battle Dwarfes
-                    Tower: Obsidian Gargoyles
-                    Inferno: Familars
-                    Necropolis: Skeleton Warrios
-                    Dungeon: Infernal Troglodytes
-                    Stornghold:Hobgoblins
-                    Fortress: Gnoll MArauders
-                    Conflux: Sprites
-            """
-        
-        case .shipAtTheShipyard: return "Ship (at the shipyard)"
+//public extension RandomNumberGenerator {
+//    mutating func randomBool() -> Bool {
+//        Int.random(in: 0...1, using: &self) == 0
+//    }
+//}
 
-        /// Castle: Stables
-        /// Rampart: Fountain of Fortune
-        /// Tower: Lookout Tower
-        /// Inferno: Brimstone Clouds
-        /// Necropolis: Necromancy Amplifier
-        /// Dungeon: Mana Vortex
-        /// Stornghold: Freelancer's Guild
-        /// Fortress: Glyphs Of Fear
-        /// Conflux: Magic University
-        case .buildingId21: return """
-                    Castle: Stables
-                    Rampart: Fountain of Fortune
-                    Tower: Lookout Tower
-                    Inferno: Brimstone Clouds
-                    Necropolis: Necromancy Amplifier
-                    Dungeon: Mana Vortex
-                    Stornghold: Freelancer's Guild
-                    Fortress: Glyphs Of Fear
-                    Conflux: Magic University
-            """
-        
-        /// Castle: Brotherhood of Sword
-        /// Rampart: Dwarfen Treasure
-        /// Tower: Library
-        /// Inferno: Castle Gates
-        /// Necropolis: Skeleton Transformer
-        /// Dungeon: Portal Of Summoning
-        /// Stornghold: Ballista Yard
-        /// Fortress: Blood Obelisk
-        /// Conflux: N/A
-        case .buildingId22: return """
-                    Castle: Brotherhood of Sword
-                    Rampart: Dwarfen Treasure
-                    Tower: Library
-                    Inferno: Castle Gates
-                    Necropolis: Skeleton Transformer
-                    Dungeon: Portal Of Summoning
-                    Stornghold: Ballista Yard
-                    Fortress: Blood Obelisk
-                    Conflux: N/A
-            """
-        
-        /// Tower: Wall Of Knowledge
-        /// Inferno: Order of fire
-        /// Dungeon: Academy Of Battle Scholars
-        /// Stornghold: Hall Of Valhalla
-        /// Castle, Rampart, Necropolis, Fortress, Conflux: N/A
-        case .buildingId23: return """
-                    Tower: Wall Of Knowledge
-                    Inferno: Order of fire
-                    Dungeon: Academy Of Battle Scholars
-                    Stornghold: Hall Of Valhalla
-                    Castle, Rampart, Necropolis, Fortress, Conflux: N/A
-            """
-        
-        /// Horde Buildings For Non-Upgraded Creatures:
-        /// Rampart: Dendroid Guards
-        /// Inferno: Hell Hounds
-        /// REST: N/A
-        case .buildingId24: return """
-                    Horde Buildings For Non-Upgraded Creatures:
-                    Rampart: Dendroid Guards
-                    Inferno: Hell Hounds
-                    REST: N/A
-            """
-        
-        /// Horde Buildings For Upgraded Creatures:
-        /// Rampart: Dendroid Soldiers,
-        /// Inferno: Cerberi
-        /// REST: N/A
-        case .buildingId25: return """
-                    Horde Buildings For Upgraded Creatures:
-                    Rampart: Dendroid Soldiers,
-                    Inferno: Cerberi
-                    REST: N/A
-            """
-        
-        case .grail: return "Grail"
-        
-        case .housesNearCityHall: return "Houses near city hall"
-        case .housesNearMunicipal: return "Houses near municipal"
-        case .housesNearCapitol: return "Houses near capitol"
-        
-        case .dwelling1: return "Dwelling level 1"
-        case .dwelling2: return "Dwelling level 2"
-        case .dwelling3: return "Dwelling level 3"
-        case .dwelling4: return "Dwelling level 4"
-        case .dwelling5: return "Dwelling level 5"
-        case .dwelling6: return "Dwelling level 6"
-        case .dwelling7: return "Dwelling level 7"
-        case .upgradedDwelling1: return "Upgraded dwelling level 1"
-        case .upgradedDwelling2: return "Upgraded dwelling level 2"
-        case .upgradedDwelling3: return "Upgraded dwelling level 3"
-        case .upgradedDwelling4: return "Upgraded dwelling level 4"
-        case .upgradedDwelling5: return "Upgraded dwelling level 5"
-        case .upgradedDwelling6: return "Upgraded dwelling level 6"
-        case .upgradedDwelling7: return "Upgraded dwelling level 7"
-        }
-    }
-}
-
-public extension RandomNumberGenerator {
-    mutating func randomBool() -> Bool {
-        Int.random(in: 0...1, using: &self) == 0
-    }
-}
-
-public extension Map.Town.Buildings.Building {
-
-    static func `default`(
-        includeFort: Bool = false,
-        randomNumberGenerator: RandomNumberGenerator? = nil
-    ) -> [Self]  {
-        var prng = randomNumberGenerator ?? SystemRandomNumberGenerator()
-        let maybeFort: Self? = includeFort ? .fort : nil
-        let maybeDwelling2: Self? = prng.randomBool() ? .dwelling2 : nil
-        
-        return [
-            maybeFort,
-//            .villageHall,
-            .tavern,
-            .dwelling1,
-            maybeDwelling2
-        ].compactMap({ $0 })
-    }
-    
-}
+//public extension Map.Town.Building {
+//
+//    static func `default`(
+//        includeFort: Bool = false,
+//    ) -> [Self]  {
+//        let maybeFort: Self? = includeFort ? .fort : nil
+//        let maybeDwelling2: Self? = prng.randomBool() ? .dwelling2 : nil
+//
+//        return [
+//            maybeFort,
+////            .villageHall,
+//            .tavern,
+//            .dwelling1,
+//            maybeDwelling2
+//        ].compactMap({ $0 })
+//    }
+//
+//}
 
 
 // MARK: Parse Town
@@ -737,7 +407,7 @@ public extension Map.Town {
         /// private because ugly that we piggyback on this TownEvent having the same properties as a timed event. Make use of public computed properties to extract info from this private stored property.
         private let timedEvent: Map.TimedEvent
         
-        public let buildings: [Buildings.Building]
+        public let buildings: [Building]
         
         /// MapEditor: "Note the specified creatures will be added to their respective generator building within the town. If the generator has not been built at that time the creatures cannot be added."
         public let creaturesToBeAddedToRespectiveGenerators: [CreatureStack.Quantity]
@@ -745,7 +415,7 @@ public extension Map.Town {
         public init(
             townID: Map.Town.ID,
             timedEvent: Map.TimedEvent,
-            buildings: [Buildings.Building] = [],
+            buildings: [Building] = [],
             creaturesToBeGained: [CreatureStack.Quantity] = .noCreatures
         ) {
             precondition(creaturesToBeGained.count == CreatureStacks.Slot.allCases.count)
@@ -782,25 +452,24 @@ public extension Map.Town.Event {
 // MARK: Private
 private extension Map.Loader.Parser.H3M {
     
-    func parseBuildings() throws -> [Map.Town.Buildings.Building] {
+    func parseBuildings() throws -> [Map.Town.Building] {
         let rawBytes = try reader.read(byteCount: 6)
         let bitmaskFlipped =  BitArray(data: Data(rawBytes.reversed()))
         let bitmask = BitArray(bitmaskFlipped.reversed())
         return try bitmask.enumerated().compactMap { (buildingID, isBuilt) in
            guard isBuilt else { return nil }
-        return try Map.Town.Buildings.Building(integer: buildingID)
+        return try Map.Town.Building(integer: buildingID)
        }
     }
     
     func parseTownWithCustomBuildings() throws -> Map.Town.Buildings {
         let built = try parseBuildings()
         let forbidden = try parseBuildings()
-        return .init(built: built, forbidden: forbidden)
+        return .custom(.init(built: built, forbidden: forbidden))
     }
     
     func parseSimpleTown() throws -> Map.Town.Buildings {
         let hasFort = try reader.readBool()
-        let built = Map.Town.Buildings.Building.default(includeFort: hasFort)
-        return .init(built: built, forbidden: [])
+        return .simple(hasFort: hasFort)
     }
 }

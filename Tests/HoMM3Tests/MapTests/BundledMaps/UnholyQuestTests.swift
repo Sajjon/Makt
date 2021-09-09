@@ -178,10 +178,10 @@ final class UnholyQuestMapTest: BaseMapTest {
                             id: .position(.init(x: 72, y: 66, inUnderworld: false)),
                             faction: .castle,
                             owner: .playerTwo,
-                            buildings: .init(
+                            buildings: .custom(.init(
                                 built: [.fort],
                                 forbidden: [.tavern]
-                            ),
+                            )),
                             spells: .init(
                                 possible: .init(
                                     values: Spell.ID.all(
@@ -197,10 +197,10 @@ final class UnholyQuestMapTest: BaseMapTest {
                                 id: .position(.init(x: 90, y: 33, inUnderworld: true)),
                                     faction: .inferno,
                                     owner: .playerOne,
-                                    buildings: .init(
+                                    buildings: .custom(.init(
                                         built: [.fort],
                                         forbidden: [.tavern]
-                                    ),
+                                    )),
                                     spells: .init(possible: .init(values: Spell.ID.all(but: [.protectionFromWater, .summonBoat, .viewAir, .lightningBolt, .protectionFromAir, .airShield, .chainLightning, .meteorShower, .townPortal, .waterWalk, .dimensionDoor, .fly])))))
                     
                 case at(67, y: 90, inUnderworld: true):

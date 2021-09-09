@@ -51,7 +51,7 @@ final class HeroesOfMighNotMagicAlliesTests: BaseMapTest {
                         expected: .init(
                             id: .fromMapFile(731346733),
                             owner: .red,
-                            buildings: .init(built: [.fort, .tavern, .mageGuildLevel1, .mageGuildLevel2, .mageGuildLevel3, .mageGuildLevel4, .mageGuildLevel5], forbidden: []),
+                            buildings: .custom(.init(built: [.fort, .tavern, .mageGuildLevel1, .mageGuildLevel2, .mageGuildLevel3, .mageGuildLevel4, .mageGuildLevel5], forbidden: [])),
                             spells: .init(possible: [.titansLightningBolt], obligatory: []),
                             alignment: .sameAsOwnerOrRandom
                         ),

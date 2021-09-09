@@ -10,7 +10,7 @@ import Foundation
 public extension Hero {
     
     /// https://heroes.thelazy.net/index.php/Most_powerful_hero_(campaign)
-    enum ID: UInt8, Hashable, CaseIterable, CustomStringConvertible {
+    enum ID: UInt8, Hashable, CaseIterable, CustomDebugStringConvertible {
         
         // MARK: Castle
         case orrin,
@@ -278,9 +278,9 @@ public extension Hero.ID {
     }()
 }
 
-// MARK: CustomStringConvertible
+// MARK: CustomDebugStringConvertible
 public extension Hero.ID {
-    var description: String {
+    var debugDescription: String {
         switch self {
         
         // Castle

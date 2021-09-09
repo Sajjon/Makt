@@ -57,9 +57,9 @@ final class MandateOfHeavenTests: BaseMapTest {
                             .init(creatureID: .pikeman, quantity: 10),
                             .init(creatureID: .pikeman, quantity: 10)
                         ]),
-                        buildings: .init(built: [
+                        buildings: .custom(.init(built: [
                             .townHall, .tavern, .mageGuildLevel1, .shipyard, .dwelling1, .dwelling2
-                        ], forbidden: [.fort, .grail])
+                        ], forbidden: [.fort, .grail]))
                     ), actual: object)
                 default: break
                 }

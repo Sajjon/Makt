@@ -25,11 +25,11 @@ final class ElbowRoomTests: BaseMapTest {
                         expected: .init(
                             id: .fromMapFile(3352760721),
                             garrison: .init(stacks: []),
-                            buildings: .init(
+                            buildings: .custom(.init(
                                 built: [
-                                .townHall, .fort, .tavern, .mageGuildLevel1, .dwelling1, .horde1
-                            ], forbidden: []
-                            ),
+                                    .townHall, .fort, .tavern, .mageGuildLevel1, .dwelling1, .horde1
+                                ]
+                            )),
                             events: .init(values: [
                                 .init(
                                     townID: .fromMapFile(3352760721),

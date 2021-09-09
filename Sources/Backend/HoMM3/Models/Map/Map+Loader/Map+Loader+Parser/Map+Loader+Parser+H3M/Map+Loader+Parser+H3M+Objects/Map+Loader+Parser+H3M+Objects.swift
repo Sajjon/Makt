@@ -408,8 +408,6 @@ internal extension Map.Loader.Parser.H3M {
                         integer: reader.readUInt8()
                     )
                     
-                    print("🛖 bountyStripped: \(bountyStripped)")
-                    
                     let bounty: Map.Seershut.Bounty
                     
                     switch bountyStripped {
@@ -465,7 +463,6 @@ internal extension Map.Loader.Parser.H3M {
                             )
                         )
                     }
-                    print("🛖 bounty: \(bounty)")
                     return bounty
                 }
                 
@@ -473,7 +470,6 @@ internal extension Map.Loader.Parser.H3M {
                 
                 if format > .restorationOfErathia {
                     let quest = try parseQuest()
-                    print("🛖 quest: \(quest)")
                     seershut = try .init(quest: quest, bounty: bounty())
                 } else {
                     assert(format == .restorationOfErathia)
@@ -557,7 +553,7 @@ internal extension Map.Loader.Parser.H3M {
             inspector?.didParseObject(mapObject)
         }
         let detailsAboutObjects = Map.DetailsAboutObjects(objects: objects)
-        print("objects: \(detailsAboutObjects.objects.suffix(30))")
+//        print("objects: \(detailsAboutObjects.objects.suffix(30))")
         return detailsAboutObjects
     }
 }

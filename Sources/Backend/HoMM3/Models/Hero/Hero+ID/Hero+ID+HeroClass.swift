@@ -41,27 +41,27 @@ public extension Hero.ID {
     
     static func rangers(format: Map.Format = .shadowOfDeath) -> [Self] {
         return [
-            Optional<Self>.some(Self.clancy),
-            .ivor,
+            Optional<Self>.some(Self.mephala),
+            .ufretin,
             .jenova,
-            .kyrre,
-            .mephala,
             .ryland,
             .thorgrim,
-            .ufretin,
+            .ivor,
+            .clancy,
+            .kyrre,
             { format >= .armageddonsBlade ? Self.gelu : nil }(),
         ].compactMap({ $0 })
     }
     
     static let druids: [Self] = [
-        .aeris,
-        .alagar,
         .coronius,
+        .uland,
         .elleshar,
         .gem,
         .malcom,
         .melodia,
-        .uland
+        .alagar,
+        .aeris
     ]
     
     static func rampart(format: Map.Format = .shadowOfDeath) -> [Self] { Self.rangers(format: format) + Self.druids }
@@ -81,12 +81,26 @@ public extension Hero.ID {
     static func tower(format: Map.Format = .shadowOfDeath) -> [Self] { Self.alchemists + Self.wizards(format: format) }
     
     static func demoniacs(format: Map.Format = .shadowOfDeath) -> [Self] { [
-    Optional<Self>.some(.calh), .fiona, .ignatius, .marius, .nymus, .octavia, .pyre, .rashka,
+        Optional<Self>.some(.fiona),
+        .rashka,
+        .marius,
+        .ignatius,
+        .octavia,
+        .calh,
+        pyre,
+        .nymus,
         { format >= .armageddonsBlade ? Self.xeron : nil }()
     ].compactMap({ $0 }) }
     
     static let heretics: [Self] = [
-        .ash, .axsis, .ayden, .calid, .olema, .xarfax, .xyron, .zydar
+        .ayden,
+        .xyron,
+        .axsis,
+        .olema,
+        .calid,
+        .ash,
+        .zydar,
+        .xarfax
     ]
     
     static func inferno(format: Map.Format = .shadowOfDeath) -> [Self] { Self.demoniacs(format: format) + Self.heretics }

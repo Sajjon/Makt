@@ -122,37 +122,6 @@
 
 
 
-    func test_assert_can_load_map_by_id__vikingWeShallGo() throws {
-        // Delete any earlier cached maps.
-        Map.loader.cache.__deleteMap(by: .vikingWeShallGo)
-        let map = try Map.load(.vikingWeShallGo)
-        XCTAssertEqual(map.about.summary.fileName, "A Viking We Shall Go.h3m")
-        XCTAssertEqual(map.about.summary.name, "Viking We Shall Go!")
-        XCTAssertEqual(map.about.summary.description,
-            """
-            The Place: Europe
-            The Time: The Dark Ages
-            Vikings have begun their raids while the kings of Europe take the opportunity to grab land from their neighbors.
-            """)
-        XCTAssertEqual(map.about.summary.fileSizeCompressed, 47_404 )
-        XCTAssertEqual(map.about.summary.fileSize, 226_324)
-        XCTAssertFalse(map.about.summary.hasTwoLevels)
-        XCTAssertEqual(map.about.summary.format, .shadowOfDeath)
-        XCTAssertEqual(map.about.summary.difficulty, .normal)
-        XCTAssertEqual(map.about.summary.size, .extraLarge)
-        XCTAssertEqual(map.about.playersInfo.players.count, 6)
-
-        XCTAssertTrue(map.about.playersInfo.players.prefix(5).allSatisfy({ $0.isPlayableBothByHumanAndAI }))
-        XCTAssertTrue(map.about.playersInfo.players[5].isPlayableOnlyByAI)
-
-        XCTAssertEqual(
-            map.about.playersInfo.players.flatMap({ $0.townTypes }),
-            [.stronghold, .necropolis, .castle, .rampart, .castle, .inferno]
-        )
-
-        XCTAssertEqual(map.about.victoryLossConditions.victoryConditions.map { $0.kind.stripped }, [.standard])
-        XCTAssertEqual(map.about.victoryLossConditions.lossConditions.map { $0.kind.stripped }, [.standard])
-    }
 
 
 

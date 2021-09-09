@@ -17,12 +17,12 @@ extension Map.Loader.Parser.H3M {
             let heroId = heroIdRaw != 0xff ? try Hero.ID(integer: heroIdRaw) : nil
             let portraitIdRaw = try reader.readUInt8()
             let portraitID = portraitIdRaw != 0xff ? try Hero.ID(integer: portraitIdRaw) : nil
-            let name = try reader.readString()
+            let name = try reader.readString(maxByteCount: 13) // `13` is from `homm3tools`
             
             let allowedPlayers = try parseAllowedPlayers(availablePlayers: availablePlayers)
             
             let customHero = Map.AdditionalInformation.CustomHero(
-                heroId: heroId,
+                heroId: heroId!,
                 portraitID: portraitID,
                 name: name,
                 allowedPlayers: allowedPlayers
