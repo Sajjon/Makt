@@ -12,6 +12,32 @@ import Malm
 // MARK: Parse Town
 internal extension H3M {
     
+    func parseTownObject(
+        id objectID: Map.Object.ID,
+        format: Map.Format,
+        position: Position,
+        allowedSpellsOnMap: SpellIDs,
+        availablePlayers: [Player]
+    ) throws -> Map.Town {
+        if case let .town(faction) = objectID {
+            return try parseTown(
+                format: format,
+                faction: faction,
+                position: position, // used as ID if Map file does not specify one.
+                allowedSpellsOnMap: allowedSpellsOnMap,
+                availablePlayers: availablePlayers
+            )
+        } else {
+            assert(objectID == .randomTown)
+            return try parseRandomTown(
+                format: format,
+                position: position, // used as ID if Map file does not specify one.
+                allowedSpellsOnMap: allowedSpellsOnMap,
+                availablePlayers: availablePlayers
+            )
+        }
+    }
+    
     func parseRandomTown(
         format: Map.Format,
         position: Position,

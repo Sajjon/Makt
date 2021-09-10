@@ -7,10 +7,38 @@
 
 import Foundation
 import Malm
-
+import Util
 
 internal extension H3M {
   
+    
+    func parseMonsterObject(id objectID: Map.Object.ID, format: Map.Format) throws -> Map.Monster {
+        switch objectID {
+        case .monster(let creatureID):
+            return try
+            parseMonster(format: format, kind: .specific(creatureID: creatureID))
+        case .randomMonsterLevel1:
+            return try parseRandomMonster(format: format, level: .one)
+        case .randomMonsterLevel2:
+            return try parseRandomMonster(format: format, level: .two)
+        case .randomMonsterLevel3:
+            return try parseRandomMonster(format: format, level: .three)
+        case .randomMonsterLevel4:
+            return try
+            parseRandomMonster(format: format, level: .four)
+        case .randomMonsterLevel5:
+            return try parseRandomMonster(format: format, level: .five)
+        case .randomMonsterLevel6:
+            return try  parseRandomMonster(format: format, level: .six)
+        case .randomMonsterLevel7:
+            return try parseRandomMonster(format: format, level: .seven)
+        case .randomMonster:
+            return try parseRandomMonster(format: format)
+        default: incorrectImplementation(shouldAlreadyHave: "handled object id: \(objectID) in an earlier switch.")
+        }
+    }
+    
+    
     func parseRandomMonster(format: Map.Format, level: Creature.Level? = .any) throws -> Map.Monster {
         try parseMonster(
             format: format,
