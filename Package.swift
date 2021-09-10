@@ -6,23 +6,38 @@ import PackageDescription
 let package = Package(
     name: "Makt",
     products: [
-        // Products define the executables and libraries a package produces, and make them visible to other packages.
-        .library(
-            name: "Makt",
-            targets: ["Makt"]),
+        .library(name: "Makt", targets: ["Makt", "Malm"]),
     ],
     dependencies: [
         .package(url: "https://github.com/1024jp/GzipSwift.git", .upToNextMajor(from: "5.1.1"))
     ],
     targets: [
-        // Targets are the basic building blocks of a package. A target can define a module or a test suite.
-        // Targets can depend on other targets in this package, and on products in packages this package depends on.
+        .target(
+            name: "Util", dependencies: []
+        ),
+        .target(
+            name: "Malm",
+            dependencies: ["Util"]
+        ),
+        .target(
+            name: "H3M",
+            dependencies: [
+                "Util",
+                "Malm",
+                .product(name: "Gzip", package: "GzipSwift")
+            ]
+        ),
         .target(
             name: "Makt",
-            dependencies: [.product(name: "Gzip", package: "GzipSwift")]),
+            dependencies: ["Util", "Malm", "H3M"]
+        ),
         .testTarget(
-            name: "MaktTests",
-            dependencies: ["Makt"],
+            name: "MalmTests",
+            dependencies: ["Malm"]
+        ),
+        .testTarget(
+            name: "H3MTests",
+            dependencies: ["H3M"],
             resources: [
                 .copy("Resources/TestMaps/artifacts.h3m"),
                 .copy("Resources/TestMaps/creatures-cyon-modified.h3m"),
@@ -36,6 +51,10 @@ let package = Package(
                 .copy("Resources/TestMaps/garrison.h3m"),
                 .copy("Resources/TestMaps/town-events.h3m")
             ]
-            )
+        ),
+        .testTarget(
+            name: "MaktTests",
+            dependencies: ["Makt"]
+        )
     ]
 )

@@ -365,16 +365,16 @@ three bytes per position (as always)
 byte to defa number
 8 zero bytes
 1 byte specifying whether there is a message or watchdogs (01) or not (00)
-if there is a message but no guards, then
+if there is a message but no guardians, then
 4 bytes per message length (max 30,000)
 message
 5 zero bytes (for what?)
-if there are guards but no news, then
+if there are guardians but no news, then
 4 zero bytes
 byte 01
 list of monsters (as usual, I think)
 4 zero bytes
-if there are guards and a message, then
+if there are guardians and a message, then
 4 bytes of message length (normal writing)
 message
 1 byte 01
