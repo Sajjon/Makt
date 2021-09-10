@@ -10,10 +10,12 @@ import Malm
 
 
 internal extension Map.Loader.Parser.H3M {
+    
     func parseCreatureStacks<I>(
         format: Map.Format,
         count _count: I
     ) throws -> CreatureStacks? where I: FixedWidthInteger {
+       
         let count = Int(_count)
         let stacks: [(CreatureStacks.Slot, CreatureStack?)] = try (0..<count).map { slotIndex in
             let slot = try CreatureStacks.Slot.init(id: .init(slotIndex))
@@ -27,7 +29,6 @@ internal extension Map.Loader.Parser.H3M {
             guard quantity > 0, isSet else {
                 return (slot, nil)
             }
-            
             
             let kind: CreatureStack.Kind = try {
 
@@ -53,6 +54,9 @@ internal extension Map.Loader.Parser.H3M {
             
             let stack = CreatureStack(kind: kind, quantity: quantity)
             return (slot, stack)
+        }
+        guard stacks.count > 0 else {
+            return nil
         }
         return .init(creatureStackAtSlot: Dictionary.init(uniqueKeysWithValues: stacks))
     }

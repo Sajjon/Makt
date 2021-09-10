@@ -11,20 +11,22 @@ public struct CreatureStacks: Hashable, CustomDebugStringConvertible {
     
     public let creatureStackAtSlot: [Slot: CreatureStack?]
   
-    public init(creatureStackAtSlot: [Slot: CreatureStack?]) {
+    public init?(creatureStackAtSlot: [Slot: CreatureStack?]) {
         precondition(creatureStackAtSlot.count <= Slot.allCases.count)
-        self.creatureStackAtSlot = creatureStackAtSlot.filter { $0.value != nil }
+        let actual = creatureStackAtSlot.filter { $0.value != nil }
+        guard actual.count > 0 else { return nil }
+        self.creatureStackAtSlot = actual
     }
 }
 
 // MARK: Convenience Init
 public extension CreatureStacks {
-    init(stacksAtSlots: [(Slot, CreatureStack?)]) {
+    init?(stacksAtSlots: [(Slot, CreatureStack?)]) {
         precondition(stacksAtSlots.count <= Slot.allCases.count)
         self.init(creatureStackAtSlot: Dictionary(uniqueKeysWithValues: stacksAtSlots))
     }
     
-    init(stacks: [CreatureStack?]) {
+    init?(stacks: [CreatureStack?]) {
         self.init(stacksAtSlots: Slot.allCases.prefix(stacks.count).enumerated().map({ index, slot in
             return (key: slot, value: stacks[index])
         }))

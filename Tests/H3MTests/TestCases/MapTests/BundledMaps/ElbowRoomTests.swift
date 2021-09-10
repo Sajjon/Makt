@@ -25,7 +25,6 @@ final class ElbowRoomTests: BaseMapTest {
                     assertObjectRandomTown(
                         expected: .init(
                             id: .fromMapFile(3352760721),
-                            garrison: .init(stacks: []),
                             buildings: .custom(.init(
                                 built: [
                                     .townHall, .fort, .tavern, .mageGuildLevel1, .dwelling1, .horde1

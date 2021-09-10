@@ -14,9 +14,36 @@ final class JudgementDayTests: BaseMapTest {
     func test_judgementDay() throws {
         let mapID: Map.ID = .judgementDay
         Map.loader.cache.__deleteMap(by: mapID)
-        let inspector = Map.Loader.Parser.Inspector()
+        let inspector = Map.Loader.Parser.Inspector(
+            basicInfoInspector: .init(
+                onParseFormat: { XCTAssertEqual($0, .restorationOfErathia) },
+                onParseName: { XCTAssertEqual($0, "Judgment Day") },
+                onParseDescription: { XCTAssertEqual($0, "Legend has it that the fabled Sword of Judgment rests somewhere in these caverns.  Three Dungeon Overlords have vowed to find it, for he who controls the Sword, controls all.") } ,
+                onParseDifficulty: { XCTAssertEqual($0, .normal) },
+                onParseSize: { XCTAssertEqual($0, .small) }
+            ),
+            additionalInformationInspector: .init(
+                victoryLossInspector: .init(
+                    onParseVictoryConditions: {
+                        XCTAssertEqual($0, [.init(kind: .acquireSpecificArtifact(.swordOfJudgement), appliesToAI: true), .standard])
+                    }
+                )
+            ),
+            onParseObject: { [self] object in
+                switch object.position {
+                case at(1, y: 16):
+                    assertObjectArtifact(
+                        expected: .init(
+                            .specific(id: .swordOfJudgement),
+                            message: "Placed on an altar made of pure obsidian lies a sword forged from the finest steel.  Do you wish to grasp its shimmering jeweled hilt?"
+                        ),
+                        actual: object)
+                default: break
+                }
+            }
+        )
         XCTAssertNoThrow(try Map.load(mapID, inspector: inspector))
-//        waitForExpectations(timeout: 1)
+        waitForExpectations(timeout: 1)
     }
 }
 

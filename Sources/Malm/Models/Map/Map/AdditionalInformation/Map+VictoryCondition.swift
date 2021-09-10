@@ -10,7 +10,7 @@ import Foundation
 
 public extension Map {
     
-    struct VictoryCondition: Hashable {
+    struct VictoryCondition: Hashable, CustomDebugStringConvertible {
         public let kind: Kind
         public let appliesToAI: Bool
         public init(kind: Kind, appliesToAI: Bool = false) {
@@ -22,13 +22,21 @@ public extension Map {
 
 public extension Map.VictoryCondition {
     
+    var debugDescription: String {
+        """
+        kind: \(kind)
+        appliesToAI: \(appliesToAI)
+        """
+    }
+    
+    
     static let standard = Self.init(kind: .standard, appliesToAI: true)
     
     var victoryIconID: UInt8 {
         kind.victoryIconID
     }
     
-    enum Kind: Hashable {
+    enum Kind: Hashable, CustomDebugStringConvertible {
         /// You must find a specific artifact. Win by placing the artifact in one of your heroes’ backpacks.
         case acquireSpecificArtifact(Artifact.ID)
         
@@ -103,7 +111,24 @@ public extension Map.VictoryCondition.Kind {
 }
 
 public extension Map.VictoryCondition.Kind {
-    enum Stripped: UInt8, Equatable, CustomStringConvertible {
+    var debugDescription: String {
+        switch self {
+        case .acquireSpecificArtifact(let artifact): return "acquireSpecificArtifact(\(artifact))"
+        case .accumulateCreatures(let kind, let quantity): return "accumulateCreatures(kind: \(kind), quantity: \(quantity)"
+        case .accumulateResources(let kind, let quantity): return "accumulateResources(kind: \(kind), quantity: \(quantity)"
+        case .captureSpecificTown(let townPosition): return "captureSpecificTown(atPosition: \(townPosition)"
+        case .flagAllCreatureDwellings: return "flagAllCreatureDwellings"
+        case .flagAllMines: return "flagAllMines"
+        case .upgradeSpecificTown(let position, let hallLevel, let fortLevel): return "upgradeSpecificTown(at: \(position), hallLevel: \(hallLevel), fortLevel: \(fortLevel)"
+        case .buildGrailBuilding(let townPosition): return "buildGrailBuilding(townPosition: \(townPosition)"
+        case .defeatSpecificHero(let heroPosition): return "defeatSpecificHero(atPosition: \(heroPosition)"
+        case .defeatSpecificCreature(let position): return "defeatSpecificCreature(atPosition: \(position)"
+        case .transportSpecificArtifact(let artifactId, let townPostion): return "transportSpecificArtifact(kind: \(artifactId), toTownAtPosition: \(townPostion)"
+        case .defeatAllEnemies: return "defeatAllEnemies"
+        }
+    }
+    
+    enum Stripped: UInt8, Equatable, CustomDebugStringConvertible {
         
         /// You must find a specific artifact. Win by placing the artifact in one of your heroes’ backpacks.
         case acquireSpecificArtifact
@@ -149,7 +174,7 @@ public extension Map.VictoryCondition.Kind {
 public extension Map.VictoryCondition.Kind.Stripped {
     static let standard: Self = .defeatAllEnemies
     
-    var description: String {
+    var debugDescription: String {
         switch self {
         case .acquireSpecificArtifact: return "acquireSpecificArtifact"
         case .defeatAllEnemies: return "defeatAllEnemies"
