@@ -21,10 +21,8 @@ internal extension H3M {
             let availableHeroIDs = Hero.ID.playable(in: format)
             assert(availableHeroIDs.count == 156)
             let settingsForHeroes: [Map.AdditionalInformation.SettingsForHero] = try (0..<availableHeroIDs.count).compactMap { heroIDIndex in
-                
                 // Hero is custom?
                 guard try reader.readBool() else { return nil }
-          
                 
                 let heroID: Hero.ID = availableHeroIDs[heroIDIndex]
                 let startsWithExperiencePoints = try reader.readBool()
@@ -155,11 +153,6 @@ internal extension H3M {
     }
     
     func parseCustomSpellsOfHero() throws -> [Spell.ID] {
-//        return try Array(
-//            reader
-//                .readBitArray(byteCount: 9)
-//                .prefix(Spell.ID.allCases.count)
-//        )
         let rawBytes = try reader.read(byteCount: 9)
         
         let bitmaskFlipped =  BitArray(data: Data(rawBytes.reversed()))
@@ -206,10 +199,10 @@ private extension  H3M {
         guard !(artifactId.isWarMachine && slot.isBackpack) else {
             throw Error.warmachineFoundInBackback
         }
-                if artifactId == .spellBook && slot == .body(.misc5) {
+        if artifactId == .spellBook && slot == .body(.misc5) {
             fatalError("Spellbook found in misc5. Invalid! Maybe we should just put it in spellbook slot? (and remove this fatalError..)")
         }
-
+        
         return .init(slot: slot, artifactID: artifactId)
     }
 }

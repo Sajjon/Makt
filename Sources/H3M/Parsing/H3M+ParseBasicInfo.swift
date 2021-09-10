@@ -8,13 +8,13 @@
 import Foundation
 import Malm
 
-
-
 // MARK: Parse Map+Summary
 extension  H3M {
-
     
-    func parseBasicInfo(inspector: Map.Loader.Parser.Inspector.BasicInfoInspector? = nil) throws -> Map.BasicInformation {
+    func parseBasicInfo(
+        inspector: Map.Loader.Parser.Inspector.BasicInfoInspector? = nil
+    ) throws -> Map.BasicInformation {
+        
         // Check map for validity
         guard reader.sourceSize >= 50 else { throw Error.corruptMapFileTooSmall }
         // Map version
@@ -23,14 +23,13 @@ extension  H3M {
         
         if
             !(format == .restorationOfErathia || format == .armageddonsBlade || format == .shadowOfDeath)
-
         {
             var shouldThrow = true
-                    #if WOG
-                    if format == .wakeOfGods {
-                        shouldThrow = false
-                    }
-                    #endif // WOG
+#if WOG
+            if format == .wakeOfGods {
+                shouldThrow = false
+            }
+#endif // WOG
             if shouldThrow {
                 throw Error.unsupportedFormat(format)
             }

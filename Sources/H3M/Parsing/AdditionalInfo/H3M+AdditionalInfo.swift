@@ -62,9 +62,7 @@ extension H3M {
             settingsForHeroes: settingsForHeroes
         )
     }
-
 }
-
 
 // MARK: VictoryLoss Cond.
 private extension  H3M {
@@ -198,6 +196,7 @@ private extension  H3M {
             self.teamID = teamID
         }
     }
+    
     func parseTeamInfo(validColors: [Player]) throws -> Map.TeamInfo {
         let teamCount = try reader.readUInt8()
         guard teamCount > 0 else {
@@ -224,11 +223,7 @@ private extension  H3M {
         
         return .teams(teams.sorted(by: { $0.id < $1.id }))
     }
-    
-    
-    
 }
-
 
 // MARK: Parsed Rumors
 private extension H3M {
@@ -242,7 +237,6 @@ private extension H3M {
         return .init(values: rumors)
     }
 }
-
 
 // MARK: AvailableHeroes
 private extension  H3M {
@@ -313,7 +307,6 @@ private extension H3M {
 
 // MARK: Parse Available Spells
 private extension H3M {
-    
     func parseAvailableSpells(format: Map.Format) throws -> SpellIDs? {
         guard format >= .shadowOfDeath else { return nil }
         let spells = try parseSpellIDs(includeIfBitSet: false)
