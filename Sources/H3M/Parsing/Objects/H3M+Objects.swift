@@ -20,25 +20,13 @@ internal extension Map.Loader.Parser.H3M {
         attributesOfObjects: Map.AttributesOfObjects
     ) throws -> Map.DetailsAboutObjects {
         
-        let allowedSpellsOnMap = additionalMapInformation.availableSpells?.values ?? Spell.ID.allCases
+        let allowedSpellsOnMap = additionalMapInformation.availableSpells ?? SpellIDs.init(values: Spell.ID.allCases)
+        
+        let maxIndex = attributesOfObjects.attributes.count
         let objectCount = try reader.readUInt32()
         
-        var objects = [Map.Object]()
-        let maxIndex = attributesOfObjects.attributes.count
-        
-        for objectIndex in 0..<objectCount {
-            
-            // START Debugging/Tests only
-            if
-                let maxObjectsToParse = inspector?.settings.maxObjectsToParse,
-                (objectIndex + 1) > maxObjectsToParse {
-                break
-            }
-            // END Debugging/Tests only
-            
+        let objects: [Map.Object] = try objectCount.nTimes {
             let position = try reader.readPosition()
-            
-            /// Index of object attributes
             let objectAttributesIndex = try reader.readUInt32()
             
             guard
@@ -53,55 +41,31 @@ internal extension Map.Loader.Parser.H3M {
             try reader.skip(byteCount: 5) // unknown
 
             let attributesOfObject = attributesOfObjects.attributes[.init(objectAttributesIndex)]
+            inspector?.willParseObject(at:  position, attributes: attributesOfObject)
             
             let objectKind: Map.Object.Kind
-            
-            inspector?.willParseObject(at:  position, attributes: attributesOfObject)
             
             switch attributesOfObject.objectID.class {
             
             case .spellScroll: // TODO figure out a good way to merge `Map.SpellScroll` and `Map.Artifact.Kind == .spellScroll`
-                let (message, guardians) = try parseMessageAndGuardians(format: format)
-                let spellID = try Spell.ID(integer: reader.readUInt32())
-                objectKind = .spellScroll(.init(id: spellID, message: message, guardians: guardians))
+                objectKind = try .spellScroll(parseSpellScroll(format: format))
             
             case .artifact:
-                let (message, guardians) = try parseMessageAndGuardians(format: format)
-                let artifact: Artifact
-                if case let .spellScroll(expectedSpellScrollID) = attributesOfObject.objectID {
-                    let spellIDParsed = try Spell.ID(integer: reader.readUInt32())
-                    assert(spellIDParsed == expectedSpellScrollID)
-                    artifact = .scroll(spell: spellIDParsed)
-                } else if case let .artifact(specificArtifactID) = attributesOfObject.objectID {
-                    artifact =  .specific(id: specificArtifactID) //.init(id: expectedArtifactID)
-                } else if case .randomMajorArtifact = attributesOfObject.objectID {
-                    artifact = .random(class: .major) //.init(id: .random(class: .major, in: format))
-                } else if case .randomMinorArtifact = attributesOfObject.objectID {
-                    artifact = .random(class: .minor) //.init(id: .random(class: .minor, in: format))
-                } else if case .randomRelic = attributesOfObject.objectID {
-                    artifact = .random(class: .relic) //.init(id: .random(class: .relic, in: format))
-                } else if case .randomTreasureArtifact = attributesOfObject.objectID {
-                    artifact = .random(class: .treasure) //.init(id: .random(class: .treasure, in: format))
-                } else if case .randomArtifact = attributesOfObject.objectID {
-                    artifact = .random(class: .any) //.init(id: .random(class: .any, in: format))
-                } else { fatalError("incorrect implementation, unhandled object ID: \(attributesOfObject.objectID)") }
-                let guardedArtifact = Map.GuardedArtifact(artifact, message: message, guardians: guardians)
-              
-                objectKind = .artifact(guardedArtifact)
-            case .event:
-                objectKind = try .geoEvent(parseGeoEvent(format: format, availablePlayers: playersInfo.availablePlayers))
-            case .garrison:
-                let owner = try parseOwner()
-                try reader.skip(byteCount: 3)
-                let creatures = try parseCreatureStacks(format: format, count: 7)
-                let areCreaturesRemovable = try format > .restorationOfErathia ? reader.readBool() : true
-                try reader.skip(byteCount: 8)
-                let garrison = Map.Garrison(
-                    areCreaturesRemovable: areCreaturesRemovable,
-                    owner: owner,
-                    creatures: creatures
+                objectKind = try .artifact(
+                    parseGuardedArtifact(
+                        format: format,
+                        objectID: attributesOfObject.objectID
+                    )
                 )
-                objectKind = .garrison(garrison)
+            case .event:
+                objectKind = try .geoEvent(
+                    parseGeoEvent(
+                        format: format,
+                        availablePlayers: playersInfo.availablePlayers
+                    )
+                )
+            case .garrison:
+                objectKind = try .garrison(parseGarrison(format: format))
                 
             case .genericBoat, .genericImpassableTerrain, .genericPassableTerrain, .genericTreasure, .genericVisitable, .monolithTwoWay, .subterraneanGate:
                 // Generic objects have no body, nothing to parse.
@@ -109,7 +73,7 @@ internal extension Map.Loader.Parser.H3M {
             case .grail:
                 objectKind = try .grail(.init(radius: reader.readUInt32()))
             case .hero:
-                guard case let .hero(heroClass) = attributesOfObject.objectID else { fatalError("incorrect") }
+                guard case let .hero(heroClass) = attributesOfObject.objectID else { fatalError("Only specific heroes should be parsed here, not Prison nor random heroes. These are handled separately") }
                 objectKind = try .hero(
                     parseHero(
                         heroClass: heroClass,
@@ -121,51 +85,9 @@ internal extension Map.Loader.Parser.H3M {
                 try reader.skip(byteCount: 3)
                 objectKind = .lighthouse(.init(owner: owner))
             case .monster:
-                switch attributesOfObject.objectID {
-                case .monster(let creatureID):
-                    objectKind = try .monster(
-                        parseMonster(format: format, kind: .specific(creatureID: creatureID))
-                    )
-                case .randomMonsterLevel1:
-                    objectKind = try .monster(
-                        parseRandomMonster(format: format, level: .one)
-                    )
-                case .randomMonsterLevel2:
-                    objectKind = try .monster(
-                        parseRandomMonster(format: format, level: .two)
-                    )
-                case .randomMonsterLevel3:
-                    objectKind = try .monster(
-                        parseRandomMonster(format: format, level: .three)
-                    )
-                case .randomMonsterLevel4:
-                    objectKind = try .monster(
-                        parseRandomMonster(format: format, level: .four)
-                    )
-                case .randomMonsterLevel5:
-                    objectKind = try .monster(
-                        parseRandomMonster(format: format, level: .five)
-                    )
-                case .randomMonsterLevel6:
-                    objectKind = try .monster(
-                        parseRandomMonster(format: format, level: .six)
-                    )
-                case .randomMonsterLevel7:
-                    objectKind = try .monster(
-                        parseRandomMonster(format: format, level: .seven)
-                    )
-                case .randomMonster:
-                    objectKind = try .monster(
-                        parseRandomMonster(format: format)
-                    )
-                default: fatalError("incorrect impl")
-                }
-          
+                objectKind = try .monster(parseMonsterObject(id: attributesOfObject.objectID, format: format))
             case .pandorasBox:
-                let pandorasBox = try parsePandorasBox(format: format)
-                objectKind = .pandorasBox(pandorasBox)
-            case .placeholderHero:  fatalError("placeholderHero")
-                
+                objectKind = try .pandorasBox(parsePandorasBox(format: format))
             case .randomHero:
                 objectKind = try .hero(
                     parseRandomHero(
@@ -284,40 +206,23 @@ internal extension Map.Loader.Parser.H3M {
                 try reader.skip(byteCount: 4)
                 objectKind = .sign(.init(message: message))
             case .oceanBottle:
-                let message = try reader.readString(maxByteCount: 150) // Cyon 150 is confirmed in Map Editor to be max for ocean bottle.
-                try reader.skip(byteCount: 4)
-                objectKind = .oceanBottle(.init(message: message))
+                objectKind = try .oceanBottle(parseOceanBottle())
             case .town:
-                if case let .town(faction) = attributesOfObject.objectID {
-                    objectKind = try .town(
-                        parseTown(
-                            format: format,
-                            faction: faction,
-                            position: position, // used as ID if Map file does not specify one.
-                            allowedSpellsOnMap: allowedSpellsOnMap,
-                            availablePlayers: playersInfo.availablePlayers
-                        )
+                objectKind = try .town(
+                    parseTownObject(
+                        id: attributesOfObject.objectID,
+                        format: format,
+                        position: position,
+                        allowedSpellsOnMap: allowedSpellsOnMap,
+                        availablePlayers: playersInfo.availablePlayers
                     )
-                } else {
-                    assert(attributesOfObject.objectID == .randomTown)
-                    objectKind = try .town(
-                        parseRandomTown(
-                            format: format,
-                            position: position, // used as ID if Map file does not specify one.
-                            allowedSpellsOnMap: allowedSpellsOnMap,
-                            availablePlayers: playersInfo.availablePlayers
-                        )
-                    )
-                }
+                )
             case .witchHut:
-                let allowedSkills: [Hero.SecondarySkill.Kind] = format > .restorationOfErathia ? try {
-                    try reader.readBitArray(byteCount: 4).prefix(Hero.SecondarySkill.Kind.allCases.count).enumerated().compactMap { (skillIndex, allowed) in
-                        guard allowed else { return nil }
-                        return Hero.SecondarySkill.Kind.allCases[skillIndex]
-                    }
-                }() : Hero.SecondarySkill.Kind.allCases
+                objectKind = try .witchHut(parseWitchHut(format: format))
                 
-                objectKind = .witchHut(.init(learnableSkills: allowedSkills))
+            case .placeholderHero:
+                // Untested
+                objectKind = try .placeholderHero(parsePlaceholderHero())
             }
             
             let mapObject = Map.Object(
@@ -326,8 +231,8 @@ internal extension Map.Loader.Parser.H3M {
                 kind: objectKind
             )
             
-            objects.append(mapObject)
             inspector?.didParseObject(mapObject)
+            return mapObject
         }
         let detailsAboutObjects = Map.DetailsAboutObjects(objects: objects)
         return detailsAboutObjects
@@ -335,8 +240,68 @@ internal extension Map.Loader.Parser.H3M {
 }
 
 
-
 internal extension Map.Loader.Parser.H3M {
+    
+    func parseTownObject(
+        id objectID: Map.Object.ID,
+        format: Map.Format,
+        position: Position,
+        allowedSpellsOnMap: SpellIDs,
+        availablePlayers: [Player]
+    ) throws -> Map.Town {
+        if case let .town(faction) = objectID {
+            return try parseTown(
+                format: format,
+                faction: faction,
+                position: position, // used as ID if Map file does not specify one.
+                allowedSpellsOnMap: allowedSpellsOnMap,
+                availablePlayers: availablePlayers
+            )
+        } else {
+            assert(objectID == .randomTown)
+            return try parseRandomTown(
+                format: format,
+                position: position, // used as ID if Map file does not specify one.
+                allowedSpellsOnMap: allowedSpellsOnMap,
+                availablePlayers: availablePlayers
+            )
+        }
+    }
+    
+    func parseMonsterObject(id objectID: Map.Object.ID, format: Map.Format) throws -> Map.Monster {
+        switch objectID {
+        case .monster(let creatureID):
+            return try
+            parseMonster(format: format, kind: .specific(creatureID: creatureID))
+        case .randomMonsterLevel1:
+            return try parseRandomMonster(format: format, level: .one)
+        case .randomMonsterLevel2:
+            return try parseRandomMonster(format: format, level: .two)
+        case .randomMonsterLevel3:
+            return try parseRandomMonster(format: format, level: .three)
+        case .randomMonsterLevel4:
+            return try
+            parseRandomMonster(format: format, level: .four)
+        case .randomMonsterLevel5:
+            return try parseRandomMonster(format: format, level: .five)
+        case .randomMonsterLevel6:
+            return try  parseRandomMonster(format: format, level: .six)
+        case .randomMonsterLevel7:
+            return try parseRandomMonster(format: format, level: .seven)
+        case .randomMonster:
+            return try parseRandomMonster(format: format)
+        default: incorrectImplementation(shouldAlreadyHave: "handled object id: \(objectID) in an earlier switch.")
+        }
+    }
+    
+    // WARNING untested method
+    func parsePlaceholderHero() throws -> Hero.Placeholder {
+        guard let owner = try parseOwner() else { incorrectImplementation(reason: "A placeholder hero should always have an owner, right?") }
+        let identityRaw = try reader.readUInt8()
+        let identity: Hero.Placeholder.Identity = try identityRaw == 0xff ? .anyHero(powerRating: .init(integer: reader.readUInt8())) : .specificHero(.init(integer: identityRaw))
+        
+        return .init(owner: owner, identity: identity)
+    }
     
     func parseResources() throws -> Resources? {
         let resources: [Resource] = try Resource.Kind.allCases.map { kind in
@@ -350,5 +315,22 @@ internal extension Map.Loader.Parser.H3M {
             try Spell.ID(integer: reader.readInt8())
         }
     }
+                    
+    func parseWitchHut(format: Map.Format) throws -> Map.WitchHut {
+        let learnableSkills: [Hero.SecondarySkill.Kind] = format > .restorationOfErathia ? try {
+            try reader.readBitArray(byteCount: 4).prefix(Hero.SecondarySkill.Kind.allCases.count).enumerated().compactMap { (skillIndex, allowed) in
+                guard allowed else { return nil }
+                return Hero.SecondarySkill.Kind.allCases[skillIndex]
+            }
+        }() : Hero.SecondarySkill.Kind.allCases
+    
+        return .init(learnableSkills: learnableSkills)
+    }
+                    
+    func parseOceanBottle() throws -> Map.OceanBottle {
+        let message = try reader.readString(maxByteCount: 150) // Cyon 150 is confirmed in Map Editor to be max for ocean bottle.
+        try reader.skip(byteCount: 4)
+        return .init(message: message)
+    }
 }
-
+                                       

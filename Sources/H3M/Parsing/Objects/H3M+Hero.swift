@@ -8,8 +8,6 @@
 import Foundation
 import Malm
 
-
-
 internal extension Map.Loader.Parser.H3M {
     
     func parseHero(
@@ -30,11 +28,9 @@ internal extension Map.Loader.Parser.H3M {
     ) throws -> Hero {
         try _parseHero(heroClass: nil, format: format)
     }
-
 }
 
 private extension Map.Loader.Parser.H3M {
-    
     
     func _parseHero(
         heroClass maybeExpectedHeroClass: Hero.Class?,
@@ -119,7 +115,6 @@ private extension Map.Loader.Parser.H3M {
         }() ?? nil
         
         try reader.skip(byteCount: 16)
-        
     
         return .init(
             identifierKind: identifierKind,
@@ -140,16 +135,4 @@ private extension Map.Loader.Parser.H3M {
         )
     }
     
-}
-
-internal extension Map.Loader.Parser.H3M {
-    func parseOwner() throws -> Player? {
-        let raw = try reader.readUInt8()
-        return raw != Player.neutralRawValue ? try Player(integer: raw) : nil
-    }
-    
-    func parseSpellID() throws -> Spell.ID? {
-        let raw = try reader.readUInt8()
-        return raw != Spell.ID.noneRawValue ? try Spell.ID(integer: raw) : nil
-    }
 }

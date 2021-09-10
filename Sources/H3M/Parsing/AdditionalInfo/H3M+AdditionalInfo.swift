@@ -244,13 +244,6 @@ private extension Map.Loader.Parser.H3M {
 }
 
 
-
-extension DataReader {
-    func readBitArray(byteCount: Int) throws -> BitArray {
-        try BitArray(data: read(byteCount: byteCount))
-    }
-}
-
 // MARK: AvailableHeroes
 private extension  Map.Loader.Parser.H3M {
     func parseAvailableHeroes(format: Map.Format) throws -> HeroIDs {

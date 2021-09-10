@@ -58,6 +58,7 @@ public extension Map.Object {
         case geoEvent(Map.GeoEvent)
         case dwelling(Map.Dwelling)
         case hero(Hero)
+        case placeholderHero(Hero.Placeholder)
         case mine(Map.Mine)
         case town(Map.Town)
         case shipyard(Map.Shipyard)

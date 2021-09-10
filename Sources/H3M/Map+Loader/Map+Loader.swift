@@ -77,7 +77,11 @@ public extension Map.Loader {
 
 // MARK: Public
 public extension Map.Loader {
-    func load(id mapID: Map.ID, inspector: Map.Loader.Parser.Inspector? = nil) throws -> Map {
+    
+    func load(
+        id mapID: Map.ID,
+        inspector: Map.Loader.Parser.Inspector? = nil
+    ) throws -> Map {
         if let cachedMap = cache.load(id: mapID) {
             return cachedMap
         }

@@ -15,7 +15,7 @@ internal extension Map.Loader.Parser.H3M {
     func parseRandomTown(
         format: Map.Format,
         position: Position,
-        allowedSpellsOnMap: [Spell.ID],
+        allowedSpellsOnMap: SpellIDs,
         availablePlayers: [Player]
     ) throws -> Map.Town {
         try parseTown(
@@ -30,7 +30,7 @@ internal extension Map.Loader.Parser.H3M {
         format: Map.Format,
         faction: Faction? = nil,
         position: Position,
-        allowedSpellsOnMap: [Spell.ID],
+        allowedSpellsOnMap: SpellIDs,
         availablePlayers: [Player]
     ) throws -> Map.Town {
         

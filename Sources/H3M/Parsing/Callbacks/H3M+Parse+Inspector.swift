@@ -22,10 +22,7 @@ public extension Map.Loader.Parser {
         private let onParseAllObjects: OnParseAllObjects?
         private let onParseEvents: OnParseEvents?
         
-        public let settings: Settings
-        
         init(
-            settings: Settings = .init(),
             basicInfoInspector: BasicInfoInspector? = nil,
             playersInfoInspector: PlayersInfoInspector? = nil,
             additionalInformationInspector: AdditionalInfoInspector? = nil,
@@ -36,7 +33,6 @@ public extension Map.Loader.Parser {
             onParseAllObjects: OnParseAllObjects? = nil,
             onParseEvents: OnParseEvents? = nil
         ) {
-            self.settings = settings
             
             self.basicInfoInspector = basicInfoInspector
             
@@ -54,13 +50,6 @@ public extension Map.Loader.Parser {
 }
 
 public extension Map.Loader.Parser.Inspector {
-    
-    struct Settings {
-        public let maxObjectsToParse: Int?
-        public init(maxObjectsToParse: Int? = nil) {
-            self.maxObjectsToParse = maxObjectsToParse
-        }
-    }
     
     typealias OnParseBasicInfo = (Map.BasicInformation) -> Void
     typealias OnParseWorld = (Map.World) -> Void

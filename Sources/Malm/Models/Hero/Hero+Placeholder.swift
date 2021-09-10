@@ -13,6 +13,12 @@ public extension Hero {
     struct Placeholder: Hashable {
         public let owner: Player
         public let identity: Identity
+        
+        public init(owner: Player, identity: Identity) {
+            self.owner = owner
+            self.identity = identity
+        }
+        
         public enum Identity: Hashable {
             case anyHero(powerRating: PowerRating)
             case specificHero(Hero.ID)
