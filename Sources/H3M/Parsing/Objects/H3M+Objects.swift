@@ -95,15 +95,9 @@ internal extension H3M {
                     )
                 )
             case .prison:
-                objectKind = try .hero(
-                    parsePrisonHero(
-                        format: format
-                    )
-                )
-                
+                objectKind = try .hero(parsePrisonHero(format: format))
             case .questGuard:
-                let quest = try parseQuest()
-                objectKind = .questGuard(quest)
+                objectKind = try .questGuard(parseQuest())
                 
             case .dwelling: fallthrough
             case .randomDwelling: fallthrough
@@ -112,99 +106,29 @@ internal extension H3M {
                 objectKind = try .dwelling(parseDwelling(objectID: attributesOfObject.objectID))
                 
             case .resource:
-                let (message, guardians) = try parseMessageAndGuardians(format: format)
-                let quantityBase = try Int32(reader.readUInt32()) // 4 bytes quantity
-                try reader.skip(byteCount: 4) // 4 bytes unknown
-                
-                let resourceKind: Resource.Kind
-                if case let .resource(kind) = attributesOfObject.objectID {
-                    resourceKind = kind
-                } else {
-                    // random
-                    resourceKind = .random()
-                }
-                
-                // Gold is always multiplied by 100
-                let resourceQuantity: Quantity = quantityBase == 0 ? .random : .specified((resourceKind == .gold ? quantityBase * 100 : quantityBase))
-                
-                
-                let guardedResource = Map.GuardedResource(
-                    kind: resourceKind,
-                    quantity: resourceQuantity,
-                    message: message,
-                    guardians: guardians
-                )
-                objectKind = .resource(guardedResource)
-           
-            case .resourceGenerator:
-                guard case let .mine(mineKind) = attributesOfObject.objectID else { fatalError("incorrect") }
-                let mine = try Map.Mine(kind: mineKind, owner: .init(rawValue: reader.readUInt8()))
-                try reader.skip(byteCount: 3)
-                objectKind = .mine(mine)
-            case .abandonedMine:
-                let mine = try Map.Mine(kind: nil, owner: .init(rawValue: reader.readUInt8()))
-                try reader.skip(byteCount: 3)
-                objectKind = .mine(mine)
-           
-            case .scholar:
-                let scholarBonusKind = try Map.Scholar.Bonus.Stripped(integer: reader.readUInt8())
-                let bonusIDRaw = try reader.readUInt8()
-               
-                
-                let bonus: Map.Scholar.Bonus
-                switch scholarBonusKind {
-                case .primarySkill:
-                    bonus = try .primarySkill(.init(integer: bonusIDRaw))
-                case .secondarySkill:
-                    bonus = try .secondarySkill(.init(integer: bonusIDRaw))
-                case .spell:
-                    bonus = try .spell(.init(integer: bonusIDRaw))
-                case .random:
-                    UNUSED(bonusIDRaw)
-                    bonus = .random
-                }
-                
-                try reader.skip(byteCount: 6)
-                
-                objectKind = .scholar(.init(bonus: bonus))
-        
-            case .seersHut:
-                let seershut: Map.Seershut
-                if format > .restorationOfErathia {
-                    let quest = try parseQuest()
-                    seershut = try .init(quest: quest, bounty: parseBounty(format: format))
-                } else {
-                    assert(format == .restorationOfErathia)
-                    guard let artifactID = try parseArtifactID(format: format) else {
-                        try reader.skip(byteCount: 3)
-                        objectKind = .seershut(.empty)
-                        break
-                    }
-                    seershut = try Map.Seershut(
-                        quest: .init(
-                            kind: Quest.Kind.acquireArtifacts([artifactID]),
-                            messages: nil,
-                            deadline: nil
-                        ),
-                        bounty: parseBounty(format: format)
+                objectKind = try .resource(
+                    parseGuardedResource(
+                        objectID: attributesOfObject.objectID,
+                        format: format
                     )
-                }
-                try reader.skip(byteCount: 2)
-                
-                objectKind = .seershut(seershut)
+                )
+            case .resourceGenerator:
+                guard case let .mine(mineKind) = attributesOfObject.objectID else { incorrectImplementation(shouldAlwaysBeAbleTo: "Get kind of mine.") }
+                objectKind = try .mine(parseMine(kind: mineKind))
+            case .abandonedMine:
+                objectKind = try .mine(parseMine())
+            case .scholar:
+                objectKind = try .scholar(parseScholar())
+            case .seersHut:
+                objectKind = try .seershut(parseSeershut(format: format))
             case .shipyard:
-                let owner = try parseOwner()
-                try reader.skip(byteCount: 3)
-                let shipyard = Map.Shipyard(owner: owner)
-                objectKind = .shipyard(shipyard)
+                objectKind = try .shipyard(parseShipyard())
             case .shrine:
                 let spellID = try parseSpellID()
                 try reader.skip(byteCount: 3)
                 objectKind = .shrine(.init(spell: spellID))
             case .sign:
-                let message = try reader.readString()
-                try reader.skip(byteCount: 4)
-                objectKind = .sign(.init(message: message))
+                objectKind = try .sign(parseSign())
             case .oceanBottle:
                 objectKind = try .oceanBottle(parseOceanBottle())
             case .town:
@@ -331,6 +255,98 @@ internal extension H3M {
         let message = try reader.readString(maxByteCount: 150) // Cyon 150 is confirmed in Map Editor to be max for ocean bottle.
         try reader.skip(byteCount: 4)
         return .init(message: message)
+    }
+    
+    func parseGuardedResource(objectID: Map.Object.ID, format: Map.Format) throws -> Map.GuardedResource {
+        let (message, guardians) = try parseMessageAndGuardians(format: format)
+        let quantityBase = try Int32(reader.readUInt32()) // 4 bytes quantity
+        try reader.skip(byteCount: 4) // 4 bytes unknown
+        
+        let resourceKind: Resource.Kind
+        if case let .resource(kind) = objectID {
+            resourceKind = kind
+        } else {
+            // random
+            resourceKind = .random()
+        }
+        
+        // Gold is always multiplied by 100
+        let resourceQuantity: Quantity = quantityBase == 0 ? .random : .specified((resourceKind == .gold ? quantityBase * 100 : quantityBase))
+        
+        return .init(
+            kind: resourceKind,
+            quantity: resourceQuantity,
+            message: message,
+            guardians: guardians
+        )
+    }
+    
+    func parseScholar() throws -> Map.Scholar {
+        
+        let scholarBonusKind = try Map.Scholar.Bonus.Stripped(integer: reader.readUInt8())
+        let bonusIDRaw = try reader.readUInt8()
+        
+        let bonus: Map.Scholar.Bonus
+        switch scholarBonusKind {
+        case .primarySkill:
+            bonus = try .primarySkill(.init(integer: bonusIDRaw))
+        case .secondarySkill:
+            bonus = try .secondarySkill(.init(integer: bonusIDRaw))
+        case .spell:
+            bonus = try .spell(.init(integer: bonusIDRaw))
+        case .random:
+            UNUSED(bonusIDRaw)
+            bonus = .random
+        }
+        
+        try reader.skip(byteCount: 6)
+        
+        return .init(bonus: bonus)
+    }
+    
+    func parseSeershut(format: Map.Format) throws -> Map.Seershut {
+        let seershut: Map.Seershut
+        if format > .restorationOfErathia {
+            let quest = try parseQuest()
+            // can't return yet, need to skip 2 bytes
+            seershut = try .init(quest: quest, bounty: parseBounty(format: format))
+        } else {
+            assert(format == .restorationOfErathia)
+            guard let artifactID = try parseArtifactID(format: format) else {
+                try reader.skip(byteCount: 3)
+                return .empty
+            }
+            // can't return yet, need to skip 2 bytes
+            seershut = try Map.Seershut(
+                quest: .init(
+                    kind: Quest.Kind.acquireArtifacts([artifactID]),
+                    messages: nil,
+                    deadline: nil
+                ),
+                bounty: parseBounty(format: format)
+            )
+        }
+        try reader.skip(byteCount: 2)
+        
+        return seershut
+    }
+    
+    func parseSign() throws -> Map.Sign {
+        let message = try reader.readString()
+        try reader.skip(byteCount: 4)
+        return .init(message: message)
+    }
+    
+    func parseShipyard() throws -> Map.Shipyard {
+        let owner = try parseOwner()
+        try reader.skip(byteCount: 3)
+        return .init(owner: owner)
+    }
+    
+    func parseMine(kind: Map.Mine.Kind? = nil) throws -> Map.Mine {
+        let mine = try Map.Mine(kind: kind, owner: .init(rawValue: reader.readUInt8()))
+        try reader.skip(byteCount: 3)
+        return mine
     }
 }
                                        
