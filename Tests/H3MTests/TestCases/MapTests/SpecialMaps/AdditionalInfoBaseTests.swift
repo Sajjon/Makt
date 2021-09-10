@@ -92,7 +92,7 @@ class AdditionalInfoBaseTests: BaseMapTest {
             },
             onParseEvents: { timedGlobalEvents in
                 defer { expectationGlobalTimedEvent.fulfill() }
-                guard let event = timedGlobalEvents.events.first else {
+                guard let event = timedGlobalEvents.first else {
                     XCTFail("Expected exact one event.")
                     return
                 }

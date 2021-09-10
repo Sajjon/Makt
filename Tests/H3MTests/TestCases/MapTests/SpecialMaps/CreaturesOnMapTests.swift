@@ -378,8 +378,8 @@ final class CreaturesOnMapTests: BaseMapTest {
                 }
             },
             onParseEvents: { events in
-                XCTAssertEqual(events.events.count, 2)
-                let firstEvent = events.events[0]
+                XCTAssertEqual(events.count, 2)
+                let firstEvent = events[0]
                 XCTAssertEqual(firstEvent.name, "This is the name of a \"timed event\".")
                 XCTAssertEqual(firstEvent.message, "We use this timed event as a marker to verify that we have correctly parsed all creatures in this map, because events are positioned at the end of the file. This event applies to both human an computer.The first day of occurerence is 237 and it repeats every 21 days.")
                 XCTAssertTrue(firstEvent.availability.appliesToComputerPlayers)
@@ -387,7 +387,7 @@ final class CreaturesOnMapTests: BaseMapTest {
                 XCTAssertEqual(firstEvent.occurrences.first, 237-1) // apparently we need to subract one...
                 XCTAssertEqual(firstEvent.occurrences.subsequent, .every21Days)
                 
-                let secondEvent = events.events[1]
+                let secondEvent = events[1]
                 XCTAssertEqual(secondEvent.name, "Last event with message reaching character limit of 29861 chars.")
                 XCTAssertEqual(secondEvent.message, longEventMessage)
                 XCTAssertEqual(secondEvent.occurrences.first, 672-1) // apparently we need to subract one...

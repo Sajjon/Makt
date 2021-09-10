@@ -22,7 +22,7 @@ final class GoodToGoMapTest: BaseMapTest {
             onParseDescription: {  XCTAssertEqual($0, "In an effort to reduce the frequency of wars between the various nations, the Emperor has set aside a small region to be used as a battleground to settle differences between quarreling Lords. Your castle starts fully constructed so that you may concentrate on defeating your opponent. Good luck!") },
             onParseDifficulty: { XCTAssertEqual($0, .normal) },
             onParseSize: { XCTAssertEqual($0, .small) }),
-            
+
             additionalInformationInspector: .init(
                 onParseTeamInfo: { XCTAssertEqual($0, [[1], [2], [4, 5]]) }
             ),
@@ -68,8 +68,8 @@ final class GoodToGoMapTest: BaseMapTest {
                     } else {
                         XCTFail("Unexpected object of kind: \(object.kind).")
                     }
-                    
-                    
+
+
                 case at(5, y: 33):
                     assertObjectTown(
                         expected: .init(
@@ -91,7 +91,7 @@ final class GoodToGoMapTest: BaseMapTest {
                             ))),
                         actual: object
                     )
-                    
+
                 case at(26, y: 6):
                     assertObjectHero(
                         class: .beastmaster,
@@ -131,7 +131,7 @@ final class GoodToGoMapTest: BaseMapTest {
                             startingExperiencePoints: 18_500
                         ),
                         actual: object)
-                    
+
                 case at(7, y: 35):
                     assertObjectHero(
                         class: .battleMage,
@@ -145,7 +145,7 @@ final class GoodToGoMapTest: BaseMapTest {
                             startingExperiencePoints: 18_500
                         ),
                         actual: object)
-                    
+
                 case at(34, y: 33):
                     if object.objectID.stripped == .randomTown {
                         assertObjectRandomTown(expected: .init(
@@ -165,15 +165,14 @@ final class GoodToGoMapTest: BaseMapTest {
                     } else {
                         XCTFail("Unexpected object of kind: \(object.kind).")
                     }
-                    
+
                 default: break
                 }
-                
+
             },
-        onParseEvents: {
-            let events = $0.events
+        onParseEvents: { events in
             XCTAssertEqual(events.count, 2)
-            
+
             XCTAssertEqual(
                 events[0],
                 .init(
@@ -194,7 +193,7 @@ final class GoodToGoMapTest: BaseMapTest {
                     ])
                 )
             )
-            
+
             XCTAssertEqual(
                 events[1],
                 .init(

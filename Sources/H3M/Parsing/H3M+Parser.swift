@@ -312,7 +312,7 @@ internal extension Map.Loader.Parser.H3M {
             try parseTimedEvent(format: format, availablePlayers: availablePlayers)
         }
         
-        return .init(events: events)
+        return .init(values: events)
     }
     
 }
