@@ -46,21 +46,21 @@ public extension Quest {
 // MARK: Messages
 public extension Quest {
     struct Messages: Hashable {
-        public let firstVisitText: String?
-        public let nextVisitText: String?
-        public let completedText: String?
+        public let proposalMessage: String?
+        public let progressMessage: String?
+        public let completionMessage: String?
         
         public init?(
-            firstVisitText: String?,
-            nextVisitText: String?,
-            completedText: String?
+            proposalMessage: String?,
+            progressMessage: String?,
+            completionMessage: String?
         ) {
-            guard !(firstVisitText == nil && nextVisitText == nil && completedText == nil) else {
+            guard !(proposalMessage == nil && progressMessage == nil && completionMessage == nil) else {
                 return nil
             }
-            self.firstVisitText = firstVisitText
-            self.nextVisitText = nextVisitText
-            self.completedText = completedText
+            self.proposalMessage = proposalMessage
+            self.progressMessage = progressMessage
+            self.completionMessage = completionMessage
         }
     }
     

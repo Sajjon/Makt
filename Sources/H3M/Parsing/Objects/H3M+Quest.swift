@@ -42,18 +42,18 @@ internal extension Map.Loader.Parser.H3M {
         
         // Map "The story of the Fool (Traemask2.h3m") 9697 bytes...
         let maxStringLength: UInt32 = 10_000
-        let firstVisitText = try reader.readString(maxByteCount: maxStringLength)
-        let nextVisitText = try reader.readString(maxByteCount: maxStringLength)
-        let completedText = try reader.readString(maxByteCount: maxStringLength)
+        let proposalMessage = try reader.readString(maxByteCount: maxStringLength)
+        let progressMessage = try reader.readString(maxByteCount: maxStringLength)
+        let completionMessage = try reader.readString(maxByteCount: maxStringLength)
         
        
         
         return Quest(
             kind: questKind,
             messages: .init(
-                firstVisitText: firstVisitText,
-                nextVisitText: nextVisitText,
-                completedText: completedText
+                proposalMessage: proposalMessage,
+                progressMessage: progressMessage,
+                completionMessage: completionMessage
             ),
             deadline: deadline
         )

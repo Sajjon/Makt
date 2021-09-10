@@ -55,6 +55,22 @@ extension BaseMapTest {
     }
     
     
+    func assertObjectQuestGuard(
+        expected: Quest,
+        actual object: Map.Object,
+        file: StaticString = #file,
+        line: UInt = #line
+    ) {
+        XCTAssertEqual(object.objectID.stripped, .questGuard, file: file, line: line)
+        guard case let .questGuard(actual) = object.kind else {
+            XCTFail("expected quest guard")
+            return
+        }
+        XCTAssertEqual(expected, actual, file: file, line: line)
+        fulfill(object: object)
+    }
+    
+    
     func assertObjectScholar(
         expected: Map.Scholar,
         actual object: Map.Object,

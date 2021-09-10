@@ -9,6 +9,7 @@ import Foundation
 
 public extension Map {
     
-    /// Time based global events, trigger on certain days.
+    /// Time based global events, trigger on certain days
+    /// You should sort them by date of ocurence, they might not be sorted acording to that.
     typealias TimedEvents = CollectionOf<TimedEvent>
 }
