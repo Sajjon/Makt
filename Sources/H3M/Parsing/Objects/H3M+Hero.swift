@@ -8,7 +8,7 @@
 import Foundation
 import Malm
 
-internal extension Map.Loader.Parser.H3M {
+internal extension H3M {
     
     func parseHero(
         heroClass: Hero.Class,
@@ -30,7 +30,7 @@ internal extension Map.Loader.Parser.H3M {
     }
 }
 
-private extension Map.Loader.Parser.H3M {
+private extension H3M {
     
     func _parseHero(
         heroClass maybeExpectedHeroClass: Hero.Class?,

@@ -9,7 +9,7 @@ import Foundation
 import Malm
 
 
-internal extension Map.Loader.Parser.H3M {
+internal extension H3M {
     
     func parseCreatureStacks<I>(
         format: Map.Format,

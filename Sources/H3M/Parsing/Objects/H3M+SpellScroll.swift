@@ -8,7 +8,7 @@
 import Foundation
 import Malm
 
-extension Map.Loader.Parser.H3M {
+extension H3M {
     func parseSpellScroll(format: Map.Format) throws -> Map.SpellScroll {
         let (message, guardians) = try parseMessageAndGuardians(format: format)
         let spellID = try Spell.ID(integer: reader.readUInt32())

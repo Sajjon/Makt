@@ -8,7 +8,7 @@
 import Foundation
 import Malm
 
-internal extension Map.Loader.Parser.H3M {
+internal extension H3M {
     func parseSpellID() throws -> Spell.ID? {
         let raw = try reader.readUInt8()
         return raw != Spell.ID.noneRawValue ? try Spell.ID(integer: raw) : nil

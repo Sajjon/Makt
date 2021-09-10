@@ -8,7 +8,7 @@
 import Foundation
 import Malm
 
-extension Map.Loader.Parser.H3M {
+extension H3M {
         
     func parseAdditionalInfo(
         inspector: Map.Loader.Parser.Inspector.AdditionalInfoInspector? = nil,
@@ -67,7 +67,7 @@ extension Map.Loader.Parser.H3M {
 
 
 // MARK: VictoryLoss Cond.
-private extension  Map.Loader.Parser.H3M {
+private extension  H3M {
     func parseVictoryLossConditions(
         inspector: Map.Loader.Parser.Inspector.AdditionalInfoInspector.VictoryLossInspector? = nil,
         format: Map.Format
@@ -189,7 +189,7 @@ private extension  Map.Loader.Parser.H3M {
 }
     
 // MARK: Team
-private extension  Map.Loader.Parser.H3M {
+private extension  H3M {
     private final class TempTeam {
         let teamID: UInt8
         var players: [Player]
@@ -231,7 +231,7 @@ private extension  Map.Loader.Parser.H3M {
 
 
 // MARK: Parsed Rumors
-private extension Map.Loader.Parser.H3M {
+private extension H3M {
     func parseRumors() throws -> Map.AdditionalInformation.Rumors {
         let rumors: [Map.Rumor] = try reader.readUInt32().nTimes {
             let name = try reader.readString()
@@ -245,7 +245,7 @@ private extension Map.Loader.Parser.H3M {
 
 
 // MARK: AvailableHeroes
-private extension  Map.Loader.Parser.H3M {
+private extension  H3M {
     func parseAvailableHeroes(format: Map.Format) throws -> HeroIDs {
         let availableHeroIDs = Hero.ID.playable(in: format)
         
@@ -273,7 +273,7 @@ private extension  Map.Loader.Parser.H3M {
 
 
 // MARK: Parse Artifacts
-private extension Map.Loader.Parser.H3M {
+private extension H3M {
     func parseAvailableArtifacts(format: Map.Format) throws -> ArtifactIDs? {
         guard format > .restorationOfErathia else { return nil }
         let allAvailable = Artifact.ID.available(in: format)
@@ -297,7 +297,7 @@ private extension Map.Loader.Parser.H3M {
 }
 
 // MARK: Available Secondary SKills
-private extension Map.Loader.Parser.H3M {
+private extension H3M {
     func parseAvailableSecondarySkills(format: Map.Format) throws -> SecondarySkillKinds? {
         guard format >= .shadowOfDeath else { return nil }
         let allSkillIDs = Hero.SecondarySkill.Kind.allCases
@@ -312,7 +312,7 @@ private extension Map.Loader.Parser.H3M {
 }
 
 // MARK: Parse Available Spells
-private extension Map.Loader.Parser.H3M {
+private extension H3M {
     
     func parseAvailableSpells(format: Map.Format) throws -> SpellIDs? {
         guard format >= .shadowOfDeath else { return nil }

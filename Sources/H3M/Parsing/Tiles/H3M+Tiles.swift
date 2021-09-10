@@ -9,7 +9,7 @@ import Foundation
 import Malm
 
 // MARK: Parse World/Tiles/Terrain
-internal extension Map.Loader.Parser.H3M {
+internal extension H3M {
     func parseTerrain(hasUnderworld: Bool, size: Size) throws -> Map.World {
         
         func parseTiles(inUnderworld: Bool) throws -> [Map.Tile] {

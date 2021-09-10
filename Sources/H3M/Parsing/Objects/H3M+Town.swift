@@ -10,7 +10,7 @@ import Malm
 
 
 // MARK: Parse Town
-internal extension Map.Loader.Parser.H3M {
+internal extension H3M {
     
     func parseRandomTown(
         format: Map.Format,
@@ -108,7 +108,7 @@ internal extension Map.Loader.Parser.H3M {
 
 
 // MARK: Private
-private extension Map.Loader.Parser.H3M {
+private extension H3M {
     
     func parseBuildings() throws -> [Map.Town.Building] {
         let rawBytes = try reader.read(byteCount: 6)

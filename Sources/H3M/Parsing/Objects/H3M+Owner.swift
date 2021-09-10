@@ -8,7 +8,7 @@
 import Foundation
 import Malm
 
-internal extension Map.Loader.Parser.H3M {
+internal extension H3M {
     func parseOwner() throws -> Player? {
         let raw = try reader.readUInt8()
         return raw != Player.neutralRawValue ? try Player(integer: raw) : nil

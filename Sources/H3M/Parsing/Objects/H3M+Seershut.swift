@@ -8,7 +8,7 @@
 import Foundation
 import Malm
 
-internal extension Map.Loader.Parser.H3M {
+internal extension H3M {
     func parseBounty(format: Map.Format) throws -> Map.Seershut.Bounty {
         
         let bountyStripped = try Map.Seershut.Bounty.Stripped(

@@ -9,7 +9,7 @@ import Foundation
 import Malm
 
 // MARK: Parse Hero Settings
-internal extension Map.Loader.Parser.H3M {
+internal extension H3M {
     func parseHeroSettings(format: Map.Format) throws -> Map.AdditionalInformation.SettingsForHeroes? {
       
         switch format {
@@ -63,7 +63,7 @@ internal extension Map.Loader.Parser.H3M {
         }
     }
 }
-internal extension Map.Loader.Parser.H3M {
+internal extension H3M {
     
     /// Sometimes life is hard... for `Map.PandorasBox` and `Map.Event` just 1 byte (a UInt8) is read from reader as "secondarySkillStartAmount", but for
     /// HeroSettings (SOD) in Map.AdditinalInformation and Hero object on map 4 bytes (a UInt32) is used.
@@ -175,7 +175,7 @@ internal extension Map.Loader.Parser.H3M {
     }
 }
 
-internal extension Map.Loader.Parser.H3M {
+internal extension H3M {
     
     func parseIDBasedOn<RR>(format: Map.Format) throws -> RR? where RR: RawRepresentable, RR.RawValue == UInt8 {
         let idRaw: UInt16 = try format == .restorationOfErathia ? UInt16(reader.readUInt8()) : reader.readUInt16()
@@ -200,7 +200,7 @@ internal extension Map.Loader.Parser.H3M {
     }
 }
 
-private extension  Map.Loader.Parser.H3M {
+private extension  H3M {
     func parseArtifact(in slot: Artifact.Slot, format: Map.Format) throws -> Hero.ArtifactInSlot? {
         guard let artifactId = try parseArtifactID(format: format) else { return nil }
         guard !(artifactId.isWarMachine && slot.isBackpack) else {

@@ -10,7 +10,7 @@ import Malm
 import Util
 
 
-internal extension Map.Loader.Parser.H3M {
+internal extension H3M {
     
     func parseDetailsAboutObjects(
         inspector: Map.Loader.Parser.Inspector? = nil,
@@ -240,7 +240,7 @@ internal extension Map.Loader.Parser.H3M {
 }
 
 
-internal extension Map.Loader.Parser.H3M {
+internal extension H3M {
     
     func parseTownObject(
         id objectID: Map.Object.ID,

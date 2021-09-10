@@ -9,7 +9,7 @@ import Foundation
 import Malm
 
 
-internal extension Map.Loader.Parser.H3M {
+internal extension H3M {
   
     func parseRandomMonster(format: Map.Format, level: Creature.Level? = .any) throws -> Map.Monster {
         try parseMonster(

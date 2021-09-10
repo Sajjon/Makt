@@ -7,7 +7,7 @@
 
 import Foundation
 import Malm
-internal extension Map.Loader.Parser.H3M {
+internal extension H3M {
     
     func parseQuest() throws -> Quest {
         let questKindStripped = try Quest.Kind.Stripped(integer: reader.readUInt8())

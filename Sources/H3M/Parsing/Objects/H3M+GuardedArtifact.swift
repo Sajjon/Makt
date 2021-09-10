@@ -8,7 +8,7 @@
 import Foundation
 import Malm
 
-extension Map.Loader.Parser.H3M {
+extension H3M {
     func parseGuardedArtifact(format: Map.Format, objectID: Map.Object.ID) throws -> Map.GuardedArtifact {
         let (message, guardians) = try parseMessageAndGuardians(format: format)
         let artifact: Artifact

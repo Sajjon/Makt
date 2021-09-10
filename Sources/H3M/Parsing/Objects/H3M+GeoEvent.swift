@@ -10,7 +10,7 @@ import Malm
 
 
 // MARK: Parse Event
-internal extension Map.Loader.Parser.H3M {
+internal extension H3M {
     
     func parseGeoEvent(format: Map.Format, availablePlayers: [Player]) throws -> Map.GeoEvent {
         let pandorasBox = try parsePandorasBox(format: format)

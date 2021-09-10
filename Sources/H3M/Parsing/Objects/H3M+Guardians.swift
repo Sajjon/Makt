@@ -10,7 +10,7 @@ import Malm
 
 
 // MARK: Parse Event
-internal extension Map.Loader.Parser.H3M {
+internal extension H3M {
     
     func parseMessageAndGuardians(format: Map.Format) throws -> (message: String?, guardians: CreatureStacks?) {
         let hasMessage = try reader.readBool()

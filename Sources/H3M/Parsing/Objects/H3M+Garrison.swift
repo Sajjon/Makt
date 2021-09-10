@@ -8,7 +8,7 @@
 import Foundation
 import Malm
 
-extension Map.Loader.Parser.H3M {
+extension H3M {
     func parseGarrison(format: Map.Format) throws -> Map.Garrison {
         let owner = try parseOwner()
         try reader.skip(byteCount: 3)

@@ -22,8 +22,10 @@ public extension Map.Loader.Parser {
     }
 }
 
+internal typealias H3M = Map.Loader.Parser.H3M
+
 // MARK: Parse Map
-extension Map.Loader.Parser.H3M {
+extension H3M {
     func parse(inspector: Map.Loader.Parser.Inspector? = nil) throws -> Map {
         
         let checksum = CRC32.checksum(readMap.data)
@@ -74,7 +76,7 @@ extension Map.Loader.Parser.H3M {
     }
 }
 
-internal extension Map.Loader.Parser.H3M {
+internal extension H3M {
 
 
     func parseAllowedPlayers(availablePlayers: [Player]) throws -> [Player] {
@@ -102,7 +104,7 @@ internal extension Map.Loader.Parser.H3M {
 }
 
 
-internal extension Map.Loader.Parser.H3M {
+internal extension H3M {
     func parseSpellIDs(includeIfBitSet: Bool) throws -> [Spell.ID] {
         let byteCount = 9
         let rawBytes = try reader.read(byteCount: byteCount)
@@ -124,7 +126,7 @@ internal extension Map.Loader.Parser.H3M {
 public typealias Bitmask = BitArray
 
 // MARK: Parse "Attributes
-private extension Map.Loader.Parser.H3M {
+private extension H3M {
     
     /// Parse object atributes
     /// Here are properties of all objects on the map including castles and heroes
@@ -272,7 +274,7 @@ private extension Map.Object.Attributes {
 
 
 // MARK: Parse Events
-internal extension Map.Loader.Parser.H3M {
+internal extension H3M {
     
     func parseTimedEvent(
         format: Map.Format,
@@ -302,7 +304,7 @@ internal extension Map.Loader.Parser.H3M {
     }
 }
 
-internal extension Map.Loader.Parser.H3M {
+internal extension H3M {
     func parseTimedEvents(
         format: Map.Format,
         availablePlayers: [Player]

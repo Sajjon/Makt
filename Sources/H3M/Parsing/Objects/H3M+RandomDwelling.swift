@@ -9,7 +9,7 @@ import Foundation
 import Malm
 
 
-extension Map.Loader.Parser.H3M {
+extension H3M {
     func parseBitmask<Case>(of cases: [Case], byteCount maybeByteCount: Int? = nil) throws -> [Case] where Case: CaseIterable, Case.AllCases == [Case] {
         
         let caseCount = cases.count
@@ -39,7 +39,7 @@ extension Map.Loader.Parser.H3M {
 }
 
 
-internal extension Map.Loader.Parser.H3M {
+internal extension H3M {
   
     func parseDwelling(objectID: Map.Object.ID) throws -> Map.Dwelling {
         let owner = try parseOwner()

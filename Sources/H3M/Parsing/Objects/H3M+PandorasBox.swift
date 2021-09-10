@@ -10,7 +10,7 @@ import Malm
 
 
 
-internal extension Map.Loader.Parser.H3M {
+internal extension H3M {
 
 // TODO merge with `parseEvent` ?
 func parsePandorasBox(format: Map.Format) throws -> Map.PandorasBox {

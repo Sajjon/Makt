@@ -8,7 +8,7 @@
 import Foundation
 import Malm
 
-private extension Map.Loader.Parser.H3M {
+private extension H3M {
     func parsePlayer(
         inspector: Map.Loader.Parser.Inspector.PlayersInfoInspector? = nil,
         format: Map.Format,
@@ -130,7 +130,7 @@ private extension Map.Loader.Parser.H3M {
 }
 
 // MARK: PlayersInfo
-extension Map.Loader.Parser.H3M {
+extension H3M {
     
     func parseInformationAboutPlayers(
         inspector: Map.Loader.Parser.Inspector.PlayersInfoInspector? = nil,

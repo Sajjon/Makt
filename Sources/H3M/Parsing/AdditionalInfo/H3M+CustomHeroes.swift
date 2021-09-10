@@ -9,7 +9,7 @@ import Foundation
 import Malm
 
 // MARK: Parse Custom Heros
-extension Map.Loader.Parser.H3M {
+extension H3M {
     
     func parseCustomHeroes(format: Map.Format, availablePlayers: [Player]) throws -> Map.AdditionalInformation.CustomHeroes? {
         guard format >= .shadowOfDeath else { return nil }

@@ -11,19 +11,19 @@ import Malm
 /// https://github.com/1024jp/GzipSwift
 import Gzip
 
-public protocol Decompressor {
+protocol Decompressor {
     func isHeaderCompressed(format: Map.Format.RawVersionValue) -> Bool
-    func parser(readMap: Map.Loader.ReadMap) throws -> Map.Loader.Parser.H3M
+    func parser(readMap: Map.Loader.ReadMap) throws -> H3M
 }
 
-public extension Map.Loader.Parser {
+extension Map.Loader.Parser {
     final class GzipDecompressor: Decompressor {
         public init() {}
     }
 }
 
 
-public extension Map.Loader.Parser.GzipDecompressor {
+extension Map.Loader.Parser.GzipDecompressor {
     
     /// A "well known"/standardized unique header number idenitfying a file as a "gzip" file.
     ///
@@ -37,7 +37,7 @@ public extension Map.Loader.Parser.GzipDecompressor {
         format == Self.gzipped
     }
     
-    func parser(readMap: Map.Loader.ReadMap) throws -> Map.Loader.Parser.H3M {
+    func parser(readMap: Map.Loader.ReadMap) throws -> H3M {
         guard
             readMap.data.isGzipped // this computed property is an extension from `Gzip` SPM package imported above.
         else {
@@ -53,7 +53,7 @@ public extension Map.Loader.Parser.GzipDecompressor {
             id: readMap.id
         )
         
-        let h3mParser = Map.Loader.Parser.H3M(
+        let h3mParser = H3M(
             readMap: readMapDecompressed,
             fileSizeCompressed: readMap.data.count
         )

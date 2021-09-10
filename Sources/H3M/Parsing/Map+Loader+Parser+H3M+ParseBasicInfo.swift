@@ -11,7 +11,7 @@ import Malm
 
 
 // MARK: Parse Map+Summary
-extension  Map.Loader.Parser.H3M {
+extension  H3M {
 
     
     func parseBasicInfo(inspector: Map.Loader.Parser.Inspector.BasicInfoInspector? = nil) throws -> Map.BasicInformation {
