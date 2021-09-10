@@ -9,6 +9,35 @@ import Foundation
 import Malm
 
 internal extension H3M {
+    
+    
+    func parseSeershut(format: Map.Format) throws -> Map.Seershut {
+        let seershut: Map.Seershut
+        if format > .restorationOfErathia {
+            let quest = try parseQuest()
+            // can't return yet, need to skip 2 bytes
+            seershut = try .init(quest: quest, bounty: parseBounty(format: format))
+        } else {
+            assert(format == .restorationOfErathia)
+            guard let artifactID = try parseArtifactID(format: format) else {
+                try reader.skip(byteCount: 3)
+                return .empty
+            }
+            // can't return yet, need to skip 2 bytes
+            seershut = try Map.Seershut(
+                quest: .init(
+                    kind: Quest.Kind.acquireArtifacts([artifactID]),
+                    messages: nil,
+                    deadline: nil
+                ),
+                bounty: parseBounty(format: format)
+            )
+        }
+        try reader.skip(byteCount: 2)
+        
+        return seershut
+    }
+    
     func parseBounty(format: Map.Format) throws -> Map.Seershut.Bounty {
         
         let bountyStripped = try Map.Seershut.Bounty.Stripped(
