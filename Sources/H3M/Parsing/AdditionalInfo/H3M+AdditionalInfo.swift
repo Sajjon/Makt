@@ -202,13 +202,11 @@ private extension  H3M {
         guard teamCount > 0 else {
             return .noTeams
         }
-        let offsetBefore = reader.offset
         let teamByColor: [Player: UInt8] = try Dictionary(uniqueKeysWithValues:  Player.allCases.compactMap { player in
             let teamId = try reader.readUInt8()
             guard validColors.contains(player) else { return nil }
             return (key: player, value: teamId)
         })
-        assert(reader.offset == offsetBefore + 8)
         var teamsByTeamID: [UInt8: TempTeam] = [:]
         
         teamByColor.forEach({ (player: Player, teamID: UInt8) in
@@ -241,27 +239,8 @@ private extension H3M {
 // MARK: AvailableHeroes
 private extension  H3M {
     func parseAvailableHeroes(format: Map.Format) throws -> HeroIDs {
-        let availableHeroIDs = Hero.ID.playable(in: format)
-        
         let byteCount = format == .restorationOfErathia ? 16 : 20
-
-        let rawBytes = try reader.read(byteCount: byteCount)
-        
-        let bitmaskFlipped =  BitArray(data: Data(rawBytes.reversed()))
-        let bitmaskTooMany = BitArray(bitmaskFlipped.reversed())
-        let bitmask = BitArray(bitmaskTooMany.prefix(availableHeroIDs.count))
-        
-        
-        let playableHeroIDs: [Hero.ID] = bitmask
-        .enumerated()
-            .compactMap { (heroIDIndex, available) -> Hero.ID? in
-            guard available else {
-                return nil
-            }
-            return availableHeroIDs[heroIDIndex]
-        }
-
-        return .init(values: playableHeroIDs)
+        return try .init(values: parseBitmask(as: Hero.ID.self, byteCount: byteCount))
     }
 }
 
@@ -270,23 +249,11 @@ private extension  H3M {
 private extension H3M {
     func parseAvailableArtifacts(format: Map.Format) throws -> ArtifactIDs? {
         guard format > .restorationOfErathia else { return nil }
-        let allAvailable = Artifact.ID.available(in: format)
-        
-        let byteCount = format == .armageddonsBlade ? 17 : 18
-
-        let rawBytes = try reader.read(byteCount: byteCount)
-        
-        let bitmaskFlipped =  BitArray(data: Data(rawBytes.reversed()))
-        let bitmaskTooMany = BitArray(bitmaskFlipped.reversed())
-        let bitmask = BitArray(bitmaskTooMany.prefix(allAvailable.count))
-                
-        let availableArtifactIDs: [Artifact.ID] = bitmask.enumerated().compactMap { (artifactIDIndex, available) in
-            guard !available else { return nil }
-            return allAvailable[artifactIDIndex]
-        }
-        
-        // TODO VCMI manually bans combination artifacts according to some logic... needed?
-        return .init(values: availableArtifactIDs)
+        return try .init(values: parseBitmask(
+            of: Artifact.ID.available(in: format),
+            byteCount: format == .armageddonsBlade ? 17 : 18,
+            negate: true
+        ))
     }
 }
 
@@ -294,22 +261,16 @@ private extension H3M {
 private extension H3M {
     func parseAvailableSecondarySkills(format: Map.Format) throws -> SecondarySkillKinds? {
         guard format >= .shadowOfDeath else { return nil }
-        let allSkillIDs = Hero.SecondarySkill.Kind.allCases
-        
-        let availableSkillIDs: [Hero.SecondarySkill.Kind] = try Array(reader.readBitArray(byteCount: 4).prefix(allSkillIDs.count)).enumerated().compactMap { (skillKindIDIndex, available) in
-            guard available else { return nil }
-            return allSkillIDs[skillKindIDIndex]
-        }
-        
-        return .init(values: availableSkillIDs)
+        return try SecondarySkillKinds(values: parseBitmaskOfEnum())
     }
 }
 
-// MARK: Parse Available Spells
+
+// MARK: Available Spells
 private extension H3M {
     func parseAvailableSpells(format: Map.Format) throws -> SpellIDs? {
         guard format >= .shadowOfDeath else { return nil }
-        let spells = try parseSpellIDs(includeIfBitSet: false)
-        return .init(values: spells)
+        return try parseSpellIDs(format: format, negate: true)
     }
 }
+

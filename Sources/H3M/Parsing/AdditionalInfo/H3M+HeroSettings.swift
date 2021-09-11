@@ -19,7 +19,6 @@ internal extension H3M {
         case .armageddonsBlade: return nil
         case .shadowOfDeath:
             let availableHeroIDs = Hero.ID.playable(in: format)
-            assert(availableHeroIDs.count == 156)
             let settingsForHeroes: [Map.AdditionalInformation.SettingsForHero] = try (0..<availableHeroIDs.count).compactMap { heroIDIndex in
                 // Hero is custom?
                 guard try reader.readBool() else { return nil }

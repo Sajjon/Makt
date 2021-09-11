@@ -8,37 +8,6 @@
 import Foundation
 import Malm
 
-
-extension H3M {
-    func parseBitmask<Case>(of cases: [Case], byteCount maybeByteCount: Int? = nil) throws -> [Case] where Case: CaseIterable, Case.AllCases == [Case] {
-        
-        let caseCount = cases.count
-        let qor = caseCount.quotientAndRemainder(dividingBy: 8)
-        let byteCount = maybeByteCount ?? (qor.remainder == 0 ? qor.quotient : qor.quotient + 1)
-        
-        return try Array(
-            reader
-                .readBitArray(byteCount: byteCount)
-                .reversed()
-                .prefix(caseCount)
-        )
-        .enumerated()
-        .compactMap { (index, available) in
-            guard available else { return nil }
-            return cases[index]
-        }
-    }
-    
-    func parseBitmask<Enum>(as enum: Enum.Type, byteCount: Int? = nil) throws -> [Enum] where Enum: CaseIterable, Enum.AllCases == [Enum] {
-        try parseBitmask(of: `enum`.allCases, byteCount: byteCount)
-    }
-    
-    func parseBitmaskOfEnum<Enum>(byteCount: Int? = nil) throws -> [Enum] where Enum: CaseIterable, Enum.AllCases == [Enum] {
-        try parseBitmask(of: Enum.allCases, byteCount: byteCount)
-    }
-}
-
-
 internal extension H3M {
   
     func parseDwelling(objectID: Map.Object.ID) throws -> Map.Dwelling {
@@ -72,12 +41,12 @@ internal extension H3M {
         }
         
         switch objectID {
-        case .randomDwelling: // 216
+        case .randomDwelling:
             let allowedFactions = try getAllowedFaction_OR_WHAT_SHOULD_THIS_FUNC_DO()
             let levels = try getLevelRange()
-        case .randomDwellingAtLevel(let level): // 217
+        case .randomDwellingAtLevel(let level):
             let allowedFactions = try getAllowedFaction_OR_WHAT_SHOULD_THIS_FUNC_DO()
-        case .randomDwellingOfFaction(let faction): // 218
+        case .randomDwellingOfFaction(let faction):
             let levels = try getLevelRange()
         case .creatureGenerator1(let id): break
         case .creatureGenerator2: break

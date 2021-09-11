@@ -102,27 +102,7 @@ internal extension H3M {
     }
     
 }
-
-
-internal extension H3M {
-    func parseSpellIDs(includeIfBitSet: Bool) throws -> [Spell.ID] {
-        let byteCount = 9
-        let rawBytes = try reader.read(byteCount: byteCount)
-        let bitmaskFlipped =  BitArray(data: Data(rawBytes.reversed()))
-        let bitmaskTooMany = BitArray(bitmaskFlipped.reversed())
-        let bitmask = BitArray(bitmaskTooMany.prefix(Spell.ID.allCases.count))
-        return bitmask.enumerated()
-            .compactMap { (spellIDIndex, available) in
-                guard available == includeIfBitSet else { return nil }
-                return Spell.ID.allCases[spellIDIndex]
-            }
-        
-    }
-}
     
-    
-    
-
 public typealias Bitmask = BitArray
 
 // MARK: Parse "Attributes

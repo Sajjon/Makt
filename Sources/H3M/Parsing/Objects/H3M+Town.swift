@@ -73,8 +73,8 @@ internal extension H3M {
         let buildings: Map.Town.Buildings = try hasCustomBuildings ? parseTownWithCustomBuildings() : parseSimpleTown()
         
         
-        let obligatorySpells = try format >= .armageddonsBlade ? parseSpellIDs(includeIfBitSet: true) : []
-        let possibleSpells = try parseSpellIDs(includeIfBitSet: false).filter({ allowedSpellsOnMap.contains($0) })
+        let obligatorySpells = try format >= .armageddonsBlade ? parseSpellIDs(format: format) : []
+        let possibleSpells = try parseSpellIDs(format: format, negate: true).filter({ allowedSpellsOnMap.contains($0) })
         
         // Read castle events
         let eventCount = try reader.readUInt32()
@@ -122,7 +122,7 @@ internal extension H3M {
             buildings: buildings,
             spells: .init(
                 possible: .init(values: possibleSpells),
-                obligatory: .init(values: obligatorySpells)
+                obligatory: obligatorySpells
             ),
             events: events.isEmpty ? nil : .init(values: events),
             alignment: alignment
