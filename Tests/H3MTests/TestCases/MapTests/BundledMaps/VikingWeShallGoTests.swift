@@ -97,8 +97,7 @@ final class VikingWeShallGoTests: BaseMapTest {
                             expected: .init(
                                 id: .fromMapFile(1813815844),
                                 faction: .tower,
-                                name: "Reykjavik",
-                                alignment: .sameAsOwnerOrRandom
+                                name: "Reykjavik"
                             ),
                             actual: object)
                     } else {

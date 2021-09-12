@@ -43,16 +43,30 @@ public extension Map.Dwelling {
 
 public extension Map.Dwelling.Kind {
     struct Random: Hashable {
-        public let possibleFactions: Factions
+        public enum PossibleFaction: Hashable {
+            case anyOf(Factions)
+            case sameAsTown(Map.Town.ID)
+        }
+        public let possibleFactions: PossibleFaction
         public let possibleLevels: PossibleLevels
         
         public init(
-            possibleFactions: Factions = .init(values: Faction.playable(in: .restorationOfErathia)),
+            possibleFactions: PossibleFaction,
             possibleLevels: PossibleLevels = .all
         ) {
-            precondition(!possibleFactions.isEmpty)
+            if case let .anyOf(factions) = possibleFactions {
+                precondition(!factions.isEmpty)
+            }
             self.possibleFactions = possibleFactions
             self.possibleLevels = possibleLevels
+        }
+        
+        public static func anyFaction(of factions: Factions, possibleLevels: PossibleLevels = .all) -> Self {
+            .init(possibleFactions: .anyOf(factions), possibleLevels: possibleLevels)
+        }
+        
+        public static func sameFactionAsTown(id townID: Map.Town.ID, possibleLevels: PossibleLevels = .all) -> Self {
+            .init(possibleFactions: .sameAsTown(townID), possibleLevels: possibleLevels)
         }
     }
     

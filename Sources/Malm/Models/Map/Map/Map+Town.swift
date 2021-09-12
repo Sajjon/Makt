@@ -73,7 +73,7 @@ public extension Map {
             buildings: Map.Town.Buildings = .simple(hasFort: true),
             spells: Spells = .init(),
             events: Events? = nil,
-            alignment: Alignment? = nil
+            alignment: Alignment? = .sameAsOwnerOrRandom
         ) {
             self.id = id
             self.faction = faction

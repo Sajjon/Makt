@@ -39,6 +39,9 @@ import Malm
 final class DwellingsOnMapTests: BaseMapTest {
     
     func testDwellingsOnMap() throws {
+        
+        let expectedTownID: Map.Town.ID = .fromMapFile(2282018828)
+        
         let inspector = Map.Loader.Parser.Inspector(
             basicInfoInspector: .init(
                 onParseFormat: { XCTAssertEqual($0, .shadowOfDeath) },
@@ -58,7 +61,6 @@ final class DwellingsOnMapTests: BaseMapTest {
                     assertObjectRandomDwelling(expected: expectedRandom, owner: owner, actual: object, line: line)
                 }
                 
-                
                 func assertRandomDwelling(
                     faction: Faction,
                     minLevel: Creature.Level,
@@ -67,7 +69,7 @@ final class DwellingsOnMapTests: BaseMapTest {
                 ) {
                     assertRandomDwelling(
                         expected: .init(
-                            possibleFactions: [faction],
+                            possibleFactions: .anyOf([faction]),
                             possibleLevels: .range(.init(min: minLevel, max: .seven))
                         ),
                         owner: owner,
@@ -75,13 +77,15 @@ final class DwellingsOnMapTests: BaseMapTest {
                     )
                 }
                 
+                XCTAssertFalse(object.attributes.inUnderworld)
+                
                 func assertRandomDwelling(
                     level: Creature.Level,
                     owner: Player? = nil,
                     line: UInt = #line
                 ) {
                     assertRandomDwelling(
-                        expected: .init(possibleFactions: .init(values: Faction.playable(in: .shadowOfDeath)), possibleLevels: .specific(level)),
+                        expected: .init(possibleFactions: .anyOf(.init(values: Faction.playable(in: .shadowOfDeath))), possibleLevels: .specific(level)),
                         owner: owner,
                         line: line
                     )
@@ -93,7 +97,7 @@ final class DwellingsOnMapTests: BaseMapTest {
                     line: UInt = #line
                 ) {
                     assertRandomDwelling(
-                        expected: .init(possibleFactions: .init(values: [faction]), possibleLevels: .all),
+                        expected: .init(possibleFactions: .anyOf(.init(values: [faction])), possibleLevels: .all),
                         owner: owner,
                         line: line
                     )
@@ -117,7 +121,7 @@ final class DwellingsOnMapTests: BaseMapTest {
                 case at(23, y: 11):
                     assertRandomDwelling(
                         expected: .init(
-                            possibleFactions: [.fortress, .conflux],
+                            possibleFactions: .anyOf([.fortress, .conflux]),
                             possibleLevels: .range(.init(min: .two, max: .two))
                         ),
                         owner: nil
@@ -125,7 +129,7 @@ final class DwellingsOnMapTests: BaseMapTest {
                 case at(26, y: 11):
                     assertRandomDwelling(
                         expected: .init(
-                            possibleFactions: [.conflux],
+                            possibleFactions: .anyOf([.conflux]),
                             possibleLevels: .range(.init(min: .two, max: .three))
                         ),
                         owner: nil
@@ -166,8 +170,12 @@ final class DwellingsOnMapTests: BaseMapTest {
                 case at(26, y: 22):
                     assertRandomDwelling(faction: .conflux)
                     
-//                case at(2, y: 28):
-//                    assertRandomDwelling(expected: .init(possibleFactions: .sameAsTown(), possibleLevels: <#T##Map.Dwelling.Kind.Random.PossibleLevels#>), owner: <#T##Player?#>)
+                case at(2, y: 28):
+                    assertRandomDwelling(expected: .init(possibleFactions: .sameAsTown(expectedTownID)))
+                  
+                case at(9, y: 32):
+                    assertObjectRandomTown(expected: .init(id: expectedTownID, buildings: .simple(hasFort: true)), actual: object)
+                    
                 default: break
                 }
             }

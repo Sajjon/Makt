@@ -42,8 +42,7 @@ final class PeacefulEndingAlliesTests: BaseMapTest {
                                                 .mageGuildLevel1, .mageGuildLevel2, .mageGuildLevel3,
                                                 .dwelling1, .dwelling2, .dwelling3, .dwelling4
                                                 
-                                            ], forbidden: [])),
-                                            alignment: .sameAsOwnerOrRandom), actual: object)
+                                            ], forbidden: []))), actual: object)
                     } else if object.objectID.stripped == .cactus {
                         fulfill(object: object)
                     } else {

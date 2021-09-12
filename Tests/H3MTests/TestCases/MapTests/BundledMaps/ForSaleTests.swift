@@ -74,8 +74,7 @@ final class ForSaleTests: BaseMapTest {
                                         ],
                                         forbidden: []
                                     )
-                                ),
-                                alignment: .sameAsOwnerOrRandom
+                                )
                             ),
                             actual: object
                             
