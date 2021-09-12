@@ -104,7 +104,7 @@ private extension H3M {
         case .randomDwelling: fallthrough
         case .randomDwellingOfFaction: fallthrough
         case .randomDwellingAtLevel:
-            return try .dwelling(parseDwelling(objectID: objectID))
+            return try .dwelling(parseDwelling(attributes: attributesOfObject))
             
         case .resource:
             return try .resource(parseGuardedResource(objectID: objectID, format: format))

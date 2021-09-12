@@ -397,7 +397,6 @@ final class CreaturesOnMapTests: BaseMapTest {
             }
         )
         
-        
         try load(inspector: inspector)
         waitForExpectations(timeout: 1)
     }

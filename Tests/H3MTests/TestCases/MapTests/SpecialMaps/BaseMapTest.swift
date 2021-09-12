@@ -32,7 +32,7 @@ extension BaseMapTest {
     ) {
         XCTAssertEqual(object.objectID, .event, file: file, line: line)
         guard case let .geoEvent(actual) = object.kind else {
-            XCTFail("expected event")
+            XCTFail("expected event", file: file, line: line)
             return
         }
         XCTAssertEqual(expected, actual, file: file, line: line)
@@ -47,13 +47,12 @@ extension BaseMapTest {
     ) {
         XCTAssertEqual(object.objectID.stripped, .mine, file: file, line: line)
         guard case let .mine(actual) = object.kind else {
-            XCTFail("expected mine")
+            XCTFail("expected mine", file: file, line: line)
             return
         }
         XCTAssertEqual(expected, actual, file: file, line: line)
         fulfill(object: object)
     }
-    
     
     func assertObjectQuestGuard(
         expected: Quest,
@@ -63,13 +62,41 @@ extension BaseMapTest {
     ) {
         XCTAssertEqual(object.objectID.stripped, .questGuard, file: file, line: line)
         guard case let .questGuard(actual) = object.kind else {
-            XCTFail("expected quest guard")
+            XCTFail("expected quest guard", file: file, line: line)
             return
         }
         XCTAssertEqual(expected, actual, file: file, line: line)
         fulfill(object: object)
     }
     
+    func assertObjectDwelling(
+        expected: Map.Dwelling,
+        actual object: Map.Object,
+        file: StaticString = #file,
+        line: UInt = #line
+    ) {
+        guard case let .dwelling(actual) = object.kind else {
+            XCTFail("expected dwelling", file: file, line: line)
+            return
+        }
+        XCTAssertEqual(expected, actual, file: file, line: line)
+        fulfill(object: object)
+    }
+    
+    func assertObjectRandomDwelling(
+        expected expectedRandom: Map.Dwelling.Kind.Random,
+        owner: Player? = nil,
+        actual object: Map.Object,
+        file: StaticString = #file,
+        line: UInt = #line
+    ) {
+        guard case let .dwelling(actual) = object.kind else {
+            XCTFail("expected dwelling (random), but got: \(object)", file: file, line: line)
+            return
+        }
+        XCTAssertEqual(.init(kind: .random(expectedRandom), owner: owner), actual, file: file, line: line)
+        fulfill(object: object)
+    }
     
     func assertObjectScholar(
         expected: Map.Scholar,
@@ -79,7 +106,7 @@ extension BaseMapTest {
     ) {
         XCTAssertEqual(object.objectID.stripped, .scholar, file: file, line: line)
         guard case let .scholar(actual) = object.kind else {
-            XCTFail("expected scholar")
+            XCTFail("expected scholar", file: file, line: line)
             return
         }
         XCTAssertEqual(expected, actual, file: file, line: line)

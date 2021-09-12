@@ -8,9 +8,6 @@
 import Foundation
 
 public extension Map {
-
-    
-  
     struct Object: Hashable, CustomDebugStringConvertible {
         public let position: Position
         public let attributes: Map.Object.Attributes
@@ -26,9 +23,6 @@ public extension Map {
             self.kind = kind
         }
     }
-    
-
-
 }
 
 

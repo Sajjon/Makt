@@ -322,10 +322,8 @@ public extension Map.Object.ID {
              swanPond = 14,
              coverOfDarkness = 15,
              
-             /// [0-20 - CB format]
              creatureBank = 16,
              
-             /// [0-95 - CG Format]
              creatureGenerator1 = 17,
              
              creatureGenerator2 = 18,
@@ -333,7 +331,6 @@ public extension Map.Object.ID {
              
              creatureGenerator4 = 20,
              
-             /// [0-1 - CG format]
              cursedGround = 21,
              
              corpse = 22,
@@ -383,7 +380,7 @@ public extension Map.Object.ID {
              /// Source 2: explainatino needed, we parsed the object attributes with animation file name `AVXmktt0.def` for Object ID 50
              /// https://forum.df2.ru/lofiversion/index.php/t24182-1450.html
              /// See comment by: pHOMM at time 13 Aug 2010, 08:57, use google translate, he corrpobrates that this is market of time: "...and the time market AVXMKTT0.DEF"
-            marketOfTime = 50,
+             marketOfTime = 50,
              
              mercenaryCamp = 51,
              mermaid = 52,

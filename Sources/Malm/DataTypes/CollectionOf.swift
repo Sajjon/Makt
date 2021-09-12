@@ -34,3 +34,7 @@ public extension CollectionOf {
 
 extension CollectionOf: Equatable where Element: Equatable {}
 extension CollectionOf: Hashable where Element: Hashable {}
+
+public extension CollectionOf where Element: CaseIterable, Element.AllCases == [Element] {
+    static var allCases: Self { .init(values: .allCases) }
+}
