@@ -139,33 +139,26 @@ private extension H3M {
                 visitability: .init(relativePositionsOfVisitableTiles: allowedRelativePositions(bitmask: visitabilityBitmask)),
                 passability: .init(relativePositionsOfPassableTiles: allowedRelativePositions(bitmask: passabilityBitmask))
             )
-            
-             ///   ├─ 2  bytes.
-             ///   │      bit0 - water
-             ///   │      bit1 - lava
-             ///   │      bit2 - underground
-             ///   │      bit3 - rocks
-             ///   │      bit4 - swamp
-             ///   │      bit5 - snow
-             ///   │      bit6 - grass
-             ///   │      bit7 - sand
-             ///   │      bit8 - dirt
+      
             func parseLandscapes() throws -> [Map.Tile.Terrain.Kind] {
-                try reader.readBitArray(byteCount: 2).prefix(9).enumerated().compactMap { (bit, supported) in
-                    guard supported else { return nil }
-                    switch bit {
-                    case 0: return .water
-                    case 1: return .lava
-                    case 2: return .subterranean
-                    case 3: return .rock
-                    case 4: return .swamp
-                    case 5: return .snow
-                    case 6: return .grass
-                    case 7: return .sand
-                    case 8: return .dirt
-                    default: incorrectImplementation(shouldAlreadyHave: "Handled each case above.")
+                /// Alternative rawValue than `Map.Tile.Terrain.Kind` for some strange reason.
+                enum TerrainKindEncoded: UInt8, CaseIterable {
+                    case water, lava, subterranean, rock, swamp, snow, grass, sand, dirt
+                    var toTerrain: Map.Tile.Terrain.Kind {
+                        switch self {
+                        case .water: return .water
+                        case .lava: return .lava
+                        case .subterranean: return .subterranean
+                        case .rock: return .rock
+                        case .swamp: return .swamp
+                        case .snow: return .snow
+                        case .grass: return .grass
+                        case .sand: return .sand
+                        case .dirt: return .dirt
+                        }
                     }
                 }
+                return try parseBitmask(as: TerrainKindEncoded.self).map { $0.toTerrain }
             }
             
             /// what kinds of landscape it can be put on
@@ -175,7 +168,6 @@ private extension H3M {
             let mapEditorLandscapeGroup = try parseLandscapes()
             
             let objectIDRaw = try reader.readUInt32()
-            
             
             let objectID = try Map.Object.ID(
                 id: objectIDRaw,
