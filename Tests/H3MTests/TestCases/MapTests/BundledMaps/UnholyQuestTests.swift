@@ -188,21 +188,28 @@ final class UnholyQuestMapTest: BaseMapTest {
                                     values: Spell.ID.all(
                                         but: [.teleport, .waterWalk])
                                 )
-                            )
+                            ),
+                            alignment: nil
                         )
                     )
                 case at(90, y: 33, inUnderworld: true):
                     assertTown(
-                        expected:
-                                .init(
-                                id: .position(.init(x: 90, y: 33, inUnderworld: true)),
-                                    faction: .inferno,
-                                    owner: .playerOne,
-                                    buildings: .custom(.init(
-                                        built: [.fort],
-                                        forbidden: [.tavern]
-                                    )),
-                                    spells: .init(possible: .init(values: Spell.ID.all(but: [.protectionFromWater, .summonBoat, .viewAir, .lightningBolt, .protectionFromAir, .airShield, .chainLightning, .meteorShower, .townPortal, .waterWalk, .dimensionDoor, .fly])))))
+                        expected: .init(
+                            id: .position(.init(x: 90, y: 33, inUnderworld: true)),
+                            faction: .inferno,
+                            owner: .playerOne,
+                            buildings: .custom(.init(
+                                built: [.fort],
+                                forbidden: [.tavern]
+                            )),
+                            spells: .init(
+                                possible: .init(
+                                    values: Spell.ID.all(but: [.protectionFromWater, .summonBoat, .viewAir, .lightningBolt, .protectionFromAir, .airShield, .chainLightning, .meteorShower, .townPortal, .waterWalk, .dimensionDoor, .fly])
+                                )
+                            ),
+                            alignment: nil
+                        )
+                    )
                     
                 case at(67, y: 90, inUnderworld: true):
                     assertObjectMonster(

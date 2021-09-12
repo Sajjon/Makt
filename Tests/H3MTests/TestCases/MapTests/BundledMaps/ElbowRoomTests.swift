@@ -49,7 +49,8 @@ final class ElbowRoomTests: BaseMapTest {
                                             .init(kind: .gold, quantity: 7000),
                                         ]))
                                     )
-                            ])
+                            ]),
+                            alignment: nil
                         ),
                         actual: object
                     )

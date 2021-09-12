@@ -60,7 +60,8 @@ final class MandateOfHeavenTests: BaseMapTest {
                         ]),
                         buildings: .custom(.init(built: [
                             .townHall, .tavern, .mageGuildLevel1, .shipyard, .dwelling1, .dwelling2
-                        ], forbidden: [.fort, .grail]))
+                        ], forbidden: [.fort, .grail])),
+                        alignment: nil
                     ), actual: object)
                 default: break
                 }

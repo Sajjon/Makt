@@ -46,7 +46,9 @@ final class GoodToGoMapTest: BaseMapTest {
                                     .dwelling3, .upgradedDwelling3,
                                     .dwelling4, .upgradedDwelling4
                                 ]
-                            ))),
+                            )),
+                            alignment: nil
+                        ),
                         actual: object
                     )
                 case at(5, y: 5):
@@ -61,7 +63,8 @@ final class GoodToGoMapTest: BaseMapTest {
                                         but: [.summonBoat, .scuttleBoat, .waterWalk]
                                     )
                                 )
-                            )
+                            ),
+                            alignment: nil
                         ), actual: object)
                     } else if object.objectID.stripped == .randomHero {
                         assertObjectRandomHero(expected: .init(identifierKind: .randomHero, owner: .red, startingExperiencePoints: 6_000), actual: object)
@@ -88,7 +91,9 @@ final class GoodToGoMapTest: BaseMapTest {
                                     .dwelling3, .upgradedDwelling3,
                                     .dwelling4, .upgradedDwelling4
                                 ]
-                            ))),
+                            )),
+                            alignment: nil
+                        ),
                         actual: object
                     )
 
@@ -158,7 +163,8 @@ final class GoodToGoMapTest: BaseMapTest {
                                         but: [.summonBoat, .scuttleBoat, .waterWalk]
                                     )
                                 )
-                            )
+                            ),
+                            alignment: nil
                         ), actual: object)
                     } else if object.objectID.stripped == .randomHero {
                         assertObjectRandomHero(expected: .init(identifierKind: .randomHero, owner: .blue, startingExperiencePoints: 6_000), actual: object)
