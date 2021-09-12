@@ -137,13 +137,7 @@ internal extension H3M {
 private extension H3M {
     
     func parseBuildings() throws -> [Map.Town.Building] {
-        let rawBytes = try reader.read(byteCount: 6)
-        let bitmaskFlipped =  BitArray(data: Data(rawBytes.reversed()))
-        let bitmask = BitArray(bitmaskFlipped.reversed())
-        return try bitmask.enumerated().compactMap { (buildingID, isBuilt) in
-           guard isBuilt else { return nil }
-        return try Map.Town.Building(integer: buildingID)
-       }
+        try parseBitmaskOfEnum()
     }
     
     func parseTownWithCustomBuildings() throws -> Map.Town.Buildings {

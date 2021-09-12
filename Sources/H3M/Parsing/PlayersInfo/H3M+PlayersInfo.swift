@@ -30,13 +30,7 @@ private extension H3M {
         let allowedAlignments: Map.InformationAboutPlayers.PlayerInfo.AllowedAlignment? = try format >= .shadowOfDeath ? {
             let rawByte = try reader.readUInt8()
             guard rawByte != 0x00 else { return .random }
-            let bitmaskFlipped = Bitmask(data: Data([rawByte]))
-            let bitmask = BitArray(bitmaskFlipped.reversed())
-            let factions: [Faction] = try bitmask.enumerated().compactMap { (factionID, isAllowed) in
-                guard isAllowed else { return nil }
-                return try Faction(integer: factionID)
-            }
-            return .followingFactions(factions)
+            return try .followingFactions(parse(data: Data([rawByte]), asBitMaskOfCases: .allCases))
         }() : nil
        
         
