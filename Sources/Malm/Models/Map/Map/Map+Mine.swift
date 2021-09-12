@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import Util
 
 public extension Map {
     struct Mine: Hashable, CustomDebugStringConvertible {
@@ -23,10 +24,13 @@ public extension Map {
 // MARK: CustomDebugStringConvertible
 public extension Map.Mine {
     var debugDescription: String {
-        """
-        kind: \(kind)
-        owner: \(owner)
-        """
+        if kind == nil && owner == nil { return "Abandoned mine without owner" }
+        let optionalStrings: [String?] = [
+            kind.map { "kind: \($0)" },
+            owner.map { "owner: \($0)" },
+        ]
+        
+        return optionalStrings.filterNils().joined(separator: "\n")
     }
 }
 

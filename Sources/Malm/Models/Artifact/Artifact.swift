@@ -35,7 +35,9 @@ public extension Artifact {
             switch self {
             case .specific(let artifactID): return "specific(artifactID: \(artifactID)"
             case .spell(let spellID): return "spell(id: \(spellID)"
-            case .random(let artifactClass): return "randomArtifact(class: \(artifactClass)"
+            case .random(let artifactClass):
+                let classString = artifactClass?.debugDescription ?? "any"
+                return "randomArtifact(class: \(classString)"
             }
         }
     }

@@ -51,9 +51,8 @@ private extension H3M {
                 let heroID = try Hero.ID(integer: heroIdThingyRaw)
                 return Hero.IdentifierKind.specificHeroWithID(heroID)
             } else {
-              
-                let randomHeroID: Hero.ID? = try? Hero.ID.init(integer: heroIdThingyRaw)
-                let randomHeroClass: Hero.Class? = try? Hero.Class.init(integer: heroIdThingyRaw)
+//                let randomHeroID: Hero.ID? = try? Hero.ID.init(integer: heroIdThingyRaw)
+//                let randomHeroClass: Hero.Class? = try? Hero.Class.init(integer: heroIdThingyRaw)
                 return .randomHero
             }
             
