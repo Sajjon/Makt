@@ -12,3 +12,7 @@ public extension CaseIterable {
         allCases.randomElement()!
     }
 }
+
+public extension Array where Element: CaseIterable, Element.AllCases == [Element] {
+    static var allCases: [Element] { Element.allCases }
+}
