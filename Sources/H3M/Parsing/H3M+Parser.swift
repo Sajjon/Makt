@@ -7,6 +7,7 @@
 
 import Foundation
 import Malm
+import Util
 
 // MARK: H3M Parser
 public extension Map.Loader.Parser {
@@ -80,18 +81,8 @@ internal extension H3M {
 
 
     func parseAllowedPlayers(availablePlayers: [Player]) throws -> [Player] {
-        
-        let byteCount = 1
-        let rawBytes = try reader.read(byteCount: byteCount)
-        let bitmaskFlipped =  BitArray(data: Data(rawBytes.reversed()))
-        let bitmaskTooMany = BitArray(bitmaskFlipped.reversed())
-        let bitmask = BitArray(bitmaskTooMany.prefix(availablePlayers.count))
-
-        let allowedPlayers: [Player] = bitmask.enumerated().compactMap { (idx, allowed) in
-            guard allowed else { return nil }
-            return availablePlayers[idx]
-        }
-        return allowedPlayers
+        let players: [Player] = try parseBitmaskOfEnum()
+        return players.filter { availablePlayers.contains($0) }
     }
     
     
@@ -172,7 +163,7 @@ private extension H3M {
                     case 6: return .grass
                     case 7: return .sand
                     case 8: return .dirt
-                    default: fatalError("Should never happen.")
+                    default: incorrectImplementation(shouldAlreadyHave: "Handled each case above.")
                     }
                 }
             }
