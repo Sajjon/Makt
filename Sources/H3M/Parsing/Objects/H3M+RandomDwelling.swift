@@ -14,24 +14,8 @@ internal extension H3M {
         let owner = try parseOwner()
         try reader.skip(byteCount: 3)
         
-        func getAllowedFaction_OR_WHAT_SHOULD_THIS_FUNC_DO() throws -> [Faction] {
-            let identifier = try reader.readUInt32()
-            if identifier == 0 {
-                let availableFactions = Faction.playable(in: .restorationOfErathia)
-                assert(availableFactions.count == 8)
-                
-                func readAllowedFactions() throws -> [Faction] {
-                    try reader.readBitArray(byteCount: 1).prefix(availableFactions.count).enumerated().compactMap({ factionIndex, available in
-                        guard available else { return nil }
-                        return availableFactions[factionIndex]
-                    })
-                }
-                
-                let allowedFactions = try Set(readAllowedFactions()).intersection(readAllowedFactions())
-                return Array(allowedFactions)
-            } else {
-                return [.castle]
-            }
+        func parseAllowedFactions() throws -> [Faction] {
+            try reader.readUInt32() != 0 ? .allCases : parseBitmaskOfEnum(byteCount: 2)
         }
         
         func getLevelRange() throws -> (min: Creature.Level, max: Creature.Level) {
@@ -42,10 +26,10 @@ internal extension H3M {
         
         switch objectID {
         case .randomDwelling:
-            let allowedFactions = try getAllowedFaction_OR_WHAT_SHOULD_THIS_FUNC_DO()
+            let allowedFactions = try parseAllowedFactions()
             let levels = try getLevelRange()
         case .randomDwellingAtLevel(let level):
-            let allowedFactions = try getAllowedFaction_OR_WHAT_SHOULD_THIS_FUNC_DO()
+            let allowedFactions = try parseAllowedFactions()
         case .randomDwellingOfFaction(let faction):
             let levels = try getLevelRange()
         case .creatureGenerator1(let id): break
