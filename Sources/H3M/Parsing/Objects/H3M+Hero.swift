@@ -93,18 +93,18 @@ private extension H3M {
             return try Hero.Gender(integer: reader.readUInt8())
         }() ?? nil
         
-        let customSpells: [Spell.ID]? = try {
+        let customSpells: SpellIDs? = try {
             guard format >= .armageddonsBlade else { return nil }
             if format > .armageddonsBlade {
                 let hasCustomSpells = try reader.readBool()
                 guard hasCustomSpells else { return nil }
-                return try parseCustomSpellsOfHero()
+                return try parseSpellIDs()
             } else {
                 assert(format == .armageddonsBlade, "Incorrect implementation")
                 // In AB only a single spell can be specified here, 0xFE is default, 0xFF none
                 let buff = try reader.readUInt8()
                 guard buff < 254 else { return nil } // 0xFE is default, 0xFF none
-                return [try Spell.ID(integer: buff)]
+                return try .init(values: [Spell.ID(integer: buff)])
             }
         }() ?? nil
         
@@ -130,7 +130,7 @@ private extension H3M {
             artifactsInSlots: artifacts.map { .init(values: $0) },
             biography: customBiography,
             gender: customGender,
-            spells: customSpells.map { .init(values: $0) },
+            spells: customSpells,
             primarySkills: customPrimarySkills.map { .init(values: $0) }
         )
     }

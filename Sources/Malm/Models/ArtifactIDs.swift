@@ -8,3 +8,5 @@
 import Foundation
 
 public typealias ArtifactIDs = CollectionOf<Artifact.ID>
+
+

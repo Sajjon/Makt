@@ -38,7 +38,7 @@ internal extension H3M {
                 let customGender: Hero.Gender? = Hero.Gender(rawValue: genderRaw)
             
                 let hasCustomSpells = try reader.readBool()
-                let customSpells: [Spell.ID]? = !hasCustomSpells ? nil : try parseCustomSpellsOfHero()
+                let customSpells: SpellIDs? = !hasCustomSpells ? nil : try parseSpellIDs()
                 
                 let hasCustomPrimarySkills = try reader.readBool()
                 let customPrimarySkills: [Hero.PrimarySkill]? = !hasCustomPrimarySkills ? nil : try parsePrimarySkills()
@@ -50,7 +50,7 @@ internal extension H3M {
                     artifacts: artifactsForHero,
                     biography: biography,
                     customGender: customGender,
-                    customSpells: customSpells.map { .init(values: $0) },
+                    customSpells: customSpells,
                     customPrimarySkills: customPrimarySkills.map { .init(values: $0) }
                 )
             }
@@ -151,20 +151,6 @@ internal extension H3M {
         return nonNils
     }
     
-    func parseCustomSpellsOfHero() throws -> [Spell.ID] {
-        let rawBytes = try reader.read(byteCount: 9)
-        
-        let bitmaskFlipped =  BitArray(data: Data(rawBytes.reversed()))
-        let bitmask = BitArray(bitmaskFlipped.reversed()).prefix(Spell.ID.allCases.count)
-        
-        return bitmask
-        .enumerated()
-        .compactMap { (spellIDIndex, available) in
-            guard available else { return nil }
-            return Spell.ID.allCases[spellIDIndex]
-        }
-        
-    }
 }
 
 internal extension H3M {

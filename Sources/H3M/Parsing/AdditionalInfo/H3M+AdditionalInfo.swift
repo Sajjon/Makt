@@ -270,7 +270,7 @@ private extension H3M {
 private extension H3M {
     func parseAvailableSpells(format: Map.Format) throws -> SpellIDs? {
         guard format >= .shadowOfDeath else { return nil }
-        return try parseSpellIDs(format: format, negate: true)
+        return try parseSpellIDs(negate: true)
     }
 }
 

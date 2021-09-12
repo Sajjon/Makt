@@ -15,7 +15,9 @@ extension H3M {
         byteCount maybeByteCount: Int? = nil,
         negate: Bool = false
     ) throws -> [Case] where Case: CaseIterable, Case.AllCases == [Case] {
-        
+//        if let byteCount = maybeByteCount {
+//            precondition(cases.count <= byteCount * 8)
+//        }
         let caseCount = cases.count
         let qor = caseCount.quotientAndRemainder(dividingBy: 8)
         let byteCount = maybeByteCount ?? (qor.remainder == 0 ? qor.quotient : qor.quotient + 1)
@@ -47,6 +49,26 @@ extension H3M {
         )
     }
     
+//    func parseBitmask<Case>(
+//        cases: [Case],
+//        byteCount maybeByteCount: Int? = nil,
+//        negate: Bool = false
+//    ) throws -> [Case] where Case: CaseIterable, Case.AllCases == [Case] {
+//        try parseBitmask(of: cases, byteCount: maybeByteCount, negate: negate)
+//    }
+    
+//    func parseBitmaskOfPrefixCases<Enum, I>(
+//        _ firstCases: I,
+//        byteCount: Int? = nil,
+//        negate: Bool = false
+//    ) throws -> [Enum] where Enum: CaseIterable, Enum.AllCases == [Enum], I: FixedWidthInteger {
+//        try parseBitmask(
+//            cases: Array(Enum.allCases.prefix(Int(firstCases))),
+//            byteCount: byteCount,
+//            negate: negate
+//        )
+//    }
+    
     func parseBitmaskOfEnum<Enum>(
         byteCount: Int? = nil,
         negate: Bool = false
@@ -60,7 +82,7 @@ extension H3M {
 }
 
 extension H3M {
-    func parseSpellIDs(format: Map.Format, negate: Bool = false) throws -> SpellIDs {
+    func parseSpellIDs(negate: Bool = false) throws -> SpellIDs {
         try SpellIDs(values: parseBitmaskOfEnum(negate: negate))
     }
 }
