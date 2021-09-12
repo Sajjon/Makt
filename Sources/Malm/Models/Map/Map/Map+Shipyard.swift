@@ -6,8 +6,8 @@
 //
 
 import Foundation
-public extension Map {
 
+public extension Map {
     
     struct Shipyard: Hashable {
         public let owner: Player?

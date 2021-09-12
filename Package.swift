@@ -25,7 +25,8 @@ let package = Package(
                 "Util",
                 "Malm",
                 .product(name: "Gzip", package: "GzipSwift")
-            ]
+            ],
+            exclude: ["h3m_polish.txt", "H3M.md", "H3M_google_translated_from_polish.txt"]
         ),
         .target(
             name: "Makt",
@@ -48,8 +49,19 @@ let package = Package(
                 .copy("Resources/TestMaps/dwelling.h3m"),
                 .copy("Resources/TestMaps/events.h3m"),
                 .copy("Resources/TestMaps/monsters.h3m"),
+                .copy("Resources/TestMaps/resources.h3m"),
+                .copy("Resources/TestMaps/witch-hut.h3m"),
+                .copy("Resources/TestMaps/random-AB.h3m"),
+                .copy("Resources/TestMaps/random-RoE.h3m"),
                 .copy("Resources/TestMaps/garrison.h3m"),
-                .copy("Resources/TestMaps/town-events.h3m")
+                .copy("Resources/TestMaps/town-events.h3m"),
+                .copy("Resources/TestMaps/scholar.h3m"),
+                .copy("Resources/TestMaps/random-SoD.h3m"),
+                .copy("Resources/TestMaps/seers-hut.h3m"),
+                .copy("Resources/TestMaps/secondary-skills.h3m"),
+                .copy("Resources/TestMaps/pandora-box.h3m"),
+                .copy("Resources/TestMaps/town-spells-1-3.h3m"),
+                .copy("Resources/TestMaps/town-spells-4-5.h3m")
             ]
         ),
         .testTarget(
