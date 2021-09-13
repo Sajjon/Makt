@@ -122,6 +122,39 @@ final class PandorasBoxOnMapTests: BaseMapTest {
                             .knowledge(4)
                         ])
                     )
+                case at(21, y: 1):
+                    assertPandorasBox(
+                        expected: .init(message: "secondary sckills", secondarySkills: [
+                            .init(kind: .pathfinding, level: .basic),
+                            .init(kind: .logistics, level: .advanced),
+                            .init(kind: .diplomacy, level: .expert)
+                        ])
+                    )
+                case at(23, y: 1):
+                    assertPandorasBox(
+                        expected: .init(message: "artifacts", artifactIDs: [
+                            .admiralHat
+                        ])
+                    )
+                case at(25, y: 1):
+                    assertPandorasBox(
+                        expected: .init(message: "spells", spellIDs: [
+                            .airElemental
+                        ])
+                    )
+                case at(27, y: 1):
+                    assertPandorasBox(
+                        expected: .init(message: "creatures\n", creaturesGained: [
+                            .init(kind: .specific(creatureID: .pikeman), quantity: 1)
+                        ])
+                    )
+                case at(1, y: 3):
+                    assertPandorasBox(
+                        expected: .init(message: "guardians", guardians: .init(creatureStackAtSlot: [
+                            .one: .init(kind: .specific(creatureID: .archer), quantity: 2),
+                            .seven: .init(kind: .specific(creatureID: .griffin), quantity: 3),
+                        ]))
+                    )
                 default: break
                 }
             }

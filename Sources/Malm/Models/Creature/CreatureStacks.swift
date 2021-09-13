@@ -7,7 +7,7 @@
 
 import Foundation
 
-public struct CreatureStacks: Hashable, CustomDebugStringConvertible {
+public struct CreatureStacks: Hashable, CustomDebugStringConvertible, ExpressibleByArrayLiteral {
     
     public let creatureStackAtSlot: [Slot: CreatureStack?]
   
@@ -16,6 +16,11 @@ public struct CreatureStacks: Hashable, CustomDebugStringConvertible {
         let actual = creatureStackAtSlot.filter { $0.value != nil }
         guard actual.count > 0 else { return nil }
         self.creatureStackAtSlot = actual
+    }
+    
+    public typealias ArrayLiteralElement = CreatureStack
+    public init(arrayLiteral stacks: ArrayLiteralElement...) {
+        self.init(stacks: stacks)!
     }
 }
 
