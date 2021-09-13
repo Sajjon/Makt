@@ -7,4 +7,4 @@
 
 import Foundation
 
-public typealias HeroIDs = CollectionOf<Hero.ID>
+public typealias HeroIDs = ArrayOf<Hero.ID>

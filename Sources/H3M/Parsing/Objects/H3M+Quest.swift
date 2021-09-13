@@ -7,6 +7,8 @@
 
 import Foundation
 import Malm
+import Util
+
 internal extension H3M {
     
     func parseQuest() throws -> Quest {
@@ -14,7 +16,10 @@ internal extension H3M {
         let questKind: Quest.Kind
         switch questKindStripped {
         case .reachPrimarySkillLevels:
-            questKind = try .reachPrimarySkillLevels(parsePrimarySkills())
+            guard let skills = try parsePrimarySkills() else {
+                incorrectImplementation(reason: "Should not have all zero primary skills (which equals to nil) as quest goal?")
+            }
+            questKind = .reachPrimarySkillLevels(skills)
         case .reachHeroLevel:
             questKind = try .reachHeroLevel(.init(reader.readUInt32()))
         case .killHero:
@@ -34,7 +39,7 @@ internal extension H3M {
         case .bePlayer:
             questKind = try .bePlayer(.init(integer: reader.readUInt8()))
         case .aquireKey:
-            fatalError("Did not expect to parse quest acquire key here...")
+            incorrectImplementation(reason: "Should not have Acquire Key as quest in this context.")
         }
         
         let limit = try reader.readUInt32()

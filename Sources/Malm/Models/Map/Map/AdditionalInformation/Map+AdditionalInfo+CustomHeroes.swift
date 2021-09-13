@@ -10,7 +10,7 @@ import Foundation
 // MARK: CustomHeroes
 public extension Map.AdditionalInformation {
     
-    // TODO use CollectionOf
+    // TODO use ArrayOf
     struct CustomHeroes: Hashable {
         public let customHeroes: [CustomHero]
         

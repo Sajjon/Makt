@@ -18,7 +18,7 @@ internal extension H3M {
         let manaPointsToBeGainedOrDrained = try reader.readInt32()
         let moraleToBeGainedOrDrained = try reader.readInt8()
         let luckToBeGainedOrDrained = try reader.readInt8()
-        let resourcesToBeGained = try parseResources()
+        let resources = try parseResources()
         let primarySkills = try parsePrimarySkills()
         let secondarySkills = try parseSecondarySkills(amount: reader.readUInt8())
         let artifactIDs = try parseArtifactIDs(format: format)
@@ -34,8 +34,8 @@ internal extension H3M {
             manaPointsToBeGainedOrDrained: manaPointsToBeGainedOrDrained == 0 ? nil : manaPointsToBeGainedOrDrained,
             moraleToBeGainedOrDrained: moraleToBeGainedOrDrained == 0 ? nil : moraleToBeGainedOrDrained,
             luckToBeGainedOrDrained: luckToBeGainedOrDrained == 0 ? nil : luckToBeGainedOrDrained,
-            resourcesToBeGained: (resourcesToBeGained?.resources.isEmpty ?? true) ? nil : resourcesToBeGained,
-            primarySkills: primarySkills.isEmpty ? nil : .init(values: primarySkills),
+            resources: (resources?.resources.isEmpty ?? true) ? nil : resources,
+            primarySkills: primarySkills,
             secondarySkills: secondarySkills.isEmpty ? nil : .init(values: secondarySkills),
             artifactIDs: artifactIDs.isEmpty ? nil : .init(values: artifactIDs),
             spellIDs: spellIDs.isEmpty ? nil : .init(values: spellIDs),

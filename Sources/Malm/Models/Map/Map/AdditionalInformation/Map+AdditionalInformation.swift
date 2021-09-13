@@ -59,17 +59,7 @@ public extension Map {
 }
 
 public extension Map.AdditionalInformation {
- 
-    typealias Rumors = CollectionOf<Map.Rumor>
-    typealias SettingsForHeroes = CollectionOf<SettingsForHero>
-
-
+    typealias Rumors = ArrayOf<Map.Rumor>
+    typealias SettingsForHeroes = ArrayOf<SettingsForHero>
 }
 
-
-
-public extension Hero {
-    typealias PrimarySkills = CollectionOf<PrimarySkill>
-    
-    typealias SecondarySkills = CollectionOf<SecondarySkill>
-}

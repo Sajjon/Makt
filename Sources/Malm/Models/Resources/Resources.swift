@@ -7,7 +7,14 @@
 
 import Foundation
 
-public struct Resources: Hashable, CustomDebugStringConvertible {
+public struct Resources: Hashable, CustomDebugStringConvertible, ExpressibleByArrayLiteral {
+    
+    public typealias ArrayLiteralElement = Resource
+    
+    public init(arrayLiteral resources: ArrayLiteralElement...) {
+        self.init(resources: resources)!
+    }
+    
     public let resources: [Resource.Kind: Resource]
     public init?(resources: [Resource]) {
         let nonEmpty = resources.filter { $0.quantity != 0 } // might be negative!

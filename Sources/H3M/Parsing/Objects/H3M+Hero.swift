@@ -107,7 +107,7 @@ private extension H3M {
             }
         }() ?? nil
         
-        let customPrimarySkills: [Hero.PrimarySkill]? = try {
+        let customPrimarySkills: Hero.PrimarySkills? = try {
             guard format > .armageddonsBlade else { return nil }
             guard try reader.readBool() else { return nil }
             return try parsePrimarySkills() // TODO replace primary skill with hero specialty if available. VCMI does it, but surely we can do better.
@@ -130,7 +130,7 @@ private extension H3M {
             biography: customBiography,
             gender: customGender,
             spells: customSpells,
-            primarySkills: customPrimarySkills.map { .init(values: $0) }
+            primarySkills: customPrimarySkills
         )
     }
     

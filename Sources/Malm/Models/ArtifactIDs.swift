@@ -7,6 +7,6 @@
 
 import Foundation
 
-public typealias ArtifactIDs = CollectionOf<Artifact.ID>
+public typealias ArtifactIDs = ArrayOf<Artifact.ID>
 
 

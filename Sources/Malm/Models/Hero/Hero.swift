@@ -107,7 +107,7 @@ public struct Hero: Hashable, CustomDebugStringConvertible {
 
 public extension Hero {
     
-    typealias ArtifactsInSlots = CollectionOf<ArtifactInSlot>
+    typealias ArtifactsInSlots = ArrayOf<ArtifactInSlot>
     
     struct ArtifactInSlot: Hashable, CustomDebugStringConvertible {
         public let slot: Artifact.Slot

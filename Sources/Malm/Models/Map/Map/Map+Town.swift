@@ -51,7 +51,7 @@ public extension Map {
         }
         public let spells: Spells
         
-        public typealias Events = CollectionOf<Map.Town.Event>
+        public typealias Events = ArrayOf<Map.Town.Event>
         
         public let events: Events?
         

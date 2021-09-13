@@ -14,13 +14,13 @@ public extension Map {
         public let bounty: Bounty?
         
         public init(
-            message: String?,
+            message: String? = nil,
             guardians: CreatureStacks? = nil,
             experiencePointsToBeGained: UInt32? = nil,
             manaPointsToBeGainedOrDrained: Int32? = nil,
             moraleToBeGainedOrDrained: Int8? = nil,
             luckToBeGainedOrDrained: Int8? = nil,
-            resourcesToBeGained: Resources?,
+            resources: Resources? = nil,
             primarySkills: Hero.PrimarySkills? = nil,
             secondarySkills: Hero.SecondarySkills? = nil,
             artifactIDs: ArtifactIDs? = nil,
@@ -34,15 +34,13 @@ public extension Map {
                 manaPointsToBeGainedOrDrained: manaPointsToBeGainedOrDrained,
                 moraleToBeGainedOrDrained: moraleToBeGainedOrDrained,
                 luckToBeGainedOrDrained: luckToBeGainedOrDrained,
-                resourcesToBeGained: resourcesToBeGained,
+                resources: resources,
                 primarySkills: primarySkills,
                 secondarySkills: secondarySkills,
                 artifactIDs: artifactIDs,
                 spellIDs: spellIDs,
                 creaturesGained: creaturesGained
             )
-            
-            
         }
     }
 }

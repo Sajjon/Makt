@@ -7,4 +7,4 @@
 
 import Foundation
 
-public typealias Factions = CollectionOf<Faction>
+public typealias Factions = ArrayOf<Faction>

@@ -41,7 +41,7 @@ internal extension H3M {
                 let customSpells: SpellIDs? = !hasCustomSpells ? nil : try parseSpellIDs()
                 
                 let hasCustomPrimarySkills = try reader.readBool()
-                let customPrimarySkills: [Hero.PrimarySkill]? = !hasCustomPrimarySkills ? nil : try parsePrimarySkills()
+                let customPrimarySkills = !hasCustomPrimarySkills ? nil : try parsePrimarySkills()
                 
                 return .init(
                     heroID: heroID,
@@ -51,7 +51,7 @@ internal extension H3M {
                     biography: biography,
                     customGender: customGender,
                     customSpells: customSpells,
-                    customPrimarySkills: customPrimarySkills.map { .init(values: $0) }
+                    customPrimarySkills: customPrimarySkills
                 )
             }
             return .init(values: settingsForHeroes)
@@ -78,10 +78,12 @@ internal extension H3M {
         }
     }
     
-    func parsePrimarySkills() throws -> [Hero.PrimarySkill] {
-        try Hero.PrimarySkill.Kind.allCases.map { kind in
-            try Hero.PrimarySkill.init(kind: kind, level: .init(reader.readUInt8()))
+    func parsePrimarySkills() throws -> Hero.PrimarySkills? {
+        let skills: [Hero.PrimarySkill] = try Hero.PrimarySkill.Kind.allCases.map { kind in
+            try Hero.PrimarySkill(kind: kind, level: .init(reader.readUInt8()))
         }
+        
+        return try .init(skills: skills)
     }
     
     func parseArtifactsOfHero(format: Map.Format) throws -> [Hero.ArtifactInSlot]? {

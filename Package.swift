@@ -17,7 +17,9 @@ let package = Package(
         ),
         .target(
             name: "Malm",
-            dependencies: ["Util"]
+            dependencies: [
+                "Util"
+            ]
         ),
         .target(
             name: "H3M",

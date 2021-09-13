@@ -7,4 +7,4 @@
 
 import Foundation
 
-public typealias SpellIDs = CollectionOf<Spell.ID>
+public typealias SpellIDs = ArrayOf<Spell.ID>

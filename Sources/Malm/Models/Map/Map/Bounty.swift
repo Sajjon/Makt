@@ -13,7 +13,7 @@ public struct Bounty: Hashable, CustomDebugStringConvertible {
     internal let manaPointsToBeGainedOrDrained: Int32?
     internal let moraleToBeGainedOrDrained: Int8?
     internal let luckToBeGainedOrDrained: Int8?
-    internal let resourcesToBeGained: Resources?
+    internal let resources: Resources?
     internal let primarySkills: Hero.PrimarySkills?
     internal let secondarySkills: Hero.SecondarySkills?
     internal let artifactIDs: ArtifactIDs?
@@ -25,7 +25,7 @@ public struct Bounty: Hashable, CustomDebugStringConvertible {
         manaPointsToBeGainedOrDrained: Int32? = nil,
         moraleToBeGainedOrDrained: Int8? = nil,
         luckToBeGainedOrDrained: Int8? = nil,
-        resourcesToBeGained: Resources? = nil,
+        resources: Resources? = nil,
         primarySkills: Hero.PrimarySkills? = nil,
         secondarySkills: Hero.SecondarySkills? = nil,
         artifactIDs: ArtifactIDs? = nil,
@@ -36,8 +36,8 @@ public struct Bounty: Hashable, CustomDebugStringConvertible {
         self.manaPointsToBeGainedOrDrained = manaPointsToBeGainedOrDrained
         self.moraleToBeGainedOrDrained = moraleToBeGainedOrDrained
         self.luckToBeGainedOrDrained = luckToBeGainedOrDrained
-        self.resourcesToBeGained = resourcesToBeGained
-        self.primarySkills = primarySkills?.allSatisfy({ $0.level == 0 }) == true ? nil : primarySkills
+        self.resources = resources
+        self.primarySkills = primarySkills
         self.secondarySkills = secondarySkills
         self.artifactIDs = artifactIDs
         self.spellIDs = spellIDs
@@ -47,7 +47,7 @@ public struct Bounty: Hashable, CustomDebugStringConvertible {
                 self.manaPointsToBeGainedOrDrained == nil &&
                 self.moraleToBeGainedOrDrained == nil &&
                 self.luckToBeGainedOrDrained == nil &&
-                self.resourcesToBeGained == nil &&
+                self.resources == nil &&
                 self.primarySkills == nil &&
                 self.secondarySkills == nil &&
                 self.artifactIDs == nil &&
@@ -67,8 +67,8 @@ public struct Bounty: Hashable, CustomDebugStringConvertible {
             manaPointsToBeGainedOrDrained.map { mana -> String? in guard mana > 0 else { return nil }; return "mana: \(mana)" } ?? nil,
             moraleToBeGainedOrDrained.map { morale -> String? in guard morale > 0 else { return nil }; return "morale: \(morale)" } ?? nil,
             luckToBeGainedOrDrained.map { luck -> String? in guard luck > 0 else { return nil }; return "luck: \(luck)" } ?? nil,
-            resourcesToBeGained.map { res -> String? in guard !res.resources.isEmpty else { return nil }; return "resources: \(res)" } ?? nil,
-            primarySkills.map { ps -> String? in guard !ps.isEmpty else { return nil }; return "primary: \(ps)" } ?? nil,
+            resources.map { res -> String? in guard !res.resources.isEmpty else { return nil }; return "resources: \(res)" } ?? nil,
+            primarySkills.map { "primary: \($0)" },
             secondarySkills.map { ss -> String? in guard !ss.isEmpty else { return nil }; return "secondary: \(ss)" } ?? nil,
             artifactIDs.map { a -> String? in guard !a.isEmpty else { return nil }; return "artifactIDs: \(a)" } ?? nil,
             spellIDs.map { s  -> String? in guard !s.isEmpty else { return nil }; return "spells: \(s)" } ?? nil,

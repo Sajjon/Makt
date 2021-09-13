@@ -7,4 +7,4 @@
 
 import Foundation
 
-public typealias SecondarySkillKinds = CollectionOf<Hero.SecondarySkill.Kind>
+public typealias SecondarySkillKinds = ArrayOf<Hero.SecondarySkill.Kind>

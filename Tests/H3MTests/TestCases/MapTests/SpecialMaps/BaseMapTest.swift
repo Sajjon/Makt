@@ -146,6 +146,24 @@ extension BaseMapTest {
         fulfill(object: object)
     }
     
+    func assertObjectPandorasBox(
+        expected: Map.PandorasBox,
+        actual object: Map.Object,
+        file: StaticString = #file,
+        line: UInt = #line
+    ) {
+        XCTAssertEqual(object.objectID.stripped, .pandorasBox, file: file, line: line)
+        guard case let .pandorasBox(actual) = object.kind else {
+            XCTFail("expected pandoras box", file: file, line: line)
+            return
+        }
+        
+        XCTAssertEqual(expected, actual, file: file, line: line)
+        fulfill(object: object)
+    }
+    
+    
+    
     func assertObjectArtifact(
         expected: Map.GuardedArtifact,
         actual object: Map.Object,
