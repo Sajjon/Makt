@@ -162,6 +162,21 @@ extension BaseMapTest {
         fulfill(object: object)
     }
     
+    func assertObjectSeersHut(
+        expected: Map.Seershut,
+        actual object: Map.Object,
+        file: StaticString = #file,
+        line: UInt = #line
+    ) {
+        XCTAssertEqual(object.objectID.stripped, .seersHut, file: file, line: line)
+        guard case let .seershut(actual) = object.kind else {
+            XCTFail("expected seershut", file: file, line: line)
+            return
+        }
+        
+        XCTAssertEqual(expected, actual, file: file, line: line)
+        fulfill(object: object)
+    }
     
     
     func assertObjectArtifact(

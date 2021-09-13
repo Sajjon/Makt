@@ -5,14 +5,18 @@
 //  Created by Alexander Cyon on 2021-09-09.
 //
 
-import Foundation
 import Malm
 import Util
 
 internal extension H3M {
     
-    func parseQuest() throws -> Quest {
-        let questKindStripped = try Quest.Kind.Stripped(integer: reader.readUInt8())
+    func parseQuest() throws -> Quest? {
+        let questKindStrippedRaw = try reader.readUInt8()
+        guard questKindStrippedRaw > 0 else {
+            // A Seers Hut without any quest.
+            return nil
+        }
+        let questKindStripped = try Quest.Kind.Stripped(integer: questKindStrippedRaw)
         let questKind: Quest.Kind
         switch questKindStripped {
         case .reachPrimarySkillLevels:
@@ -43,7 +47,7 @@ internal extension H3M {
         }
         
         let limit = try reader.readUInt32()
-        let deadline: Int? = limit == .max ? nil : .init(limit)
+        let deadline: Date? = limit == .max ? nil : Date(daysPassed: .init(limit))
         
         // Map "The story of the Fool (Traemask2.h3m") 9697 bytes...
         let maxStringLength: UInt32 = 10_000

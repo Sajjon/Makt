@@ -8,17 +8,18 @@
 import Foundation
 import Util
 
+
 public struct Quest: Hashable, CustomDebugStringConvertible {
     public let kind: Kind
     public let messages: Messages?
     
     /// last day, `nil` means no deadline
-    public let deadline: Deadline?
+    public let deadline: Date?
     
     public init(
         kind: Kind,
         messages: Messages? = nil,
-        deadline:Deadline? = nil
+        deadline: Date? = nil
     ) {
         self.kind = kind
         self.messages = messages
@@ -39,7 +40,6 @@ public extension Quest {
         return optionalStrings.filterNils().joined(separator: "\n")
     }
     
-    typealias Deadline = Int
 }
 
 // MARK: Identifier

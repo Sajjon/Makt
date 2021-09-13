@@ -63,7 +63,7 @@ public extension Map.Object {
         case seershut(Map.Seershut)
         case monster(Map.Monster)
         case pandorasBox(Map.PandorasBox)
-        case questGuard(Quest)
+        case questGuard(Quest?)
         case witchHut(Map.WitchHut)
         case lighthouse(Map.Lighthouse)
         case grail(Map.Grail)

@@ -161,11 +161,11 @@ public extension Map.InformationAboutPlayers.PlayerInfo {
 public extension Map.InformationAboutPlayers.PlayerInfo.AdditionalInfo {
     struct SimpleHero: Hashable {
         public let portraitId: Hero.ID
-        public let name: String
+        public let name: String?
         
         public init(
             portraitId: Hero.ID,
-            name: String
+            name: String?
         ) {
             self.portraitId = portraitId
             self.name = name

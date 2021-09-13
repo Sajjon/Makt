@@ -40,7 +40,7 @@ let package = Package(
         ),
         .testTarget(
             name: "H3MTests",
-            dependencies: ["H3M"],
+            dependencies: ["H3M", "Malm"],
             resources: [
                 .copy("Resources/TestMaps/artifacts.h3m"),
                 .copy("Resources/TestMaps/creatures-cyon-modified.h3m"),

@@ -98,7 +98,7 @@ private extension H3M {
         
             let heroes: [Map.InformationAboutPlayers.PlayerInfo.AdditionalInfo.SimpleHero] = try heroCount.nTimes {
                 let portraitId = try Hero.ID(integer: reader.readUInt8())
-                let heroName = try reader.readString()
+                let heroName = try reader.readString(maxByteCount: 12) // Cyon verified via MapEditor
                 return .init(portraitId: portraitId, name: heroName)
             }
             

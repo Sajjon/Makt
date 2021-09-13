@@ -38,10 +38,17 @@ internal extension H3M {
         return seershut
     }
     
-    func parseBounty(format: Map.Format) throws -> Map.Seershut.Bounty {
+    func parseBounty(format: Map.Format) throws -> Map.Seershut.Bounty? {
+        
+        let bountyStrippedRaw = try reader.readUInt8()
+        
+        guard bountyStrippedRaw > 0 else {
+            // No bounty
+            return nil
+        }
         
         let bountyStripped = try Map.Seershut.Bounty.Stripped(
-            integer: reader.readUInt8()
+            integer: bountyStrippedRaw
         )
         
         let bounty: Map.Seershut.Bounty
