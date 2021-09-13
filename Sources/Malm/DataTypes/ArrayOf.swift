@@ -107,3 +107,16 @@ public struct UniqueElements<Grouper: Grouping>: ElementsValidating {
 }
 
 public typealias ArrayOfUniqueByKeyPath<G: KeyPathGrouper> = ArrayOfValidatedElements<UniqueElements<G>>
+
+public protocol CategorizedByKind: Hashable {
+    associatedtype Kind: Hashable
+    var kind: Kind { get }
+}
+
+public struct CategorizedByKindGrouper<CK: CategorizedByKind>: KeyPathGrouper {
+    public typealias Element = CK
+    public typealias Key = CK.Kind
+    public static var keyPath: KeyPath<Element, Key> { \.kind }
+}
+
+public typealias UniqueElementsByKindOf<CK: CategorizedByKind> = ArrayOfUniqueByKeyPath<CategorizedByKindGrouper<CK>>

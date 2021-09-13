@@ -7,14 +7,6 @@
 
 import Foundation
 
-public extension Hero.SecondarySkill {
-    struct Grouper: KeyPathGrouper {
-        public typealias Element = Hero.SecondarySkill
-        public typealias Key = Hero.SecondarySkill.Kind
-        public static let keyPath: KeyPath<Element, Key> = \.kind
-    }
-}
-
 public extension Hero {
-    typealias SecondarySkills = ArrayOfUniqueByKeyPath<SecondarySkill.Grouper>
+    typealias SecondarySkills = UniqueElementsByKindOf<SecondarySkill>
 }

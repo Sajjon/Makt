@@ -26,4 +26,11 @@ final class SecondarySkillsTests: XCTestCase {
             XCTAssertEqual(duplicateError, .duplicatedKeyFound(.wisdom))
         }
     }
+    
+    func testUniqueSkills() {
+        XCTAssertNoThrow( try Hero.SecondarySkills(checking: [
+            .init(kind: .wisdom, level: .basic),
+            .init(kind: .logistics, level: .expert)
+        ]))
+    }
 }
