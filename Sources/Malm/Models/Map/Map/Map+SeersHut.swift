@@ -22,7 +22,7 @@ public extension Map {
         
         public enum Bounty: Hashable {
             case experience(UInt32)
-            case manaPoints(UInt32)
+            case spellPoints(UInt32)
             case moraleBonus(UInt8)
             case luckBonus(UInt8)
             case resource(Resource)
@@ -43,7 +43,7 @@ public extension Map.Seershut.Bounty {
     enum Stripped: UInt8, Hashable, CaseIterable {
         // 0 is none
         case experience = 1
-        case manaPoints
+        case spellPoints
         case moraleBonus
         case luckBonus
         case resource

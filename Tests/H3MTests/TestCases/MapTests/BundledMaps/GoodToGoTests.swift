@@ -67,7 +67,13 @@ final class GoodToGoMapTest: BaseMapTest {
                             alignment: nil
                         ), actual: object)
                     } else if object.objectID.stripped == .randomHero {
-                        assertObjectRandomHero(expected: .init(identifierKind: .randomHero, owner: .red, startingExperiencePoints: 6_000), actual: object)
+                        assertObjectRandomHero(
+                            expected: .init(
+                                identifierKind: .randomHero,
+                                owner: .red,
+                                startingExperiencePoints: 6_000,
+                                gender: nil
+                            ), actual: object)
                     } else {
                         XCTFail("Unexpected object of kind: \(object.kind).")
                     }
@@ -107,7 +113,8 @@ final class GoodToGoMapTest: BaseMapTest {
                                 .specific(id: .gnoll, quantity: 100),
                                 .specific(id: .gnoll, quantity: 100)
                             ]),
-                            startingExperiencePoints: 18_500
+                            startingExperiencePoints: 18_500,
+                            gender: nil
                         ),
                         actual: object)
                 case at(33, y: 8):
@@ -120,7 +127,8 @@ final class GoodToGoMapTest: BaseMapTest {
                                 .specific(id: .gnoll, quantity: 100),
                                 .specific(id: .gnoll, quantity: 100)
                             ]),
-                            startingExperiencePoints: 18_500
+                            startingExperiencePoints: 18_500,
+                            gender: nil
                         ),
                         actual: object)
                 case at(2, y: 28):
@@ -133,7 +141,8 @@ final class GoodToGoMapTest: BaseMapTest {
                                 .specific(id: .goblin, quantity: 100),
                                 .specific(id: .goblin, quantity: 100)
                             ]),
-                            startingExperiencePoints: 18_500
+                            startingExperiencePoints: 18_500,
+                            gender: nil
                         ),
                         actual: object)
 
@@ -147,7 +156,8 @@ final class GoodToGoMapTest: BaseMapTest {
                                 .specific(id: .goblin, quantity: 100),
                                 .specific(id: .goblin, quantity: 100)
                             ]),
-                            startingExperiencePoints: 18_500
+                            startingExperiencePoints: 18_500,
+                            gender: nil
                         ),
                         actual: object)
 
@@ -167,7 +177,13 @@ final class GoodToGoMapTest: BaseMapTest {
                             alignment: nil
                         ), actual: object)
                     } else if object.objectID.stripped == .randomHero {
-                        assertObjectRandomHero(expected: .init(identifierKind: .randomHero, owner: .blue, startingExperiencePoints: 6_000), actual: object)
+                        assertObjectRandomHero(
+                            expected: .init(
+                                identifierKind: .randomHero,
+                                owner: .blue,
+                                startingExperiencePoints: 6_000,
+                                gender: nil
+                            ), actual: object)
                     } else {
                         XCTFail("Unexpected object of kind: \(object.kind).")
                     }

@@ -61,11 +61,11 @@ final class PandorasBoxOnMapTests: BaseMapTest {
                     )
                 case at(3, y: 1):
                     assertPandorasBox(
-                        expected: .init(message: "spell points", manaPointsToBeGainedOrDrained: 5)
+                        expected: .init(message: "spell points", spellPointsToBeGainedOrDrained: 5)
                     )
                 case at(5, y: 1):
                     assertPandorasBox(
-                        expected: .init(message: "spell points take", manaPointsToBeGainedOrDrained: -5)
+                        expected: .init(message: "spell points take", spellPointsToBeGainedOrDrained: -5)
                     )
                     
                 case at(7, y: 1):

@@ -68,11 +68,11 @@ internal extension H3M {
         return try secondarySkillStartAmount.nTimes {
             let kindRaw = try reader.readUInt8()
             guard let kind = Hero.SecondarySkill.Kind(rawValue: kindRaw) else {
-                throw Error.unrecognizedSecondarySkillKind(kindRaw)
+                throw H3MError.unrecognizedSecondarySkillKind(kindRaw)
             }
             let levelRaw = try reader.readUInt8()
             guard let level = Hero.SecondarySkill.Level(rawValue: levelRaw) else {
-                throw Error.unrecognizedSecondarySkillLevel(levelRaw)
+                throw H3MError.unrecognizedSecondarySkillLevel(levelRaw)
             }
             return Hero.SecondarySkill(kind: kind, level: level)
         }
@@ -184,7 +184,7 @@ private extension  H3M {
     func parseArtifact(in slot: Artifact.Slot, format: Map.Format) throws -> Hero.ArtifactInSlot? {
         guard let artifactId = try parseArtifactID(format: format) else { return nil }
         guard !(artifactId.isWarMachine && slot.isBackpack) else {
-            throw Error.warmachineFoundInBackback
+            throw H3MError.warmachineFoundInBackback
         }
         if artifactId == .spellBook && slot == .body(.misc5) {
             fatalError("Spellbook found in misc5. Invalid! Maybe we should just put it in spellbook slot? (and remove this fatalError..)")

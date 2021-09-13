@@ -10,7 +10,7 @@ import Foundation
 /// Used in `Map.PandorasBox` and `Map.GeoEvent`
 public struct Bounty: Hashable, CustomDebugStringConvertible {
     internal let experiencePointsToBeGained: UInt32?
-    internal let manaPointsToBeGainedOrDrained: Int32?
+    internal let spellPointsToBeGainedOrDrained: Int32?
     internal let moraleToBeGainedOrDrained: Int8?
     internal let luckToBeGainedOrDrained: Int8?
     internal let resources: Resources?
@@ -22,7 +22,7 @@ public struct Bounty: Hashable, CustomDebugStringConvertible {
     
     public init?(
         experiencePointsToBeGained: UInt32? = nil,
-        manaPointsToBeGainedOrDrained: Int32? = nil,
+        spellPointsToBeGainedOrDrained: Int32? = nil,
         moraleToBeGainedOrDrained: Int8? = nil,
         luckToBeGainedOrDrained: Int8? = nil,
         resources: Resources? = nil,
@@ -33,7 +33,7 @@ public struct Bounty: Hashable, CustomDebugStringConvertible {
         creaturesGained: CreatureStacks? = nil
     ) {
         self.experiencePointsToBeGained = experiencePointsToBeGained
-        self.manaPointsToBeGainedOrDrained = manaPointsToBeGainedOrDrained
+        self.spellPointsToBeGainedOrDrained = spellPointsToBeGainedOrDrained
         self.moraleToBeGainedOrDrained = moraleToBeGainedOrDrained
         self.luckToBeGainedOrDrained = luckToBeGainedOrDrained
         self.resources = resources
@@ -44,7 +44,7 @@ public struct Bounty: Hashable, CustomDebugStringConvertible {
         self.creaturesGained = (creaturesGained?.creatureStackAtSlot.isEmpty == true || creaturesGained?.creatureStackAtSlot.allSatisfy({ $0.value?.quantity == 0 }) == true) ? nil : creaturesGained
         if
             self.experiencePointsToBeGained == nil &&
-                self.manaPointsToBeGainedOrDrained == nil &&
+                self.spellPointsToBeGainedOrDrained == nil &&
                 self.moraleToBeGainedOrDrained == nil &&
                 self.luckToBeGainedOrDrained == nil &&
                 self.resources == nil &&
@@ -64,7 +64,7 @@ public struct Bounty: Hashable, CustomDebugStringConvertible {
                 guard xp > 0 else { return nil }
                 return "xp: \(xp)"
             } ?? nil,
-            manaPointsToBeGainedOrDrained.map { mana -> String? in guard mana > 0 else { return nil }; return "mana: \(mana)" } ?? nil,
+            spellPointsToBeGainedOrDrained.map { mana -> String? in guard mana > 0 else { return nil }; return "mana: \(mana)" } ?? nil,
             moraleToBeGainedOrDrained.map { morale -> String? in guard morale > 0 else { return nil }; return "morale: \(morale)" } ?? nil,
             luckToBeGainedOrDrained.map { luck -> String? in guard luck > 0 else { return nil }; return "luck: \(luck)" } ?? nil,
             resources.map { res -> String? in guard !res.resources.isEmpty else { return nil }; return "resources: \(res)" } ?? nil,

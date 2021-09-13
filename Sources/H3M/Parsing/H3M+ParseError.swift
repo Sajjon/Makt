@@ -9,7 +9,7 @@ import Foundation
 import Malm
 
 // MARK: Error
-enum Error: Swift.Error {
+enum H3MError: Swift.Error {
     case corruptMapFileTooSmall
     case failedToReadHeaderVersion
     case unsupportedFormat(Map.Format)
@@ -28,4 +28,5 @@ enum Error: Swift.Error {
     case objectAttributesIndexTooLarge(Int, maxIndex: Int)
     
     case warmachineFoundInBackback
+    case unknownSpriteName(String)
 }

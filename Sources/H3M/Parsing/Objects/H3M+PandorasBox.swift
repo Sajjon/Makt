@@ -15,7 +15,7 @@ internal extension H3M {
         let (message, guardians) = try parseMessageAndGuardians(format: format)
         
         let experiencePointsToBeGained = try reader.readUInt32()
-        let manaPointsToBeGainedOrDrained = try reader.readInt32()
+        let spellPointsToBeGainedOrDrained = try reader.readInt32()
         let moraleToBeGainedOrDrained = try reader.readInt8()
         let luckToBeGainedOrDrained = try reader.readInt8()
         let resources = try parseResources()
@@ -31,7 +31,7 @@ internal extension H3M {
             message: message,
             guardians: guardians,
             experiencePointsToBeGained: experiencePointsToBeGained == 0 ? nil : experiencePointsToBeGained,
-            manaPointsToBeGainedOrDrained: manaPointsToBeGainedOrDrained == 0 ? nil : manaPointsToBeGainedOrDrained,
+            spellPointsToBeGainedOrDrained: spellPointsToBeGainedOrDrained == 0 ? nil : spellPointsToBeGainedOrDrained,
             moraleToBeGainedOrDrained: moraleToBeGainedOrDrained == 0 ? nil : moraleToBeGainedOrDrained,
             luckToBeGainedOrDrained: luckToBeGainedOrDrained == 0 ? nil : luckToBeGainedOrDrained,
             resources: (resources?.resources.isEmpty ?? true) ? nil : resources,

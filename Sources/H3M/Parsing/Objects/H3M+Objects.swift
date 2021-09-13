@@ -27,7 +27,7 @@ internal extension H3M {
             let attributesIndex = try reader.readUInt32()
             
             guard attributesIndex < maxIndex else {
-                throw Error.objectAttributesIndexTooLarge(.init(attributesIndex), maxIndex: maxIndex)
+                throw H3MError.objectAttributesIndexTooLarge(.init(attributesIndex), maxIndex: maxIndex)
             }
             
             try reader.skip(byteCount: 5) // unknown

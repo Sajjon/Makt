@@ -16,7 +16,7 @@ extension  H3M {
     ) throws -> Map.BasicInformation {
         
         // Check map for validity
-        guard reader.sourceSize >= 50 else { throw Error.corruptMapFileTooSmall }
+        guard reader.sourceSize >= 50 else { throw H3MError.corruptMapFileTooSmall }
         // Map version
         let format = try Map.Format(id: reader.readUInt32())
         inspector?.didParseFormat(format)
@@ -31,7 +31,7 @@ extension  H3M {
             }
 #endif // WOG
             if shouldThrow {
-                throw Error.unsupportedFormat(format)
+                throw H3MError.unsupportedFormat(format)
             }
         }
         

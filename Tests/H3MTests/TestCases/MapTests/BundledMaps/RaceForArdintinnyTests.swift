@@ -152,7 +152,8 @@ final class RaceForArdintinnyTests: BaseMapTest {
                                         slot: .backpack(.init(0)!),
                                         artifactID: .bowOfElvenCherrywood
                                     )
-                                ])
+                                ]),
+                                gender: nil
                             )
                         )
                     } else if case let .resource(resource) = object.kind {
@@ -172,7 +173,8 @@ final class RaceForArdintinnyTests: BaseMapTest {
                 case at(83, y: 110):
                     assertPrisonHero(
                         expected: .init(
-                            identifierKind: .specificHeroWithID(Hero.ID.christian)
+                            identifierKind: .specificHeroWithID(Hero.ID.christian),
+                            gender: nil
                         )
                     )
                 case at(87, y: 22):

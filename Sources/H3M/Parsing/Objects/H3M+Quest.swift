@@ -19,29 +19,29 @@ internal extension H3M {
         let questKindStripped = try Quest.Kind.Stripped(integer: questKindStrippedRaw)
         let questKind: Quest.Kind
         switch questKindStripped {
-        case .reachPrimarySkillLevels:
+        case .archievePrimarySkillLevels:
             guard let skills = try parsePrimarySkills() else {
                 incorrectImplementation(reason: "Should not have all zero primary skills (which equals to nil) as quest goal?")
             }
-            questKind = .reachPrimarySkillLevels(skills)
-        case .reachHeroLevel:
-            questKind = try .reachHeroLevel(.init(reader.readUInt32()))
-        case .killHero:
-            questKind = try .killHero(Quest.Identifier(id: reader.readUInt32()))
-        case .killCreature:
-            questKind = try .killCreature(Quest.Identifier(id: reader.readUInt32()))
-        case .acquireArtifacts:
+            questKind = .archievePrimarySkillLevels(skills)
+        case .archieveExperienceLevel:
+            questKind = try .archieveExperienceLevel(.init(reader.readUInt32()))
+        case .defeatHero:
+            questKind = try .defeatHero(Quest.Identifier(id: reader.readUInt32()))
+        case .defeatCreature:
+            questKind = try .defeatCreature(Quest.Identifier(id: reader.readUInt32()))
+        case .returnWithArtifacts:
             // For some reason the artifact IDs in the Quest is ALWAYS represented as UInt16, thus we hardcode `shadowOfDeath` as map format which will result in UInt16s being read as rawValue for each artifact.
-            questKind = try .acquireArtifacts(parseArtifactIDs(format: .shadowOfDeath))
-        case .raiseArmy:
+            questKind = try .returnWithArtifacts(parseArtifactIDs(format: .shadowOfDeath))
+        case .returnWithCreatures:
             // For some reason the creature IDs in the Quest is ALWAYS represented as UInt16, thus we hardcode `shadowOfDeath` as map format which will result in UInt16s being read as rawValue for each creature type.
-            questKind  = try .raiseArmy(parseCreatureStacks(format: .shadowOfDeath, count: reader.readUInt8())!)
-        case .acquireResources:
-            questKind = try .acquireResources(parseResources()!)
+            questKind  = try .returnWithCreatures(parseCreatureStacks(format: .shadowOfDeath, count: reader.readUInt8())!)
+        case .returnWithResources:
+            questKind = try .returnWithResources(parseResources()!)
         case .beHero:
             questKind = try .beHero(.init(integer: reader.readUInt8()))
-        case .bePlayer:
-            questKind = try .bePlayer(.init(integer: reader.readUInt8()))
+        case .belongToPlayer:
+            questKind = try .belongToPlayer(.init(integer: reader.readUInt8()))
         case .aquireKey:
             incorrectImplementation(reason: "Should not have Acquire Key as quest in this context.")
         }

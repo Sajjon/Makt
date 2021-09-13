@@ -13,7 +13,7 @@ public extension Map.Object {
 
 
 public extension Map.Object.CreatureBank {
-    enum ID: UInt8, Equatable, CaseIterable {
+    enum ID: UInt8, Equatable, CaseIterable, CustomDebugStringConvertible {
         case cyclopsStockpile = 0,
              dwarvenTreasury,
              griffinConservatory,
@@ -42,5 +42,25 @@ public extension Map.Object.CreatureBank {
              lostBottle,
              grotto
         #endif // WOG
+    }
+}
+
+public extension Map.Object.CreatureBank.ID {
+    var debugDescription: String {
+        switch self {
+        case .cyclopsStockpile: return "cyclopsStockpile"
+        case .dwarvenTreasury: return "dwarvenTreasury"
+        case .griffinConservatory: return "griffinConservatory"
+        case .impCache: return "impCache"
+        case .medusaStores: return "medusaStores"
+        case .nagaBank: return "nagaBank"
+        case .dragonFlyHive: return "dragonFlyHive"
+            
+            
+            
+        }
+        
+        
+        
     }
 }

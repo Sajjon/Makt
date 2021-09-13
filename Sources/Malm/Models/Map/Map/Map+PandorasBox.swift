@@ -17,7 +17,7 @@ public extension Map {
             message: String? = nil,
             guardians: CreatureStacks? = nil,
             experiencePointsToBeGained: UInt32? = nil,
-            manaPointsToBeGainedOrDrained: Int32? = nil,
+            spellPointsToBeGainedOrDrained: Int32? = nil,
             moraleToBeGainedOrDrained: Int8? = nil,
             luckToBeGainedOrDrained: Int8? = nil,
             resources: Resources? = nil,
@@ -31,7 +31,7 @@ public extension Map {
             self.message = message
             self.bounty = .init(
                 experiencePointsToBeGained: experiencePointsToBeGained,
-                manaPointsToBeGainedOrDrained: manaPointsToBeGainedOrDrained,
+                spellPointsToBeGainedOrDrained: spellPointsToBeGainedOrDrained,
                 moraleToBeGainedOrDrained: moraleToBeGainedOrDrained,
                 luckToBeGainedOrDrained: luckToBeGainedOrDrained,
                 resources: resources,

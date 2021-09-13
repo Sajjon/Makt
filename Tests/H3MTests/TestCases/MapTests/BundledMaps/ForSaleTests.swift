@@ -40,7 +40,7 @@ final class ForSaleTests: BaseMapTest {
                 case at(11, y: 15):
                     assertObjectQuestGuard(
                         expected: .init(
-                            kind: .acquireResources(.init(resources: [.init(kind: .gold, quantity: 50605)])!),
+                            kind: .returnWithResources(.init(resources: [.init(kind: .gold, quantity: 50605)])!),
                             messages: .init(
                                 proposalMessage: "The guards here will let no one pass unless they have enough gold to buy the castle.  They will let you pass for 50637 gold pieces.",
                                 progressMessage: "Since you have not brought 50605 Gold, the guards forbid your passage.",

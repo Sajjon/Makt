@@ -97,17 +97,17 @@ public extension Quest {
     
     
     enum Kind: Hashable, CustomDebugStringConvertible {
-        case reachPrimarySkillLevels(Hero.PrimarySkills)
-        case reachHeroLevel(Int)
-        case killHero(Identifier)
+        case archievePrimarySkillLevels(Hero.PrimarySkills)
+        case archieveExperienceLevel(Int)
+        case defeatHero(Identifier)
         
-        case killCreature(Identifier)
+        case defeatCreature(Identifier)
         
-        case acquireArtifacts([Artifact.ID])
-        case raiseArmy(CreatureStacks)
-        case acquireResources(Resources)
+        case returnWithArtifacts([Artifact.ID])
+        case returnWithCreatures(CreatureStacks)
+        case returnWithResources(Resources)
         case beHero(Hero.ID)
-        case bePlayer(Player)
+        case belongToPlayer(Player)
     }
 }
 
@@ -117,28 +117,28 @@ public extension Quest.Kind {
     
     var debugDescription: String {
         switch self {
-        case .reachPrimarySkillLevels(let primarySkills): return "reachPrimarySkillLevels(\(primarySkills))"
-        case .reachHeroLevel(let level): return "reachHeroLevel(\(level))"
-        case .killHero(let hero): return "killHero(\(hero))"
-        case .killCreature(let creature): return "killCreature(\(creature))"
-        case .acquireArtifacts(let artifact): return "acquireArtifacts(\(artifact))"
-        case .raiseArmy(let army): return "raiseArmy(\(army))"
-        case .acquireResources(let resources): return "acquireResources(\(resources))"
+        case .archievePrimarySkillLevels(let primarySkills): return "archievePrimarySkillLevels(\(primarySkills))"
+        case .archieveExperienceLevel(let level): return "archieveExperienceLevel(\(level))"
+        case .defeatHero(let hero): return "defeatHero(\(hero))"
+        case .defeatCreature(let creature): return "defeatCreature(\(creature))"
+        case .returnWithArtifacts(let artifact): return "returnWithArtifacts(\(artifact))"
+        case .returnWithCreatures(let army): return "returnWithCreatures(\(army))"
+        case .returnWithResources(let resources): return "returnWithResources(\(resources))"
         case .beHero(let hero): return "beHero(\(hero))"
-        case .bePlayer(let player): return "bePlayer(\(player))"
+        case .belongToPlayer(let player): return "belongToPlayer(\(player))"
         }
     }
     
     enum Stripped: UInt8, Hashable, CaseIterable {
-        case reachHeroLevel = 1
-        case reachPrimarySkillLevels
-        case killHero
-        case killCreature
-        case acquireArtifacts
-        case raiseArmy
-        case acquireResources
+        case archieveExperienceLevel = 1
+        case archievePrimarySkillLevels
+        case defeatHero
+        case defeatCreature
+        case returnWithArtifacts
+        case returnWithCreatures
+        case returnWithResources
         case beHero
-        case bePlayer
+        case belongToPlayer
         case aquireKey
     }
     

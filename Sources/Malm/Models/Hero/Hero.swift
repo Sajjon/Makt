@@ -57,7 +57,7 @@ public struct Hero: Hashable, CustomDebugStringConvertible {
         startingSecondarySkills: SecondarySkills? = nil,
         artifactsInSlots: ArtifactsInSlots? = nil,
         biography: String? = nil,
-        gender: Gender? = nil,
+        gender: Gender? = .defaultGender,
         spells: SpellIDs? = nil,
         primarySkills: PrimarySkills? = nil
     ) {
@@ -133,7 +133,7 @@ public extension Hero {
 }
 
 public extension Hero {
-    enum Class: UInt8, Hashable, CaseIterable {
+    enum Class: UInt8, Hashable, CaseIterable, CustomDebugStringConvertible {
         case
         knight,
         cleric,
@@ -158,14 +158,32 @@ public extension Hero {
         navigator
         #endif // HOTA
         
-       public init<I>(integer: I) throws where I: FixedWidthInteger {
-           do {
-               let rawValue = try UInt8(integer: integer)
-               try self.init(id: rawValue)
-           } catch {
-               throw IDFromRawValueError<Self>.genericInteger(tooLarge: Int(integer))
-           }
-       }
-        
+    }
+}
+
+public extension Hero.Class {
+    var debugDescription: String {
+        switch self {
+            
+        case .knight: return "knight"
+        case .cleric: return "cleric"
+        case .ranger: return "ranger"
+        case .druid: return "druid"
+        case .alchemist: return "alchemist"
+        case .wizard: return "wizard"
+        case .demoniac: return "demoniac"
+        case .heretic: return "heretic"
+        case .deathKnight: return "deathKnight"
+        case .necromancer: return "necromancer"
+        case .overlord: return "overlord"
+        case .warlock: return "warlock"
+        case .barbarian: return "barbarian"
+        case .battleMage: return "battleMage"
+        case .beastmaster: return "beastmaster"
+        case .witch: return "witch"
+        case .planeswalker: return "planeswalker"
+        case .elementalist: return "elementalist"
+            
+        }
     }
 }

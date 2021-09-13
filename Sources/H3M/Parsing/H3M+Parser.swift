@@ -96,6 +96,10 @@ internal extension H3M {
     
 public typealias Bitmask = BitArray
 
+var handledSprites = Set<String>()
+var spriteDefinitions = [String]()
+var spriteCustomDebugPrints = [String]()
+
 // MARK: Parse "Attributes
 private extension H3M {
     
@@ -108,7 +112,7 @@ private extension H3M {
         let attributes: [Map.Object.Attributes] = try (0..<attributesCount).compactMap { _ in
             /// aka "Sprite name"
             let animationFileName = try reader.readString()
-            
+    
             /// Which squares (of this object) are passable, counted from the bottom right corner
             /// (bit 1: passable, bit 0: impassable
             let passabilityBitmask = try reader.readBitArray(byteCount: Map.Object.Attributes.Pathfinding.rowCount)
@@ -141,24 +145,7 @@ private extension H3M {
             )
       
             func parseLandscapes() throws -> [Map.Tile.Terrain.Kind] {
-                /// Alternative rawValue than `Map.Tile.Terrain.Kind` for some strange reason.
-                enum TerrainKindEncoded: UInt8, CaseIterable {
-                    case water, lava, subterranean, rock, swamp, snow, grass, sand, dirt
-                    var toTerrain: Map.Tile.Terrain.Kind {
-                        switch self {
-                        case .water: return .water
-                        case .lava: return .lava
-                        case .subterranean: return .subterranean
-                        case .rock: return .rock
-                        case .swamp: return .swamp
-                        case .snow: return .snow
-                        case .grass: return .grass
-                        case .sand: return .sand
-                        case .dirt: return .dirt
-                        }
-                    }
-                }
-                return try parseBitmask(as: TerrainKindEncoded.self).map { $0.toTerrain }
+                try parseBitmaskOfEnum()
             }
             
             /// what kinds of landscape it can be put on
@@ -178,6 +165,54 @@ private extension H3M {
             let objectGroupRaw = try reader.readUInt8()
             let group: Map.Object.Attributes.Group? = .init(rawValue: objectGroupRaw)
             
+            let maybeSprite: Sprite? = Sprite(rawValue: animationFileName)
+            if maybeSprite == nil && !handledSprites.contains(animationFileName) {
+                var caseBaseName = objectID.subtypeDescription.map({ "\(objectID.name)\($0.capitalizingFirstLetter())" }) ?? objectID.name
+                
+                if objectID.stripped == .creatureBank || objectID.stripped == .artifact || objectID.stripped == .monster || objectID.stripped == .mine || objectID.stripped == .creatureGenerator1 {
+                    caseBaseName = objectID.subtypeDescription!
+                }
+                
+                let animationFileNameWithoutExtension = animationFileName.hasSuffix(".def") ? String(animationFileName.dropLast(4)) : animationFileName
+                let caseName = "\(caseBaseName)_\(animationFileNameWithoutExtension)"
+                var mapEditorLandscapeGroupString = ""
+                if mapEditorLandscapeGroup == [.water] {
+                    mapEditorLandscapeGroupString = "Water"
+                } else if mapEditorLandscapeGroup.count == 8 && !mapEditorLandscapeGroup.contains(.water) {
+                    mapEditorLandscapeGroupString = "Land"
+                } else if mapEditorLandscapeGroup.count != 9 {
+                    mapEditorLandscapeGroupString = mapEditorLandscapeGroup.map({ String(describing: $0) }).joined(separator: ", ")
+                }
+                
+                if !mapEditorLandscapeGroupString.isEmpty {
+                    mapEditorLandscapeGroupString = "\n/// Terrain kind: \(mapEditorLandscapeGroupString)"
+                }
+                
+                let definiition = """
+
+                /// \(objectID.debugDescription)\(mapEditorLandscapeGroupString)
+                case \(caseName) = "\(animationFileName)"
+                """
+                
+                spriteDefinitions.append(definiition)
+                
+                let customDebugPrint = """
+
+                /// Sprite for object ID: \(objectID.stripped.rawValue)
+                /// \(objectID.debugDescription)
+                case .\(caseName): return "\(objectID.debugDescription)"
+                """
+                
+                spriteCustomDebugPrints.append(customDebugPrint)
+                
+                handledSprites.insert(animationFileName)
+            }
+            let sprite = maybeSprite ?? .heroWitch_ah15_e
+            
+//            guard let sprite = Sprite(rawValue: animationFileName) else {
+//                throw H3MError.unknownSpriteName(animationFileName)
+//            }
+            
             let inUnderworld = try reader.readBool()
             
             /// Unknown
@@ -188,7 +223,7 @@ private extension H3M {
             }
             
             let attributes = Map.Object.Attributes(
-                animationFileName: animationFileName,
+                sprite: sprite,
                 supportedLandscapes: supportedLandscapes,
                 mapEditorLandscapeGroup: mapEditorLandscapeGroup,
                 objectID: objectID,
@@ -199,7 +234,17 @@ private extension H3M {
             return attributes
         }
         
-        
+        if !handledSprites.isEmpty {
+            
+        spriteDefinitions.forEach {
+            print($0)
+        }
+        print("\n\n\n\n\n\nTHIS_IS_A_SEPARATOR\n\n\n\n\n\n")
+        spriteCustomDebugPrints.forEach {
+            print($0)
+        }
+            fatalError("⚠️⚠️⚠️  New sprites found ⚠️⚠️⚠️\n\nAdd the sprites above and customdebugsprint convertible as well")
+        }
    
         return .init(attributes: attributes)
     }
@@ -207,7 +252,7 @@ private extension H3M {
 
 private extension Map.Object.Attributes {
     static let invisibleHardcodedIntoEveryMapAttribute_RandomMonster: Self = .init(
-        animationFileName: "AVWmrnd0.def",
+        sprite: .randomMonster_AVWmrnd0,
         supportedLandscapes: [.water, .lava, .subterranean, .rock, .swamp, .snow, .grass, .sand],
         mapEditorLandscapeGroup: [.sand],
         objectID: .randomMonster,
@@ -219,9 +264,9 @@ private extension Map.Object.Attributes {
             ]
         ),
         inUnderworld: false)
-    
+
     static let invisibleHardcodedIntoEveryMapAttribute_Hole: Self = .init(
-        animationFileName: "AVLholg0.def",
+        sprite: .hole_AVLholg0,
         supportedLandscapes: [.snow],
         mapEditorLandscapeGroup: [.snow],
         objectID: .hole,

@@ -7,13 +7,13 @@
 
 import Foundation
 
-public enum Faction: UInt8, Equatable, CaseIterable, CustomStringConvertible {
+public enum Faction: UInt8, Equatable, CaseIterable, CustomDebugStringConvertible {
     case castle, rampart, tower, inferno, necropolis, dungeon, stronghold, fortress, conflux, neutral, random = 0xff
 }
 
 // MARK: CustomStringConvertible
 public extension Faction {
-    var description: String {
+    var debugDescription: String {
         switch self {
         case .castle: return "castle"
         case .rampart: return "rampart"

@@ -88,7 +88,7 @@ private extension  H3M {
         
         let victoryConditionStrippedRaw = try reader.readUInt8()
         guard let victoryConditionStripped = Map.VictoryCondition.Kind.Stripped(rawValue: victoryConditionStrippedRaw) else {
-            throw Error.unrecognizedVictoryConditionKind(victoryConditionStrippedRaw)
+            throw H3MError.unrecognizedVictoryConditionKind(victoryConditionStrippedRaw)
         }
         
         if victoryConditionStripped == .standard {
@@ -159,7 +159,7 @@ private extension  H3M {
         
         let lossConditionStrippedRaw = try reader.readUInt8()
         guard let lossConditionStripped = Map.LossCondition.Kind.Stripped(rawValue: lossConditionStrippedRaw) else {
-            throw Error.unrecognizedLossConditionKind(lossConditionStrippedRaw)
+            throw H3MError.unrecognizedLossConditionKind(lossConditionStrippedRaw)
         }
         
         if lossConditionStripped == .standard {

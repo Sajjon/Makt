@@ -275,55 +275,60 @@ public extension Map.Object.ID {
     
     var debugDescription: String {
         
-        switch self {
-        case .artifact(let value):
-            return "artifact: \(value)"
-        case .borderguard(let value):
-            return "borderguard: \(value)"
-        case .keymastersTent(let value):
-            return "keymastersTent: \(value)"
-        case .creatureBank(let value):
-            return "creatureBank: \(value)"
-        case .creatureGenerator1(let value):
-            return "creatureGenerator1: \(value)"
-        case .creatureGenerator4(let value):
-            return "creatureGenerator4: \(value)"
-        case .garrison(let value):
-            return "garrison: \(value)"
-        case .hero(let value):
-            return "hero: \(value)"
-        case .monolithOneWayEntrance(let value):
-            return "monolithOneWayEntrance: \(value)"
-        case .monolithOneWayExit(let value):
-            return "monolithOneWayExit: \(value)"
-        case .monolithTwoWay(let value):
-            return "monolithTwoWay: \(value)"
-        case .mine(let value):
-            return "mine: \(value)"
-        case .monster(let value):
-            return "monster: \(value)"
-        case .spellScroll(let value):
-            return "spellScroll: \(value)"
-        case .town(let value):
-            return "town: \(value)"
-        case .witchHut(let value):
-            return "witchHut: \(value)"
-        case .borderGate(let value):
-            return "borderGate: \(value)"
-        case .randomDwellingAtLevel(let value):
-            return "randomDwellingWithLevel: \(value)"
-        case .randomDwellingOfFaction(let value):
-            return "randomDwellingOfFaction: \(value)"
-        case .resource(let value):
-            return "resource: \(value)"
-        case .genericPassable(let subID):
-            return "genericPassable:\(subID)"
-        
-        default:
+        if let subtype = subtypeDescription {
+            return "\(self.name) - \(subtype)"
+        } else {
             return self.name
         }
-
-       
         
+    }
+    
+    var subtypeDescription: String? {
+        switch self {
+        case .artifact(let value):
+            return value.debugDescription
+        case .borderguard(let value):
+            return value.debugDescription
+        case .keymastersTent(let value):
+            return value.debugDescription
+        case .creatureBank(let value):
+            return value.debugDescription
+        case .creatureGenerator1(let value):
+            return value.debugDescription
+        case .creatureGenerator4(let value):
+            return value.description
+        case .garrison(let value):
+            return value.description
+        case .hero(let value):
+            return value.debugDescription
+        case .monolithOneWayEntrance(let value):
+            return value.debugDescription
+        case .monolithOneWayExit(let value):
+            return value.debugDescription
+        case .monolithTwoWay(let value):
+            return value.debugDescription
+        case .mine(let value):
+            return value.debugDescription
+        case .monster(let value):
+            return value.debugDescription
+        case .spellScroll(let value):
+            return value.debugDescription
+        case .town(let value):
+            return value.debugDescription
+        case .witchHut(let value):
+            return value.debugDescription
+        case .borderGate(let value):
+            return value.debugDescription
+        case .randomDwellingAtLevel(let value):
+            return value.debugDescription
+        case .randomDwellingOfFaction(let value):
+            return value.debugDescription
+        case .resource(let value):
+            return value.debugDescription
+        case .genericPassable(let value):
+            return value.description
+        default:
+            return nil
+        }
     }
 }

@@ -26,7 +26,7 @@ internal extension H3M {
             // can't return yet, need to skip 2 bytes
             seershut = try Map.Seershut(
                 quest: .init(
-                    kind: Quest.Kind.acquireArtifacts([artifactID]),
+                    kind: Quest.Kind.returnWithArtifacts([artifactID]),
                     messages: nil,
                     deadline: nil
                 ),
@@ -57,8 +57,8 @@ internal extension H3M {
         case .experience:
             bounty = try .experience(reader.readUInt32())
             
-        case .manaPoints:
-            bounty = try .manaPoints(reader.readUInt32())
+        case .spellPoints:
+            bounty = try .spellPoints(reader.readUInt32())
             
         case .moraleBonus:
             bounty = try .moraleBonus(reader.readUInt8())

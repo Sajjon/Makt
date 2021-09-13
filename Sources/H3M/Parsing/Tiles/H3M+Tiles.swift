@@ -21,7 +21,7 @@ internal extension H3M {
                     
                     let terrainKindRaw = try reader.readUInt8()
                     guard let terrainKind = Map.Tile.Terrain.Kind(rawValue: terrainKindRaw) else {
-                        throw Error.unrecognizedTerrainKind(terrainKindRaw)
+                        throw H3MError.unrecognizedTerrainKind(terrainKindRaw)
                     }
                     let terrainView = try Map.Tile.Terrain.ViewID(view: reader.readUInt8())
                     let riverKindRaw = try reader.readUInt8()

@@ -18,7 +18,10 @@ public extension Map {
 
 public extension Map.Object {
     struct Attributes: Hashable, CustomDebugStringConvertible {
-        public let animationFileName: String
+        
+        /// Name of sprite/animation file
+        public let sprite: Sprite
+        
         public let supportedLandscapes: [Map.Tile.Terrain.Kind]
         public let mapEditorLandscapeGroup: [Map.Tile.Terrain.Kind]
 
@@ -29,7 +32,7 @@ public extension Map.Object {
         public let inUnderworld: Bool
         
         public init(
-            animationFileName: String,
+            sprite: Sprite,
             supportedLandscapes: [Map.Tile.Terrain.Kind],
             mapEditorLandscapeGroup: [Map.Tile.Terrain.Kind],
             objectID: Map.Object.ID,
@@ -37,7 +40,7 @@ public extension Map.Object {
             pathfinding: Pathfinding,
             inUnderworld: Bool
         ) {
-            self.animationFileName = animationFileName
+            self.sprite = sprite
             self.supportedLandscapes = supportedLandscapes
             self.mapEditorLandscapeGroup = mapEditorLandscapeGroup
             self.objectID = objectID

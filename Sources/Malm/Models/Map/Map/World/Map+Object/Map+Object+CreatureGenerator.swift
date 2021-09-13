@@ -12,7 +12,7 @@ public extension Map.Object {
 }
 
 public extension Map.Object.CreatureGenerator {
-    enum ID: UInt8 {
+    enum ID: UInt8, Hashable, CaseIterable, CustomDebugStringConvertible {
         /// For creature: "basilisk"
         case basiliskPit = 0
 
@@ -254,4 +254,195 @@ public extension Map.Object.CreatureGenerator {
         case trollBridge = 79
     }
 
+}
+
+
+public extension Map.Object.CreatureGenerator.ID {
+    var debugDescription: String {
+        switch self {
+        case .basiliskPit: return "basiliskPit"
+        case .behemothCrag: return "behemothCrag"
+        case .pillarOfEyes: return "pillarOfEyes"
+        case .hallOfDarkness: return "hallOfDarkness"
+        case .dragonVault: return "dragonVault"
+        case .trainingGrounds: return "trainingGrounds"
+        case .centaurStables: return "centaurStables"
+        case .airConflux: return "airConflux"
+        case .portalOfGlory: return "portalOfGlory"
+        case .cyclopsCave: return "cyclopsCave"
+        case .forsakenPalace: return "forsakenPalace"
+        case .serpentFlyHive: return "serpentFlyHive"
+        case .dwarfCottage: return "dwarfCottage"
+        case .earthConflux: return "earthConflux"
+        case .fireLake: return "fireLake"
+        case .homestead: return "homestead"
+        case .fireConflux: return "fireConflux"
+        case .parapet: return "parapet"
+        case .altarOfWishes: return "altarOfWishes"
+        case .wolfPen: return "wolfPen"
+        case .gnollHut: return "gnollHut"
+        case .goblinBarracks: return "goblinBarracks"
+        case .hallOfSins: return "hallOfSins"
+        case .gorgonLair: return "gorgonLair"
+        case .dragonCliffs: return "dragonCliffs"
+        case .griffinTower: return "griffinTower"
+        case .harpyLoft: return "harpyLoft"
+        case .kennels: return "kennels"
+        case .hydraPond: return "hydraPond"
+        case .impCrucible: return "impCrucible"
+        case .lizardDen: return "lizardDen"
+        case .mageTower: return "mageTower"
+        case .manticoreLair: return "manticoreLair"
+        case .medusaChapel: return "medusaChapel"
+        case .labyrinth: return "labyrinth"
+        case .monastery: return "monastery"
+        case .goldenPavilion: return "goldenPavilion"
+        case .demonGate: return "demonGate"
+        case .ogreFort: return "ogreFort"
+        case .orcTower: return "orcTower"
+        case .hellHole: return "hellHole"
+        case .dragonCave: return "dragonCave"
+        case .cliffNest: return "cliffNest"
+        case .workshop: return "workshop"
+        case .cloudTemple: return "cloudTemple"
+        case .dendroidArches: return "dendroidArches"
+        case .warren: return "warren"
+        case .waterConflux: return "waterConflux"
+        case .tombOfSouls: return "tombOfSouls"
+        case .wyvernNest: return "wyvernNest"
+        case .enchantedSpring: return "enchantedSpring"
+        case .unicornGladeBig: return "unicornGladeBig"
+        case .mausoleum: return "mausoleum"
+        case .estate: return "estate"
+        case .cursedTemple: return "cursedTemple"
+        case .graveyard: return "graveyard"
+        case .guardhouse: return "guardhouse"
+        case .archersTower: return "archersTower"
+        case .barracks: return "barracks"
+        case .magicLantern: return "magicLantern"
+        case .altarOfThought: return "altarOfThought"
+        case .pyre: return "pyre"
+        case .frozenCliffs: return "frozenCliffs"
+        case .crystalCavern: return "crystalCavern"
+        case .magicForest: return "magicForest"
+        case .sulfurousLair: return "sulfurousLair"
+        case .enchantersHollow: return "enchantersHollow"
+        case .treetopTower: return "treetopTower"
+        case .unicornGlade: return "unicornGlade"
+        case .altarOfAir: return "altarOfAir"
+        case .altarOfEarth: return "altarOfEarth"
+        case .altarOfFire: return "altarOfFire"
+        case .altarOfWater: return "altarOfWater"
+        case .thatchedHut: return "thatchedHut"
+        case .hovel: return "hovel"
+        case .boarGlen: return "boarGlen"
+        case .tombOfCurses: return "tombOfCurses"
+        case .nomadTent: return "nomadTent"
+        case .rogueCavern: return "rogueCavern"
+        case .trollBridge: return "trollBridge"
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+    }
+    }
 }
