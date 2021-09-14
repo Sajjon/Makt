@@ -39,15 +39,29 @@ extension BaseMapTest {
         fulfill(object: object)
     }
     
-    func assertObjectMine(
-        expected: Map.Mine,
+    func assertObjectResourceGenerator(
+        expected: Map.ResourceGenerator,
         actual object: Map.Object,
         file: StaticString = #file,
         line: UInt = #line
     ) {
-        XCTAssertEqual(object.objectID.stripped, .mine, file: file, line: line)
-        guard case let .mine(actual) = object.kind else {
-            XCTFail("expected mine", file: file, line: line)
+        XCTAssertEqual(object.objectID.stripped, .resourceGenerator, file: file, line: line)
+        guard case let .resourceGenerator(actual) = object.kind else {
+            XCTFail("expected resourceGenerator", file: file, line: line)
+            return
+        }
+        XCTAssertEqual(expected, actual, file: file, line: line)
+        fulfill(object: object)
+    }
+    
+    func assertObjectAbandonedMine(
+        expected: Map.AbandonedMine,
+        actual object: Map.Object,
+        file: StaticString = #file,
+        line: UInt = #line
+    ) {
+        guard case let .abandonedMine(actual) = object.kind else {
+            XCTFail("expected abandoned mine", file: file, line: line)
             return
         }
         XCTAssertEqual(expected, actual, file: file, line: line)
@@ -127,6 +141,19 @@ extension BaseMapTest {
         fulfill(object: object)
     }
     
+    func assertObjectResource(
+        expected: Map.GuardedResource,
+        actual object: Map.Object,
+        file: StaticString = #file,
+        line: UInt = #line
+    ) {
+        guard case let .resource(actual) = object.kind else {
+            XCTFail("expected resource", file: file, line: line)
+            return
+        }
+        XCTAssertEqual(expected, actual, file: file, line: line)
+        fulfill(object: object)
+    }
     
     
     func assertObjectRandomTown(

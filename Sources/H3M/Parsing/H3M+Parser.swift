@@ -169,7 +169,7 @@ private extension H3M {
             if maybeSprite == nil && !handledSprites.contains(animationFileName) {
                 var caseBaseName = objectID.subtypeDescription.map({ "\(objectID.name)\($0.capitalizingFirstLetter())" }) ?? objectID.name
                 
-                if objectID.stripped == .creatureBank || objectID.stripped == .artifact || objectID.stripped == .monster || objectID.stripped == .mine || objectID.stripped == .creatureGenerator1 {
+                if objectID.stripped == .creatureBank || objectID.stripped == .artifact || objectID.stripped == .monster || objectID.stripped == .resourceGenerator || objectID.stripped == .creatureGenerator1 {
                     caseBaseName = objectID.subtypeDescription!
                 }
                 

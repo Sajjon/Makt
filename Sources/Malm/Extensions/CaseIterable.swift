@@ -7,12 +7,6 @@
 
 import Foundation
 
-public extension CaseIterable {
-    static func random() -> Self {
-        allCases.randomElement()!
-    }
-}
-
 public extension Array where Element: CaseIterable, Element.AllCases == [Element] {
     static var allCases: [Element] { Element.allCases }
 }

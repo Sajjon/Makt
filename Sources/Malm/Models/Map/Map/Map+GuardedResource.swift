@@ -11,13 +11,25 @@ import Util
 public extension Map {
     struct GuardedResource: Hashable, CustomDebugStringConvertible {
      
-        public let kind: Resource.Kind
+        public enum Kind: Hashable, CustomDebugStringConvertible {
+            case specific(Resource.Kind)
+            case random
+            
+            public var debugDescription: String {
+                switch self {
+                case .specific(let kind): return String(describing: kind)
+                case .random: return "random" 
+                }
+            }
+        }
+        
+        public let kind: Kind
         public let quantity: Quantity
         public let message: String?
         public let guardians: CreatureStacks?
    
         public init(
-            kind: Resource.Kind,
+            kind: Kind,
             quantity: Quantity,
             message: String? = nil,
             guardians: CreatureStacks? = nil
@@ -26,6 +38,15 @@ public extension Map {
             self.quantity = quantity
             self.message = message
             self.guardians = guardians
+        }
+        
+        public init(
+            resourceKind: Resource.Kind,
+            quantity: Quantity,
+            message: String? = nil,
+            guardians: CreatureStacks? = nil
+        ) {
+            self.init(kind: .specific(resourceKind), quantity: quantity, message: message, guardians: guardians)
         }
     }
 }

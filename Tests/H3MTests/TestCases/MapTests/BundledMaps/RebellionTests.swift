@@ -42,8 +42,8 @@ final class RebellionsTests: BaseMapTest {
             onParseObject: { [self] object in
                 switch object.position {
                 case at(52, y: 57):
-                    if object.objectID.stripped == .mine {
-                        assertObjectMine(
+                    if object.objectID.stripped == .resourceGenerator {
+                        assertObjectResourceGenerator(
                             expected: .init(kind: .crystalCavern),
                             actual: object
                         )

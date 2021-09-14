@@ -109,10 +109,17 @@ private extension H3M {
         case .resource:
             return try .resource(parseGuardedResource(objectID: objectID, format: format))
         case .resourceGenerator:
-            guard case let .mine(mineKind) = objectID else { incorrectImplementation(shouldAlwaysBeAbleTo: "Get kind of mine.") }
-            return try .mine(parseMine(kind: mineKind))
+            guard case let .resourceGenerator(placeholderKind) = objectID else { incorrectImplementation(shouldAlwaysBeAbleTo: "Get kind of mine.") }
+            switch placeholderKind {
+            case .abandonedMine: return try .abandonedMine(parseAbandonedMine())
+            default:
+                let kind = placeholderKind
+                assert(kind != .abandonedMine)
+                return try .resourceGenerator(parseResourceGenerator(kind: kind))
+            }
+           
         case .abandonedMine:
-            return try .mine(parseMine())
+            return try .abandonedMine(parseAbandonedMine())
         case .scholar:
             return try .scholar(parseScholar())
         case .seersHut:

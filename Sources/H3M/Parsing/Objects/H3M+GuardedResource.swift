@@ -14,19 +14,19 @@ extension H3M {
         let quantityBase = try Int32(reader.readUInt32()) // 4 bytes quantity
         try reader.skip(byteCount: 4) // 4 bytes unknown
         
-        let resourceKind: Resource.Kind
-        if case let .resource(kind) = objectID {
-            resourceKind = kind
+        let kind: Map.GuardedResource.Kind
+        if case let .resource(resourceKind) = objectID {
+            kind = .specific(resourceKind)
         } else {
             // random
-            resourceKind = .random()
+            kind = .random
         }
         
         // Gold is always multiplied by 100
-        let resourceQuantity: Quantity = quantityBase == 0 ? .random : .specified((resourceKind == .gold ? quantityBase * 100 : quantityBase))
+        let resourceQuantity: Quantity = quantityBase == 0 ? .random : .specified((kind == .specific(.gold) ? quantityBase * 100 : quantityBase))
         
         return .init(
-            kind: resourceKind,
+            kind: kind,
             quantity: resourceQuantity,
             message: message,
             guardians: guardians

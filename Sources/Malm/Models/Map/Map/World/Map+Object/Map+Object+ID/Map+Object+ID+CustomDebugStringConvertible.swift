@@ -34,8 +34,8 @@ public extension Map.Object.ID {
             return "monolithOneWayExit"
         case .monolithTwoWay:
             return "monolithTwoWay"
-        case .mine:
-            return "mine"
+        case .resourceGenerator:
+            return "resourceGenerator"
         case .monster:
             return "monster"
         case .spellScroll:
@@ -286,47 +286,47 @@ public extension Map.Object.ID {
     var subtypeDescription: String? {
         switch self {
         case .artifact(let value):
-            return value.debugDescription
+            return String(describing: value)
         case .borderguard(let value):
-            return value.debugDescription
+            return String(describing: value)
         case .keymastersTent(let value):
-            return value.debugDescription
+            return String(describing: value)
         case .creatureBank(let value):
-            return value.debugDescription
+            return String(describing: value)
         case .creatureGenerator1(let value):
-            return value.debugDescription
+            return String(describing: value)
         case .creatureGenerator4(let value):
-            return value.description
+            return String(describing: value)
         case .garrison(let value):
-            return value.description
+            return String(describing: value)
         case .hero(let value):
-            return value.debugDescription
+            return String(describing: value)
         case .monolithOneWayEntrance(let value):
-            return value.debugDescription
+            return String(describing: value)
         case .monolithOneWayExit(let value):
-            return value.debugDescription
+            return String(describing: value)
         case .monolithTwoWay(let value):
-            return value.debugDescription
-        case .mine(let value):
-            return value.debugDescription
+            return String(describing: value)
+        case .resourceGenerator(let value):
+            return String(describing: value)
         case .monster(let value):
-            return value.debugDescription
+            return String(describing: value)
         case .spellScroll(let value):
-            return value.debugDescription
+            return String(describing: value)
         case .town(let value):
-            return value.debugDescription
+            return String(describing: value)
         case .witchHut(let value):
-            return value.debugDescription
+            return String(describing: value)
         case .borderGate(let value):
-            return value.debugDescription
+            return String(describing: value)
         case .randomDwellingAtLevel(let value):
-            return value.debugDescription
+            return String(describing: value)
         case .randomDwellingOfFaction(let value):
-            return value.debugDescription
+            return String(describing: value)
         case .resource(let value):
-            return value.debugDescription
+            return String(describing: value)
         case .genericPassable(let value):
-            return value.description
+            return String(describing: value)
         default:
             return nil
         }

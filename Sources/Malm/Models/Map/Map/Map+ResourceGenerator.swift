@@ -9,12 +9,11 @@ import Foundation
 import Util
 
 public extension Map {
-    struct Mine: Hashable, CustomDebugStringConvertible {
-        /// nil means `abandoned mine`
-        public let kind: Kind?
+    struct ResourceGenerator: Hashable, CustomDebugStringConvertible {
+        public let kind: Kind
         public let owner: Player?
         
-        public init(kind: Kind?, owner: Player? = nil) {
+        public init(kind: Kind, owner: Player? = nil) {
             self.kind = kind
             self.owner = owner
         }
@@ -22,11 +21,10 @@ public extension Map {
 }
 
 // MARK: CustomDebugStringConvertible
-public extension Map.Mine {
+public extension Map.ResourceGenerator {
     var debugDescription: String {
-        if kind == nil && owner == nil { return "Abandoned mine without owner" }
         let optionalStrings: [String?] = [
-            kind.map { "kind: \($0)" },
+            "kind: \(kind)",
             owner.map { "owner: \($0)" },
         ]
         
@@ -35,22 +33,35 @@ public extension Map.Mine {
 }
 
 
-// MARK: Kind
-public extension Map.Mine {
-    enum Kind: UInt8, Hashable, CaseIterable, CustomDebugStringConvertible {
+
+public extension Map.ResourceGenerator {
+    
+    enum Kind: Hashable, CaseIterable, CustomDebugStringConvertible {
         case sawmill,
-        alchemistsLab,
-        orePit,
-        sulfurDune,
-        crystalCavern,
-        gemPond,
-        goldMine,
-        abandonedMine
+             alchemistsLab,
+             orePit,
+             sulfurDune,
+             crystalCavern,
+             gemPond,
+             goldMine
     }
 }
 
 // MARK: Kind + CustomDebugStringConvertible
-public extension Map.Mine.Kind {
+public extension Map.ResourceGenerator.Kind {
+    
+    /// Placeholder kind that might be abandoned.
+    enum Placeholder: UInt8, Hashable, CaseIterable {
+        case sawmill,
+             alchemistsLab,
+             orePit,
+             sulfurDune,
+             crystalCavern,
+             gemPond,
+             goldMine,
+             abandonedMine
+    }
+    
     var debugDescription: String {
         switch self {
         case .sawmill: return "sawmill"
@@ -60,7 +71,6 @@ public extension Map.Mine.Kind {
         case .crystalCavern: return "crystalCavern"
         case .gemPond: return "gemPond"
         case .goldMine: return "goldMine"
-        case .abandonedMine: return "abandonedMine"
         }
     }
 }

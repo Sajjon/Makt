@@ -6,30 +6,7 @@
 //
 
 import Foundation
-
-public enum IDFromRawValueError<Model>: Swift.Error where Model: RawRepresentable {
-    case genericUnrecognizedRawValue(Model.RawValue, tryingToInit: Model.Type = Model.self)
-    case genericInteger(tooLarge: Int, tryingPassAsRawValueWhenInit: Model.Type = Model.self)
-}
-public extension RawRepresentable where RawValue: FixedWidthInteger {
-    init(id rawValue: RawValue) throws {
-        guard let selfValue = Self(rawValue: rawValue) else {
-            throw IDFromRawValueError<Self>.genericUnrecognizedRawValue(rawValue)
-        }
-        self = selfValue
-    }
-}
-public extension RawRepresentable where RawValue == UInt8 {
-    
-    init<I>(integer: I) throws where I: FixedWidthInteger {
-        do {
-            let rawValue = try UInt8(integer: integer)
-            try self.init(id: rawValue)
-        } catch {
-            throw IDFromRawValueError<Self>.genericInteger(tooLarge: Int(integer))
-        }
-    }
-}
+import Malm
 
 extension Map.Object.ID {
     
@@ -75,8 +52,8 @@ private extension Map.Object.ID {
             self = try .monolithOneWayExit(.init(integer: subId))
         case .monolithTwoWay:
             self = try .monolithTwoWay(.init(integer: subId))
-        case .mine:
-            self = try .mine(.init(integer: subId))
+        case .resourceGenerator:
+            self = try .resourceGenerator(.init(integer: subId))
         case .monster:
             self = try .monster(.init(integer: subId))
         case .spellScroll:
@@ -95,8 +72,10 @@ private extension Map.Object.ID {
         case .resource:
             self = try .resource(.init(integer: subId))
      
+        case .abandonedMine:
+            self = .abandonedMine
+            
             // MARK: without sub id
-        case .abandonedMine: self = .abandonedMine
         case .altarOfSacrifice: self = .altarOfSacrifice
         case .anchorPoint: self = .anchorPoint
         case .arena: self = .arena

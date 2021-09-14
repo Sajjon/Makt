@@ -53,7 +53,11 @@ public extension Map.Object {
         case dwelling(Map.Dwelling)
         case hero(Hero)
         case placeholderHero(Hero.Placeholder)
-        case mine(Map.Mine)
+        
+        /// Mine, sawmills, alchemy labs etc, but NOT AbandonedMine, that is handled seperatly.
+        case resourceGenerator(Map.ResourceGenerator)
+        
+        case abandonedMine(Map.AbandonedMine)
         case town(Map.Town)
         case shipyard(Map.Shipyard)
         case shrine(Map.Shrine)

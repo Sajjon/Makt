@@ -1,257 +1,300 @@
 //
-//  Map+Object+ID+Stripped.swift
-//  HoMM3SwiftUI
+//  File.swift
+//  File
 //
-//  Created by Alexander Cyon on 2021-08-25.
+//  Created by Alexander Cyon on 2021-09-14.
 //
 
 import Foundation
 
+// MARK: Stripped
 public extension Map.Object.ID {
-    var stripped: Stripped {
-        switch self {
-        case .artifact: return .artifact
-        case .borderguard: return .borderguard
-        case .keymastersTent: return .keymastersTent
-        case .creatureBank: return .creatureBank
-        case .creatureGenerator1: return .creatureGenerator1
-        case .creatureGenerator4: return .creatureGenerator4
-        case .garrison: return .garrison
-        case .hero: return .hero
-        case .monolithOneWayEntrance: return .monolithOneWayEntrance
-        case .monolithOneWayExit: return .monolithOneWayExit
-        case .monolithTwoWay: return .monolithTwoWay
-        case .mine: return .mine
-        case .monster: return .monster
-        case .spellScroll: return .spellScroll
-        case .town: return .town
-        case .witchHut: return .witchHut
-        case .borderGate: return .borderGate
-        case .randomDwellingAtLevel: return .randomDwellingWithLevel
-        case .randomDwellingOfFaction: return .randomDwellingOfFaction
-        case .resource: return .resource
-        case .abandonedMine: return .abandonedMine
-        case .altarOfSacrifice: return .altarOfSacrifice
-        case .anchorPoint: return .anchorPoint
-        case .arena: return .arena
-        case .pandorasBox: return .pandorasBox
-        case .blackMarket: return .blackMarket
-        case .boat: return .boat
-        case .buoy: return .buoy
-        case .campfire: return .campfire
-        case .cartographer: return .cartographer
-        case .swanPond: return .swanPond
-        case .coverOfDarkness: return .coverOfDarkness
-        case .creatureGenerator2: return .creatureGenerator2
-        case .creatureGenerator3: return .creatureGenerator3
-        case .cursedGround: return .cursedGround
-        case .corpse: return .corpse
-        case .marlettoTower: return .marlettoTower
-        case .derelictShip: return .derelictShip
-        case .event: return .event
-        case .eyeOfTheMagi: return .eyeOfTheMagi
-        case .faerieRing: return .faerieRing
-        case .flotsam: return .flotsam
-        case .fountainOfFortune: return .fountainOfFortune
-        case .fountainOfYouth: return .fountainOfYouth
-        case .gardenOfRevelation: return .gardenOfRevelation
-        case .hillFort: return .hillFort
-        case .grail: return .grail
-        case .hutOfTheMagi: return .hutOfTheMagi
-        case .idolOfFortune: return .idolOfFortune
-        case .leanTo: return .leanTo
-        case .libraryOfEnlightenment: return .libraryOfEnlightenment
-        case .lighthouse: return .lighthouse
-        case .magicPlains: return .magicPlains
-        case .schoolOfMagic: return .schoolOfMagic
-        case .magicSpring: return .magicSpring
-        case .magicWell: return .magicWell
-        case .marketOfTime: return .marketOfTime
-        case .mercenaryCamp: return .mercenaryCamp
-        case .mermaid: return .mermaid
-        case .mysticalGarden: return .mysticalGarden
-        case .oasis: return .oasis
-        case .obelisk: return .obelisk
-        case .redwoodObservatory: return .redwoodObservatory
-        case .oceanBottle: return .oceanBottle
-        case .pillarOfFire: return .pillarOfFire
-        case .starAxis: return .starAxis
-        case .prison: return .prison
-        case .pyramid: return .pyramid
-        case .rallyFlag: return .rallyFlag
-            
-        case .randomArtifact: return .randomArtifact
-        case .randomTreasureArtifact: return .randomTreasureArtifact
-        case .randomMinorArtifact: return .randomMinorArtifact
-        case .randomMajorArtifact: return .randomMajorArtifact
-        case .randomRelic: return .randomRelic
-            
-        case .randomHero: return .randomHero
-        case .randomMonster: return .randomMonster
-        case .randomMonsterLevel1: return .randomMonsterLevel1
-        case .randomMonsterLevel2: return .randomMonsterLevel2
-        case .randomMonsterLevel3: return .randomMonsterLevel3
-        case .randomMonsterLevel4: return .randomMonsterLevel4
-            
-        case .randomResource: return .randomResource
-        case .randomTown: return .randomTown
-        case .refugeeCamp: return .refugeeCamp
-        case .sanctuary: return .sanctuary
-        case .scholar: return .scholar
-        case .seaChest: return .seaChest
-        case .seersHut: return .seersHut
-        case .crypt: return .crypt
-        case .shipwreck: return .shipwreck
-        case .shipwreckSurvivor: return .shipwreckSurvivor
-        case .shipyard: return .shipyard
-        case .shrineOfMagicIncantation: return .shrineOfMagicIncantation
-        case .shrineOfMagicGesture: return .shrineOfMagicGesture
-        case .shrineOfMagicThought: return .shrineOfMagicThought
-        case .sign: return .sign
-        case .sirens: return .sirens
-        case .stables: return .stables
-        case .tavern: return .tavern
-        case .temple: return .temple
-        case .denOfThieves: return .denOfThieves
-        case .tradingPost: return .tradingPost
-        case .learningStone: return .learningStone
-        case .treasureChest: return .treasureChest
-        case .treeofKnowledge: return .treeofKnowledge
-        case .subterraneanGate: return .subterraneanGate
-        case .university: return .university
-        case .wagon: return .wagon
-        case .warMachineFactory: return .warMachineFactory
-        case .schoolOfWar: return .schoolOfWar
-        case .warriorsTomb: return .warriorsTomb
-        case .waterWheel: return .waterWheel
-        case .wateringHole: return .wateringHole
-        case .whirlpool: return .whirlpool
-        case .windmill: return .windmill
-        case .brush: return .brush
-        case .bush: return .bush
-        case .cactus: return .cactus
-        case .canyon: return .canyon
-        case .crater: return .crater
-        case .deadVegetation: return .deadVegetation
-        case .flowers: return .flowers
-        case .frozenLake: return .frozenLake
-        case .hedge: return .hedge
-        case .hill: return .hill
-        case .hole: return .hole
-        case .kelp: return .kelp
-        case .lake: return .lake
-        case .lavaFlow: return .lavaFlow
-        case .lavaLake: return .lavaLake
-        case .mushrooms: return .mushrooms
-        case .log: return .log
-        case .mandrake: return .mandrake
-        case .moss: return .moss
-        case .mound: return .mound
-        case .mountain: return .mountain
-        case .oakTrees: return .oakTrees
-        case .outcropping: return .outcropping
-        case .pineTrees: return .pineTrees
-        case .plant: return .plant
-        case .riverDelta: return .riverDelta
-        case .rock: return .rock
-        case .sandDune: return .sandDune
-        case .sandPit: return .sandPit
-        case .shrub: return .shrub
-        case .skull: return .skull
-        case .stalagmite: return .stalagmite
-        case .stump: return .stump
-        case .tarPit: return .tarPit
-        case .trees: return .trees
-        case .vine: return .vine
-        case .volcanicVent: return .volcanicVent
-        case .volcano: return .volcano
-        case .willowTrees: return .willowTrees
-        case .yuccaTrees: return .yuccaTrees
-        case .reef: return .reef
-        case .randomMonsterLevel5: return .randomMonsterLevel5
-        case .randomMonsterLevel6: return .randomMonsterLevel6
-        case .randomMonsterLevel7: return .randomMonsterLevel7
-            
-            
-            
-            
-        case .brush2: return .brush2
-        case .bush2: return .bush2
-        case .cactus2: return .cactus2
-        case .canyon2: return .canyon2
-        case .crater2: return .crater2
-        case .deadVegetation2: return .deadVegetation2
-        case .flowers2: return .flowers2
-        case .frozenLake2: return .frozenLake2
-        case .hedge2: return .hedge2
-        case .hill2: return .hill2
-        case .hole2: return .hole2
-        case .kelp2: return .kelp2
-        case .lake2: return .lake2
-        case .lavaFlow2: return .lavaFlow2
-        case .lavaLake2: return .lavaLake2
-        case .mushrooms2: return .mushrooms2
-        case .log2: return .log2
-        case .mandrake2: return .mandrake2
-        case .moss2: return .moss2
-        case .mound2: return .mound2
-        case .mountain2: return .mountain2
-        case .oakTrees2: return .oakTrees2
-        case .outcropping2: return .outcropping2
-        case .pineTrees2: return .pineTrees2
-        case .plant2: return .plant2
-        case .riverDelta2: return .riverDelta2
-        case .rock2: return .rock2
-        case .sandDune2: return .sandDune2
-        case .sandPit2: return .sandPit2
-        case .shrub2: return .shrub2
-        case .skull2: return .skull2
-        case .stalagmite2: return .stalagmite2
-        case .stump2: return .stump2
-        case .tarPit2: return .tarPit2
-        case .trees2: return .trees2
-        case .vine2: return .vine2
-        case .volcanicVent2: return .volcanicVent2
-        case .volcano2: return .volcano2
-        case .willowTrees2: return .willowTrees2
-        case .yuccaTrees2: return .yuccaTrees2
-        case .reef2: return .reef2
-            
-        case .desertHills: return .desertHills
-        case .dirtHills: return .dirtHills
-        case .grassHills: return .grassHills
-        case .roughHills: return .roughHills
-        case .subterraneanRocks: return .subterraneanRocks
-        case .swampFoliage: return .swampFoliage
-        case .freelancersGuild: return .freelancersGuild
-        case .heroPlaceholder: return .heroPlaceholder
-        case .questGuard: return .questGuard
-        case .randomDwelling: return .randomDwelling
-        case .garrison2: return .garrison2
-        case .tradingPostSnow: return .tradingPostSnow
-        case .cloverField: return .cloverField
-        case .cursedGround2: return .cursedGround2
-        case .evilFog: return .evilFog
-        case .favorableWinds: return .favorableWinds
-        case .fieryFields: return .fieryFields
-        case .holyGround: return .holyGround
-        case .lucidPools: return .lucidPools
-        case .magicClouds: return .magicClouds
-        case .magicPlains2: return .magicPlains2
-        case .rocklands: return .rocklands
-        case .dragonUtopia: return .dragonUtopia
-        case .decorativeTown:  return .decorativeTown
-        case .genericPassable(let subID):
-            switch subID {
-            case 139: return .passable139
-            case 141: return .passable141
-            case 142: return .passable142
-            case 144: return .passable144
-            case 145: return .passable145
-            case 146: return .passable146
-            default: fatalError("forgot some passable")
-            }
-        }
-    }
     
+    
+    /// From here: https://h3maparchives.celestialheavens.com/tools/wog/erm_help/index.htm
+    enum Stripped: UInt32, Hashable, CaseIterable {
+        
+        case decorativeTown = 1,
+             altarOfSacrifice = 2,
+             anchorPoint = 3,
+             arena = 4,
+             
+             artifact = 5,
+             
+             pandorasBox = 6,
+             blackMarket = 7,
+             boat = 8,
+             
+             borderguard = 9,
+             
+             keymastersTent = 10,
+             
+             buoy = 11,
+             campfire = 12,
+             cartographer = 13,
+             swanPond = 14,
+             coverOfDarkness = 15,
+             
+             creatureBank = 16,
+             
+             creatureGenerator1 = 17,
+             
+             creatureGenerator2 = 18,
+             creatureGenerator3 = 19,
+             
+             creatureGenerator4 = 20,
+             
+             cursedGround = 21,
+             
+             corpse = 22,
+             marlettoTower = 23,
+             derelictShip = 24,
+             dragonUtopia = 25,
+             event = 26,
+             eyeOfTheMagi = 27,
+             faerieRing = 28,
+             flotsam = 29,
+             fountainOfFortune = 30,
+             fountainOfYouth = 31,
+             gardenOfRevelation = 32,
+             
+             garrison = 33,
+             
+             hero = 34,
+             
+             hillFort = 35,
+             grail = 36,
+             hutOfTheMagi = 37,
+             idolOfFortune = 38,
+             
+             leanTo = 39,
+             
+             // case blank40 = 40,
+             
+             libraryOfEnlightenment = 41,
+             lighthouse = 42,
+             
+             monolithOneWayEntrance = 43,
+             
+             monolithOneWayExit = 44,
+             
+             monolithTwoWay = 45,
+             
+             magicPlains = 46,
+             schoolOfMagic = 47,
+             magicSpring = 48,
+             magicWell = 49,
+             
+             /// Source: https://github.com/potmdehex/homm3tools/blob/5687f581a4eb5e7b0e8f48794d7be4e3b0a8cc8b/h3m/h3mlib/h3m_parsing/parse_oa_meta_type.c#L31
+             /// Source 2: explainatino needed, we parsed the object attributes with animation file name `AVXmktt0.def` for Object ID 50
+             /// https://forum.df2.ru/lofiversion/index.php/t24182-1450.html
+             /// See comment by: pHOMM at time 13 Aug 2010, 08:57, use google translate, he corrpobrates that this is market of time: "...and the time market AVXMKTT0.DEF"
+             marketOfTime = 50,
+             
+             mercenaryCamp = 51,
+             mermaid = 52,
+             
+             resourceGenerator = 53,
+             
+             monster = 54,
+             
+             mysticalGarden = 55,
+             oasis = 56,
+             obelisk = 57,
+             redwoodObservatory = 58,
+             oceanBottle = 59,
+             pillarOfFire = 60,
+             starAxis = 61,
+             prison = 62,
+             pyramid = 63,
+             
+             rallyFlag = 64,
+             
+             randomArtifact = 65,
+             randomTreasureArtifact = 66,
+             randomMinorArtifact = 67,
+             randomMajorArtifact = 68,
+             randomRelic = 69,
+             randomHero = 70,
+             randomMonster = 71,
+             randomMonsterLevel1 = 72,
+             randomMonsterLevel2 = 73,
+             randomMonsterLevel3 = 74,
+             randomMonsterLevel4 = 75,
+             randomResource = 76,
+             randomTown = 77,
+             refugeeCamp = 78,
+             
+             resource = 79,
+             
+             sanctuary = 80,
+             scholar = 81,
+             seaChest = 82,
+             seersHut = 83,
+             crypt = 84,
+             shipwreck = 85,
+             shipwreckSurvivor = 86,
+             shipyard = 87,
+             shrineOfMagicIncantation = 88,
+             shrineOfMagicGesture = 89,
+             shrineOfMagicThought = 90,
+             sign = 91,
+             sirens = 92,
+             
+             spellScroll = 93,
+             stables = 94,
+             tavern = 95,
+             temple = 96,
+             denOfThieves = 97,
+             
+             town = 98,
+             
+             tradingPost = 99,
+             learningStone = 100,
+             
+             treasureChest = 101,
+             
+             treeofKnowledge = 102,
+             subterraneanGate = 103,
+             university = 104,
+             wagon = 105,
+             warMachineFactory = 106,
+             schoolOfWar = 107,
+             warriorsTomb = 108,
+             waterWheel = 109,
+             wateringHole = 110,
+             whirlpool = 111,
+             windmill = 112,
+             
+             ///[0 - 27 - SS Format]
+             witchHut = 113,
+             
+             brush = 114,
+             bush = 115,
+             cactus = 116,
+             canyon = 117,
+             crater = 118,
+             deadVegetation = 119,
+             flowers = 120,
+             frozenLake = 121,
+             hedge = 122,
+             hill = 123,
+             hole = 124,
+             kelp = 125,
+             lake = 126,
+             lavaFlow = 127,
+             lavaLake = 128,
+             mushrooms = 129,
+             log = 130,
+             mandrake = 131,
+             moss = 132,
+             mound = 133,
+             mountain = 134,
+             oakTrees = 135,
+             outcropping = 136,
+             pineTrees = 137,
+             plant = 138,
+             
+             
+             
+             passable139 = 139, passable141 = 141, passable142 = 142, passable144 = 144, passable145 = 145, passable146 = 146,
+             
+             
+             
+             
+             riverDelta = 143,
+             rock = 147,
+             sandDune = 148,
+             sandPit = 149,
+             shrub = 150,
+             skull = 151,
+             stalagmite = 152,
+             stump = 153,
+             tarPit = 154,
+             trees = 155,
+             vine = 156,
+             volcanicVent = 157,
+             volcano = 158,
+             willowTrees = 159,
+             yuccaTrees = 160,
+             reef = 161,
+             randomMonsterLevel5 = 162,
+             randomMonsterLevel6 = 163,
+             randomMonsterLevel7 = 164,
+             brush2 = 165,
+             bush2 = 166,
+             cactus2 = 167,
+             canyon2 = 168,
+             crater2 = 169,
+             deadVegetation2 = 170,
+             flowers2 = 171,
+             frozenLake2 = 172,
+             hedge2 = 173,
+             hill2 = 174,
+             hole2 = 175,
+             kelp2 = 176,
+             lake2 = 177,
+             lavaFlow2 = 178,
+             lavaLake2 = 179,
+             mushrooms2 = 180,
+             log2 = 181,
+             mandrake2 = 182,
+             moss2 = 183,
+             mound2 = 184,
+             mountain2 = 185,
+             oakTrees2 = 186,
+             outcropping2 = 187,
+             pineTrees2 = 188,
+             plant2 = 189,
+             riverDelta2 = 190,
+             rock2 = 191,
+             sandDune2 = 192,
+             sandPit2 = 193,
+             shrub2 = 194,
+             skull2 = 195,
+             stalagmite2 = 196,
+             stump2 = 197,
+             tarPit2 = 198,
+             trees2 = 199,
+             vine2 = 200,
+             volcanicVent2 = 201,
+             volcano2 = 202,
+             willowTrees2 = 203,
+             yuccaTrees2 = 204,
+             reef2 = 205,
+             desertHills = 206,
+             dirtHills = 207,
+             grassHills = 208,
+             roughHills = 209,
+             subterraneanRocks = 210,
+             swampFoliage = 211,
+             
+             ///[0-7 - BG Format]
+             borderGate = 212,
+             
+             freelancersGuild = 213,
+             heroPlaceholder = 214,
+             questGuard = 215,
+             randomDwelling = 216,
+             
+             /// subtype = creature level
+             randomDwellingWithLevel = 217,
+             
+             /// subtype = faction
+             randomDwellingOfFaction = 218,
+             
+             garrison2 = 219,
+             abandonedMine = 220,
+             tradingPostSnow = 221,
+             cloverField = 222,
+             cursedGround2 = 223,
+             evilFog = 224,
+             favorableWinds = 225,
+             fieryFields = 226,
+             holyGround = 227,
+             lucidPools = 228,
+             magicClouds = 229,
+             magicPlains2 = 230,
+             rocklands = 231
+    }
 }

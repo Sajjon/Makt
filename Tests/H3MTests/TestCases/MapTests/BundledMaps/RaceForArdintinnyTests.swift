@@ -157,7 +157,7 @@ final class RaceForArdintinnyTests: BaseMapTest {
                             )
                         )
                     } else if case let .resource(resource) = object.kind {
-                        XCTAssertEqual(resource.kind, .ore)
+                        XCTAssertEqual(resource.kind, .specific(.ore))
                     } else {
                         XCTFail("Unexpected object")
                     }
