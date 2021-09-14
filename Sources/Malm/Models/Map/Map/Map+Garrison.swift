@@ -16,7 +16,7 @@ public extension Map {
         public let creatures: CreatureStacks?
         
         public init(
-            areCreaturesRemovable: Bool,
+            areCreaturesRemovable: Bool = true,
             owner: Player? = nil,
             creatures: CreatureStacks? = nil
         ) {

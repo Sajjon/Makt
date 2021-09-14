@@ -113,6 +113,21 @@ extension BaseMapTest {
         fulfill(object: object)
     }
     
+    func assertObjectGarrison(
+        expected: Map.Garrison,
+        actual object: Map.Object,
+        file: StaticString = #file,
+        line: UInt = #line
+    ) {
+        guard case let .garrison(actual) = object.kind else {
+            XCTFail("expected garrison", file: file, line: line)
+            return
+        }
+        XCTAssertEqual(expected, actual, file: file, line: line)
+        fulfill(object: object)
+    }
+    
+    
     
     func assertObjectRandomTown(
         expected: Map.Town,
