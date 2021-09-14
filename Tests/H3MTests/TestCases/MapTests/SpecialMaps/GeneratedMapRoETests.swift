@@ -106,6 +106,8 @@ final class GeneratedMapRoETests: BaseMapTest {
                 case at(90, y: 31, inUnderworld: true):
                     XCTAssertEqual(object.objectID.stripped, .subterraneanGate)
                     fulfill(object: object)
+                case at(141, y: 143):
+                    assertObjectResource(expected: .init(kind: .random, quantity: .random), actual: object)
                 default: break
                 }
             },
