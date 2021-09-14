@@ -293,11 +293,15 @@ extension BaseMapTest {
     
     func at(_ x: Int32, y: Int32, inUnderworld: Bool = false) -> Position {
         let position = Position(x: x, y: y, inUnderworld: inUnderworld)
+        expectObject(at: position)
+        return position
+    }
+    
+    func expectObject(at position: Position) {
         if !fulfilled.contains(position) && !expectedPositions.contains(where: { $0.key == position }) {
-            let expectedObjectAt = expectation(description: "Expected object at: (\(x), \(y))")
+            let expectedObjectAt = expectation(description: "Expected object at: (x: \(position.x), y: \(position.y))")
             expectedPositions[position] = expectedObjectAt
         }
-        return position
     }
     
     func fulfill(object: Map.Object) {
