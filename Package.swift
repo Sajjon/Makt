@@ -50,7 +50,6 @@ let package = Package(
                 .copy("Resources/TestMaps/cyon_sod_only_additional_info_custom_heroes.h3m"),
                 .copy("Resources/TestMaps/dwelling.h3m"),
                 .copy("Resources/TestMaps/events.h3m"),
-                .copy("Resources/TestMaps/monsters.h3m"),
                 .copy("Resources/TestMaps/resources.h3m"),
                 .copy("Resources/TestMaps/witch-hut.h3m"),
                 .copy("Resources/TestMaps/random-AB.h3m"),
