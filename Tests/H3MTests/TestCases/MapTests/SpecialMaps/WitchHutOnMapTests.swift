@@ -98,7 +98,7 @@ final class WitchHutOnMapTests: BaseMapTest {
                 case at(20, y: 5):
                     assertHut(.necromancy)
                 case at(23, y: 5):
-                    assertHut(.offence)
+                    assertHut(.offense)
                 case at(26, y: 5):
                     assertHut(.pathfinding)
                 case at(29, y: 5):

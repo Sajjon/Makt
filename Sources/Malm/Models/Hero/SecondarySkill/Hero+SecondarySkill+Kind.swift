@@ -31,7 +31,7 @@ public extension Hero.SecondarySkill {
         case tactics
         case artillery
         case learning
-        case offence
+        case offense
         case armorer
         case intelligence
         case sorcery
@@ -65,7 +65,7 @@ public extension Hero.SecondarySkill.Kind {
         case .tactics: return "tactics"
         case .artillery: return "artillery"
         case .learning: return "learning"
-        case .offence: return "offence"
+        case .offense: return "offense"
         case .armorer: return "armorer"
         case .intelligence: return "intelligence"
         case .sorcery: return "sorcery"

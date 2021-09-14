@@ -54,6 +54,9 @@ internal extension H3M {
                     customPrimarySkills: customPrimarySkills
                 )
             }
+            guard !settingsForHeroes.isEmpty else {
+                return nil
+            }
             return .init(values: settingsForHeroes)
         case .restorationOfErathia:
             return nil

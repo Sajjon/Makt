@@ -30,7 +30,9 @@ extension H3M {
             )
             return customHero
         }
-        
+        guard !customHeroes.isEmpty else {
+            return nil
+        }
         return .init(customHeroes: customHeroes)
     }
 }
