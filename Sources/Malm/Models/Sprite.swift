@@ -5068,4 +5068,16 @@ public enum Sprite: String, Hashable, CaseIterable, ExpressibleByStringLiteral {
     /// cactus
     /// Terrain kind: sand
     case cactus_AVLca070 = "AVLca070.def"
+    
+    /// creatureGenerator1 - cyclopsCave
+    /// Terrain kind: Land
+    case cyclopsCave_AVGcycl0 = "AVGcycl0.def"
+
+    /// artifact - amuletOfTheUndertaker
+    /// Terrain kind: dirt
+    case amuletOfTheUndertaker_AVA0054 = "AVA0054.def"
+
+    /// artifact - ringOfConjuring
+    /// Terrain kind: dirt
+    case ringOfConjuring_AVA0077 = "AVA0077.def"
 }

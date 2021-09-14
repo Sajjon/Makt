@@ -225,11 +225,14 @@ private extension  H3M {
 
 // MARK: Parsed Rumors
 private extension H3M {
-    func parseRumors() throws -> Map.AdditionalInformation.Rumors {
+    func parseRumors() throws -> Map.AdditionalInformation.Rumors? {
         let rumors: [Map.Rumor] = try reader.readUInt32().nTimes {
             let name = try reader.readString()
             let text = try reader.readString()
             return .init(name: name, text: text)
+        }
+        guard !rumors.isEmpty else {
+            return nil
         }
         
         return .init(values: rumors)

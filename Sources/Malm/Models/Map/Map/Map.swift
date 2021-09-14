@@ -23,7 +23,7 @@ public struct Map: Equatable, Identifiable {
     
     public let attributesOfObjects: Map.AttributesOfObjects
     public let detailsAboutObjects: Map.DetailsAboutObjects
-    public let globalEvents: Map.TimedEvents
+    public let globalEvents: Map.TimedEvents?
     
     public init(
         checksum: UInt32,
@@ -33,7 +33,7 @@ public struct Map: Equatable, Identifiable {
         world: World,
         attributesOfObjects: Map.AttributesOfObjects,
         detailsAboutObjects: Map.DetailsAboutObjects,
-        globalEvents: Map.TimedEvents
+        globalEvents: Map.TimedEvents?
     ) {
         self.checksum = checksum
         self.basicInformation = basicInformation

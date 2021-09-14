@@ -29,7 +29,7 @@ public extension Map {
         /// SOD feature only
         public let availableSecondarySkills: SecondarySkillKinds?
         
-        public let rumors: Rumors
+        public let rumors: Rumors?
         
         /// SOD feature only
         public let settingsForHeroes: SettingsForHeroes?
@@ -42,7 +42,7 @@ public extension Map {
             availableArtifacts: ArtifactIDs? = nil,
             availableSpells: SpellIDs? = nil,
             availableSecondarySkills: SecondarySkillKinds? = nil,
-            rumors: Rumors,
+            rumors: Rumors? = nil,
             settingsForHeroes: SettingsForHeroes? = nil
         ) {
             self.victoryLossConditions = victoryLossConditions

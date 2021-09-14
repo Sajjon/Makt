@@ -57,7 +57,7 @@ public extension Map.Loader.Parser.Inspector {
     typealias WillParseObject = (Position, Map.Object.Attributes) -> Void
     typealias OnParseObject = (Map.Object) -> Void
     typealias OnParseAllObjects = (Map.DetailsAboutObjects) -> Void
-    typealias OnParseEvents = (Map.TimedEvents) -> Void
+    typealias OnParseEvents = (Map.TimedEvents?) -> Void
     
     
     func didParseWorld(_ world: Map.World) {
@@ -67,7 +67,6 @@ public extension Map.Loader.Parser.Inspector {
     func didParseAttributesOfObjects(_ attributesOfObjects: Map.AttributesOfObjects) {
         onParseAttributesOfObjects?(attributesOfObjects)
     }
-    
     
     func willParseObject(at position: Position, attributes: Map.Object.Attributes) {
         willParseObject?(position, attributes)
@@ -81,7 +80,7 @@ public extension Map.Loader.Parser.Inspector {
         onParseAllObjects?(objects)
     }
     
-    func didParseEvents(_ events: Map.TimedEvents) {
+    func didParseEvents(_ events: Map.TimedEvents?) {
         onParseEvents?(events)
     }
 }

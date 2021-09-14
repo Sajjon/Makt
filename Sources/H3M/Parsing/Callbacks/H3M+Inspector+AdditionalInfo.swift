@@ -73,7 +73,7 @@ public extension Map.Loader.Parser.Inspector.AdditionalInfoInspector {
         onParseAvailableSecondarySkills?(availableSecondarySkills)
     }
     
-    func didParseRumors(_ rumors: Map.AdditionalInformation.Rumors) {
+    func didParseRumors(_ rumors: Map.AdditionalInformation.Rumors?) {
         onParseRumors?(rumors)
     }
     
@@ -90,7 +90,7 @@ public extension Map.Loader.Parser.Inspector.AdditionalInfoInspector {
     typealias OnParseAvailableArtifacts = (_ availableArtifacts: ArtifactIDs?) -> Void
     typealias OnParseAvailableSpells = (_ availableSpells:  SpellIDs?) -> Void
     typealias OnParseAvailableSecondarySkills = (_ availableSecondarySkills:  SecondarySkillKinds?) -> Void
-    typealias OnParseRumors = (Map.AdditionalInformation.Rumors) -> Void
+    typealias OnParseRumors = (Map.AdditionalInformation.Rumors?) -> Void
     typealias OnParseHeroSettings = (Map.AdditionalInformation.SettingsForHeroes) -> Void
     
     

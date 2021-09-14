@@ -157,7 +157,7 @@ final class UnholyQuestMapTest: BaseMapTest {
             onParseAvailableArtifacts: { XCTAssertNil($0) },
             onParseAvailableSpells: { XCTAssertNil($0) },
             onParseAvailableSecondarySkills: { XCTAssertNil($0) },
-            onParseRumors: {  XCTAssertTrue($0.isEmpty) },
+            onParseRumors: {  XCTAssertNil($0) },
             onParseHeroSettings: { XCTAssertTrue($0.isEmpty) }
         )
             

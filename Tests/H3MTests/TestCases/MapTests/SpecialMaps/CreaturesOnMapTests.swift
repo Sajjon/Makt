@@ -377,7 +377,11 @@ final class CreaturesOnMapTests: BaseMapTest {
                 default: break
                 }
             },
-            onParseEvents: { events in
+            onParseEvents: { maybeEvents in
+                guard let events = maybeEvents else {
+                    XCTFail("Expected events")
+                    return
+                }
                 XCTAssertEqual(events.count, 2)
                 let firstEvent = events[0]
                 XCTAssertEqual(firstEvent.name, "This is the name of a \"timed event\".")

@@ -89,7 +89,11 @@ final class ForSaleTests: BaseMapTest {
                 default: break
                 }
             },
-            onParseEvents: { events in
+            onParseEvents: { maybeEvents in
+                guard let events = maybeEvents else {
+                    XCTFail("Expected events")
+                    return
+                }
                 XCTAssertEqual(events.count, 5)
                let e0 =
                     Map.TimedEvent(

@@ -99,7 +99,8 @@ final class RaceForArdintinnyTests: BaseMapTest {
             onParseAvailableArtifacts: { XCTAssertNil($0) },
             onParseAvailableSpells: { XCTAssertNil($0) },
             onParseAvailableSecondarySkills: { XCTAssertNil($0) },
-            onParseRumors: { rumors in
+            onParseRumors: { maybeRumors in
+                guard let rumors = maybeRumors else { XCTFail("Expected rumors."); return }
                 XCTAssertEqual(rumors.count, 2)
                 let rumor0 = rumors[0]
                 XCTAssertEqual(rumor0.name, "Gates")

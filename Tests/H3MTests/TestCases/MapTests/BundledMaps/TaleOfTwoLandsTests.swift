@@ -77,7 +77,7 @@ final class TaleOfTwoLandsTest: BaseMapTest {
             },
             onParseAvailableSpells: { XCTAssertNil($0) },
             onParseAvailableSecondarySkills: { XCTAssertNil($0) },
-            onParseRumors: {  XCTAssertTrue($0.isEmpty) },
+            onParseRumors: {  XCTAssertNil($0) },
             onParseHeroSettings: { XCTAssertTrue($0.isEmpty) }
         )
         

@@ -67,9 +67,10 @@ class AdditionalInfoBaseTests: BaseMapTest {
                 onParseAvailableArtifacts: onParseAvailableArtifacts,
                 onParseAvailableSpells: onParseAvailableSpells,
                 onParseAvailableSecondarySkills: onParseAvailableSecondarySkills,
-                onParseRumors: { rumors in
+                onParseRumors: { maybeRumors in
                     defer { expectationRumor.fulfill() }
-                    guard let rumor = rumors.first else {
+                    
+                    guard let rumor = maybeRumors?.first else {
                         XCTFail("Expected exact one rumor.")
                         return
                     }
@@ -90,7 +91,11 @@ class AdditionalInfoBaseTests: BaseMapTest {
                 }
                 XCTAssertEqual(sign.message, "Check \"Map Specifications\" to see what this map tests. Not objects.")
             },
-            onParseEvents: { timedGlobalEvents in
+            onParseEvents: { maybeEvents in
+                guard let timedGlobalEvents = maybeEvents else {
+                    XCTFail("Expected events")
+                    return
+                }
                 defer { expectationGlobalTimedEvent.fulfill() }
                 guard let event = timedGlobalEvents.first else {
                     XCTFail("Expected exact one event.")

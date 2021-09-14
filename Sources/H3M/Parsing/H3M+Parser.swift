@@ -316,10 +316,14 @@ internal extension H3M {
     func parseTimedEvents(
         format: Map.Format,
         availablePlayers: [Player]
-    ) throws -> Map.TimedEvents {
+    ) throws -> Map.TimedEvents? {
         let eventCount = try reader.readUInt32()
         let events: [Map.TimedEvent] = try eventCount.nTimes {
             try parseTimedEvent(format: format, availablePlayers: availablePlayers)
+        }
+        
+        guard !events.isEmpty else {
+            return nil
         }
         
         return .init(values: events.sorted(by: \.occurrences.first))

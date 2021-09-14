@@ -192,7 +192,11 @@ final class GoodToGoMapTest: BaseMapTest {
                 }
 
             },
-        onParseEvents: { events in
+        onParseEvents: { maybeEvents in
+            guard let events = maybeEvents else {
+                XCTFail("Expected events")
+                return
+            }
             XCTAssertEqual(events.count, 2)
 
             XCTAssertEqual(

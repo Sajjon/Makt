@@ -44,10 +44,26 @@ public extension Size {
     
     var tileCount: Int { height * height }
     
+    /// 36x36 tiles, the smallest map
     static let small: Self = .make(.small)
+    
+    /// 72x72 tiles, four times the number of tiles as the size as `small`.
     static let medium: Self = .make(.medium)
+    
+    /// 108x108 tiles, nine times as big as `small`
     static let large: Self = .make(.large)
+    
+    /// 144x144 tiles, the largest map size (of not playing HoTa), sixteen times the size `small`.
     static let extraLarge: Self = .make(.extraLarge)
+    
+#if HOTA
+/// HotA only
+    static let huge: Self = .make(.huge)
+/// HotA only
+    static let extraHuge: Self = .make(.extraHuge)
+/// HotA only
+    static let gigantic: Self = .make(.gigantic)
+#endif // HOTA
 }
 
 // MARK: CaseIterable
