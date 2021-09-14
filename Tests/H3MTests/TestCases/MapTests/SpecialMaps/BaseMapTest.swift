@@ -178,6 +178,22 @@ extension BaseMapTest {
         fulfill(object: object)
     }
     
+    func assertObjectWitchHut(
+        expected: Map.WitchHut,
+        actual object: Map.Object,
+        file: StaticString = #file,
+        line: UInt = #line
+    ) {
+        XCTAssertEqual(object.objectID.stripped, .witchHut, file: file, line: line)
+        guard case let .witchHut(actual) = object.kind else {
+            XCTFail("expected witchHut", file: file, line: line)
+            return
+        }
+        
+        XCTAssertEqual(expected, actual, file: file, line: line)
+        fulfill(object: object)
+    }
+    
     
     func assertObjectArtifact(
         expected: Map.GuardedArtifact,
