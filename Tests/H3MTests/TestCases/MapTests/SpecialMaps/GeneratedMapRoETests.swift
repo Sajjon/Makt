@@ -73,7 +73,39 @@ final class GeneratedMapRoETests: BaseMapTest {
                 
                 switch object.position {
                 case at(121, y: 126):
-                    assertObjectPrisonHero(expected: .init(identifierKind: .specificHeroWithID(.iona), gender: nil), actual: object)
+                    assertObjectPrisonHero(
+                        expected: .init(
+                            identifierKind: .specificHeroWithID(.iona),
+                            gender: nil
+                        ),
+                        actual: object
+                    )
+                case at(109, y: 121, inUnderworld: true):
+                    assertObjectPrisonHero(
+                        expected: .init(
+                            identifierKind: .specificHeroWithID(.xsi),
+                            startingExperiencePoints: 5000,
+                            gender: nil
+                        ),
+                        actual: object
+                    )
+                case at(70, y: 69, inUnderworld: true):
+                    assertObjectPrisonHero(
+                        expected: .init(
+                            identifierKind: .specificHeroWithID(.torosar),
+                            startingExperiencePoints: 15000,
+                            gender: nil
+                        ),
+                        actual: object
+                    )
+                case at(85, y: 15, inUnderworld: true):
+                    assertObjectPandorasBox(
+                        expected: .init(creaturesGained: [.harpyHag(30)]),
+                        actual: object
+                    )
+                case at(90, y: 31, inUnderworld: true):
+                    XCTAssertEqual(object.objectID.stripped, .subterraneanGate)
+                    fulfill(object: object)
                 default: break
                 }
             },
