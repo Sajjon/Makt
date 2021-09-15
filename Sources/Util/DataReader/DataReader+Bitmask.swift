@@ -6,10 +6,10 @@
 //
 
 import Foundation
-import Malm
 
-extension DataReader {
+public extension DataReader {
     func readBitArray(byteCount: Int) throws -> BitArray {
         try BitArray(data: read(byteCount: byteCount))
     }
 }
+

@@ -6,7 +6,6 @@
 //
 
 import Foundation
-import Malm
 
 public final class DataReader {
     private let source: Data
@@ -16,15 +15,6 @@ public final class DataReader {
         source = data
         sourceSize = data.count
     }
-}
-
-public extension DataReader {
- 
-    
-    convenience init(readMap: Map.Loader.ReadMap) {
-        self.init(data: readMap.data)
-    }
-    
 }
 
 
@@ -173,14 +163,6 @@ public extension DataReader {
     
     func readBool() throws -> Bool {
         try readUInt8() != 0
-    }
-
-    func readPosition() throws -> Position {
-        try .init(
-            x: .init(readUInt8()),
-            y: .init(readUInt8()),
-            inUnderworld: readBool()
-        )
     }
 }
 

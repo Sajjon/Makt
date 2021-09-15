@@ -12,6 +12,15 @@ Unintersting utility code stuff.
 ## Package *Malm* 🪨
 Contains all shared game models such as `Hero`, `Creature`, `Spell`, `Artifact` etc, but no logic at all.
 
+### Etymplogy
+"Malm" means "Ore" in Swedish 🇸🇪
+
+## Package *Guld* 🪨
+Parser of HoMM3 asset files/archives: `.lod`, `.def`, `.pcx`
+
+### Etymplogy
+"Guld" means "Gold" in Swedish 🇸🇪
+
 ## Package *H3M* 🗺
 HoMM3 map file - `.h3m` - parser.
 

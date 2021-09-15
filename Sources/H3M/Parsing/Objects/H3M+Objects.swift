@@ -23,7 +23,7 @@ internal extension H3M {
         let objectCount = try reader.readUInt32()
         
         let objects: [Map.Object] = try objectCount.nTimes {
-            let position = try reader.readPosition()
+            let position = try parsePosition()
             let attributesIndex = try reader.readUInt32()
             
             guard attributesIndex < maxIndex else {

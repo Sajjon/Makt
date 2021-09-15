@@ -7,6 +7,7 @@
 
 import Foundation
 import Malm
+import Util
 
 public extension Map.Loader {
     final class Parser {

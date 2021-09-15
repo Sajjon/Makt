@@ -66,7 +66,7 @@ private extension H3M {
                 generateHeroAtMainTown = try reader.readBool()
                 townFaction = try Faction(integer: reader.readUInt8())
             }
-            let positionOfMainTown = try reader.readPosition()
+            let positionOfMainTown = try parsePosition()
             let mainTown = Map.InformationAboutPlayers.PlayerInfo.MainTown(position: positionOfMainTown, generateHeroInThisTown: generateHeroAtMainTown, faction: townFaction)
             return mainTown
         }() : nil

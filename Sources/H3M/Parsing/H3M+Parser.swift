@@ -23,6 +23,17 @@ public extension Map.Loader.Parser {
     }
 }
 
+
+public extension DataReader {
+ 
+    
+    convenience init(readMap: Map.Loader.ReadMap) {
+        self.init(data: readMap.data)
+    }
+    
+}
+
+
 internal typealias H3M = Map.Loader.Parser.H3M
 
 // MARK: Parse Map

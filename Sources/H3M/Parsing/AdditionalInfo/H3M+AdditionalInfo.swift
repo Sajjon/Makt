@@ -116,27 +116,27 @@ private extension  H3M {
                 quantity: Resource.Quantity(reader.readUInt32())
             )
         case .captureSpecificTown:
-            specialVictoryKind = try .captureSpecificTown(locatedAt: reader.readPosition())
+            specialVictoryKind = try .captureSpecificTown(locatedAt: parsePosition())
         case .flagAllCreatureDwellings:
             specialVictoryKind = .flagAllCreatureDwellings
         case .flagAllMines:
             specialVictoryKind = .flagAllMines
         case .upgradeSpecificTown:
             specialVictoryKind = try .upgradeSpecificTown(
-                townLocation: reader.readPosition(),
+                townLocation: parsePosition(),
                 upgradeHallToLevel: .init(reader.readUInt8()),
                 upgradeFortToLevel: .init(reader.readUInt8())
             )
         case .buildGrailBuilding:
-            specialVictoryKind = try .buildGrailBuilding(inTownLocatedAt: reader.readPosition())
+            specialVictoryKind = try .buildGrailBuilding(inTownLocatedAt: parsePosition())
         case .defeatSpecificHero:
-            specialVictoryKind = try .defeatSpecificHero(locatedAt: reader.readPosition())
+            specialVictoryKind = try .defeatSpecificHero(locatedAt: parsePosition())
         case .defeatSpecificCreature:
-            specialVictoryKind = try .defeatSpecificCreature(locatedAt: reader.readPosition())
+            specialVictoryKind = try .defeatSpecificCreature(locatedAt: parsePosition())
         case .transportSpecificArtifact:
             specialVictoryKind = try .transportSpecificArtifact(
                 id: parseArtifactID(format: format)!,
-                toTownLocatedAt: reader.readPosition()
+                toTownLocatedAt: parsePosition()
             )
         }
         
@@ -172,9 +172,9 @@ private extension  H3M {
         case .loseAllTownsAndHeroesOrAfterTimeLimitStillControlNoTowns:
             fatalError("should have been handled above")
         case .loseSpecificTown:
-            specialLossKind = try .loseSpecificTown(locatedAt: reader.readPosition())
+            specialLossKind = try .loseSpecificTown(locatedAt: parsePosition())
         case .loseSpecificHero:
-            specialLossKind = try .loseSpecificHero(locatedAt: reader.readPosition())
+            specialLossKind = try .loseSpecificHero(locatedAt: parsePosition())
         case .timeLimit:
             specialLossKind = try .timeLimit(dayCount: .init(reader.readUInt16()))
         }

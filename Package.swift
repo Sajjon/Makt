@@ -22,6 +22,12 @@ let package = Package(
             ]
         ),
         .target(
+            name: "Guld",
+            dependencies: [
+                "Util", "Malm"
+            ]
+        ),
+        .target(
             name: "H3M",
             dependencies: [
                 "Util",
@@ -32,11 +38,15 @@ let package = Package(
         ),
         .target(
             name: "Makt",
-            dependencies: ["Util", "Malm", "H3M"]
+            dependencies: ["Util", "Malm", "H3M", "Guld"]
         ),
         .testTarget(
             name: "MalmTests",
             dependencies: ["Malm"]
+        ),
+        .testTarget(
+            name: "GuldTests",
+            dependencies: ["Guld", "Malm"]
         ),
         .testTarget(
             name: "H3MTests",
