@@ -9,10 +9,5 @@ import Foundation
 
 public struct Block: Hashable {
     public let identifier: Int
-    
-    // Is this the same as `fileNames.count` or `files.count` or both?
-    public let numberOfEntries: Int
-    
-    public let fileNames: [String]
-    public let files: [File]
+    public let files: [DefinitionFile.Member]
 }

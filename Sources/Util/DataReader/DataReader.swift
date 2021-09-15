@@ -18,7 +18,7 @@ public final class DataReader {
 }
 
 
-internal extension DataReader {
+public extension DataReader {
 
     func readUInt<U>(byteCount: Int, endianess: Endianess = .little) throws -> U where U: FixedWidthInteger & UnsignedInteger {
         let bytes = try read(byteCount: byteCount)
