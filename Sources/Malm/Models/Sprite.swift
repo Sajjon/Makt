@@ -5080,4 +5080,32 @@ public enum Sprite: String, Hashable, CaseIterable, ExpressibleByStringLiteral {
     /// artifact - ringOfConjuring
     /// Terrain kind: dirt
     case ringOfConjuring_AVA0077 = "AVA0077.def"
+    
+    /// town - conflux
+    /// Terrain kind: Land
+    case townConflux_avchforx = "avchforx.def"
+
+    /// creatureGenerator1 - altarOfEarth
+    /// Terrain kind: Land
+    case altarOfEarth_AVG2ele = "AVG2ele.def"
+
+    /// creatureGenerator1 - gorgonLair
+    /// Terrain kind: Land
+    case gorgonLair_AVGgorg0 = "AVGgorg0.def"
+
+    /// creatureGenerator1 - magicLantern
+    /// Terrain kind: Land
+    case magicLantern_AVGpixie = "AVGpixie.def"
+    
+    /// creatureGenerator1 - altarOfAir
+    /// Terrain kind: Land
+    case altarOfAir_AVG2ela = "AVG2ela.def"
+
+    /// creatureGenerator1 - altarOfFire
+    /// Terrain kind: Land
+    case altarOfFire_AVG2elf = "AVG2elf.def"
+
+    /// creatureGenerator1 - dragonVault
+    /// Terrain kind: Land
+    case dragonVault_AVGbone0 = "AVGbone0.def"
 }

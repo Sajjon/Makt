@@ -11,6 +11,35 @@ extension Sprite: CustomDebugStringConvertible {
     public var debugDescription: String {
         switch self {
             
+            
+            /// Sprite for object ID: 17
+            /// creatureGenerator1 - altarOfAir
+            case .altarOfAir_AVG2ela: return "creatureGenerator1 - altarOfAir"
+
+            /// Sprite for object ID: 17
+            /// creatureGenerator1 - altarOfFire
+            case .altarOfFire_AVG2elf: return "creatureGenerator1 - altarOfFire"
+
+            /// Sprite for object ID: 17
+            /// creatureGenerator1 - dragonVault
+            case .dragonVault_AVGbone0: return "creatureGenerator1 - dragonVault"
+            
+            /// Sprite for object ID: 98
+            /// town - conflux
+            case .townConflux_avchforx: return "town - conflux"
+
+            /// Sprite for object ID: 17
+            /// creatureGenerator1 - altarOfEarth
+            case .altarOfEarth_AVG2ele: return "creatureGenerator1 - altarOfEarth"
+
+            /// Sprite for object ID: 17
+            /// creatureGenerator1 - gorgonLair
+            case .gorgonLair_AVGgorg0: return "creatureGenerator1 - gorgonLair"
+
+            /// Sprite for object ID: 17
+            /// creatureGenerator1 - magicLantern
+            case .magicLantern_AVGpixie: return "creatureGenerator1 - magicLantern"
+            
             /// Sprite for object ID: 17
             /// creatureGenerator1 - cyclopsCave
             case .cyclopsCave_AVGcycl0: return "creatureGenerator1 - cyclopsCave"

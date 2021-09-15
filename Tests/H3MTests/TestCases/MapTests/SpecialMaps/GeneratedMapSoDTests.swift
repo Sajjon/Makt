@@ -2,7 +2,7 @@
 //  File.swift
 //  File
 //
-//  Created by Alexander Cyon on 2021-09-14.
+//  Created by Alexander Cyon on 2021-09-15.
 //
 
 import XCTest
@@ -10,7 +10,7 @@ import Foundation
 import Malm
 @testable import H3M
 
-/// Map from: https://github.com/srg-kostyrko/homm3-parser/blob/master/__tests__/maps/random-AB.h3m
+/// Map from: https://github.com/srg-kostyrko/homm3-parser/blob/master/__tests__/maps/random-SoD.h3m
 
 /// MIT License
 ///
@@ -34,16 +34,16 @@ import Malm
 /// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 /// SOFTWARE.
 ///
-/// Map from: https://github.com/srg-kostyrko/homm3-parser/blob/master/__tests__/maps/random-AB.h3m
+/// Map from: https://github.com/srg-kostyrko/homm3-parser/blob/master/__tests__/maps/random-SoD.h3m
 
-final class GeneratedMapABTests: BaseMapTest {
+final class GeneratedMapSoDTests: BaseMapTest {
     
-    func testGeneratedRandomMapAB() throws {
+    func testGeneratedRandomMapSoD() throws {
         let inspector = Map.Loader.Parser.Inspector(
             basicInfoInspector: .init(
-                onParseFormat: { XCTAssertEqual($0, .armageddonsBlade) },
+                onParseFormat: { XCTAssertEqual($0, .shadowOfDeath) },
                 onParseName: { XCTAssertEqual($0, "Random Map") },
-                onParseDescription: { XCTAssertEqual($0, "Map created by the Random Map Generator.  Template was 8XM8, Random seed was 1558282361, size 144, levels 2, humans 8, computers 0, water normal, monsters 4, first expansion map") },
+                onParseDescription: { XCTAssertEqual($0, "Map created by the Random Map Generator.  Template was Ring, Random seed was 1558282329, size 144, levels 2, humans 8, computers 0, water normal, monsters 4, second expansion map") },
                 onParseDifficulty: { XCTAssertEqual($0, .normal) },
                 onParseSize: { XCTAssertEqual($0, .extraLarge) },
                 onFinishedParsingBasicInfo: { XCTAssertTrue($0.hasTwoLevels) }
@@ -59,7 +59,7 @@ final class GeneratedMapABTests: BaseMapTest {
             }),
             additionalInformationInspector: .init(
                 onParseTeamInfo: { teams in
-                    XCTAssertEqual(teams, [[5, 6], [1, 8], [2, 4], [3, 7]])
+                    XCTAssertEqual(teams, [[6, 7], [5, 8], [2, 3], [1, 4]])
                 },
                 onParseAvailableHeroes: nil,
                 onParseCustomHeroes: nil,
@@ -72,31 +72,12 @@ final class GeneratedMapABTests: BaseMapTest {
             onParseObject: { [self] object in
                 
                 switch object.position {
-                case at(40, y: 0):
-                    assertObjectResource(expected: .init(kind: .specific(.ore), quantity: .random), actual: object)
-                case at(80, y: 143):
-                    assertObjectMonster(
-                        expected: .init(
-                            .specific(creatureID: .centaurCaptain),
-                            quantity: .specified(25),
-                            missionIdentifier: 128,
-                            disposition: .hostile
-                        ),
-                        actual: object
-                    )
-                case at(128, y: 13, inUnderworld: true):
-                    assertObjectPandorasBox(expected: .init(experiencePointsToBeGained: 5000), actual: object)
-                case at(128, y: 30, inUnderworld: true):
-                    assertObjectMonster(
-                        expected: .init(
-                            .specific(creatureID: .iceElemental),
-                            quantity: .specified(75),
-                            missionIdentifier: 1788,
-                            disposition: .hostile
-                        ), actual: object
-                    )
-                case at(83, y: 143, inUnderworld: true):
-                    assertObjectResource(expected: .init(kind: .specific(.wood), quantity: .random), actual: object)
+
+                case at(108, y: 134, inUnderworld: true):
+                    assertObjectResource(expected: .init(kind: .random, quantity: .random), actual: object)
+                case at(79, y: 143):
+                    XCTAssertEqual(object.objectID.stripped, .flotsam)
+                    fulfill(object: object)
                 default: break
                 }
             },
@@ -108,8 +89,8 @@ final class GeneratedMapABTests: BaseMapTest {
     }
 }
 
-private extension GeneratedMapABTests {
+private extension GeneratedMapSoDTests {
     func load(inspector: Map.Loader.Parser.Inspector) throws {
-        try loadMap(named: "random-AB", inspector: inspector)
+        try loadMap(named: "random-SoD", inspector: inspector)
     }
 }
