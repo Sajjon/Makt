@@ -32,7 +32,7 @@ public extension Array where Element: Equatable {
 
 
 
-internal extension Array {
+public extension Array {
     func chunked(into size: Int, assertSameLength: Bool = true) -> [[Element]] {
         return stride(from: 0, to: count, by: size).map {
             let array = Array(self[$0 ..< Swift.min($0 + size, count)])

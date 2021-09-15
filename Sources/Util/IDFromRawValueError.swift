@@ -19,11 +19,11 @@ public extension RawRepresentable where RawValue: FixedWidthInteger {
         self = selfValue
     }
 }
-public extension RawRepresentable where RawValue == UInt8 {
+public extension RawRepresentable where RawValue: UnsignedInteger & FixedWidthInteger {
     
     init<I>(integer: I) throws where I: FixedWidthInteger {
         do {
-            let rawValue = try UInt8(integer: integer)
+            let rawValue = try RawValue(integer: integer)
             try self.init(id: rawValue)
         } catch {
             throw IDFromRawValueError<Self>.genericInteger(tooLarge: Int(integer))
