@@ -227,8 +227,8 @@ private extension  H3M {
 private extension H3M {
     func parseRumors() throws -> Map.AdditionalInformation.Rumors? {
         let rumors: [Map.Rumor] = try reader.readUInt32().nTimes {
-            let name = try reader.readString()
-            let text = try reader.readString()
+            let name = try reader.readLengthOfStringAndString(assertingMaxLength: 50)! // arbitrarily chosen
+            let text = try reader.readLengthOfStringAndString(assertingMaxLength: 2000)! // arbitrarily chosen
             return .init(name: name, text: text)
         }
         guard !rumors.isEmpty else {

@@ -58,7 +58,7 @@ private extension H3M {
             
         }()
    
-        let name: String? = try reader.readBool() ? reader.readString() : nil
+        let name: String? = try reader.readBool() ? reader.readLengthOfStringAndString(assertingMaxLength: 20) : nil
         
         let experiencePoints: UInt32? = try {
             if format >= .shadowOfDeath {
@@ -84,7 +84,7 @@ private extension H3M {
         
         let customBiography: String? = try {
             guard format > .restorationOfErathia else { return nil }
-            return try reader.readBool() ? reader.readString() : nil
+            return try reader.readBool() ? reader.readLengthOfStringAndString(assertingMaxLength: 1000) /* arbitrarily chosen */ : nil
         }() ?? nil
         
         let customGender: Hero.Gender? = try {

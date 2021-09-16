@@ -10,7 +10,7 @@ import Malm
 
 extension H3M {
     func parseOceanBottle() throws -> Map.OceanBottle {
-        let message = try reader.readString(maxByteCount: 150) // Cyon 150 is confirmed in Map Editor to be max for ocean bottle.
+        let message = try reader.readLengthOfStringAndString(assertingMaxLength: 150) // Cyon 150 is confirmed in Map Editor to be max for ocean bottle.
         try reader.skip(byteCount: 4)
         return .init(message: message)
     }

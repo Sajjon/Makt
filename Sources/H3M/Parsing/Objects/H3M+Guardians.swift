@@ -15,7 +15,7 @@ internal extension H3M {
     func parseMessageAndGuardians(format: Map.Format) throws -> (message: String?, guardians: CreatureStacks?) {
         let hasMessage = try reader.readBool()
         /// Fan map "Cloak of the Undead King" has >29000 bytes long mesg...
-        let message: String? = try hasMessage ? reader.readString(maxByteCount: 32768) : nil
+        let message: String? = try hasMessage ? reader.readLengthOfStringAndString(assertingMaxLength: 32768) : nil
         let guardians: CreatureStacks? = try hasMessage ? {
             let hasGuardiansAsWell = try reader.readBool()
             var guardians: CreatureStacks?

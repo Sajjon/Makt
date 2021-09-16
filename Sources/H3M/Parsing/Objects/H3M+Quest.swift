@@ -51,9 +51,9 @@ internal extension H3M {
         
         // Map "The story of the Fool (Traemask2.h3m") 9697 bytes...
         let maxStringLength: UInt32 = 10_000
-        let proposalMessage = try reader.readString(maxByteCount: maxStringLength)
-        let progressMessage = try reader.readString(maxByteCount: maxStringLength)
-        let completionMessage = try reader.readString(maxByteCount: maxStringLength)
+        let proposalMessage = try reader.readLengthOfStringAndString(assertingMaxLength: maxStringLength)
+        let progressMessage = try reader.readLengthOfStringAndString(assertingMaxLength: maxStringLength)
+        let completionMessage = try reader.readLengthOfStringAndString(assertingMaxLength: maxStringLength)
         
        
         

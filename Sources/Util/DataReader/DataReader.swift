@@ -64,11 +64,20 @@ public enum Endianess {
     
 }
 
+
+public extension String {
+    func trimWhitespacesIncludingNullTerminators() -> String {
+        trimmingCharacters(in: .whitespacesAndNewlines.union(.init(charactersIn: "\0")))
+    }
+}
+
 public extension DataReader {
     
     enum Error: Swift.Error {
         case dataReaderHasNoMoreBytesToBeRead
         case dataEmpty
+        case failedToDecodeStringAsUTF8(asASCII: String?)
+        case stringLongerThanExpectedMaxLength(got: Int, butExpectedAtMost: Int)
     }
     
     func readUInt8(endianess: Endianess = .little) throws -> UInt8 {
@@ -139,33 +148,36 @@ public extension DataReader {
         let _ = try read(byteCount: byteCount)
     }
     
-    
-    func readString() throws -> String {
-       try _readString(maxByteCount: 50_000)!
+    func readLengthOfStringAndString(
+        assertingMaxLength: UInt32 = 100_000,
+        trim: Bool = true
+    ) throws -> String? {
+        
+        let length = try readUInt32()
+        
+        guard length <= assertingMaxLength else {
+            
+            throw Error.stringLongerThanExpectedMaxLength(
+                got: .init(length),
+                butExpectedAtMost: .init(assertingMaxLength)
+            )
+        }
+        return try readStringOfKnownMaxLength(length, trim: trim)
     }
     
-    func readString(maxByteCount: UInt32) throws -> String? {
-        try _readString(maxByteCount: maxByteCount)
+    func readStringOfKnownMaxLength(_ maxLength: UInt32, trim: Bool = true) throws -> String? {
+        guard maxLength > 0 else { return nil }
+        let data = try read(byteCount: .init(maxLength))
+        
+        let trimmedData = data.prefix(while: { $0 != 0x00 })
+        
+        guard let string = String(bytes: trimmedData, encoding: .utf8) else {
+            throw Error.failedToDecodeStringAsUTF8(asASCII: .init(bytes: data, encoding: .ascii))
+        }
+        return string.trimWhitespacesIncludingNullTerminators()
     }
     
-    private func _readString(maxByteCount: UInt32? = nil) throws -> String? {
-        let lengthU32 = try readUInt32()
-        if let max = maxByteCount, lengthU32 > max {
-            print("String too long. Max was \(max), but this will be \(lengthU32) => returning nil")
-            return nil
-        }
-        assert(lengthU32 <= 500_000, "This string is unresonably long, lenght: \(lengthU32) bytes. Probably some offset error...")
-        guard lengthU32 > 0 else {
-            return nil
-        }
-        let data = try read(byteCount: .init(lengthU32))
-        if let string = String(bytes: data, encoding: .utf8) {
-            return string
-        } else {
-            return String(bytes: data, encoding: .ascii)!
-        }
-    }
-    
+ 
     func readBool() throws -> Bool {
         try readUInt8() != 0
     }

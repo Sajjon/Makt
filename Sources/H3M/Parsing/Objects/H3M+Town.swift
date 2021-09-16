@@ -64,7 +64,7 @@ internal extension H3M {
         
         let owner = try parseOwner()
         let hasName = try reader.readBool()
-        let name: String? = try hasName ? reader.readString(maxByteCount: 32) : nil
+        let name: String? = try hasName ? reader.readLengthOfStringAndString(assertingMaxLength: 32) : nil
         
         let hasGarrison = try reader.readBool()
         let garrison: CreatureStacks? = try hasGarrison ? parseCreatureStacks(format: format, count: 7) : nil

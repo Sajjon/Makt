@@ -122,7 +122,7 @@ private extension H3M {
         let attributesCount = try reader.readUInt32()
         let attributes: [Map.Object.Attributes] = try (0..<attributesCount).compactMap { _ in
             /// aka "Sprite name"
-            let animationFileName = try reader.readString()
+            let animationFileName = try reader.readLengthOfStringAndString(assertingMaxLength: 20)! // arbitrarily chosen
     
             /// Which squares (of this object) are passable, counted from the bottom right corner
             /// (bit 1: passable, bit 0: impassable
@@ -299,8 +299,8 @@ internal extension H3M {
         format: Map.Format,
         availablePlayers: [Player]
     ) throws -> Map.TimedEvent {
-        let name = try reader.readString(maxByteCount: 8192) // arbitrarily chosen
-        let message = try reader.readString(maxByteCount: 29861) // Cyon: found to be max in Map Editor
+        let name = try reader.readLengthOfStringAndString(assertingMaxLength: 8192) // arbitrarily chosen
+        let message = try reader.readLengthOfStringAndString(assertingMaxLength: 29861) // Cyon: found to be max in Map Editor
         let resources = try parseResources()
         let affectedPlayers = try parseAllowedPlayers(availablePlayers: availablePlayers)
         let appliesToHumanPlayers = try format >= .shadowOfDeath ? reader.readBool() : true

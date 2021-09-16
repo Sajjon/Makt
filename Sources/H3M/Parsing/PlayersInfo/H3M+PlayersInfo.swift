@@ -82,7 +82,7 @@ private extension H3M {
             let customPortraitIDRaw = try reader.readUInt8()
             let face: Hero.ID? = customPortraitIDRaw != 0xff ? try Hero.ID(integer: customPortraitIDRaw) : nil
             /// TODO? CHANGE? Always read? the `name` even though we might not have a portrait id => which results in returning nil. Otherwise we mess up byte offset.
-            let name = try reader.readString(maxByteCount: isPlayable ? 12 : 0) // max length of `12` is from `homm3tools`
+            let name = try reader.readLengthOfStringAndString(assertingMaxLength: isPlayable ? 12 : 0) // max length of `12` is from `homm3tools`
             let mainHero = Map.InformationAboutPlayers.PlayerInfo.MainHero(heroID: heroID, portraitId: face, name: name)
             return mainHero
         }()
@@ -98,7 +98,7 @@ private extension H3M {
         
             let heroes: [Map.InformationAboutPlayers.PlayerInfo.AdditionalInfo.SimpleHero] = try heroCount.nTimes {
                 let portraitId = try Hero.ID(integer: reader.readUInt8())
-                let heroName = try reader.readString(maxByteCount: 12) // Cyon verified via MapEditor
+                let heroName = try reader.readLengthOfStringAndString(assertingMaxLength: 12) // Cyon verified via MapEditor
                 return .init(portraitId: portraitId, name: heroName)
             }
             

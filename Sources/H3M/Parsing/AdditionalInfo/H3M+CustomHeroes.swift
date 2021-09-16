@@ -18,7 +18,7 @@ extension H3M {
             let heroId = heroIdRaw != 0xff ? try Hero.ID(integer: heroIdRaw) : nil
             let portraitIdRaw = try reader.readUInt8()
             let portraitID = portraitIdRaw != 0xff ? try Hero.ID(integer: portraitIdRaw) : nil
-            let name = try reader.readString(maxByteCount: 13) // `13` is from `homm3tools`
+            let name = try reader.readLengthOfStringAndString(assertingMaxLength: 13) // `13` is from `homm3tools`
             
             let allowedPlayers = try parseAllowedPlayers(availablePlayers: availablePlayers)
             

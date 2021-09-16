@@ -62,7 +62,7 @@ internal extension H3M {
         var artifactID: Artifact.ID?
         
         if hasMessageOrResourcesOrArtifact {
-            message = try reader.readString(maxByteCount: 8192)
+            message = try reader.readLengthOfStringAndString(assertingMaxLength: 8192)
             resources = try parseResources()
             artifactID = try parseArtifactID(format: format)
         }

@@ -32,7 +32,7 @@ internal extension H3M {
                 let artifactsForHero = try parseArtifactsOfHero(format: format)
                 
                 let hasCustomBiographyText = try reader.readBool()
-                let biography: String? = try hasCustomBiographyText ? reader.readString() : nil
+                let biography: String? = try hasCustomBiographyText ? reader.readLengthOfStringAndString(assertingMaxLength: 1000) : nil // arbitrarily chosen 
                 
                 let genderRaw = try reader.readUInt8()
                 let customGender: Hero.Gender? = Hero.Gender(rawValue: genderRaw)

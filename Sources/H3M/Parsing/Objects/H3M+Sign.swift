@@ -10,9 +10,8 @@ import Malm
 
 extension H3M {
     
-    
     func parseSign() throws -> Map.Sign {
-        let message = try reader.readString()
+        let message = try reader.readLengthOfStringAndString(assertingMaxLength: 1000)! // arbitrarily chosen
         try reader.skip(byteCount: 4)
         return .init(message: message)
     }
