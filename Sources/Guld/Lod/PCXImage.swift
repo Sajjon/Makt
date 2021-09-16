@@ -14,6 +14,6 @@ public struct PCXImage: Hashable {
     
     public enum Contents: Hashable {
         case rawRGBPixelData(Data)
-        case pixdelData(Data, encodedByPalette: Palette)
+        case pixelData(Data, encodedByPalette: Palette)
     }
 }

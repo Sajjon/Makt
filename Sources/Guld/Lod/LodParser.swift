@@ -69,7 +69,7 @@ private extension LodParser {
             if size == width*height {
                 let rawImageData = try pcxReader.read(byteCount: width*height)
                 let palette = try reader.readPalette() // TODO check offset
-                return .pixdelData(rawImageData, encodedByPalette: palette)
+                return .pixelData(rawImageData, encodedByPalette: palette)
             } else if size == width*height*3 {
                 let rawImageData = try pcxReader.readRest()
                 return .rawRGBPixelData(rawImageData)
@@ -89,9 +89,9 @@ private extension LodParser {
             )
         ) : reader.read(byteCount: entryMetaData.size)
         
-        let entry: LodFile.FileEntry.Entry = try isPCX(data: data) ? .pcxImage(parsePCX(from: data)) : .dataEntry(data)
+        let content: LodFile.FileEntry.Content = try isPCX(data: data) ? .pcxImage(parsePCX(from: data)) : .dataEntry(data)
         
-        return .init(name: entryMetaData.name, entry: entry)
+        return .init(name: entryMetaData.name, content: content)
     }
     
     func parseCompressedEntryMetaData() throws -> LodFile.CompressedFileEntryMetaData {

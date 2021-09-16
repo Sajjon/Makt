@@ -9,7 +9,7 @@ let package = Package(
         .library(name: "Makt", targets: ["Makt", "Malm"]),
     ],
     dependencies: [
-        .package(url: "https://github.com/1024jp/GzipSwift.git", .upToNextMajor(from: "5.1.1"))
+        .package(url: "https://github.com/1024jp/GzipSwift", .upToNextMajor(from: "5.1.1"))
     ],
     targets: [
         .target(

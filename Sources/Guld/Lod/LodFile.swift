@@ -21,9 +21,9 @@ public extension LodFile {
     
     struct FileEntry: Hashable {
         public let name: String
-        public let entry: Entry
+        public let content: Content
         
-        public enum Entry: Hashable {
+        public enum Content: Hashable {
             case pcxImage(PCXImage)
             case dataEntry(Data)
         }
