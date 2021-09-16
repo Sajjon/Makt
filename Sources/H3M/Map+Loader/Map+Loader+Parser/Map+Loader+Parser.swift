@@ -8,12 +8,18 @@
 import Foundation
 import Malm
 import Util
+import Decompressor
 
 public extension Map.Loader {
     final class Parser {
+        
         private let config: Config
         private let decompressor: Decompressor
-        init(config: Config, decompressor: Decompressor = Map.Loader.Parser.GzipDecompressor() ) {
+        
+        init(
+            config: Config,
+            decompressor: Decompressor = GzipDecompressor()
+        ) {
             self.config = config
             self.decompressor = decompressor
         }
@@ -24,12 +30,29 @@ public extension Map.Loader {
 public extension Map.Loader.Parser {
 
   
-    func parse(readMap: Map.Loader.ReadMap, inspector: Map.Loader.Parser.Inspector? = nil) throws -> Map {
+    func parse(
+        readMap: Map.Loader.ReadMap,
+        inspector: Map.Loader.Parser.Inspector? = nil
+    ) throws -> Map {
+    
         let stream = DataReader(readMap: readMap)
         let formatRawValue = try stream.readUInt32()
         let h3mParser: H3M
-        if decompressor.isHeaderCompressed(format: formatRawValue) {
-            h3mParser = try decompressor.parser(readMap: readMap)
+        
+        if decompressor.isNumberFlaggingCompression(number: formatRawValue) {
+            let decompressedData: Data = try decompressor.decompress(data: readMap.data)
+            
+            let readMapDecompressed = Map.Loader.ReadMap(
+                data: decompressedData,
+                filePath: readMap.filePath,
+                id: readMap.id
+            )
+            
+            h3mParser = H3M(
+                readMap: readMapDecompressed,
+                fileSizeCompressed: readMap.data.count
+            )
+
         } else {
             let format = try Map.Format(id: formatRawValue)
             switch format {
@@ -45,7 +68,6 @@ public extension Map.Loader.Parser {
             }
         }
         return try h3mParser.parse(inspector: inspector)
-    
         
     }
 }

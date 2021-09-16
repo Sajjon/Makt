@@ -9,5 +9,5 @@ import Foundation
 
 public struct Block: Hashable {
     public let identifier: Int
-    public let files: [DefinitionFile.Member]
+    public let frames: [DefinitionFile.Frame]
 }

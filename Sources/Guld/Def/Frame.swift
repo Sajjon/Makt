@@ -9,8 +9,8 @@ import Foundation
 
 public extension DefinitionFile {
     
-    /// A file defined in the defintion file
-    struct Member: Hashable {
+    /// A picture frame as part of a file defined in the defintion file
+    struct Frame: Hashable {
         public let fileName: String
         public let size: Int
         public typealias Scalar = Int

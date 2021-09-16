@@ -9,6 +9,9 @@ This is an open source implementation of classic game *Heroes of Might and Magic
 ## Package *Util* 🛠
 Unintersting utility code stuff.
 
+## Package *Decompressor* 📖
+GZip decompressor package.
+
 ## Package *Malm* 🪨
 Contains all shared game models such as `Hero`, `Creature`, `Spell`, `Artifact` etc, but no logic at all.
 

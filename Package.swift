@@ -16,6 +16,12 @@ let package = Package(
             name: "Util", dependencies: []
         ),
         .target(
+            name: "Decompressor",
+            dependencies: [
+                .product(name: "Gzip", package: "GzipSwift")
+            ]
+        ),
+        .target(
             name: "Malm",
             dependencies: [
                 "Util"
@@ -24,15 +30,16 @@ let package = Package(
         .target(
             name: "Guld",
             dependencies: [
-                "Util", "Malm"
+                "Util", "Malm", "Decompressor"
             ]
         ),
+   
         .target(
             name: "H3M",
             dependencies: [
                 "Util",
                 "Malm",
-                .product(name: "Gzip", package: "GzipSwift")
+                "Decompressor",
             ],
             exclude: ["h3m_polish.txt", "H3M.md", "H3M_google_translated_from_polish.txt"]
         ),
@@ -78,6 +85,10 @@ let package = Package(
         .testTarget(
             name: "MaktTests",
             dependencies: ["Makt"]
+        ),
+        .testTarget(
+            name: "DecompressorTests",
+            dependencies: ["Decompressor"]
         )
     ]
 )

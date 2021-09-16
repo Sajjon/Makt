@@ -15,25 +15,13 @@ public final class DefParser {
     }
 }
 
-public enum DefKind: UInt32, Hashable {
-    case spell = 0x40
-    case sprite
-    case creature
-    case map
-    case mapHero
-    case terrain
-    case cursor
-    case interface
-    case spriteFrame
-    case battleHero
-}
-
 public extension DefParser {
     func parse() throws -> DefinitionFile {
-        let kind = try DefKind.init(integer: reader.readUInt32())
+        let kind = try DefinitionFile.Kind(integer: reader.readUInt32())
         let width = try reader.readUInt32()
         let height = try reader.readUInt32()
         let blockCount = try reader.readUInt32()
+        
         let palette: [RGB] = try 256.nTimes {
             try .init(
                 red: reader.readUInt8(),
@@ -41,14 +29,21 @@ public extension DefParser {
                 blue: reader.readUInt8()
             )
         }
+        
         let blocks = try blockCount.nTimes {
             try parseBlock()
         }
-        fatalError()
+        
+        return .init(
+            kind: kind,
+            width: .init(width),
+            height: .init(height),
+            palette: palette,
+            blocks: blocks
+        )
     }
-    
-    
 }
+
 private extension DefParser {
     enum Error: Swift.Error, Equatable {
         case leftMarginLargerThanWidth
@@ -155,7 +150,7 @@ private extension DefParser {
         
         var firstFrameFullHeight: Int!
         var firstFrameFullWidth: Int!
-        let files: [DefinitionFile.Member] = try (0..<entriesCount).map { index in
+        let frames: [DefinitionFile.Frame] = try (0..<entriesCount).map { index in
             let fileName = fileNames[index]
             let memberFileOffsetInDefFile = Int(fileOffsets[index])
             try reader.seek(to: memberFileOffsetInDefFile)
@@ -279,7 +274,7 @@ private extension DefParser {
             default: incorrectImplementation(reason: "Unhandled encoding format: \(encodingFormat). This should NEVER happen. Probably some wrong byte offset.")
             }
             
-            return DefinitionFile.Member.init(
+            return .init(
                 fileName: fileName,
                 size: size,
                 fullWidth: fullWidth,
@@ -292,8 +287,9 @@ private extension DefParser {
         }
         
         
-        return Block.init(
+        return .init(
             identifier: .init(blockIdentifier),
-            files: files)
+            frames: frames
+        )
     }
 }
