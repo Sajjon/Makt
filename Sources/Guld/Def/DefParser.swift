@@ -15,21 +15,28 @@ public final class DefParser {
     }
 }
 
+internal extension DataReader {
+    func readPalette() throws -> Palette {
+        
+        let colors: [RGB] = try 256.nTimes {
+            try .init(
+                red: readUInt8(),
+                green: readUInt8(),
+                blue: readUInt8()
+            )
+        }
+        
+        return .init(colors: colors)
+    }
+}
+
 public extension DefParser {
     func parse() throws -> DefinitionFile {
         let kind = try DefinitionFile.Kind(integer: reader.readUInt32())
         let width = try reader.readUInt32()
         let height = try reader.readUInt32()
         let blockCount = try reader.readUInt32()
-        
-        let palette: [RGB] = try 256.nTimes {
-            try .init(
-                red: reader.readUInt8(),
-                green: reader.readUInt8(),
-                blue: reader.readUInt8()
-            )
-        }
-        
+        let palette = try reader.readPalette()
         let blocks = try blockCount.nTimes {
             try parseBlock()
         }

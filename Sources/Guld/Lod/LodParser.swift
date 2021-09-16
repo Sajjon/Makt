@@ -7,13 +7,20 @@
 
 import Foundation
 
-import Foundation
+import Decompressor
 import Util
 
 public final class LodParser {
+    
     internal let reader: DataReader
-    public init(data: Data) {
+    internal let decompressor: Decompressor
+    
+    public init(
+        data: Data,
+        decompressor: Decompressor = GzipDecompressor()
+    ) {
         self.reader = DataReader(data: data)
+        self.decompressor = decompressor
     }
 }
 
@@ -33,28 +40,79 @@ public extension LodParser {
         let entryCount = try reader.readUInt32()
         try reader.seek(to: 92)
         
-        let entries = try entryCount.nTimes {
-            try parseEntry()
+        let compressedEntriesMetaData = try entryCount.nTimes {
+            try parseCompressedEntryMetaData()
         }
+        
+        let entries = try compressedEntriesMetaData.map(decompress)
         
         return .init(entries: entries)
     }
 }
 
 private extension LodParser {
-    func parseEntry() throws -> LodFile.FileEntry {
+    
+    func isPCX(data: Data) throws -> Bool {
+        let pcxReader = DataReader(data: data)
+        let size = try pcxReader.readUInt32()
+        let width = try pcxReader.readUInt32()
+        let height = try pcxReader.readUInt32()
+        return size == width*height || size == width*height*3
+    }
+    
+    func parsePCX(from data: Data) throws -> PCXImage {
+        let pcxReader = DataReader(data: data)
+        let size = try Int(pcxReader.readUInt32())
+        let width = try Int(pcxReader.readUInt32())
+        let height = try Int(pcxReader.readUInt32())
+        let contents: PCXImage.Contents = try {
+            if size == width*height {
+                let rawImageData = try pcxReader.read(byteCount: width*height)
+                let palette = try reader.readPalette() // TODO check offset
+                return .pixdelData(rawImageData, encodedByPalette: palette)
+            } else if size == width*height*3 {
+                let rawImageData = try pcxReader.readRest()
+                return .rawRGBPixelData(rawImageData)
+            } else {
+                incorrectImplementation(shouldAlreadyHave: "Handled where size != width*height*Factor")
+            }
+        }()
+        
+        return .init(width: width, height: height, contents: contents)
+    }
+    
+    func decompress(_ entryMetaData: LodFile.CompressedFileEntryMetaData) throws -> LodFile.FileEntry {
+        try reader.seek(to: entryMetaData.fileOffset)
+        let data = try entryMetaData.compressedSize > 0 ? decompressor.decompress(
+            data: reader.read(
+                byteCount: entryMetaData.compressedSize
+            )
+        ) : reader.read(byteCount: entryMetaData.size)
+        
+        let entry: LodFile.FileEntry.Entry = try isPCX(data: data) ? .pcxImage(parsePCX(from: data)) : .dataEntry(data)
+        
+        return .init(name: entryMetaData.name, entry: entry)
+    }
+    
+    func parseCompressedEntryMetaData() throws -> LodFile.CompressedFileEntryMetaData {
+        
         let fileName: String = try {
            let data = try reader.read(byteCount: 16)
            let string = String(bytes: data, encoding: .utf8) ?? String(bytes: data, encoding: .ascii)!
            return string.trimmingCharacters(in: .whitespacesAndNewlines)
        }()
         
-        let offset = try reader.readUInt32()
-        let size = try reader.readUInt32()
+        let offset = try Int(reader.readUInt32())
+        let size = try Int(reader.readUInt32())
         let _ = try reader.readUInt32() // unknown
-        let csize = try reader.readUInt32()
+        let compressedSize = try Int(reader.readUInt32())
         
-        fatalError()
+        return .init(
+            name: fileName,
+            fileOffset: offset,
+            size: size,
+            compressedSize: compressedSize
+        )
     }
 }
 

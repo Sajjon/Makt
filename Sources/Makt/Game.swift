@@ -7,4 +7,6 @@
 
 import Foundation
 
-public enum Game {}
+public enum Game {
+    public static var name: String { "Makt" }
+}

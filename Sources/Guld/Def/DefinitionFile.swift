@@ -7,13 +7,17 @@
 
 import Foundation
 
+public struct Palette: Hashable {
+    public let colors: [RGB]
+}
+
 public struct DefinitionFile: Hashable {
     
     public let kind: Kind
     
     public let width: Scalar
     public let height: Scalar
-    public let palette: [RGB]
+    public let palette: Palette
     public let blocks: [Block]
 }
 

@@ -12,11 +12,20 @@ public struct LodFile: Hashable {
 }
 
 public extension LodFile {
+    struct CompressedFileEntryMetaData: Hashable {
+        public let name: String
+        public let fileOffset: Int
+        public let size: Int
+        public let compressedSize: Int
+    }
+    
     struct FileEntry: Hashable {
         public let name: String
-        public let size: Int
-        public let csize: Int // "compressed size" ?
-        public let isCompressed: Bool
-        public let contents: [Int]
+        public let entry: Entry
+        
+        public enum Entry: Hashable {
+            case pcxImage(PCXImage)
+            case dataEntry(Data)
+        }
     }
 }

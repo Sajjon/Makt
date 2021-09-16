@@ -68,6 +68,7 @@ public extension DataReader {
     
     enum Error: Swift.Error {
         case dataReaderHasNoMoreBytesToBeRead
+        case dataEmpty
     }
     
     func readUInt8(endianess: Endianess = .little) throws -> UInt8 {
@@ -107,7 +108,11 @@ public extension DataReader {
         return Data(source[startIndex..<endIndex])
     }
     
-    
+    func readRest(throwIfEmpty: Bool = true) throws -> Data {
+        let remainingByteCount = source.count - offset
+        guard remainingByteCount > 0 else { throw Error.dataEmpty }
+        return try read(byteCount: remainingByteCount)
+    }
     
     func readInt(endianess: Endianess = .little) throws -> Int {
         try readInt(byteCount: MemoryLayout<Int>.size, endianess: endianess)
