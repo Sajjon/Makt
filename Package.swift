@@ -52,6 +52,10 @@ let package = Package(
             dependencies: ["Malm"]
         ),
         .testTarget(
+            name: "UtilTests",
+            dependencies: ["Util"]
+        ),
+        .testTarget(
             name: "GuldTests",
             dependencies: ["Guld", "Malm"]
         ),

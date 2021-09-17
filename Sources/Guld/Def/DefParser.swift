@@ -90,46 +90,6 @@ private extension DefParser {
         return (byteCount, data)
     }
     
-    
-    func perLineData<U: UnsignedInteger & FixedWidthInteger>(
-        lineCount height: Int, // "height"
-        width: Int,
-        integerTypePerLine: U.Type,
-        memberFileOffsetInDefFile: Int,
-        bytesToSkipAfterLineOffsetsRead: Int? = nil,
-        fragment: () throws -> (length: Int, data: Data)
-    ) throws -> Data {
-        
-        var pixelData = Data()
-        let byteCountPerInt = U.byteCount
-        
-        //for each line we have offset of pixel data
-        
-        let lineOffsets: [U] = try height.nTimes {
-            try reader.readUInt(byteCount: byteCountPerInt, endianess: .little)
-        }
-        
-        if let bytesToSkip = bytesToSkipAfterLineOffsetsRead {
-            try reader.skip(byteCount: bytesToSkip)
-        }
-        
-        for lineOffset in lineOffsets {
-            let expectedOffset = memberFileOffsetInDefFile + 32 + Int(lineOffset)
-            if reader.offset != expectedOffset {
-                fatalError("Remove this fatalError, might be too strict...")
-                try reader.seek(to: expectedOffset)
-            }
-            var totalRowLength = 0
-            while totalRowLength < width {
-                let (length, data) = try fragment()
-                pixelData.append(data)
-                totalRowLength += length
-            }
-        }
-        
-        return pixelData
-    }
-    
     func parseBlockMetaData() throws -> BlockMetaData {
         let blockIdentifier = try reader.readUInt32()
         
@@ -158,8 +118,6 @@ private extension DefParser {
             offsets: fileOffsets
         )
     }
-    
-
     
     func parseBlock(blockMetaData: BlockMetaData, _ firstFrameFullHeight: inout Int!, _ firstFrameFullWidth: inout Int!) throws -> Block {
         let entryCount = blockMetaData.entryCount
@@ -199,7 +157,8 @@ private extension DefParser {
                 }
            
             }
-            return .init(
+            
+            return DefinitionFile.Frame(
                 fileName: frame.fileName,
                 size: frame.size,
                 fullWidth: fullWidth,
@@ -212,7 +171,10 @@ private extension DefParser {
             
         }
         
-        return Block.init(identifier: blockMetaData.identifier, frames: frames)
+        return Block(
+            identifier: blockMetaData.identifier,
+            frames: frames
+        )
         
     }
     
@@ -220,8 +182,6 @@ private extension DefParser {
         blockFileName fileName: String,
         blockOffsetInfFile memberFileOffsetInDefFile: Int
     ) throws -> DefinitionFile.Frame? {
-//        let fileName = blockMetaData.fileNames[entryIndex]
-//        let memberFileOffsetInDefFile = blockMetaData.offsets[entryIndex]
         
         try reader.seek(to: memberFileOffsetInDefFile)
         let size = try Int(reader.readUInt32())
@@ -269,6 +229,52 @@ private extension DefParser {
         }
             
         let pixelData: Data
+        
+        func readPixelData<U: UnsignedInteger & FixedWidthInteger>(
+            lineOffsets: [U],
+            maxRowLength: Int,
+            fragment: () throws -> (length: Int, data: Data)
+        ) throws -> Data {
+            var pixelDataAgg = Data()
+            for lineOffset in lineOffsets {
+                let expectedOffset = memberFileOffsetInDefFile + 32 + Int(lineOffset)
+                if reader.offset != expectedOffset {
+                    fatalError("Remove this fatalError, might be too strict...")
+                    try reader.seek(to: expectedOffset)
+                }
+                var totalRowLength = 0
+                while totalRowLength < maxRowLength {
+                    let (length, data) = try fragment()
+                    pixelDataAgg.append(data)
+                    totalRowLength += length
+                }
+            }
+            return pixelDataAgg
+        }
+        
+        func perLineData<U: UnsignedInteger & FixedWidthInteger>(
+            integerTypePerLine: U.Type,
+            maxRowLength: Int,
+            bytesToSkipAfterLineOffsetsRead: Int? = nil,
+            fragment: () throws -> (length: Int, data: Data)
+        ) throws -> Data {
+            
+            let lineOffsets: [U] = try height.nTimes {
+                try reader.readUInt(byteCount: U.byteCount, endianess: .little)
+            }
+            
+            if let bytesToSkip = bytesToSkipAfterLineOffsetsRead {
+                try reader.skip(byteCount: bytesToSkip)
+            }
+            
+            return try readPixelData(
+                lineOffsets: lineOffsets,
+                maxRowLength: maxRowLength,
+                fragment: fragment
+            )
+        }
+        
+        
         switch encodingFormat {
         case 0:
             // pixel data is not compressed, copy data to surface
@@ -276,45 +282,31 @@ private extension DefParser {
             pixelData = try reader.read(byteCount: .init(width * height))
         case 1:
             pixelData = try perLineData(
-                lineCount: height,
-                width: width,
                 integerTypePerLine: UInt32.self,
-                memberFileOffsetInDefFile: memberFileOffsetInDefFile,
+                maxRowLength: width,
                 fragment: codeFragment
             )
         case 2:
             pixelData = try perLineData(
-                lineCount: height,
-                width: width,
                 integerTypePerLine: UInt16.self,
-                memberFileOffsetInDefFile: memberFileOffsetInDefFile,
+                maxRowLength: width,
                 bytesToSkipAfterLineOffsetsRead: 2,
                 fragment: segmentFragment
             )
         case 3:
-            var pixelDataAgg = Data()
-            let lineoffs: [[UInt16]] = try height.nTimes {
-                let n = 32
-                let innerCount = (width - 1 + n) / n
-                return try innerCount.nTimes {
+            let maxRowLength = 32
+            let lineOffsetMatrix: [[UInt16]] = try height.nTimes {
+                return try width.divide(by: maxRowLength, rounding: .up).nTimes {
                     try reader.readUInt16()
                 }
             }
-            
-            for lineoff in lineoffs {
-                for i in lineoff {
-                    let expectedOffset = memberFileOffsetInDefFile + 32 + Int(i)
-                    if reader.offset != expectedOffset {
-                        fatalError("Remove this fatalError, might be too strict...")
-                        try reader.seek(to: expectedOffset)
-                    }
-                    var totalblocklength = 0
-                    while totalblocklength < 32 {
-                        let (length, data) = try segmentFragment()
-                        pixelDataAgg.append(data)
-                        totalblocklength += length
-                    }
-                }
+            var pixelDataAgg = Data()
+            for lineOffsets in lineOffsetMatrix {
+                try pixelDataAgg.append(readPixelData(
+                    lineOffsets: lineOffsets,
+                    maxRowLength: maxRowLength,
+                    fragment: segmentFragment
+                ))
             }
             pixelData = pixelDataAgg
         default: incorrectImplementation(reason: "Unhandled encoding format: \(encodingFormat). This should NEVER happen. Probably some wrong byte offset.")
