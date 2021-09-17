@@ -75,15 +75,15 @@ private extension Config.Directories {
     }
  
     func validateDataDirectory() throws {
-        let dataFiles = try FileManager.default.contentsOfDirectory(atPath: data)
+        let foundFiles = try FileManager.default.contentsOfDirectory(atPath: data)
         
         func exists(dataFileNamed name: String) throws {
-            guard dataFiles.contains(name) else {
+            guard foundFiles.contains(name) else {
                 throw Error.missingDataFile(named: name)
             }
         }
         
-        try dataFiles.forEach(exists(dataFileNamed:))
+        try Self.dataFiles.forEach(exists(dataFileNamed:))
     }
    
 }
