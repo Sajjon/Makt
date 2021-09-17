@@ -15,208 +15,24 @@ public final class DefParser {
     }
 }
 
-internal extension DataReader {
-    func readPalette() throws -> Palette {
-        
-        let colors: [RGB] = try 256.nTimes {
-            try .init(
-                red: readUInt8(),
-                green: readUInt8(),
-                blue: readUInt8()
-            )
-        }
-        
-        return .init(colors: colors)
-    }
-}
-
 public extension DefParser {
     func parse() throws -> DefinitionFile {
         let kind = try DefinitionFile.Kind(integer: reader.readUInt32())
-        print("✅ def file kind: \(kind)")
         let width = try reader.readUInt32()
-        print("✅ def file width: \(width)")
         let height = try reader.readUInt32()
-        print("✅ def file height: \(height)")
         let blockCount = try reader.readUInt32()
-        print("✅ def file blockCount: \(blockCount)")
         let palette = try reader.readPalette()
-        print("✅ def file palette")
         
         let blockMetaDatas: [BlockMetaData] = try blockCount.nTimes {
-            let metaData = try parseBlockMetaData()
-            print("✅ def finished parsing metadata about block: \(metaData)")
-            return metaData
+            try parseBlockMetaData()
         }
-        print("✅ def finished parsing #\(blockMetaDatas.count) blocks")
         
         var firstFrameFullHeight: Int!
         var firstFrameFullWidth: Int!
         
-        
-//        let frames: [DefinitionFile.Frame] =
-        let blocks: [Block] = try blockMetaDatas.map { blockMetaData in
-            
-            let entryCount = blockMetaData.entryCount
-            assert(blockMetaData.fileNames.count == entryCount)
-            assert(blockMetaData.offsets.count == entryCount)
-            
-            let frames: [DefinitionFile.Frame] = try (0..<entryCount).compactMap { entryIndex -> DefinitionFile.Frame? in
-                let fileName = blockMetaData.fileNames[entryIndex]
-                let memberFileOffsetInDefFile = blockMetaData.offsets[entryIndex]
-                
-                try reader.seek(to: memberFileOffsetInDefFile)
-                let size = try Int(reader.readUInt32())
-                let encodingFormat = try reader.readUInt32()
-                
-                /// Might be enlarged
-                var fullWidth = try Int(reader.readUInt32())
-                /// Might be enlarged
-                var fullHeight = try Int(reader.readUInt32())
-                
-                let width = try Int(reader.readUInt32())
-                let height = try Int(reader.readUInt32())
-                let leftMargin = try Int(reader.readInt32())
-                let topMargin = try Int(reader.readInt32())
-                
-                /// Comment from `jocsch/lodextract`:
-                ///      `SGTWMTA.def` and `SGTWMTB.def` fail here
-                ///      they have inconsistent left and top margins
-                ///      they seem to be unused
-                ///
-                /// Comment and solution from VCMI:
-                ///      special case for some "old" format defs (SGTWMTA.DEF and SGTWMTB.DEF)
-                ///
-                ///      if(sprite.format == 1 && sprite.width > sprite.fullWidth && sprite.height > sprite.fullHeight)
-                ///      {
-                ///          sprite.leftMargin = 0;
-                ///          sprite.topMargin = 0;
-                ///          sprite.width = sprite.fullWidth;
-                ///          sprite.height = sprite.fullHeight;
-                ///
-                ///          currentOffset -= 16;
-                ///      }
-                ///
-                guard topMargin <= fullHeight else {
-                    throw Error.topMarginLargerThanHeight
-                }
-                
-                guard leftMargin <= fullWidth else {
-                    throw Error.leftMarginLargerThanWidth
-                }
-                
-                if firstFrameFullWidth == nil && firstFrameFullHeight == nil {
-                    firstFrameFullWidth = fullWidth
-                    firstFrameFullHeight = fullHeight
-                } else {
-                    if firstFrameFullWidth > fullWidth {
-                        print("must enlarge width")
-                        fullWidth = firstFrameFullWidth
-                    }
-                    if firstFrameFullWidth < fullWidth {
-                        throw Error.widthLargerThanThatOfFirst
-                    }
-                    
-                    if firstFrameFullHeight > fullHeight {
-                        print("must enlarge height")
-                        fullHeight = firstFrameFullHeight
-                    }
-                    if firstFrameFullHeight < fullHeight {
-                        throw Error.heightLargerThanThatOfFirst
-                    }
-               
-                }
-
-                guard width > 0 && height > 0 else {
-                    return nil
-                }
-       
-                    
-                print("✨ frame index: \(entryIndex), encodingFormat: \(encodingFormat)")
-                    
-                let pixelData: Data
-                switch encodingFormat {
-                case 0:
-                    // pixel data is not compressed, copy data to surface
-        
-                    pixelData = try reader.read(byteCount: .init(width * height))
-                case 1:
-                    pixelData = try perLineData(
-                        lineCount: height,
-                        width: width,
-                        integerTypePerLine: UInt32.self,
-                        memberFileOffsetInDefFile: memberFileOffsetInDefFile,
-                        fragment: codeFragment
-                    )
-                case 2:
-                    pixelData = try perLineData(
-                        lineCount: height,
-                        width: width,
-                        integerTypePerLine: UInt16.self,
-                        memberFileOffsetInDefFile: memberFileOffsetInDefFile,
-                        bytesToSkipAfterLineOffsetsRead: 2,
-                        fragment: segmentFragment
-                    )
-                case 3:
-                    var pixelDataAgg = Data()
-                    let lineoffs: [[UInt16]] = try height.nTimes {
-                        let n = 32
-                        let innerCount = (width - 1 + n) / n
-                        return try innerCount.nTimes {
-                            try reader.readUInt16()
-                        }
-                    }
-                    
-                    for lineoff in lineoffs {
-                        for i in lineoff {
-                            let expectedOffset = memberFileOffsetInDefFile + 32 + Int(i)
-                            if reader.offset != expectedOffset {
-                                fatalError("Remove this fatalError, might be too strict...")
-                                try reader.seek(to: expectedOffset)
-                            }
-                            var totalblocklength = 0
-                            while totalblocklength < 32 {
-                                let (length, data) = try segmentFragment()
-                                pixelDataAgg.append(data)
-                                totalblocklength += length
-                            }
-                        }
-                    }
-                    
-//                    for rowIndex in 0..<height {
-//                        let targetOffset: Int = memberFileOffsetInDefFile + rowIndex * 2 * (width/32)
-//                        try reader.seek(to: targetOffset)
-//                        let lineOffset = try Int(reader.readUInt16())
-//                        try reader.seek(to: lineOffset)
-//                        var totalRowLength = 0
-//                        while totalRowLength < width {
-//                            let (length, data) = try segmentFragment()
-//                            pixelDataAgg.append(data)
-//                            totalRowLength += length
-//                        }
-//                    }
-                    pixelData = pixelDataAgg
-                default: incorrectImplementation(reason: "Unhandled encoding format: \(encodingFormat). This should NEVER happen. Probably some wrong byte offset.")
-                }
-                            
-                return DefinitionFile.Frame(
-                    fileName: fileName,
-                    size: size,
-                    fullWidth: fullWidth,
-                    fullHeight: fullHeight,
-                    width: width,
-                    height: height,
-                    margin: .init(left: leftMargin, top: topMargin),
-                    pixelData: pixelData
-                )
-                
-            }
-            
-            return Block.init(identifier: blockMetaData.identifier, frames: frames)
-            
+        let blocks: [Block] = try blockMetaDatas.map {
+            try parseBlock(blockMetaData: $0, &firstFrameFullHeight, &firstFrameFullWidth)
         }
-            
-
         
         return .init(
             kind: kind,
@@ -316,11 +132,9 @@ private extension DefParser {
     
     func parseBlockMetaData() throws -> BlockMetaData {
         let blockIdentifier = try reader.readUInt32()
-        print("🍄 parsing block, identifier: \(blockIdentifier)")
         
         /// number of images in this block
         let entriesCount = try Int(reader.readUInt32())
-        print("🍄 parsing block, entriesCount: \(entriesCount)")
         
         let _ = try reader.readUInt32() // unknown 1
         let _ = try reader.readUInt32() // unknown 2
@@ -330,7 +144,6 @@ private extension DefParser {
             guard let fileName = try reader.readStringOfKnownMaxLength(13) else {
                 fatalError("Failed to read file name")
             }
-            print("🍄 parsing block, fileName: \(fileName)")
             return fileName
         }
         
@@ -340,7 +153,6 @@ private extension DefParser {
         
         return .init(
             identifier: .init(blockIdentifier),
-            //            frames: frames,
             entryCount: entriesCount,
             fileNames: fileNames,
             offsets: fileOffsets
@@ -348,4 +160,176 @@ private extension DefParser {
     }
     
 
+    
+    func parseBlock(blockMetaData: BlockMetaData, _ firstFrameFullHeight: inout Int!, _ firstFrameFullWidth: inout Int!) throws -> Block {
+        let entryCount = blockMetaData.entryCount
+        assert(blockMetaData.fileNames.count == entryCount)
+        assert(blockMetaData.offsets.count == entryCount)
+        
+        let frames: [DefinitionFile.Frame] = try (0..<entryCount).compactMap { entryIndex -> DefinitionFile.Frame? in
+            
+            guard let frame = try parseFrame(
+                blockFileName: blockMetaData.fileNames[entryIndex],
+                blockOffsetInfFile: blockMetaData.offsets[entryIndex]
+            ) else {
+                return nil
+            }
+            
+            var fullWidth = frame.fullWidth
+            var fullHeight = frame.fullHeight
+            
+            if firstFrameFullWidth == nil && firstFrameFullHeight == nil {
+                firstFrameFullWidth = fullWidth
+                firstFrameFullHeight = fullHeight
+            } else {
+                if firstFrameFullWidth > fullWidth {
+                    print("must enlarge width")
+                    fullWidth = firstFrameFullWidth
+                }
+                if firstFrameFullWidth < fullWidth {
+                    throw Error.widthLargerThanThatOfFirst
+                }
+                
+                if firstFrameFullHeight > fullHeight {
+                    print("must enlarge height")
+                    fullHeight = firstFrameFullHeight
+                }
+                if firstFrameFullHeight < fullHeight {
+                    throw Error.heightLargerThanThatOfFirst
+                }
+           
+            }
+            return .init(
+                fileName: frame.fileName,
+                size: frame.size,
+                fullWidth: fullWidth,
+                fullHeight: fullHeight,
+                width: frame.width,
+                height: frame.height,
+                margin: frame.margin,
+                pixelData: frame.pixelData
+            )
+            
+        }
+        
+        return Block.init(identifier: blockMetaData.identifier, frames: frames)
+        
+    }
+    
+    func parseFrame(
+        blockFileName fileName: String,
+        blockOffsetInfFile memberFileOffsetInDefFile: Int
+    ) throws -> DefinitionFile.Frame? {
+//        let fileName = blockMetaData.fileNames[entryIndex]
+//        let memberFileOffsetInDefFile = blockMetaData.offsets[entryIndex]
+        
+        try reader.seek(to: memberFileOffsetInDefFile)
+        let size = try Int(reader.readUInt32())
+        let encodingFormat = try reader.readUInt32()
+        
+        /// Might be enlarged
+        let fullWidth = try Int(reader.readUInt32())
+        /// Might be enlarged
+        let fullHeight = try Int(reader.readUInt32())
+        
+        let width = try Int(reader.readUInt32())
+        let height = try Int(reader.readUInt32())
+        let leftMargin = try Int(reader.readInt32())
+        let topMargin = try Int(reader.readInt32())
+        
+        /// Comment from `jocsch/lodextract`:
+        ///      `SGTWMTA.def` and `SGTWMTB.def` fail here
+        ///      they have inconsistent left and top margins
+        ///      they seem to be unused
+        ///
+        /// Comment and solution from VCMI:
+        ///      special case for some "old" format defs (SGTWMTA.DEF and SGTWMTB.DEF)
+        ///
+        ///      if(sprite.format == 1 && sprite.width > sprite.fullWidth && sprite.height > sprite.fullHeight)
+        ///      {
+        ///          sprite.leftMargin = 0;
+        ///          sprite.topMargin = 0;
+        ///          sprite.width = sprite.fullWidth;
+        ///          sprite.height = sprite.fullHeight;
+        ///
+        ///          currentOffset -= 16;
+        ///      }
+        ///
+        guard topMargin <= fullHeight else {
+            throw Error.topMarginLargerThanHeight
+        }
+        
+        guard leftMargin <= fullWidth else {
+            throw Error.leftMarginLargerThanWidth
+        }
+
+
+        guard width > 0 && height > 0 else {
+            return nil
+        }
+            
+        let pixelData: Data
+        switch encodingFormat {
+        case 0:
+            // pixel data is not compressed, copy data to surface
+
+            pixelData = try reader.read(byteCount: .init(width * height))
+        case 1:
+            pixelData = try perLineData(
+                lineCount: height,
+                width: width,
+                integerTypePerLine: UInt32.self,
+                memberFileOffsetInDefFile: memberFileOffsetInDefFile,
+                fragment: codeFragment
+            )
+        case 2:
+            pixelData = try perLineData(
+                lineCount: height,
+                width: width,
+                integerTypePerLine: UInt16.self,
+                memberFileOffsetInDefFile: memberFileOffsetInDefFile,
+                bytesToSkipAfterLineOffsetsRead: 2,
+                fragment: segmentFragment
+            )
+        case 3:
+            var pixelDataAgg = Data()
+            let lineoffs: [[UInt16]] = try height.nTimes {
+                let n = 32
+                let innerCount = (width - 1 + n) / n
+                return try innerCount.nTimes {
+                    try reader.readUInt16()
+                }
+            }
+            
+            for lineoff in lineoffs {
+                for i in lineoff {
+                    let expectedOffset = memberFileOffsetInDefFile + 32 + Int(i)
+                    if reader.offset != expectedOffset {
+                        fatalError("Remove this fatalError, might be too strict...")
+                        try reader.seek(to: expectedOffset)
+                    }
+                    var totalblocklength = 0
+                    while totalblocklength < 32 {
+                        let (length, data) = try segmentFragment()
+                        pixelDataAgg.append(data)
+                        totalblocklength += length
+                    }
+                }
+            }
+            pixelData = pixelDataAgg
+        default: incorrectImplementation(reason: "Unhandled encoding format: \(encodingFormat). This should NEVER happen. Probably some wrong byte offset.")
+        }
+                    
+        return DefinitionFile.Frame(
+            fileName: fileName,
+            size: size,
+            fullWidth: fullWidth,
+            fullHeight: fullHeight,
+            width: width,
+            height: height,
+            margin: .init(left: leftMargin, top: topMargin),
+            pixelData: pixelData
+        )
+        
+    }
 }
