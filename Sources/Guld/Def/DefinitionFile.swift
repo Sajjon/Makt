@@ -7,10 +7,6 @@
 
 import Foundation
 
-public struct Palette: Hashable {
-    public let colors: [RGB]
-}
-
 public struct DefinitionFile: Hashable {
     
     public let kind: Kind
@@ -40,3 +36,4 @@ public extension DefinitionFile {
         case battleHero
     }
 }
+
