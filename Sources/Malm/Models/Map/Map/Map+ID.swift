@@ -59,9 +59,8 @@ public extension Map.ID {
         }
     }
     
-    static let fileExtensionTutorialMap = "tut"
-    static let fileExtension = "h3m"
-    static let supportedFileExtensions = [Self.fileExtension, Self.fileExtensionTutorialMap]
+  
+    static let supportedFileExtensions = [Map.fileExtension, Map.fileExtensionTutorialMap]
 }
 
 

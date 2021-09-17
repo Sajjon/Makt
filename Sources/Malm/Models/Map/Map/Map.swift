@@ -51,5 +51,8 @@ public struct Map: Equatable, Identifiable {
 // MARK: Identifiable
 public extension Map {
     var id: ID { basicInformation.id }
+    
+    static let fileExtension = "h3m"
+    static let fileExtensionTutorialMap = "tut"
 }
 

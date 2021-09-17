@@ -64,7 +64,7 @@ public extension Map.Loader {
     static let shared = Map.Loader()
     
     convenience init(
-        config: Config = .init()
+        config: Config = try! .init()
     ) {
         self.init(
             config: config,
