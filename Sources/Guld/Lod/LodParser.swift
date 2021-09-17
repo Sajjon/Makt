@@ -9,24 +9,26 @@ import Foundation
 
 import Decompressor
 import Util
+import Malm
 
 public final class LodParser {
     
-    internal let reader: DataReader
     internal let decompressor: Decompressor
     
     public init(
-        data: Data,
         decompressor: Decompressor = GzipDecompressor()
     ) {
-        self.reader = DataReader(data: data)
         self.decompressor = decompressor
     }
 }
 
 
 public extension LodParser {
-    func parse() throws -> LodFile {
+    func parse(assetFile: AssetFile) throws -> LodFile {
+        precondition(assetFile.kind.isLODFile)
+        
+        let reader = DataReader(data: assetFile.data)
+        
         guard let header = try reader.readStringOfKnownMaxLength(4) else {
             throw Error.failedToReadHeader
         }
@@ -40,12 +42,17 @@ public extension LodParser {
         try reader.seek(to: 92)
         
         let compressedEntriesMetaData = try entryCount.nTimes {
-            try parseCompressedEntryMetaData()
+            try parseCompressedEntryMetaData(reader: reader)
         }
         
-        let entries: [LodFile.FileEntry] = try compressedEntriesMetaData.map(decompress)
+        let entries: [LodFile.FileEntry] = try compressedEntriesMetaData.map {
+            try decompress($0, reader: reader)
+        }
         
-        return LodFile(entries: entries)
+        return LodFile(
+            lodFileName: assetFile.fileName,
+            entries: entries
+        )
     }
 }
 
@@ -94,7 +101,10 @@ private extension LodParser {
         return PCXImage(width: width, height: height, contents: contents)
     }
     
-    func decompress(_ entryMetaData: LodFile.CompressedFileEntryMetaData) throws -> LodFile.FileEntry {
+    func decompress(
+        _ entryMetaData: LodFile.CompressedFileEntryMetaData,
+        reader: DataReader
+    ) throws -> LodFile.FileEntry {
         try reader.seek(to: entryMetaData.fileOffset)
         let data = try entryMetaData.compressedSize > 0 ? decompressor.decompress(
             data: reader.read(
@@ -113,7 +123,7 @@ private extension LodParser {
         return LodFile.FileEntry(name: entryMetaData.name, content: content)
     }
     
-    func parseCompressedEntryMetaData() throws -> LodFile.CompressedFileEntryMetaData {
+    func parseCompressedEntryMetaData(reader: DataReader) throws -> LodFile.CompressedFileEntryMetaData {
 
         guard let fileName = try reader.readStringOfKnownMaxLength(16) else {
             throw Error.failedToReadFileNameOfEntry
@@ -133,7 +143,7 @@ private extension LodParser {
     }
 }
 
-private extension LodParser {
+public extension LodParser {
     enum Error: Swift.Error, Equatable {
         case failedToReadHeader
         case notLodFile(gotHeader: String)

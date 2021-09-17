@@ -9,6 +9,7 @@ import Foundation
 import Util
 
 public struct LodFile: Hashable {
+    public let lodFileName: String
     public let entries: [FileEntry]
 }
 

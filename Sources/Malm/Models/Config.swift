@@ -133,6 +133,11 @@ public enum Asset: NamedAssetFile, Hashable, CaseIterable {
         }
     }
     
+    public var isLODFile: Bool {
+        guard case .archive = self else { return false }
+        return true
+    }
+    
     public static var allCases: [Self] {
         return Archive.allCases.map { Self.archive($0) } +
         Sound.allCases.map { Self.sound($0) } +
