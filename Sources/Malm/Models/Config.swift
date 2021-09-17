@@ -88,27 +88,55 @@ private extension Config.Directories {
    
 }
 
-public extension Config.Directories {
-    
-    static let armageddonsBladeSoundFile = "H3ab_ahd.snd"
-    static let armageddonsBladeVideoFile = "H3ab_ahd.vid"
-    static let armageddonsBladeBitmapArchive = "H3ab_bmp.lod"
-    static let armageddonsBladeSpriteArchive = "H3ab_spr.lod"
-    static let restorationOfErathiaBitmapArchive = "H3bitmap.lod"
-    static let restorationOfErathiaSpriteArchive = "H3sprite.lod"
-    static let restorationOfErathiaSoundFile = "Heroes3.snd"
-    static let restorationOfErathiaVideoFile = "VIDEO.VID"
+public protocol AssetFile {
+    var fileName: String { get }
+}
+public extension AssetFile where Self: RawRepresentable, Self.RawValue == String {
+    var fileName: String { rawValue }
+}
 
-    static let dataFiles = [
-        armageddonsBladeSoundFile,
-        armageddonsBladeVideoFile,
-        armageddonsBladeBitmapArchive,
-        armageddonsBladeSpriteArchive,
-        restorationOfErathiaBitmapArchive,
-        restorationOfErathiaSoundFile,
-        restorationOfErathiaSoundFile,
-        restorationOfErathiaVideoFile
-    ]
+public enum Asset: AssetFile, Hashable, CaseIterable {
+    case archive(Archive)
+case sound(Sound)
+case video(Video)
+    
+    public var fileName: String {
+        switch self {
+        case .archive(let value): return value.fileName
+        case .sound(let value): return value.fileName
+        case .video(let value): return value.fileName
+        }
+    }
+    
+    public static var allCases: [Self] {
+        return Archive.allCases.map { Self.archive($0) } +
+        Sound.allCases.map { Self.sound($0) } +
+        Video.allCases.map { Self.video($0) }
+    }
+}
+
+public extension Asset {
+    enum Archive: String, Hashable, CaseIterable, AssetFile {
+        case armageddonsBladeBitmapArchive = "H3ab_bmp.lod"
+        case armageddonsBladeSpriteArchive = "H3ab_spr.lod"
+        case restorationOfErathiaBitmapArchive = "H3bitmap.lod"
+        case restorationOfErathiaSpriteArchive = "H3sprite.lod"
+    }
+    
+    enum Sound: String, Hashable, CaseIterable, AssetFile {
+        case armageddonsBladeSoundFile = "H3ab_ahd.snd"
+        case restorationOfErathiaSoundFile = "Heroes3.snd"
+    }
+    
+    enum Video: String, Hashable, CaseIterable, AssetFile {
+        case armageddonsBladeVideoFile = "H3ab_ahd.vid"
+        case restorationOfErathiaVideoFile = "VIDEO.VID"
+    }
+}
+
+public extension Config.Directories {
+  
+    static let dataFiles = Asset.allCases.map { $0.fileName }
     
     enum Error: Swift.Error, Equatable {
         case noMapsFound
