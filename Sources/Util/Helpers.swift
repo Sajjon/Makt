@@ -35,4 +35,13 @@ public func incorrectImplementation(
     incorrectImplementation(reason: "should already have \(actionThatShouldHaveBeenPerformed)", file: file, line: line)
 }
 
+public func uncaught<E: Swift.Error>(
+    error: Swift.Error,
+    expectedType: E.Type,
+    file: StaticString = #file,
+    line: UInt = #line
+) -> Never {
+    incorrectImplementation(reason: "Uncaught error: \(error), expected to only catch errors of type: \(E.self)", file: file, line: line)
+}
+
 

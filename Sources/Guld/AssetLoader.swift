@@ -7,10 +7,11 @@
 
 import Foundation
 import Malm
+import Util
 import Combine
 
 public final class AssetLoader {
-    private let config: Config
+    public let config: Config
     private let fileManager: FileManager
     public init(config: Config, fileManager: FileManager = .default) {
         self.config = config
@@ -21,7 +22,7 @@ public final class AssetLoader {
 public extension AssetLoader {
    
     
-    func load(archive: Asset.Archive) -> AnyPublisher<LodFile, Error> {
+    func load(archive: Asset.Archive) -> AnyPublisher<LodFile, AssetLoader.Error> {
         fatalError()
     }
     
@@ -29,10 +30,8 @@ public extension AssetLoader {
         case noAssetExistsAtPath(String)
         case failedToLoadAssetAtPath(String)
     }
-}
 
-private extension AssetLoader {
-    func loadRawAsset(_ asset: Asset) throws -> Data {
+    func loadAssetFile(_ asset: Asset) throws -> AssetFile {
         let path = config.gamesFilesDirectories.data.appending("/").replacingOccurrences(of: "//", with: "/").appending(asset.fileName)
         
         guard fileManager.fileExists(atPath: path) else {
@@ -42,7 +41,19 @@ private extension AssetLoader {
         guard let data = fileManager.contents(atPath: path) else {
             throw Error.failedToLoadAssetAtPath(path)
         }
-        
-        return data
+        return AssetFile(kind: asset, data: data)
+    }
+    
+    func loadAll() -> AnyPublisher<[AssetFile], AssetLoader.Error> {
+        Future { promise in
+            DispatchQueue(label: "LoadAsset", qos: .background).async { [self] in
+                do {
+                    let assetFiles = try config.gamesFilesDirectories.allAssets.map(loadAssetFile(_:))
+                    promise(Result.success(assetFiles))
+                } catch let error as AssetLoader.Error {
+                    promise(Result.failure(error))
+                } catch { uncaught(error: error, expectedType: AssetLoader.Error.self) }
+            }
+        }.eraseToAnyPublisher()
     }
 }
