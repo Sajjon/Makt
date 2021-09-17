@@ -26,7 +26,8 @@ public extension LodFile {
             guard let fileExtension = name.split(separator: ".").last else {
                 incorrectImplementation(shouldAlwaysBeAbleTo: "Get file extension of entry.")
             }
-            guard let kind = Kind(rawValue: String(fileExtension)) else {
+            let fileExtensionIgnoreCase = fileExtension.lowercased()
+            guard let kind = Kind(rawValue: String(fileExtensionIgnoreCase)) else {
                 incorrectImplementation(reason: "Should have covered all file types, but got unrecognized file extension: \(fileExtension)")
             }
             return kind
@@ -39,8 +40,21 @@ public extension LodFile {
         }
         
         public enum Kind: String, Hashable {
+            
+            // What is this?
+            case ifr = "ifr"
+            
+            case palette = "pal"
+            
+            /// what is this?
+            case xmi = "xmi"
+            
+            case campaign = "h3c"
+            case font = "fnt"
+            case text = "txt"
+            
             /// .msk
-            case mask
+            case mask = "msk"
             
             /// .pcx
             case pcx

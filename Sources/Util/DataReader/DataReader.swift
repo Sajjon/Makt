@@ -174,7 +174,8 @@ public extension DataReader {
         guard let string = String(bytes: trimmedData, encoding: .utf8) else {
             throw Error.failedToDecodeStringAsUTF8(asASCII: .init(bytes: data, encoding: .ascii))
         }
-        return string.trimWhitespacesIncludingNullTerminators()
+        let trimmedString = string.trimWhitespacesIncludingNullTerminators()
+        return trimmedString
     }
     
  
