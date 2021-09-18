@@ -23,21 +23,44 @@ public extension LodFile {
     
     struct FileEntry: Hashable {
         public let name: String
-        public var kind: Kind {
-            guard let fileExtension = name.split(separator: ".").last else {
-                incorrectImplementation(shouldAlwaysBeAbleTo: "Get file extension of entry.")
-            }
-            let fileExtensionIgnoreCase = fileExtension.lowercased()
-            guard let kind = Kind(rawValue: String(fileExtensionIgnoreCase)) else {
-                incorrectImplementation(reason: "Should have covered all file types, but got unrecognized file extension: \(fileExtension)")
-            }
-            return kind
-        }
+//        public let kind: Content.Kind
         public let content: Content
         
-        public enum Content: Hashable {
-            case pcxImage(PCXImage)
-            case dataEntry(Data)
+        public func hash(into hasher: inout Hasher) {
+            hasher.combine(content.kind)
+            hasher.combine(name)
+        }
+    }
+}
+
+public struct Campaign: Hashable {}
+
+import Combine
+
+public extension LodFile.FileEntry {
+    
+    enum Content: Equatable {
+        public static func == (lhs: Self, rhs: Self) -> Bool {
+            lhs.kind == rhs.kind
+        }
+        
+        
+        case pcx(AnyPublisher<PCXImage, Never>)
+        case def(AnyPublisher<DefinitionFile, Never>)
+        case text(AnyPublisher<String, Never>)
+        case font(AnyPublisher<CGFont, Never>)
+        case campaign(AnyPublisher<Campaign, Never>)
+        case palette(AnyPublisher<Palette, Never>)
+        
+        public var kind: Kind {
+            switch self {
+            case .campaign: return .campaign
+            case .def: return .def
+            case .font: return .font
+            case .palette: return .palette
+            case .text: return .text
+            case .pcx: return .pcx
+            }
         }
         
         public enum Kind: String, Hashable {
@@ -63,5 +86,20 @@ public extension LodFile {
             /// .def
             case def
         }
+    }
+    
+}
+
+internal extension LodFile.FileEntry.Content.Kind {
+    init?(fileName: String) {
+        guard let fileExtension = fileName.split(separator: ".").last else {
+            incorrectImplementation(shouldAlwaysBeAbleTo: "Get file extension of entry.")
+        }
+        let fileExtensionIgnoreCase = fileExtension.lowercased()
+        
+        guard let kind = Self(rawValue: String(fileExtensionIgnoreCase)) else {
+            return nil
+        }
+        self = kind
     }
 }

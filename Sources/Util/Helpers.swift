@@ -27,6 +27,16 @@ public func incorrectImplementation(
 }
 
 
+public func implementMe(
+    comment maybeComment: String? = nil,
+    file: StaticString = #file,
+    line: UInt = #line
+) -> Never {
+    let comment = maybeComment.map { " (\($0)" } ?? ""
+    incorrectImplementation(reason: "Implement me please\(comment)", file: file, line: line)
+}
+
+
 public func incorrectImplementation(
     shouldAlreadyHave actionThatShouldHaveBeenPerformed: String,
     file: StaticString = #file,
@@ -44,4 +54,12 @@ public func uncaught<E: Swift.Error>(
     incorrectImplementation(reason: "Uncaught error: \(error), expected to only catch errors of type: \(E.self)", file: file, line: line)
 }
 
+public func uncaught(
+    error: Swift.Error,
+    expectedToNeverFailBecause reason: String,
+    file: StaticString = #file,
+    line: UInt = #line
+) -> Never {
+    incorrectImplementation(reason: "Uncaught error: \(String(describing: error)), expected to never fail, because: \(reason)", file: file, line: line)
+}
 

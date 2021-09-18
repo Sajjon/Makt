@@ -56,6 +56,8 @@ public extension LodParser {
     }
 }
 
+import Combine
+
 private extension LodParser {
     
     func isPCX(data: Data) throws -> Bool {
@@ -103,6 +105,20 @@ private extension LodParser {
         return PCXImage(width: width, height: height, contents: contents)
     }
     
+    
+    func pcxPublisher(from data: Data) -> AnyPublisher<PCXImage, Never> {
+        return Future { promise in
+            DispatchQueue(label: "LoadPCXImage", qos: .background).async { [self] in
+                do {
+                    let pcxImage = try self.parsePCX(from: data)
+                    promise(.success(pcxImage))
+                } catch {
+                    incorrectImplementation(shouldAlwaysBeAbleTo: "Parse PCX Image")
+                }
+            }
+        }.eraseToAnyPublisher()
+    }
+    
     func decompress(
         _ entryMetaData: LodFile.CompressedFileEntryMetaData,
         reader: DataReader
@@ -118,11 +134,89 @@ private extension LodParser {
             throw Error.lodFileEntryDecompressionResultedInWrongSize(expected: entryMetaData.size, butGot: data.count)
         }
         
-        let isPCXImage = try isPCX(data: data)
+        let content = try fileEntryContent(metaData: entryMetaData, data: data)
         
-        let content: LodFile.FileEntry.Content = try isPCXImage ? .pcxImage(parsePCX(from: data)) : .dataEntry(data)
+        return LodFile.FileEntry(
+            name: entryMetaData.name,
+            content: content
+        )
+    }
+    
+    func fileEntryContent(
+        metaData: LodFile.CompressedFileEntryMetaData,
+        data: Data
+    ) throws -> LodFile.FileEntry.Content {
         
-        return LodFile.FileEntry(name: entryMetaData.name, content: content)
+        guard let kind = LodFile.FileEntry.Content.Kind(fileName: metaData.name) else {
+            throw Error.failedToParseKindFromFile(named: metaData.name)
+        }
+        
+        switch kind {
+        case .pcx:
+            guard try isPCX(data: data) else {
+                throw Error.fileNameSuggestsEntryIsPCXButNotAccordingToData
+            }
+            return .pcx(pcxPublisher(from: data))
+        case .palette:
+            let publisher = Future<Palette, Never> { promise in
+                do {
+                    let palette = try Palette(data: data)
+                    promise(.success(palette))
+                } catch {
+                    uncaught(
+                        error: error,
+                        expectedToNeverFailBecause: "Palettes should be trivially parsed."
+                    )
+                }
+            }.eraseToAnyPublisher()
+            return .palette(publisher)
+        case .text:
+            guard let text = String(bytes: data, encoding: .utf8) ?? String(bytes: data, encoding: .nonLossyASCII) ?? String(bytes: data, encoding: .ascii) else {
+                incorrectImplementation(shouldAlwaysBeAbleTo: "Parse text")
+            }
+            return .text(Just(text).eraseToAnyPublisher())
+        case .font:
+
+            let deferredPublisher = Deferred {
+                // https://stackoverflow.com/a/49242027/1311272
+                // or maybe: https://stackoverflow.com/a/12497630/1311272
+                return Future<CGFont, Never> { promise in
+                    implementMe(comment: "How are Fonts represented? Have a look at: https://stackoverflow.com/a/49242027/1311272 or https://stackoverflow.com/a/12497630/1311272 maybe.")
+               
+                }
+            }.eraseToAnyPublisher()
+            return .font(deferredPublisher)
+            
+        case .def:
+            let publisher = Future<DefinitionFile, Never> { promise in
+                DispatchQueue(label: "ParseDEFFile", qos: .background).async {
+                    do {
+                        let defParser = DefParser(data: data)
+                        let defFile = try defParser.parse()
+                        promise(.success(defFile))
+                    } catch {
+                        incorrectImplementation(shouldAlwaysBeAbleTo: "Parse DEF files")
+                    }
+                }
+            }.eraseToAnyPublisher()
+            return .def(publisher)
+        case .ifr:
+            implementMe(comment: "Is 'IFR' REALLY a thing?")
+        case .mask:
+            implementMe(comment: "How are MASKs represented?")
+        case .xmi:
+            implementMe(comment: "Is 'XMI' REALLY a thing?")
+        case .campaign:
+            let deferredPublisher = Deferred {
+                return Future<Campaign, Never> { promise in
+                    implementMe(comment: "How are Campaigns (H3C) represented? Similar To H3M but more complicated? This is probably a biggie...")
+               
+                }
+            }.eraseToAnyPublisher()
+            return .campaign(deferredPublisher)
+        }
+        
+
     }
     
     func parseCompressedEntryMetaData(reader: DataReader) throws -> LodFile.CompressedFileEntryMetaData {
@@ -148,6 +242,8 @@ private extension LodParser {
 public extension LodParser {
     enum Error: Swift.Error, Equatable {
         case failedToReadHeader
+        case failedToParseKindFromFile(named: String)
+        case fileNameSuggestsEntryIsPCXButNotAccordingToData
         case notLodFile(gotHeader: String)
         case failedToReadFileNameOfEntry
         case lodFileEntryDecompressionResultedInWrongSize(expected: Int, butGot: Int)
