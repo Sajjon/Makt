@@ -54,6 +54,7 @@ public extension LodFile.FileEntry {
         case font(AnyPublisher<CGFont, Never>)
         case mask(AnyPublisher<Mask, Never>)
         case campaign(AnyPublisher<Campaign, Never>)
+        case xmi(AnyPublisher<Data, Never>)
         case palette(AnyPublisher<Palette, Never>)
         
         public var kind: Kind {
@@ -65,24 +66,26 @@ public extension LodFile.FileEntry {
             case .text: return .text
             case .pcx: return .pcx
             case .mask: return .mask
+            case .xmi: return .xmi
             }
         }
         
         public enum Kind: String, Hashable {
-            
-            // What is this?
-            case ifr = "ifr"
+            static let ignored: [RawValue] = ["ifr"]
+
             
             case palette = "pal"
             
-            /// what is this?
+            /// E*X*tended *M*ultiple *I*nstrumental digital interface is a MIDI-like format.
+            /// http://www.vgmpf.com/Wiki/index.php?title=XMI#:~:text=Extended%20Multiple%20Instrument%20Digital%20Interface%20(XMI)%20is%20a%20MIDI%2D,developed%20and%20released%20in%201991.
+            ///
             case xmi = "xmi"
             
             case campaign = "h3c"
             case font = "fnt"
             case text = "txt"
             
-            /// .msk
+            /// .msk is a passability matrix
             case mask = "msk"
             
             /// .pcx
@@ -97,9 +100,10 @@ public extension LodFile.FileEntry {
 
 internal extension LodFile.FileEntry.Content.Kind {
     init?(fileName: String) {
-        guard let fileExtension = fileName.split(separator: ".").last else {
+        guard let fileExtension = fileName.fileExtension else {
             incorrectImplementation(shouldAlwaysBeAbleTo: "Get file extension of entry.")
         }
+    
         let fileExtensionIgnoreCase = fileExtension.lowercased()
         
         guard let kind = Self(rawValue: String(fileExtensionIgnoreCase)) else {
@@ -107,4 +111,15 @@ internal extension LodFile.FileEntry.Content.Kind {
         }
         self = kind
     }
+}
+
+extension String {
+    var fileExtension: String? {
+        guard let fileExt = split(separator: ".").last else {
+            return nil
+        }
+
+        return String(fileExt)
+    }
+
 }

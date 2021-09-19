@@ -50,32 +50,7 @@ private extension ImageLoader {
 
 public extension ImageLoader {
     
-//    func loadImageFrom(data: Data) -> AnyPublisher<CGImage, Error> {
-//        guard let ciImage = CIImage.init(data: data) else {
-//            fatalError("No luck createing CIImage from Data")
-//        }
-//        guard let cgImage = ImageLoader.convertCIImageToCGImage(inputImage: ciImage) else {
-//            fatalError("no luck converting CIImage to CGImage")
-//        }
-//        return Just(cgImage)
-//            .setFailureType(to: Error.self)
-//            .eraseToAnyPublisher()
-//    }
-    
-    func loadImageFrom(
-        pcx: PCXImage
-    ) -> AnyPublisher<CGImage, Error> {
-        
-        let pixelData: Data
-        var maybePalette: Palette?
-        switch pcx.contents {
-        case .pixelData(let data, encodedByPalette: let palette):
-            pixelData = data
-            maybePalette = palette
-        case .rawRGBPixelData(let data):
-            pixelData = data
-        }
-        
+    func loadImageFrom(pixelData: Data, width: Int, palette maybePalette: Palette?) -> AnyPublisher<CGImage, Error> {
         return Future { promise in
             DispatchQueue(label: "ImageLoader", qos: .background).async { [self] in
                 do {
@@ -93,7 +68,7 @@ public extension ImageLoader {
                         }
                     }()
                    
-                    let pixelMatrix = pixels.chunked(into: pcx.width)
+                    let pixelMatrix = pixels.chunked(into: width)
                    
                     let cgImage = try makeCGImage(pixelValueMatrix: pixelMatrix)
                     
@@ -104,6 +79,18 @@ public extension ImageLoader {
                 } catch { uncaught(error: error, expectedType: Error.self) }
             }
         }.eraseToAnyPublisher()
+    }
+    
+    func loadImageFrom(
+        pcx: PCXImage
+    ) -> AnyPublisher<CGImage, Error> {
+        switch pcx.contents {
+        case .pixelData(let data, encodedByPalette: let palette):
+            return loadImageFrom(pixelData: data, width: pcx.width, palette: palette)
+        case .rawRGBPixelData(let data):
+            return loadImageFrom(pixelData: data, width: pcx.width, palette: nil)
+        }
+        
     }
 }
 

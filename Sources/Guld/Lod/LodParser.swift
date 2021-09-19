@@ -45,7 +45,7 @@ public extension LodParser {
             try parseCompressedEntryMetaData(reader: reader)
         }
         
-        let entries: [LodFile.FileEntry] = try compressedEntriesMetaData.map {
+        let entries: [LodFile.FileEntry] = try compressedEntriesMetaData.compactMap {
             try decompress($0, reader: reader)
         }
         
@@ -58,7 +58,7 @@ public extension LodParser {
 
 import Combine
 
-private extension LodParser {
+internal extension LodParser {
     
     func isPCX(data: Data) throws -> Bool {
         let pcxReader = DataReader(data: data)
@@ -82,7 +82,7 @@ private extension LodParser {
         return size == pixelCountX3
     }
     
-    func parsePCX(from data: Data) throws -> PCXImage {
+    static func parsePCX(from data: Data) throws -> PCXImage {
         let pcxReader = DataReader(data: data)
         let size = try Int(pcxReader.readUInt32())
         let width = try Int(pcxReader.readUInt32())
@@ -106,11 +106,11 @@ private extension LodParser {
     }
     
     
-    func pcxPublisher(from data: Data) -> AnyPublisher<PCXImage, Never> {
+    static func pcxPublisher(from data: Data) -> AnyPublisher<PCXImage, Never> {
         return Future { promise in
-            DispatchQueue(label: "LoadPCXImage", qos: .background).async { [self] in
+            DispatchQueue(label: "LoadPCXImage", qos: .background).async {
                 do {
-                    let pcxImage = try self.parsePCX(from: data)
+                    let pcxImage = try LodParser.parsePCX(from: data)
                     promise(.success(pcxImage))
                 } catch {
                     incorrectImplementation(shouldAlwaysBeAbleTo: "Parse PCX Image")
@@ -122,7 +122,7 @@ private extension LodParser {
     func decompress(
         _ entryMetaData: LodFile.CompressedFileEntryMetaData,
         reader: DataReader
-    ) throws -> LodFile.FileEntry {
+    ) throws -> LodFile.FileEntry? {
         try reader.seek(to: entryMetaData.fileOffset)
         let data = try entryMetaData.compressedSize > 0 ? decompressor.decompress(
             data: reader.read(
@@ -134,7 +134,9 @@ private extension LodParser {
             throw Error.lodFileEntryDecompressionResultedInWrongSize(expected: entryMetaData.size, butGot: data.count)
         }
         
-        let content = try fileEntryContent(metaData: entryMetaData, data: data)
+        guard let content = try fileEntryContent(metaData: entryMetaData, data: data) else {
+            return nil
+        }
         
         return LodFile.FileEntry(
             name: entryMetaData.name,
@@ -145,7 +147,17 @@ private extension LodParser {
     func fileEntryContent(
         metaData: LodFile.CompressedFileEntryMetaData,
         data: Data
-    ) throws -> LodFile.FileEntry.Content {
+    ) throws -> LodFile.FileEntry.Content? {
+        
+        guard !LodFile.FileEntry.Content.Kind.ignored.contains(where: {
+            guard let fileExtension = metaData.name.fileExtension else {
+                incorrectImplementation(shouldAlwaysBeAbleTo: "Get file extension of entry.")
+            }
+            return fileExtension == $0
+        }) else {
+            print("⚠️ Ignoring LodFile entry named: \(metaData.name) since its file extension is unsupported.")
+            return nil
+        }
         
         guard let kind = LodFile.FileEntry.Content.Kind(fileName: metaData.name) else {
             throw Error.failedToParseKindFromFile(named: metaData.name)
@@ -156,20 +168,23 @@ private extension LodParser {
             guard try isPCX(data: data) else {
                 throw Error.fileNameSuggestsEntryIsPCXButNotAccordingToData
             }
-            return .pcx(pcxPublisher(from: data))
+            return .pcx(LodParser.pcxPublisher(from: data))
         case .palette:
-            let publisher = Future<Palette, Never> { promise in
-                do {
-                    let palette = try Palette(data: data)
-                    promise(.success(palette))
-                } catch {
-                    uncaught(
-                        error: error,
-                        expectedToNeverFailBecause: "Palettes should be trivially parsed."
-                    )
+            let deferredPublisher = Deferred {
+                return Future<Palette, Never> { promise in
+                    do {
+                        let palette = try Palette(data: data)
+                        promise(.success(palette))
+                    } catch {
+                        uncaught(
+                            error: error,
+                            expectedToNeverFailBecause: "Palettes should be trivially parsed. Failed to parse palette with metadata: \(metaData)"
+                        )
+                    }
                 }
             }.eraseToAnyPublisher()
-            return .palette(publisher)
+            return .palette(deferredPublisher)
+            
         case .text:
             guard let text = String(bytes: data, encoding: .utf8) ?? String(bytes: data, encoding: .nonLossyASCII) ?? String(bytes: data, encoding: .ascii) else {
                 incorrectImplementation(shouldAlwaysBeAbleTo: "Parse text")
@@ -188,21 +203,20 @@ private extension LodParser {
             return .font(deferredPublisher)
             
         case .def:
-            let publisher = Future<DefinitionFile, Never> { promise in
-                DispatchQueue(label: "ParseDEFFile", qos: .background).async {
-                    do {
-                        let defParser = DefParser(data: data)
-                        let defFile = try defParser.parse()
-                        promise(.success(defFile))
-                    } catch {
-                        incorrectImplementation(shouldAlwaysBeAbleTo: "Parse DEF files")
+            let deferredPublisher = Deferred {
+                return Future<DefinitionFile, Never> { promise in
+                    DispatchQueue(label: "ParseDEFFile", qos: .background).async {
+                        do {
+                            let defParser = DefParser(data: data)
+                            let defFile = try defParser.parse()
+                            promise(.success(defFile))
+                        } catch {
+                            uncaught(error: error, expectedToNeverFailBecause: "We should be able to parse DEF files")
+                        }
                     }
                 }
             }.eraseToAnyPublisher()
-            return .def(publisher)
-        case .ifr:
-            implementMe(comment: "Is 'IFR' REALLY a thing?")
-            
+            return .def(deferredPublisher)
         case .mask:
             
             let deferredPublisher = Deferred {
@@ -217,7 +231,13 @@ private extension LodParser {
             }.eraseToAnyPublisher()
             return .mask(deferredPublisher)
         case .xmi:
-            implementMe(comment: "Is 'XMI' REALLY a thing?")
+            let deferredPublisher = Deferred {
+                return Future<Data, Never> { promise in
+                    implementMe(comment: "How XMI files decoded?")
+               
+                }
+            }.eraseToAnyPublisher()
+            return .xmi(deferredPublisher)
         case .campaign:
             let deferredPublisher = Deferred {
                 return Future<Campaign, Never> { promise in

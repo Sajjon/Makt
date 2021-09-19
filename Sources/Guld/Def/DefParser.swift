@@ -239,7 +239,6 @@ private extension DefParser {
             for lineOffset in lineOffsets {
                 let expectedOffset = memberFileOffsetInDefFile + 32 + Int(lineOffset)
                 if reader.offset != expectedOffset {
-                    fatalError("Remove this fatalError, might be too strict...")
                     try reader.seek(to: expectedOffset)
                 }
                 var totalRowLength = 0
