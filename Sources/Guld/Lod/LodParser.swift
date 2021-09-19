@@ -202,8 +202,20 @@ private extension LodParser {
             return .def(publisher)
         case .ifr:
             implementMe(comment: "Is 'IFR' REALLY a thing?")
+            
         case .mask:
-            implementMe(comment: "How are MASKs represented?")
+            
+            let deferredPublisher = Deferred {
+                return Future<Mask, Never> { promise in
+                    do {
+                        let mask = try DataReader(data: data).readPathfindingMask()
+                        promise(.success(.init(relativePositionsOfPassableTiles: mask)))
+                    } catch {
+                        uncaught(error: error)
+                    }
+                }
+            }.eraseToAnyPublisher()
+            return .mask(deferredPublisher)
         case .xmi:
             implementMe(comment: "Is 'XMI' REALLY a thing?")
         case .campaign:

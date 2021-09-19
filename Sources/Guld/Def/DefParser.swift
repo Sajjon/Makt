@@ -63,7 +63,7 @@ private extension DefParser {
     
     func codeFragment() throws -> (length: Int, data: Data) {
         let code = try reader.readUInt8()
-        let length = Int(try reader.readUInt8() + 1)
+        let length = Int(try reader.readUInt8()) + 1
         let byteCount = Int(length)
         let data: Data
         if code == 0xff {
@@ -172,7 +172,7 @@ private extension DefParser {
         }
         
         return Block(
-            identifier: blockMetaData.identifier,
+            id: blockMetaData.identifier,
             frames: frames
         )
         

@@ -6,7 +6,11 @@
 //
 
 import Foundation
+import Combine
+
 import Util
+import Malm
+
 
 public struct LodFile: Hashable {
     public let lodFileName: String
@@ -34,8 +38,7 @@ public extension LodFile {
 }
 
 public struct Campaign: Hashable {}
-
-import Combine
+public typealias Mask = Map.Object.Attributes.Pathfinding.Passability
 
 public extension LodFile.FileEntry {
     
@@ -49,6 +52,7 @@ public extension LodFile.FileEntry {
         case def(AnyPublisher<DefinitionFile, Never>)
         case text(AnyPublisher<String, Never>)
         case font(AnyPublisher<CGFont, Never>)
+        case mask(AnyPublisher<Mask, Never>)
         case campaign(AnyPublisher<Campaign, Never>)
         case palette(AnyPublisher<Palette, Never>)
         
@@ -60,6 +64,7 @@ public extension LodFile.FileEntry {
             case .palette: return .palette
             case .text: return .text
             case .pcx: return .pcx
+            case .mask: return .mask
             }
         }
         

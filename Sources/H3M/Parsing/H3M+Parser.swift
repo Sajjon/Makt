@@ -126,33 +126,19 @@ private extension H3M {
     
             /// Which squares (of this object) are passable, counted from the bottom right corner
             /// (bit 1: passable, bit 0: impassable
-            let passabilityBitmask = try reader.readBitArray(byteCount: Map.Object.Attributes.Pathfinding.rowCount)
+            let passabilityBitmask = try reader.readPathfindingMask()
             
             /// Active/visitable squares (overlaid on impassable squares)
             /// (bit 1: active, bit 0: passive
-            let visitabilityBitmask = try reader.readBitArray(byteCount: Map.Object.Attributes.Pathfinding.rowCount)
-            
-            func allowedRelativePositions(bitmask: Bitmask) -> Set<Map.Object.Attributes.Pathfinding.RelativePosition> {
-                precondition(bitmask.count == Map.Object.Attributes.Pathfinding.rowCount * Map.Object.Attributes.Pathfinding.columnCount)
-                var index = 0
-                var set = Set<Map.Object.Attributes.Pathfinding.RelativePosition>()
-                for row in 0..<Map.Object.Attributes.Pathfinding.rowCount {
-                    for column in 0..<Map.Object.Attributes.Pathfinding.columnCount {
-                        defer { index += 1 }
-                        let relativePosition: Map.Object.Attributes.Pathfinding.RelativePosition = .init(column: .init(column), row: .init(row))
-                        let allowed = bitmask[index]
-                        if allowed {
-                            set.insert(relativePosition)
-                        }
-                    }
-                }
-                return set
-            }
-            
+            let visitabilityBitmask = try reader.readPathfindingMask()
             
             let pathfinding = Map.Object.Attributes.Pathfinding(
-                visitability: .init(relativePositionsOfVisitableTiles: allowedRelativePositions(bitmask: visitabilityBitmask)),
-                passability: .init(relativePositionsOfPassableTiles: allowedRelativePositions(bitmask: passabilityBitmask))
+                visitability: .init(
+                    relativePositionsOfVisitableTiles: visitabilityBitmask
+                ),
+                passability: .init(
+                    relativePositionsOfPassableTiles: passabilityBitmask
+                )
             )
       
             func parseLandscapes() throws -> [Map.Tile.Terrain.Kind] {

@@ -56,7 +56,7 @@ public func uncaught<E: Swift.Error>(
 
 public func uncaught(
     error: Swift.Error,
-    expectedToNeverFailBecause reason: String,
+    expectedToNeverFailBecause reason: String = "reasons",
     file: StaticString = #file,
     line: UInt = #line
 ) -> Never {

@@ -110,6 +110,7 @@ public extension Map.Object.Attributes.Pathfinding {
             self.init(relativePositionsOfVisitableTiles: Set(elements.map({ .init(x: $0.0, y: $0.1) })))
         }
         public init(relativePositionsOfVisitableTiles: Set<RelativePosition>) {
+            precondition(relativePositionsOfVisitableTiles.count == Map.Object.Attributes.Pathfinding.columnCount * Map.Object.Attributes.Pathfinding.rowCount)
             self.relativePositionsOfVisitableTiles = relativePositionsOfVisitableTiles
         }
     }
@@ -121,6 +122,7 @@ public extension Map.Object.Attributes.Pathfinding {
             self.init(relativePositionsOfPassableTiles: Set(elements.map({ .init(x: $0.0, y: $0.1) })))
         }
         public init(relativePositionsOfPassableTiles: Set<RelativePosition>) {
+            precondition(relativePositionsOfPassableTiles.count == Map.Object.Attributes.Pathfinding.columnCount * Map.Object.Attributes.Pathfinding.rowCount)
             self.relativePositionsOfPassableTiles = relativePositionsOfPassableTiles
         }
         
