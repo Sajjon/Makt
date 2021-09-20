@@ -23,6 +23,9 @@ public extension SNDFile {
     struct FileEntry: Hashable {
         public let fileName: String
         public let contents: Data
+        public var fileExtension: String {
+            fileName.fileExtension!
+        }
     }
     
     struct FileEntryMetaData: Hashable {
