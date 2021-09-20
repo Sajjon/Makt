@@ -67,9 +67,15 @@ public enum Endianess {
 
 public extension String {
     func trimWhitespacesIncludingNullTerminators() -> String {
-        trimmingCharacters(in: .whitespacesAndNewlines.union(.init(charactersIn: "\0")))
+        trimmingCharacters(in: .whitespacesAndNewlines.union(.init(charactersIn: .null)))
     }
+    static var null: String { String(.null) }
 }
+
+public extension Character {
+    static var null: Self { Character.init(.init(0x00)) }
+}
+
 
 public extension DataReader {
     
@@ -77,6 +83,7 @@ public extension DataReader {
         case dataReaderHasNoMoreBytesToBeRead
         case dataEmpty
         case failedToDecodeStringAsUTF8(asASCII: String?)
+        case failedToDecodeStringAsEvenASCII
         case stringLongerThanExpectedMaxLength(got: Int, butExpectedAtMost: Int)
     }
     
@@ -169,13 +176,22 @@ public extension DataReader {
         guard maxLength > 0 else { return nil }
         let data = try read(byteCount: .init(maxLength))
         
-        let trimmedData = data.prefix(while: { $0 != 0x00 })
         
-        guard let string = String(bytes: trimmedData, encoding: .utf8) else {
-            throw Error.failedToDecodeStringAsUTF8(asASCII: .init(bytes: data, encoding: .ascii))
+        if trim {
+            let trimmedData = data.prefix(while: { $0 != 0x00 })
+            
+            guard let string = String(bytes: trimmedData, encoding: .utf8) else {
+                throw Error.failedToDecodeStringAsUTF8(asASCII: .init(bytes: data, encoding: .ascii))
+            }
+            let trimmedString = string.trimWhitespacesIncludingNullTerminators()
+            return trimmedString
+        } else {
+            guard let string = String(bytes: data, encoding: .utf8) ?? String(bytes: data, encoding: .nonLossyASCII) ?? String(bytes: data, encoding: .ascii) else {
+                throw Error.failedToDecodeStringAsEvenASCII
+            }
+            return string
         }
-        let trimmedString = string.trimWhitespacesIncludingNullTerminators()
-        return trimmedString
+
     }
     
  

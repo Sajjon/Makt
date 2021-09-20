@@ -137,7 +137,7 @@ final class SeersHutOnMapTests: BaseMapTest {
                             quest: .init(
                                 kind: .returnWithArtifacts([.angelWings, .armsOfLegion]),
                                 messages: .init(
-                                    proposalMessage: "Long ago, powerful wizards were able to create magical artifacts, but time has caused us to forget how to make new items.  I would like to learn these techniques myself, but I need one of these artifacts first to see how it was done.  If you could bring me, the Angel Wings and Arms of Legion, you would be well rewarded. ",
+                                    proposalMessage: "Long ago, powerful wizards were able to create magical artifacts, but time has caused us to forget how to make new items.  I would like to learn these techniques myself, but I need one of these artifacts first to see how it was done.  If you could bring me, the Angel Wings and Arms of Legion, you would be well rewarded.",
                                     progressMessage: "Nothing, eh?  I'm sure you will find the Angel Wings and Arms of Legion soon.  Please keep looking.",
                                     completionMessage: "Ah, exactly what I needed!  Here is the reward I promised.  You still wish to trade the Angel Wings and Arms of Legion, yes?"
                                 )

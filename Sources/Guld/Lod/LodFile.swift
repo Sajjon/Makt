@@ -27,7 +27,6 @@ public extension LodFile {
     
     struct FileEntry: Hashable {
         public let name: String
-//        public let kind: Content.Kind
         public let content: Content
         
         public func hash(into hasher: inout Hasher) {

@@ -22,7 +22,6 @@ public final class LodParser {
     }
 }
 
-
 public extension LodParser {
     func parse(assetFile: AssetFile) throws -> LodFile {
         precondition(assetFile.kind.isLODFile)

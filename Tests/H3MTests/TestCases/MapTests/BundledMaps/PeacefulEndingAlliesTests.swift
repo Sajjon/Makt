@@ -18,7 +18,7 @@ final class PeacefulEndingAlliesTests: BaseMapTest {
             basicInfoInspector: .init(
                 onParseFormat: { XCTAssertEqual($0, .shadowOfDeath)},
                 onParseName: { XCTAssertEqual($0, "Peaceful Ending (Allies)")},
-                onParseDescription: { XCTAssertEqual($0, "Trade has been the key to peace for as long as everyone can remember.  Everything was going well until one nation stopped trading with the others, their reasons unknown.  War broke out, for nations desperately needed resources, and it has raged ever since.  A peace must be reached. ")},
+                onParseDescription: { XCTAssertEqual($0, "Trade has been the key to peace for as long as everyone can remember.  Everything was going well until one nation stopped trading with the others, their reasons unknown.  War broke out, for nations desperately needed resources, and it has raged ever since.  A peace must be reached.")},
                 onParseDifficulty: { XCTAssertEqual($0, .hard)},
                 onParseSize: { XCTAssertEqual($0, .large)}
             ),

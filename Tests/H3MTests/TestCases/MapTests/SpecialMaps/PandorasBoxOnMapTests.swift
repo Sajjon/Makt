@@ -144,7 +144,7 @@ final class PandorasBoxOnMapTests: BaseMapTest {
                     )
                 case at(27, y: 1):
                     assertPandorasBox(
-                        expected: .init(message: "creatures\n", creaturesGained: [
+                        expected: .init(message: "creatures", creaturesGained: [
                             .init(kind: .specific(creatureID: .pikeman), quantity: 1)
                         ])
                     )

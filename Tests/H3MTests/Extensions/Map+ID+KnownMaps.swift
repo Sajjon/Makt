@@ -9,7 +9,7 @@ import Malm
 @testable import H3M
 
 extension Map.ID {
-    static let tutorial: Self = "Tutorial.\(Map.fileExtensionTutorialMap)"
+    static let tutorial: Self = .init(named: "Tutorial.\(Map.fileExtensionTutorialMap)")
     
     static func h3m(_ name: String) -> Self {
         .init(named: name.appending("." + Map.fileExtension))
