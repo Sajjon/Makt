@@ -54,11 +54,7 @@ public extension SNDArchiveParser {
             // VCMI: we need to replace first \0 with dot and take the 3 chars with extension (and drop the rest)
             let fileNameAndExtensionSuffixedWithRubbish = fileNameRaw.split(separator: "\0")
             let fileNameBase = String(fileNameAndExtensionSuffixedWithRubbish.first!)
-            let fileExtension = String(fileNameAndExtensionSuffixedWithRubbish[1].prefix(while: { (c: Character) -> Bool in
-                guard let val = c.asciiValue else { return true }
-                return val > 0x00
-            }))
-            assert(fileExtension.count == 3) // or do we have fileextensions with 4 chrs, e.g. "midi" ?
+            let fileExtension = String(fileNameAndExtensionSuffixedWithRubbish[1].prefix(3))
             let fileName = [fileNameBase, fileExtension].joined(separator: ".")
             
             let fileOffset = try reader.readInt32()
