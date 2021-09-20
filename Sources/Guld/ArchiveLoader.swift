@@ -13,6 +13,7 @@ import Combine
 public enum LoadedAsset: Hashable, NamedAssetFile {
     case archive(LodFile)
     case sound(SNDFile)
+    case video(VIDFile)
     
     public var fileName: String {
         switch self {
@@ -20,6 +21,8 @@ public enum LoadedAsset: Hashable, NamedAssetFile {
             return lodFile.lodFileName
         case .sound(let sndFile):
             return sndFile.sndArchiveFileName
+        case .video(let vidFie):
+            return vidFie.videoArchiveFileName
         }
     }
 }
@@ -48,7 +51,10 @@ public extension ArchiveLoader {
                         let loadedAsset: LoadedAsset = .archive(lodFile)
                         promise(Result.success(loadedAsset))
                     case .video:
-                        implementMe(comment: "Video, similar to SND")
+                        let vidParser = VIDArchiveParser()
+                        let vidArchiveFile = try vidParser.parse(assetFile: assetFile)
+                        let loadedAsset: LoadedAsset = .video(vidArchiveFile)
+                        promise(Result.success(loadedAsset))
                     }
                 } catch let error as Error {
                     promise(Result.failure(error))

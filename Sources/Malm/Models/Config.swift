@@ -143,6 +143,11 @@ public enum Asset: NamedAssetFile, Hashable, CaseIterable {
         return true
     }
     
+    public var isVIDFile: Bool {
+        guard case .video = self else { return false }
+        return true
+    }
+    
     public static var allCases: [Self] {
         return Archive.allCases.map { Self.archive($0) } +
         Sound.allCases.map { Self.sound($0) } +

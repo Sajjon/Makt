@@ -3,6 +3,8 @@
 
 import PackageDescription
 
+let excludedFilenames = ["CMakeLists.txt", "README.md"]
+
 let package = Package(
     name: "Makt",
     platforms: [.macOS(.v10_15), .iOS(.v13)],
@@ -10,7 +12,8 @@ let package = Package(
         .library(name: "Makt", targets: ["Makt", "Malm"]),
     ],
     dependencies: [
-        .package(url: "https://github.com/1024jp/GzipSwift", .upToNextMajor(from: "5.1.1"))
+        .package(url: "https://github.com/1024jp/GzipSwift", .upToNextMajor(from: "5.1.1")),
+        .package(url: "https://github.com/sunlubo/SwiftFFmpeg", .upToNextMajor(from: "1.5.0")),
     ],
     targets: [
         .target(
@@ -20,6 +23,12 @@ let package = Package(
             name: "Decompressor",
             dependencies: [
                 .product(name: "Gzip", package: "GzipSwift")
+            ]
+        ),
+        .target(
+            name: "Video",
+            dependencies: [
+              "SwiftFFmpeg", "Util", "Guld"
             ]
         ),
         .target(
@@ -46,7 +55,7 @@ let package = Package(
         ),
         .target(
             name: "Makt",
-            dependencies: ["Util", "Malm", "H3M", "Guld"]
+            dependencies: ["Util", "Malm", "H3M", "Guld", "Video"]
         ),
         .testTarget(
             name: "MalmTests",

@@ -21,18 +21,24 @@ public extension ImageLoader {
 
 
 // MARK: To CGImage
-private extension ImageLoader {
+public extension ImageLoader {
     
-    func pixelsFrom(data pixelData: Data) -> [UInt32] {
-        let bytesPerPixel = 3
+    func pixelsFrom(data pixelData: Data, bytesPerPixel: Int = 3) -> [UInt32] {
+        assert(bytesPerPixel == 3 || bytesPerPixel == 4)
         assert(pixelData.count.isMultiple(of: bytesPerPixel))
         let pixels: [UInt32] = Array<UInt8>(pixelData).chunked(into: bytesPerPixel).map { (chunk: [UInt8]) -> UInt32 in
             assert(chunk.count == bytesPerPixel)
             var data = Data()
-            data.append(chunk[2]) // red
-            data.append(chunk[1]) // green
-            data.append(chunk[0]) // blue
-            data.append(255) // Alpha of 255
+            data.append(chunk[bytesPerPixel - 1]) // red
+            data.append(chunk[bytesPerPixel - 2]) // green
+            data.append(chunk[bytesPerPixel - 3]) // blue
+            
+            if bytesPerPixel == 4 {
+                data.append(chunk[0])
+            } else {
+                data.append(255) // Alpha of 255
+            }
+            
             data.reverse() // fix endianess
             return data.withUnsafeBytes { $0.load(as: UInt32.self) }
         }
@@ -94,8 +100,8 @@ public extension ImageLoader {
     }
 }
 
-// MARK: Private
-private extension ImageLoader {
+// MARK: Public
+public extension ImageLoader {
     func makeCGImage(pixelValueMatrix: [[UInt32]]) throws -> CGImage {
         guard let ctx = CGContext.from(pixels: pixelValueMatrix) else {
             throw Error.failedToCreateImageContext
