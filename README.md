@@ -15,14 +15,24 @@ GZip decompressor package.
 ## Package *Malm* 🪨
 Contains all shared game models such as `Hero`, `Creature`, `Spell`, `Artifact` etc, but no logic at all.
 
-### Etymplogy
+### Etymology
 "Malm" means "Ore" in Swedish 🇸🇪
 
 ## Package *Guld* 🪨
 Parser of HoMM3 asset files/archives: `.lod`, `.def`, `.pcx`
 
-### Etymplogy
+### Etymology
 "Guld" means "Gold" in Swedish 🇸🇪
+
+## Package *Video* 📽
+Conversion of `.bik` and `.smk` movie files into `.mov`
+
+### Noteable dependency
+This package uses [`SwiftFFmpeg`](https://github.com/sunlubo/SwiftFFmpeg) which requires [FFmpeg](http://ffmpeg.org/) (Requires FFmpeg 4.0 or higher). on macOS, you can:
+
+```sh
+brew install ffmpeg
+```
 
 ## Package *H3M* 🗺
 HoMM3 map file - `.h3m` - parser.
@@ -32,6 +42,9 @@ Do check out [H3M.md](H3M.md) for map file structure.
 
 #### Gotchas
 A tile might contain multiple objects, in fact more than two! E.g. a Hero has a box of 3x2 and in the same origininating tile (lower left tile) of that 3x2 box, there might be another object, e.g. a resource. This is seen on tile `(x: 25, y: 65)` on vanilla RoE map "Race for Ardintinny.h3m". Or on map "Rebellion" at `(x: 52, y: 57)` there is a `mountain`, `rock` and `crystalCavern`.
+
+## Package *H3C* 🏕
+HoMM3 campaign file - `.h3c` - parser.
 
 ## Package *Makt* ⚔️
 The game engine.
