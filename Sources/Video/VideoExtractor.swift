@@ -35,27 +35,25 @@ public extension VideoExtractor {
     func extract(
         data dataForWholeVideo: Data,
         name: String,
-        outputURL maybeOutputURL: URL? = nil
+        temporaryDirectory: URL,
+        outputDirectory: URL
     ) -> AnyPublisher<URL, VideoExtractor.Error> {
+        
+        let tmpDataURL = temporaryDirectory.appendingPathComponent("tmp_data_safe_to_delete")
+        let tmpImageURL = temporaryDirectory.appendingPathComponent("tmp_image_safe_to_delete.png")
+        let outputURL = outputDirectory.appendingPathComponent("\(name).mov")
+        
+        func removeTempFiles() {
+            try? FileManager.default.removeItem(atPath: temporaryDirectory.path)
+        }
+        
         return Future<URL, VideoExtractor.Error> { promise in
-            DispatchQueue(label: "Extract video", qos: .background).async {
+            DispatchQueue(label: "ExtractVideo", qos: .background).async {
                 do {
-                    let directory = try FileManager.default.url(
-                        for: .trashDirectory,
-                           in: .userDomainMask,
-                           appropriateFor: nil,
-                           create: false
-                    )
-                    
-                    let fileURL = directory.appendingPathComponent(name)
-                    let outputURL = maybeOutputURL ?? directory.appendingPathComponent("\(name).mov")
-                    let tmpOutputURL = directory.appendingPathComponent("tmp.png")
-                    try dataForWholeVideo.write(to: fileURL)
-                    
-                    print("Trying to create AVFormatContext with video file: `\(fileURL.absoluteString)`")
+                    try dataForWholeVideo.write(to: tmpDataURL)
                     
                     let fmtCtx = try AVFormatContext(
-                        url: fileURL.absoluteString,
+                        url: tmpDataURL.path,
                         format: nil,
                         options: nil
                     )
@@ -67,14 +65,13 @@ public extension VideoExtractor {
                     guard let stream = fmtCtx.videoStream else {
                         throw Error.openVideoError(.failedToGetVideoStreamFromContext)
                     }
-                    print("Stream - codecParameters: \(stream.codecParameters), metadata: \(stream.metadata), mediaType: \(stream.mediaType), duration: \(stream.duration)")
                     
                     guard let codec = AVCodec.findDecoderById(stream.codecParameters.codecId) else {
                         throw Error.openVideoError(.codecNotFound(stream.codecParameters.codecId.name))
                     }
                     let codecCtx = AVCodecContext(codec: codec)
                     codecCtx.setParameters(stream.codecParameters)
-                    print("AVCodecContext -  mediaType: \(codecCtx.mediaType), width: \(codecCtx.width), height: \(codecCtx.height), audio sample format: \(codecCtx.sampleFormat), framerate: \(codecCtx.framerate)")
+                    
                     try codecCtx.openCodec()
                     
                     let pkt = AVPacket()
@@ -97,7 +94,7 @@ public extension VideoExtractor {
                     
                     
                     let sourcePixelBufferAttributes: [String: Any] = [
-                        kCVPixelBufferPixelFormatTypeKey as String: kCVPixelFormatType_32ARGB,
+                        kCVPixelBufferPixelFormatTypeKey as String: kCVPixelFormatType_24RGB,
                         kCVPixelBufferCGImageCompatibilityKey as String: true,
                         kCVPixelBufferCGBitmapContextCompatibilityKey as String: true
                     ]
@@ -145,60 +142,6 @@ public extension VideoExtractor {
                                 break
                             }
                             
-                            let str = String(
-                                format: "Frame %3d (type=%@, size=%5d bytes), pts=%4lld, isKeyFrame=%@",
-                                codecCtx.frameNumber,
-                                frame.pictureType.description,
-                                frame.pktSize,
-                                frame.pts,
-                                (frame.isKeyFrame ? "YES" : "NO")
-                            )
-                            
-                            print(str)
-                            
-                            print("✨ Trying to create image from frame")
-                            
-
-//                            var dataSingleFrame = Data()
-//                            for (frameDataIndex, maybeFrameData) in frame.data.enumerated() {
-//                                guard let frameData = maybeFrameData else {
-//                                    break
-//                                }
-//                                let byteCount = Int(frame.linesize[frameDataIndex])
-//                                let singleFramePartData = Data(bytesNoCopy: .init(frameData), count: byteCount, deallocator: .none)
-//                                dataSingleFrame.append(contentsOf: singleFramePartData)
-//                            }
-//
-////                            let pixels: [UInt32] = {
-////                                if let palette = maybePalette {
-////                                    let palette32Bit = palette.toU32Array()
-////
-////                                    let pixels: [UInt32] = pixelData.map {
-////                                        palette32Bit[Int($0)]
-////                                    }
-////                                    return pixels
-////                                } else {
-////                                   return pixelsFrom(data: pixelData)
-////                                }
-////                            }()
-//
-//                            let imageLoader = ImageLoader()
-//
-////                            let pixels: [UInt32] = dataSingleFrame.chunked
-//                            let pixels = imageLoader.pixelsFrom(data: dataSingleFrame, bytesPerPixel: 4)
-//
-//                            let pixelMatrix: [[UInt32]] = pixels.chunked(into: frame.width, assertSameLength: false)
-//
-//                            let cgImage = try imageLoader.makeCGImage(pixelValueMatrix: pixelMatrix)
-//
-////                            guard let ciImage = CIImage(data: dataSingleFrame) else {
-////                                fatalError("Failed to create CI image from data")
-//                            //                            }
-//
-//                            let ciImage = CIImage(cgImage: cgImage)
-                            
-                            
-                            
                             let pixelBufferAttributes: [String: Any] = [
                                 kCVPixelBufferCGImageCompatibilityKey as String: true,
                                 kCVPixelBufferCGBitmapContextCompatibilityKey as String: true
@@ -225,30 +168,29 @@ public extension VideoExtractor {
                             guard createBufferResult == kCVReturnSuccess else {
                                 fatalError("failed to create cvPixelBuffer, createBufferResult: \(createBufferResult)")
                             }
-                            
-                            try self.savePNG(frame, to: tmpOutputURL.absoluteString)
-                            guard let ciImage = CIImage.init(contentsOf: tmpOutputURL) else {
+                            try self.savePNG(frame, to: tmpImageURL.path)
+                            guard let ciImage = CIImage(contentsOf: tmpImageURL) else {
                                 fatalError("failed to load image at url")
                             }
                             
                             let ciContext = CIContext()
                             ciContext.render(ciImage, to: cvPixelBuffer)
                             
-                            
-                            print("✨ did render image in CIContext")
-                            
-                            let presentationTime = CMTimeMakeWithSeconds(
-                                .init(frame.bestEffortTimestamp),
-                                preferredTimescale: .init(stream.timebase.num)
-                            )
-                            print("✨ created presentationTime: \(presentationTime)")
+//                            let preferredTimescale: Int32 = 1000
+//
+//                            // frame duration is duration of single image in seconds
+//                            let presentationTime = CMTimeMakeWithSeconds(
+//                                .init(codecCtx.frameNumber * Int(frame.pktDuration)),
+//                                preferredTimescale: preferredTimescale
+//                            )
+//
+//                            print("\ncodecCtx.frameNumber: \(codecCtx.frameNumber), frame.pktDuration: \(frame.pktDuration) => value: \(Float64(codecCtx.frameNumber * Int(frame.pktDuration))), preferredTimescale: \(preferredTimescale)\n=>\npresentationTime: \(String(describing: presentationTime))\n\n")
+//
                             
                             pixelBufferAdaptor.append(
                                 cvPixelBuffer,
-                                withPresentationTime: presentationTime
+                                withPresentationTime: CMTime.init(value: frame.bestEffortTimestamp, timescale: 10)
                             )
-                            
-                            print("✅ did append cvPixelBuffer to pixelBufferAdaptor")
                             
                             frame.unref()
                         }
@@ -256,27 +198,31 @@ public extension VideoExtractor {
                     
                     writerInput.markAsFinished()
                     videoWriter.finishWriting {
+                        removeTempFiles()
                         if let error = videoWriter.error {
-                            print("🚨 failed to write video")
+                            print("🚨 failed to write video. error: \(error)")
                             promise(.failure(VideoExtractor.Error.extractionFinishError(error)))
                         } else {
-                            print("👻🔮 successfully wrote video to output url: \(outputURL)")
                             promise(.success(outputURL))
                         }
                     }
                 }
                 catch let error as VideoExtractor.Error {
+                    removeTempFiles()
                     promise(.failure(error))
                 } catch {
+                    removeTempFiles()
                     uncaught(error: error)
                 }
             }
         }.eraseToAnyPublisher()
     }
-    
-    private func savePNG(_ frame: AVFrame, to url: String) throws {
-        let fmtCtx = try AVFormatContext(format: nil, filename: url)
+}
 
+private extension VideoExtractor {
+    func savePNG(_ frame: AVFrame, to url: String) throws {
+        let fmtCtx = try AVFormatContext(format: nil, filename: url)
+        
         guard let codec = AVCodec.findEncoderById(.PNG) else {
             fatalError("png codec doesn't exist")
         }
@@ -291,20 +237,20 @@ public extension VideoExtractor {
             fatalError("Failed allocating output stream")
         }
         stream.codecParameters.copy(from: codecCtx)
-
+        
         if fmtCtx.outputFormat?.flags.contains(.noFile) == false {
             try fmtCtx.openOutput(url: url, flags: .write)
         }
         
-
+        
         try fmtCtx.writeHeader()
-
+        
         let dstPkt = AVPacket()
         let dstFrame = AVFrame()
         dstFrame.width = codecCtx.width
         dstFrame.height = codecCtx.height
         dstFrame.pixelFormat = codecCtx.pixelFormat
-
+        
         let swsCtx = SwsContext(
             srcWidth: frame.width,
             srcHeight: frame.height,
@@ -316,23 +262,9 @@ public extension VideoExtractor {
         )!
         let srcSlice = frame.data.map({ UnsafePointer($0) })
         let srcStride = frame.linesize.map({ Int32($0) })
-        // buffer is going to be written to rawvideo file, no alignment
-//        let dstData = UnsafeMutablePointer<UnsafeMutablePointer<UInt8>?>.allocate(capacity: 4)
-//        let dstLinesize = UnsafeMutablePointer<Int32>.allocate(capacity: 4)
-//        defer {
-//            dstData.deallocate()
-//            dstLinesize.deallocate()
-//        }
-
-        let dstBuf = AVImage.init(width: dstFrame.width, height: dstFrame.height, pixelFormat: dstFrame.pixelFormat, align: 1)
-     
-//        assert(dstBuf.size > 0)
         
-//        if dstBufSize < 0 {
-//            fatalError("Could not allocate destination image")
-//        }
-
-
+        let dstBuf = AVImage.init(width: dstFrame.width, height: dstFrame.height, pixelFormat: dstFrame.pixelFormat, align: 1)
+        
         try swsCtx.scale(
             src: srcSlice,
             srcStride: srcStride,
@@ -355,15 +287,12 @@ public extension VideoExtractor {
         dstFrame.data = dstBuf.data
         dstFrame.linesize = dstBuf.linesizes
         
-
-//        dstFrame.data = [dstData[0], dstData[1], dstData[2], dstData[3]]
-//        dstFrame.linesize = [Int(dstLinesize[0]), Int(dstLinesize[1]), Int(dstLinesize[2]), Int(dstLinesize[3])]
-
         do {
             try codecCtx.sendFrame(dstFrame)
         } catch {
             fatalError("Error while sending a packet to the decoder: \(error)")
         }
+        
         while true {
             do {
                 try codecCtx.receivePacket(dstPkt)
@@ -372,20 +301,17 @@ public extension VideoExtractor {
             } catch {
                 fatalError("Error while receiving a packet from the encoder: \(error)")
             }
-
+            
             dstPkt.streamIndex = 0
             dstPkt.pts = AVTimestamp.noPTS
             dstPkt.dts = AVTimestamp.noPTS
             dstPkt.duration = 0
             dstPkt.position = -1
-
-//            try fmtCtx.interleavedWriteFrame(pkt: dstPkt)
             try fmtCtx.interleavedWriteFrame(dstPkt)
-
             dstPkt.unref()
         }
         dstFrame.unref()
-
+        
         try fmtCtx.writeTrailer()
     }
 }
