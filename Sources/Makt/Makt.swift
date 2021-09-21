@@ -9,4 +9,5 @@
 @_exported import Malm
 @_exported import Guld
 @_exported import H3M
+@_exported import H3C
 @_exported import Video

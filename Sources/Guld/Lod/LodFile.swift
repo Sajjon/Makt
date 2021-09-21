@@ -36,7 +36,6 @@ public extension LodFile {
     }
 }
 
-public struct Campaign: Hashable {}
 public typealias Mask = Map.Object.Attributes.Pathfinding.Passability
 
 public extension LodFile.FileEntry {

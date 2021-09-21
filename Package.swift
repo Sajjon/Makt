@@ -40,7 +40,7 @@ let package = Package(
         .target(
             name: "Guld",
             dependencies: [
-                "Util", "Malm", "Decompressor"
+                "Util", "Malm", "Decompressor", "H3C"
             ]
         ),
    
@@ -52,6 +52,14 @@ let package = Package(
                 "Decompressor",
             ],
             exclude: ["h3m_polish.txt", "H3M.md", "H3M_google_translated_from_polish.txt"]
+        ),
+        .target(
+            name: "H3C",
+            dependencies: [
+            "Util",
+            "Malm",
+            "Decompressor",
+            ]
         ),
         .target(
             name: "Makt",

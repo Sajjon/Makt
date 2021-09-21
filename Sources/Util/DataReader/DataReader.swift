@@ -91,7 +91,6 @@ public extension DataReader {
         try readUInt(byteCount: 1, endianess: endianess)
     }
     
-    
     func readInt8(endianess: Endianess = .little) throws -> Int8 {
         try readInt(byteCount: 1, endianess: endianess)
     }
@@ -111,7 +110,6 @@ public extension DataReader {
     func readInt32(endianess: Endianess = .little) throws -> Int32 {
         try readInt(byteCount: 4, endianess: endianess)
     }
-    
     
     func read(byteCount: Int) throws -> Data {
         guard source.count >= byteCount else {

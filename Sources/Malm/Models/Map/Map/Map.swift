@@ -13,7 +13,6 @@ public struct Map: Equatable, Identifiable {
     /// Name, description, size, difficulty etc.
     public let basicInformation: BasicInformation
     
-    
     public let playersInfo: InformationAboutPlayers
     
     /// Victory/Loss conditions, teams, rumors, hero settings, SOD: avaiable skills/artifacts/spells etc.

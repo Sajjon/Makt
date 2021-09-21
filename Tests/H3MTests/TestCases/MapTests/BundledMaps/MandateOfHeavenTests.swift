@@ -15,6 +15,7 @@ final class MandateOfHeavenTests: BaseMapTest {
     func test_mandate_of_heaven() throws {
         // Delete any earlier cached maps.
         Map.loader.cache.__deleteMap(by: .theMandateOfHeaven)
+        
         let inspector = Map.Loader.Parser.Inspector(
             playersInfoInspector: .init(
                 onFinishParsingInformationAboutPlayers: { info in

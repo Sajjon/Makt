@@ -35,8 +35,8 @@ public extension Map.Loader.Parser {
         inspector: Map.Loader.Parser.Inspector? = nil
     ) throws -> Map {
     
-        let stream = DataReader(readMap: readMap)
-        let formatRawValue = try stream.readUInt32()
+        let reader = DataReader(readMap: readMap)
+        let formatRawValue = try reader.readUInt32()
         let h3mParser: H3M
         
         if decompressor.isNumberFlaggingCompression(number: formatRawValue) {

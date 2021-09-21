@@ -29,11 +29,6 @@ public extension GzipDecompressor {
     }
     
     func decompress(data: Data) throws -> Data {
-//        guard isCompressed(data: data) else {
-//            print("🚨 Believed data to Gzipped, but it was not, returning it unchanged.")
-//            return data
-//        }
-        // The method `gunzipped` is an extension from `Gzip` SPM package imported above.
         return try data.gunzipped()
     }
     

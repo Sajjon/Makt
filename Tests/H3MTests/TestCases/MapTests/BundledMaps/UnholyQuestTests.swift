@@ -145,11 +145,9 @@ final class UnholyQuestMapTest: BaseMapTest {
                 expectationTeamInfo.fulfill()
             },
             onParseAvailableHeroes: { availableHeroes in
-                
 //                XCTArraysEqual(availableHeroes.heroIDs, Hero.ID.playable(in: .restorationOfErathia))
                 expectationAvailableHeroes.fulfill()
             },
-       
             onParseCustomHeroes: {
                 XCTAssertNil($0)
                 expectationCustomHeroes.fulfill()

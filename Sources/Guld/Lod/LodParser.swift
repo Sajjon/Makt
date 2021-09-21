@@ -10,6 +10,7 @@ import Foundation
 import Decompressor
 import Util
 import Malm
+import H3C
 
 public final class LodParser {
     
@@ -240,8 +241,13 @@ internal extension LodParser {
         case .campaign:
             let deferredPublisher = Deferred {
                 return Future<Campaign, Never> { promise in
-                    implementMe(comment: "How are Campaigns (H3C) represented? Similar To H3M but more complicated? This is probably a biggie...")
-               
+                    do {
+                        let h3cParser = H3CParser(data: data)
+                        let campaign = try h3cParser.parse()
+                        promise(.success(campaign))
+                    } catch {
+                        uncaught(error: error)
+                    }
                 }
             }.eraseToAnyPublisher()
             return .campaign(deferredPublisher)
