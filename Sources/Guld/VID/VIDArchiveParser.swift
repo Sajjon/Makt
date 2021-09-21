@@ -26,6 +26,11 @@ public extension VIDFile {
         public var fileExtension: String {
             fileName.fileExtension!
         }
+        
+        /// Without file extension
+        public var name: String {
+            String(fileName.split(separator: ".").first!)
+        }
     }
 }
 

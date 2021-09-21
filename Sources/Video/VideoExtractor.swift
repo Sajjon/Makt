@@ -32,6 +32,8 @@ public extension VideoExtractor {
         case extractionFinishError(Swift.Error)
     }
     
+    static let fileExtension: String = "mov"
+    
     func extract(
         data dataForWholeVideo: Data,
         name: String,
@@ -41,7 +43,7 @@ public extension VideoExtractor {
         
         let tmpDataURL = temporaryDirectory.appendingPathComponent("tmp_data_safe_to_delete")
         let tmpImageURL = temporaryDirectory.appendingPathComponent("tmp_image_safe_to_delete.png")
-        let outputURL = outputDirectory.appendingPathComponent("\(name).mov")
+        let outputURL = outputDirectory.appendingPathComponent([name, VideoExtractor.fileExtension].joined(separator: "."))
         
         func removeTempFiles() {
             try? FileManager.default.removeItem(atPath: temporaryDirectory.path)
@@ -52,29 +54,30 @@ public extension VideoExtractor {
                 do {
                     try dataForWholeVideo.write(to: tmpDataURL)
                     
-                    let fmtCtx = try AVFormatContext(
+                    let formatContext = try AVFormatContext(
                         url: tmpDataURL.path,
                         format: nil,
                         options: nil
                     )
                     
-                    try fmtCtx.findStreamInfo()
+                    try formatContext.findStreamInfo()
                     
-                    fmtCtx.dumpFormat(isOutput: false)
+                    formatContext.dumpFormat(isOutput: false)
+
                     
-                    guard let stream = fmtCtx.videoStream else {
+                    guard let stream = formatContext.videoStream else {
                         throw Error.openVideoError(.failedToGetVideoStreamFromContext)
                     }
                     
                     guard let codec = AVCodec.findDecoderById(stream.codecParameters.codecId) else {
                         throw Error.openVideoError(.codecNotFound(stream.codecParameters.codecId.name))
                     }
-                    let codecCtx = AVCodecContext(codec: codec)
-                    codecCtx.setParameters(stream.codecParameters)
+                    let codecContext = AVCodecContext(codec: codec)
+                    codecContext.setParameters(stream.codecParameters)
                     
-                    try codecCtx.openCodec()
+                    try codecContext.openCodec()
                     
-                    let pkt = AVPacket()
+                    let packet = AVPacket()
                     let frame = AVFrame()
                     
                     let videoWriter: AVAssetWriter
@@ -86,8 +89,8 @@ public extension VideoExtractor {
                     
                     let outputSettings: [String: Any] = [
                         AVFoundation.AVVideoCodecKey: AVFoundation.AVVideoCodecType.jpeg,
-                        AVFoundation.AVVideoWidthKey: NSNumber.init(value: codecCtx.width),
-                        AVFoundation.AVVideoHeightKey: NSNumber.init(value: codecCtx.height)
+                        AVFoundation.AVVideoWidthKey: NSNumber.init(value: codecContext.width),
+                        AVFoundation.AVVideoHeightKey: NSNumber.init(value: codecContext.height)
                     ]
                     
                     let writerInput = AVAssetWriterInput(mediaType: .video, outputSettings: outputSettings, sourceFormatHint: nil)
@@ -107,14 +110,13 @@ public extension VideoExtractor {
                     assert(videoWriter.canAdd(writerInput))
                     videoWriter.add(writerInput)
                     
-                    
                     videoWriter.startWriting()
                     videoWriter.startSession(atSourceTime: CMTime.zero)
                     
                     while true {
                         
                         do {
-                            let _ = try fmtCtx.readFrame(into: pkt)
+                            let _ = try formatContext.readFrame(into: packet)
                         } catch let error as SwiftFFmpeg.AVError {
                             if error == .eof {
                                 break
@@ -123,9 +125,9 @@ public extension VideoExtractor {
                             }
                         }
                         
-                        defer { pkt.unref() }
+                        defer { packet.unref() }
                         
-                        if pkt.streamIndex != stream.index {
+                        if packet.streamIndex != stream.index {
                             continue
                         }
                         
@@ -133,11 +135,11 @@ public extension VideoExtractor {
                             continue
                         }
                         
-                        try codecCtx.sendPacket(pkt)
+                        try codecContext.sendPacket(packet)
                         
                         while true {
                             do {
-                                try codecCtx.receiveFrame(frame)
+                                try codecContext.receiveFrame(frame)
                             } catch let err as SwiftFFmpeg.AVError where err == .tryAgain || err == .eof {
                                 break
                             }
@@ -149,9 +151,9 @@ public extension VideoExtractor {
                             
                             func pixelFormat() -> OSType {
                                 switch frame.pixelFormat {
-                                case .ARGB: return kCVPixelFormatType_32ARGB
-                                case .RGBA: return kCVPixelFormatType_32RGBA
                                 case .YUV420P: return kCVPixelFormatType_420YpCbCr8BiPlanarVideoRange
+                                case .PAL8:
+                                    return kCVPixelFormatType_32ARGB
                                 default: fatalError("handle format: \(String(describing: frame.pixelFormat))")
                                 }
                             }
@@ -175,21 +177,10 @@ public extension VideoExtractor {
                             
                             let ciContext = CIContext()
                             ciContext.render(ciImage, to: cvPixelBuffer)
-                            
-//                            let preferredTimescale: Int32 = 1000
-//
-//                            // frame duration is duration of single image in seconds
-//                            let presentationTime = CMTimeMakeWithSeconds(
-//                                .init(codecCtx.frameNumber * Int(frame.pktDuration)),
-//                                preferredTimescale: preferredTimescale
-//                            )
-//
-//                            print("\ncodecCtx.frameNumber: \(codecCtx.frameNumber), frame.pktDuration: \(frame.pktDuration) => value: \(Float64(codecCtx.frameNumber * Int(frame.pktDuration))), preferredTimescale: \(preferredTimescale)\n=>\npresentationTime: \(String(describing: presentationTime))\n\n")
-//
-                            
+      
                             pixelBufferAdaptor.append(
                                 cvPixelBuffer,
-                                withPresentationTime: CMTime.init(value: frame.bestEffortTimestamp, timescale: 10)
+                                withPresentationTime: CMTime.init(value: frame.bestEffortTimestamp, timescale: .init(stream.realFramerate.toDouble))
                             )
                             
                             frame.unref()
@@ -200,7 +191,6 @@ public extension VideoExtractor {
                     videoWriter.finishWriting {
                         removeTempFiles()
                         if let error = videoWriter.error {
-                            print("🚨 failed to write video. error: \(error)")
                             promise(.failure(VideoExtractor.Error.extractionFinishError(error)))
                         } else {
                             promise(.success(outputURL))
