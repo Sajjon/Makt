@@ -34,12 +34,32 @@ public extension AssetLoader {
         return ArchiveFile(kind: archive, data: data)
     }
     
+    // TODO: Make private/internal, archives should not be leaked to clients.
     func loadArchives() -> AnyPublisher<[ArchiveFile], AssetLoader.Error> {
         Future { promise in
-            DispatchQueue(label: "LoadAsset", qos: .background).async { [self] in
+            DispatchQueue(label: "LoadArchives", qos: .background).async { [self] in
                 do {
                     let assetFiles = try config.gamesFilesDirectories.allArchives.map(load(archive:))
                     promise(Result.success(assetFiles))
+                } catch let error as AssetLoader.Error {
+                    promise(Result.failure(error))
+                } catch { uncaught(error: error, expectedType: AssetLoader.Error.self) }
+            }
+        }.eraseToAnyPublisher()
+    }
+    
+    func loadMapIDs() -> AnyPublisher<[Map.ID], AssetLoader.Error> {
+        Future { promise in
+            DispatchQueue(label: "LoadMapIDs", qos: .background).async { [self] in
+                do {
+                    let path = config.gamesFilesDirectories.maps
+                    let mapDirectoryContents = try fileManager.contentsOfDirectory(atPath: path)
+                    let urlToMaps = URL(fileURLWithPath: path)
+                    let mapIDs: [Map.ID] = mapDirectoryContents.map {
+                        let mapPath = urlToMaps.appendingPathComponent($0)
+                        return Map.ID.init(absolutePath: mapPath.path)
+                    }
+                    promise(Result.success(mapIDs))
                 } catch let error as AssetLoader.Error {
                     promise(Result.failure(error))
                 } catch { uncaught(error: error, expectedType: AssetLoader.Error.self) }

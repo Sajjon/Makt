@@ -52,6 +52,10 @@ public extension Map.ID {
         case relative(name: String)
     }
     
+    var name: String {
+        String(fileName.split(separator: ".").first!)
+    }
+    
     var fileName: String {
         switch file {
         case .relative(let name): return name
