@@ -12,7 +12,6 @@ public extension Map.Loader {
     
     /// A type resonsible for reading raw data from map files on disc.
     struct ReadMap: Equatable {
-//        public let fileHandle: FileHandle
         public let data: Data
         public let filePath: String
         public let id: Map.ID
@@ -32,7 +31,6 @@ public extension Map.Loader {
 private extension Map.Loader.Reader {
     var mapsDirectoryPath: String { config.gamesFilesDirectories.maps }
 }
-
 
 // MARK: Public
 public extension Map.Loader.Reader {

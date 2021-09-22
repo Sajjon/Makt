@@ -16,6 +16,38 @@ public extension Sprite {
 
 public enum Sprite: String, Hashable, CaseIterable, ExpressibleByStringLiteral {
 
+    /// rocklands
+    /// Terrain kind: Land
+    case rocklands_AVXrk0 = "AVXrk0.def"
+
+    /// rocklands
+    /// Terrain kind: Land
+    case rocklands_AVXrk3 = "AVXrk3.def"
+
+    /// fieryFields
+    /// Terrain kind: Land
+    case fieryFields_AVXff2 = "AVXff2.def"
+
+    /// fieryFields
+    /// Terrain kind: Land
+    case fieryFields_AVXff3 = "AVXff3.def"
+
+    /// lucidPools
+    /// Terrain kind: Land
+    case lucidPools_AVXlp1 = "AVXlp1.def"
+
+    /// lucidPools
+    /// Terrain kind: Land
+    case lucidPools_AVXlp3 = "AVXlp3.def"
+
+    /// lucidPools
+    /// Terrain kind: Land
+    case lucidPools_AVXlp5 = "AVXlp5.def"
+    
+    /// riverDelta
+    /// Terrain kind: lava
+    case riverDelta_lavdelt4 = "lavdelt4.def"
+    
     /// randomDwellingOfFaction - castle
     /// Terrain kind: Land
     case randomDwellingOfFactionCastle_avrcgn00 = "avrcgn00.def"

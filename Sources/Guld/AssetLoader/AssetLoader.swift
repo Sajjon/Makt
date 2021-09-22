@@ -8,6 +8,7 @@
 import Foundation
 import Malm
 import Util
+import H3M
 import Combine
 
 public final class AssetLoader {
@@ -24,6 +25,7 @@ public extension AssetLoader {
     enum Error: Swift.Error {
         case noAssetExistsAtPath(String)
         case failedToLoadAssetAtPath(String)
+        case failedToLoadMap(id: Map.ID, error: Swift.Error)
     }
 }
 
@@ -40,11 +42,30 @@ public extension AssetLoader {
             DispatchQueue(label: "LoadArchives", qos: .background).async { [self] in
                 do {
                     let assetFiles = try config.gamesFilesDirectories.allArchives.map(load(archive:))
-                    promise(Result.success(assetFiles))
+                    promise(.success(assetFiles))
                 } catch let error as AssetLoader.Error {
-                    promise(Result.failure(error))
+                    promise(.failure(error))
                 } catch { uncaught(error: error, expectedType: AssetLoader.Error.self) }
             }
+        }.eraseToAnyPublisher()
+    }
+    
+    func loadMap(id mapID: Map.ID, inspector: Map.Loader.Parser.Inspector? = nil) -> AnyPublisher<Map, AssetLoader.Error> {
+        Deferred {
+        Future { promise in
+            DispatchQueue(label: "Parse Map", qos: .background).async {
+                do {
+                    print("✨ Loading map...")
+                    let start = CFAbsoluteTimeGetCurrent()
+                    let map = try Map.load(mapID, inspector: inspector)
+                    let diff = CFAbsoluteTimeGetCurrent() - start
+                    print("✨✅ Successfully loaded map '\(map.basicInformation.name)', took \(diff) seconds")
+                    promise(.success(map))
+                } catch {
+                    promise(.failure(AssetLoader.Error.failedToLoadMap(id: mapID, error: error)))
+                }
+            }
+        }.eraseToAnyPublisher()
         }.eraseToAnyPublisher()
     }
     
@@ -59,9 +80,9 @@ public extension AssetLoader {
                         let mapPath = urlToMaps.appendingPathComponent($0)
                         return Map.ID.init(absolutePath: mapPath.path)
                     }
-                    promise(Result.success(mapIDs))
+                    promise(.success(mapIDs))
                 } catch let error as AssetLoader.Error {
-                    promise(Result.failure(error))
+                    promise(.failure(error))
                 } catch { uncaught(error: error, expectedType: AssetLoader.Error.self) }
             }
         }.eraseToAnyPublisher()

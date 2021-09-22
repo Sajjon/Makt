@@ -12,6 +12,38 @@ extension Sprite: CustomDebugStringConvertible {
         switch self {
             
             
+            /// Sprite for object ID: 231
+            /// rocklands
+            case .rocklands_AVXrk0: return "rocklands"
+
+            /// Sprite for object ID: 231
+            /// rocklands
+            case .rocklands_AVXrk3: return "rocklands"
+
+            /// Sprite for object ID: 226
+            /// fieryFields
+            case .fieryFields_AVXff2: return "fieryFields"
+
+            /// Sprite for object ID: 226
+            /// fieryFields
+            case .fieryFields_AVXff3: return "fieryFields"
+
+            /// Sprite for object ID: 228
+            /// lucidPools
+            case .lucidPools_AVXlp1: return "lucidPools"
+
+            /// Sprite for object ID: 228
+            /// lucidPools
+            case .lucidPools_AVXlp3: return "lucidPools"
+
+            /// Sprite for object ID: 228
+            /// lucidPools
+            case .lucidPools_AVXlp5: return "lucidPools"
+            
+            /// Sprite for object ID: 143
+            /// riverDelta
+            case .riverDelta_lavdelt4: return "riverDelta"
+            
             /// Sprite for object ID: 17
             /// creatureGenerator1 - altarOfAir
             case .altarOfAir_AVG2ela: return "creatureGenerator1 - altarOfAir"

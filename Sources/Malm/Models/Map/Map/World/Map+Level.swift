@@ -22,7 +22,13 @@ public extension Map {
 }
 
 public extension Map.Level {
+    
     var debugDescription: String {
+        tileEmojiString
+    }
+    
+    var tileEmojiString: String {
+
         let width = Int(sqrt(Double(tiles.count)))
         let rows: [[Map.Tile]] = tiles.chunked(into: width)
         assert(rows.allSatisfy({ $0.count == width }))
