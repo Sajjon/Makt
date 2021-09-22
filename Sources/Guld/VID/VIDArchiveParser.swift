@@ -40,7 +40,7 @@ extension VIDFile.FileEntry: Identifiable {
 }
 
 public extension VIDArchiveParser {
-    func parse(assetFile: AssetFile) throws -> VIDFile {
+    func parse(assetFile: ArchiveFile) throws -> VIDFile {
         precondition(assetFile.kind.isVIDFile)
         
         let reader = DataReader(data: assetFile.data)

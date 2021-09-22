@@ -41,7 +41,7 @@ extension SNDFile.FileEntry: Identifiable {
 }
 
 public extension SNDArchiveParser {
-    func parse(assetFile: AssetFile) throws -> SNDFile {
+    func parse(assetFile: ArchiveFile) throws -> SNDFile {
         precondition(assetFile.kind.isSNDFile)
         
         let reader = DataReader(data: assetFile.data)

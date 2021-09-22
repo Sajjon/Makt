@@ -24,7 +24,7 @@ public final class LodParser {
 }
 
 public extension LodParser {
-    func parse(assetFile: AssetFile) throws -> LodFile {
+    func parse(assetFile: ArchiveFile) throws -> LodFile {
         precondition(assetFile.kind.isLODFile)
         
         let reader = DataReader(data: assetFile.data)

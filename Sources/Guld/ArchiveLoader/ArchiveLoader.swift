@@ -10,23 +10,6 @@ import Malm
 import Util
 import Combine
 
-public enum LoadedAsset: Hashable, NamedAssetFile {
-    case archive(LodFile)
-    case sound(SNDFile)
-    case video(VIDFile)
-    
-    public var fileName: String {
-        switch self {
-        case .archive(let lodFile):
-            return lodFile.lodFileName
-        case .sound(let sndFile):
-            return sndFile.sndArchiveFileName
-        case .video(let vidFie):
-            return vidFie.videoArchiveFileName
-        }
-    }
-}
-
 public final class ArchiveLoader {
     public init() {}
 }
@@ -35,25 +18,25 @@ public extension ArchiveLoader {
     
     typealias Error = LodParser.Error
     
-    func loadArchive(assetFile: AssetFile) -> AnyPublisher<LoadedAsset, Error> {
+    func load(archiveFile: ArchiveFile) -> AnyPublisher<LoadedArchive, Error> {
         return Future { promise in
             DispatchQueue(label: "LoadArchive", qos: .background).async {
                 do {
-                    switch assetFile.kind {
+                    switch archiveFile.kind {
                     case .sound:
                         let sndArchiveParser = SNDArchiveParser()
-                        let sndFile = try sndArchiveParser.parse(assetFile: assetFile)
-                        let loadedAsset: LoadedAsset = .sound(sndFile)
+                        let sndFile = try sndArchiveParser.parse(assetFile: archiveFile)
+                        let loadedAsset: LoadedArchive = .sound(sndFile)
                         promise(Result.success(loadedAsset))
-                    case .archive:
+                    case .lod:
                         let lodParser = LodParser()
-                        let lodFile = try lodParser.parse(assetFile: assetFile)
-                        let loadedAsset: LoadedAsset = .archive(lodFile)
+                        let lodFile = try lodParser.parse(assetFile: archiveFile)
+                        let loadedAsset: LoadedArchive = .archive(lodFile)
                         promise(Result.success(loadedAsset))
                     case .video:
                         let vidParser = VIDArchiveParser()
-                        let vidArchiveFile = try vidParser.parse(assetFile: assetFile)
-                        let loadedAsset: LoadedAsset = .video(vidArchiveFile)
+                        let vidArchiveFile = try vidParser.parse(assetFile: archiveFile)
+                        let loadedAsset: LoadedArchive = .video(vidArchiveFile)
                         promise(Result.success(loadedAsset))
                     }
                 } catch let error as Error {
