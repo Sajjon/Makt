@@ -185,12 +185,16 @@ internal extension H3M {
 
 private extension  H3M {
     func parseArtifact(in slot: Artifact.Slot, format: Map.Format) throws -> Hero.ArtifactInSlot? {
+        var slot = slot
         guard let artifactId = try parseArtifactID(format: format) else { return nil }
         guard !(artifactId.isWarMachine && slot.isBackpack) else {
             throw H3MError.warmachineFoundInBackback
         }
+        
+        // This is seen in bundled Armageddons Blade map `Freedom`
         if artifactId == .spellBook && slot == .body(.misc5) {
-            fatalError("Spellbook found in misc5. Invalid! Maybe we should just put it in spellbook slot? (and remove this fatalError..)")
+            slot = .body(.spellbook)
+            print("Warning: Spellbook found in misc5. We will put it in the 'spellbook slot' instead. This strange state has been observed in the following maps: 'Freedom'.")
         }
         
         return .init(slot: slot, artifactID: artifactId)

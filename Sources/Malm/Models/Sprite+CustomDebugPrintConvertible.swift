@@ -11,6 +11,109 @@ extension Sprite: CustomDebugStringConvertible {
     public var debugDescription: String {
         switch self {
             
+            /// Sprite for object ID: 143
+            /// riverDelta
+            case .riverDelta_muddelt1: return "riverDelta"
+            
+            /// Sprite for object ID: 227
+            /// holyGround
+            case .holyGround_AVXhg1: return "holyGround"
+
+            /// Sprite for object ID: 226
+            /// fieryFields
+            case .fieryFields_AVXff7: return "fieryFields"
+
+            /// Sprite for object ID: 222
+            /// cloverField
+            case .cloverField_AVXcf6: return "cloverField"
+
+            /// Sprite for object ID: 223
+            /// cursedGround2
+            case .cursedGround2_AVXcg3: return "cursedGround2"
+            
+            /// Sprite for object ID: 5
+            /// artifact - collarOfConjuring
+            case .collarOfConjuring_AVA0076: return "artifact - collarOfConjuring"
+
+            /// Sprite for object ID: 223
+            /// cursedGround2
+            case .cursedGround2_AVXcg6: return "cursedGround2"
+            
+            /// Sprite for object ID: 212
+            /// borderGate - playerSix
+            case .borderGatePlayerSix_avxbgt50: return "borderGate - playerSix"
+
+            /// Sprite for object ID: 225
+            /// favorableWinds
+            case .favorableWinds_AVXfw2: return "favorableWinds"
+
+            /// Sprite for object ID: 225
+            /// favorableWinds
+            case .favorableWinds_AVXfw0: return "favorableWinds"
+
+            /// Sprite for object ID: 225
+            /// favorableWinds
+            case .favorableWinds_AVXfw3: return "favorableWinds"
+
+            /// Sprite for object ID: 225
+            /// favorableWinds
+            case .favorableWinds_AVXfw4: return "favorableWinds"
+
+            /// Sprite for object ID: 225
+            /// favorableWinds
+            case .favorableWinds_AVXfw5: return "favorableWinds"
+
+            /// Sprite for object ID: 225
+            /// favorableWinds
+            case .favorableWinds_AVXfw6: return "favorableWinds"
+
+            /// Sprite for object ID: 225
+            /// favorableWinds
+            case .favorableWinds_AVXfw1: return "favorableWinds"
+
+            /// Sprite for object ID: 225
+            /// favorableWinds
+            case .favorableWinds_AVXfw7: return "favorableWinds"
+
+            /// Sprite for object ID: 227
+            /// holyGround
+            case .holyGround_AVXhg5: return "holyGround"
+
+            /// Sprite for object ID: 43
+            /// monolithOneWayEntrance - redSpiral
+            case .monolithOneWayEntranceRedSpiral_AVXmn7i0: return "monolithOneWayEntrance - redSpiral"
+
+            /// Sprite for object ID: 44
+            /// monolithOneWayExit - redSpiral
+            case .monolithOneWayExitRedSpiral_AVXmn7o0: return "monolithOneWayExit - redSpiral"
+            
+            /// Sprite for object ID: 43
+            /// monolithOneWayEntrance - whiteGlowSphere
+            case .monolithOneWayEntranceWhiteGlowSphere_AVXmn8i0: return "monolithOneWayEntrance - whiteGlowSphere"
+
+            /// Sprite for object ID: 226
+            /// fieryFields
+            case .fieryFields_AVXff6: return "fieryFields"
+
+            /// Sprite for object ID: 226
+            /// fieryFields
+            case .fieryFields_AVXff4: return "fieryFields"
+
+            /// Sprite for object ID: 229
+            /// magicClouds
+            case .magicClouds_AVXmc1: return "magicClouds"
+
+            /// Sprite for object ID: 44
+            /// monolithOneWayExit - whiteGlowSphere
+            case .monolithOneWayExitWhiteGlowSphere_AVXmn8o0: return "monolithOneWayExit - whiteGlowSphere"
+
+            /// Sprite for object ID: 231
+            /// rocklands
+            case .rocklands_AVXrk5: return "rocklands"
+
+            /// Sprite for object ID: 231
+            /// rocklands
+            case .rocklands_AVXrk7: return "rocklands"
             
             /// Sprite for object ID: 231
             /// rocklands

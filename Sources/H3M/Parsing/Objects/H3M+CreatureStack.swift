@@ -41,7 +41,6 @@ internal extension H3M {
                     // idRand % 2 -> upgrade number
                     
                     let randomIDSeed: Int16 = Int16(bitPattern: idRawMax) - Int16(bitPattern: idRaw) - 1
-                    assert(randomIDSeed > 0)
                     
                     let level = try Creature.Level(integer: randomIDSeed / 2)
                     let isUpgraded = randomIDSeed % 2 == 1

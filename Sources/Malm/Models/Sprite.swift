@@ -15,7 +15,111 @@ public extension Sprite {
 }
 
 public enum Sprite: String, Hashable, CaseIterable, ExpressibleByStringLiteral {
+    
+    /// riverDelta
+    /// Terrain kind: snow, swamp, rough
+    case riverDelta_muddelt1 = "muddelt1.def"
+    
+    /// holyGround
+    /// Terrain kind: Land
+    case holyGround_AVXhg1 = "AVXhg1.def"
 
+    /// fieryFields
+    /// Terrain kind: Land
+    case fieryFields_AVXff7 = "AVXff7.def"
+
+    /// cloverField
+    /// Terrain kind: Land
+    case cloverField_AVXcf6 = "AVXcf6.def"
+
+    /// cursedGround2
+    /// Terrain kind: Land
+    case cursedGround2_AVXcg3 = "AVXcg3.def"
+    
+    /// artifact - collarOfConjuring
+    /// Terrain kind: dirt
+    case collarOfConjuring_AVA0076 = "AVA0076.def"
+
+    /// cursedGround2
+    /// Terrain kind: Land
+    case cursedGround2_AVXcg6 = "AVXcg6.def"
+    
+    /// borderGate - playerSix
+    /// Terrain kind: Land
+    case borderGatePlayerSix_avxbgt50 = "avxbgt50.def"
+
+    /// favorableWinds
+    /// Terrain kind: Water
+    case favorableWinds_AVXfw2 = "AVXfw2.def"
+
+    /// favorableWinds
+    /// Terrain kind: Water
+    case favorableWinds_AVXfw0 = "AVXfw0.def"
+
+    /// favorableWinds
+    /// Terrain kind: Water
+    case favorableWinds_AVXfw3 = "AVXfw3.def"
+
+    /// favorableWinds
+    /// Terrain kind: Water
+    case favorableWinds_AVXfw4 = "AVXfw4.def"
+
+    /// favorableWinds
+    /// Terrain kind: Water
+    case favorableWinds_AVXfw5 = "AVXfw5.def"
+
+    /// favorableWinds
+    /// Terrain kind: Water
+    case favorableWinds_AVXfw6 = "AVXfw6.def"
+
+    /// favorableWinds
+    /// Terrain kind: Water
+    case favorableWinds_AVXfw1 = "AVXfw1.def"
+
+    /// favorableWinds
+    /// Terrain kind: Water
+    case favorableWinds_AVXfw7 = "AVXfw7.def"
+
+    /// holyGround
+    /// Terrain kind: Land
+    case holyGround_AVXhg5 = "AVXhg5.def"
+
+    /// monolithOneWayEntrance - redSpiral
+    /// Terrain kind: Land
+    case monolithOneWayEntranceRedSpiral_AVXmn7i0 = "AVXmn7i0.def"
+
+    /// monolithOneWayExit - redSpiral
+    /// Terrain kind: Land
+    case monolithOneWayExitRedSpiral_AVXmn7o0 = "AVXmn7o0.def"
+
+    /// monolithOneWayEntrance - whiteGlowSphere
+    /// Terrain kind: Land
+    case monolithOneWayEntranceWhiteGlowSphere_AVXmn8i0 = "AVXmn8i0.def"
+
+    /// fieryFields
+    /// Terrain kind: Land
+    case fieryFields_AVXff6 = "AVXff6.def"
+
+    /// fieryFields
+    /// Terrain kind: Land
+    case fieryFields_AVXff4 = "AVXff4.def"
+
+    /// magicClouds
+    /// Terrain kind: Land
+    case magicClouds_AVXmc1 = "AVXmc1.def"
+
+    /// monolithOneWayExit - whiteGlowSphere
+    /// Terrain kind: Land
+    case monolithOneWayExitWhiteGlowSphere_AVXmn8o0 = "AVXmn8o0.def"
+
+    /// rocklands
+    /// Terrain kind: Land
+    case rocklands_AVXrk5 = "AVXrk5.def"
+
+    /// rocklands
+    /// Terrain kind: Land
+    case rocklands_AVXrk7 = "AVXrk7.def"
+    
     /// rocklands
     /// Terrain kind: Land
     case rocklands_AVXrk0 = "AVXrk0.def"
