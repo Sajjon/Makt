@@ -59,7 +59,7 @@ public extension AssetLoader {
                     let start = CFAbsoluteTimeGetCurrent()
                     let map = try Map.load(mapID, inspector: inspector)
                     let diff = CFAbsoluteTimeGetCurrent() - start
-                    print("✨✅ Successfully loaded map '\(map.basicInformation.name)', took \(diff) seconds")
+                    print(String(format: "✨✅ Successfully loaded map '%@', took %.1f seconds", map.basicInformation.name, diff))
                     promise(.success(map))
                 } catch {
                     promise(.failure(AssetLoader.Error.failedToLoadMap(id: mapID, error: error)))
