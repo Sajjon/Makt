@@ -75,11 +75,7 @@ public extension AssetLoader {
         Future { promise in
             DispatchQueue(label: "Parse Basic Info of Map", qos: .background).async {
                 do {
-                    print("✨ Loading basic info for map...")
-                    let start = CFAbsoluteTimeGetCurrent()
                     let mapBasicInfo = try Map.loadBasicInform(mapID, inspector: inspector)
-                    let diff = CFAbsoluteTimeGetCurrent() - start
-                    print(String(format: "✨✅ Successfully loaded basic info for map '%@', took %.1f seconds", mapBasicInfo.name, diff))
                     promise(.success(mapBasicInfo))
                 } catch {
                     promise(.failure(AssetLoader.Error.failedToLoadBasicInfoOfMap(id: mapID, error: error)))
@@ -108,14 +104,24 @@ public extension AssetLoader {
     }
     
     func loadBasicInfoForAllMaps() -> AnyPublisher<[Map.BasicInformation], AssetLoader.Error> {
+        print("✨ Loading basic info for all maps...")
+        let start = CFAbsoluteTimeGetCurrent()
         return loadMapIDs().flatMap { (ids: [Map.ID]) -> AnyPublisher<[Map.BasicInformation], AssetLoader.Error> in
             let publishers: [AnyPublisher<Map.BasicInformation, AssetLoader.Error>] = ids.map { [self] (id: Map.ID) -> AnyPublisher<Map.BasicInformation, AssetLoader.Error>  in
                 let basicInfoPublisher: AnyPublisher<Map.BasicInformation, AssetLoader.Error> = loadBasicInfoForMap(id: id)
                 return basicInfoPublisher
             }
             
-            return Publishers.MergeMany(publishers).collect().eraseToAnyPublisher()
-        }.eraseToAnyPublisher()
+            return Publishers.MergeMany(publishers)
+                .collect()
+                .eraseToAnyPublisher()
+        }
+        .eraseToAnyPublisher()
+        .handleEvents(receiveOutput: { maps in
+            let diff = CFAbsoluteTimeGetCurrent() - start
+            print(String(format: "✨✅ Successfully loaded basic info for #\(maps.count) maps, took %.3f seconds", diff))
+        })
+        .eraseToAnyPublisher()
     }
 }
 
