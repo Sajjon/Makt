@@ -12,10 +12,40 @@ import H3M
 import Combine
 
 public final class AssetLoader {
+    
     public let config: Config
+    
     private let fileManager: FileManager
-    public init(config: Config, fileManager: FileManager = .default) {
+    private let imageLoader: ImageLoader
+    private let archiveLoader: ArchiveLoader
+    
+    static public private(set) var shared: AssetLoader!
+    
+    public static func initShared(
+        config: Config,
+        fileManager: FileManager = .default
+    ) -> AssetLoader {
+        if let alreadyInit = shared {
+            assert(alreadyInit.config == config, "Cannot handle")
+            return alreadyInit
+        }
+        let sharedInstance = AssetLoader(
+            config: config,
+            fileManager: fileManager
+        )
+        shared = sharedInstance
+        return sharedInstance
+    }
+    
+    internal init(
+        config: Config,
+        imageLoader: ImageLoader = .init(),
+        archiveLoader: ArchiveLoader = .init(),
+        fileManager: FileManager = .default
+    ) {
         self.config = config
+        self.imageLoader = imageLoader
+        self.archiveLoader = archiveLoader
         self.fileManager = fileManager
     }
 }
@@ -25,16 +55,20 @@ public extension AssetLoader {
     enum Error: Swift.Error {
         case noAssetExistsAtPath(String)
         case failedToLoadAssetAtPath(String)
+        case failedToLoadArchive(Archive, error: Swift.Error)
         case failedToLoadMap(id: Map.ID, error: Swift.Error)
         case failedToLoadBasicInfoOfMap(id: Map.ID, error: Swift.Error)
+        case failedToLoadImage(name: String, error: Swift.Error)
     }
 }
 
 // MARK: Load
 public extension AssetLoader {
-    func load(archive: Archive) throws -> ArchiveFile {
-        let data = try loadContentsOfDataFile(name: archive.fileName)
-        return ArchiveFile(kind: archive, data: data)
+
+    func load(archiveFile: ArchiveFile) -> AnyPublisher<LoadedArchive, AssetLoader.Error> {
+        archiveLoader.load(archiveFile: archiveFile).mapError({
+            AssetLoader.Error.failedToLoadArchive(archiveFile.kind, error: $0)
+        }).eraseToAnyPublisher()
     }
     
     // TODO: Make private/internal, archives should not be leaked to clients.
@@ -42,7 +76,7 @@ public extension AssetLoader {
         Future { promise in
             DispatchQueue(label: "LoadArchives", qos: .background).async { [self] in
                 do {
-                    let assetFiles = try config.gamesFilesDirectories.allArchives.map(load(archive:))
+                    let assetFiles = try config.gamesFilesDirectories.allArchives.map(open(archive:))
                     promise(.success(assetFiles))
                 } catch let error as AssetLoader.Error {
                     promise(.failure(error))
@@ -123,10 +157,40 @@ public extension AssetLoader {
         })
         .eraseToAnyPublisher()
     }
+    
+    func loadImage(terrain: Map.Tile.Terrain) -> AnyPublisher<CGImage, Never> {
+        fatalError()
+    }
+    
+    func loadImageFrom(
+        pcx: PCXImage
+    ) -> AnyPublisher<CGImage, AssetLoader.Error> {
+        imageLoader.loadImageFrom(pcx: pcx).mapError({
+            AssetLoader.Error.failedToLoadImage(name: pcx.name, error: $0)
+        }).eraseToAnyPublisher()
+    }
+    
+    func loadImageFrom(
+        defFilFrame frame: DefinitionFile.Frame,
+        palette: Palette?
+    ) -> AnyPublisher<CGImage, AssetLoader.Error> {
+        imageLoader.loadImageFrom(
+            pixelData: frame.pixelData,
+            width: frame.width,
+            palette: palette
+        ).mapError({
+            AssetLoader.Error.failedToLoadImage(name: frame.fileName, error: $0)
+        }).eraseToAnyPublisher()
+    }
 }
 
 // MARK: Private
 private extension AssetLoader {
+    
+    func open(archive: Archive) throws -> ArchiveFile {
+        let data = try loadContentsOfDataFile(name: archive.fileName)
+        return ArchiveFile(kind: archive, data: data)
+    }
     
     func loadContentsOfFileAt(path: String) throws -> Data {
         guard fileManager.fileExists(atPath: path) else {

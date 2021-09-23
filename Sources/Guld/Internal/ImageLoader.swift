@@ -1,27 +1,25 @@
 
 import Foundation
 import CoreGraphics
-//import CoreImage
 import Combine
 import Util
 
 // MARK: ImageLoader
-public final class ImageLoader {
-    public init() {}
+internal final class ImageLoader {
+    internal init() {}
 }
 
 // MARK: Error
-public extension ImageLoader {
+internal extension ImageLoader {
     enum Error: Swift.Error {
         case failedToCreateImageContext
-//        case failedToCreateImageFromData
         case failedToCreateImageFromContext
     }
 }
 
 
 // MARK: To CGImage
-public extension ImageLoader {
+internal extension ImageLoader {
     
     func pixelsFrom(data pixelData: Data, bytesPerPixel: Int = 3) -> [UInt32] {
         assert(bytesPerPixel == 3 || bytesPerPixel == 4)
@@ -45,16 +43,9 @@ public extension ImageLoader {
         return pixels
     }
 
-//    static func convertCIImageToCGImage(inputImage: CIImage) -> CGImage? {
-//        let context = CIContext(options: nil)
-//        if let cgImage = context.createCGImage(inputImage, from: inputImage.extent) {
-//            return cgImage
-//        }
-//        return nil
-//    }
 }
 
-public extension ImageLoader {
+internal extension ImageLoader {
     
     func loadImageFrom(pixelData: Data, width: Int, palette maybePalette: Palette?) -> AnyPublisher<CGImage, Error> {
         return Future { promise in
@@ -100,8 +91,8 @@ public extension ImageLoader {
     }
 }
 
-// MARK: Public
-public extension ImageLoader {
+// MARK: internal
+internal extension ImageLoader {
     func makeCGImage(pixelValueMatrix: [[UInt32]]) throws -> CGImage {
         guard let ctx = CGContext.from(pixels: pixelValueMatrix) else {
             throw Error.failedToCreateImageContext

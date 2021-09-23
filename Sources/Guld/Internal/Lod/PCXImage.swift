@@ -8,6 +8,7 @@
 import Foundation
 
 public struct PCXImage: Hashable {
+    public let name: String
     public let width: Int
     public let height: Int
     public let contents: Contents

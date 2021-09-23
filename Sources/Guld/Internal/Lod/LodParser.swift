@@ -82,7 +82,7 @@ internal extension LodParser {
         return size == pixelCountX3
     }
     
-    static func parsePCX(from data: Data) throws -> PCXImage {
+    static func parsePCX(from data: Data, named: String) throws -> PCXImage {
         let pcxReader = DataReader(data: data)
         let size = try Int(pcxReader.readUInt32())
         let width = try Int(pcxReader.readUInt32())
@@ -102,15 +102,15 @@ internal extension LodParser {
             }
         }()
         
-        return PCXImage(width: width, height: height, contents: contents)
+        return PCXImage(name: named, width: width, height: height, contents: contents)
     }
     
     
-    static func pcxPublisher(from data: Data) -> AnyPublisher<PCXImage, Never> {
+    static func pcxPublisher(from data: Data, named name: String) -> AnyPublisher<PCXImage, Never> {
         return Future { promise in
             DispatchQueue(label: "LoadPCXImage", qos: .background).async {
                 do {
-                    let pcxImage = try LodParser.parsePCX(from: data)
+                    let pcxImage = try LodParser.parsePCX(from: data, named: name)
                     promise(.success(pcxImage))
                 } catch {
                     incorrectImplementation(shouldAlwaysBeAbleTo: "Parse PCX Image")
@@ -168,7 +168,7 @@ internal extension LodParser {
             guard try isPCX(data: data) else {
                 throw Error.fileNameSuggestsEntryIsPCXButNotAccordingToData
             }
-            return .pcx(LodParser.pcxPublisher(from: data))
+            return .pcx(LodParser.pcxPublisher(from: data, named: metaData.name))
         case .palette:
             let deferredPublisher = Deferred {
                 return Future<Palette, Never> { promise in

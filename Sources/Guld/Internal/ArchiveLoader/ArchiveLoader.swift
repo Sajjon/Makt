@@ -10,11 +10,11 @@ import Malm
 import Util
 import Combine
 
-public final class ArchiveLoader {
-    public init() {}
+internal final class ArchiveLoader {
+    internal init() {}
 }
 
-public extension ArchiveLoader {
+internal extension ArchiveLoader {
     
     typealias Error = LodParser.Error
     
