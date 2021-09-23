@@ -8,7 +8,7 @@
 import Foundation
 
 public extension Map.Tile {
-    struct Terrain: Equatable, CustomDebugStringConvertible {
+    struct Terrain: Hashable, CustomDebugStringConvertible {
         public let kind: Kind
         public let viewID: ViewID
         public let rotation: Rotation
@@ -68,7 +68,7 @@ public extension Map.Tile.Terrain {
 public extension Map.Tile.Terrain {
     
     /// ID for a view to be rendered as a surface.
-    struct ViewID: Equatable {
+    struct ViewID: Hashable {
         public let view: UInt8
         
         public init(view: UInt8) {

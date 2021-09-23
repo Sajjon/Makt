@@ -8,14 +8,14 @@
 import Foundation
 
 public extension Map {
-    struct World: Equatable {
+    struct World: Hashable {
         public let above: Level
         /// Underworld
-        public let belowGround: Level?
+        public let underground: Level?
         
-        public init(above: Level, belowGround: Level? = nil) {
+        public init(above: Level, underground: Level? = nil) {
             self.above = above
-            self.belowGround = belowGround
+            self.underground = underground
         }
     }
     

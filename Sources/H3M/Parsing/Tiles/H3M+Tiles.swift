@@ -85,7 +85,7 @@ internal extension H3M {
             return .init(tiles: tiles, isUnderworld: true)
         }() : nil
         
-        return .init(above: aboveGround, belowGround: underworld)
+        return .init(above: aboveGround, underground: underworld)
     }
 }
 

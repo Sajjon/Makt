@@ -26,6 +26,7 @@ public extension AssetLoader {
         case noAssetExistsAtPath(String)
         case failedToLoadAssetAtPath(String)
         case failedToLoadMap(id: Map.ID, error: Swift.Error)
+        case failedToLoadBasicInfoOfMap(id: Map.ID, error: Swift.Error)
     }
 }
 
@@ -52,20 +53,38 @@ public extension AssetLoader {
     
     func loadMap(id mapID: Map.ID, inspector: Map.Loader.Parser.Inspector? = nil) -> AnyPublisher<Map, AssetLoader.Error> {
         Deferred {
+            Future { promise in
+                DispatchQueue(label: "Parse Map", qos: .background).async {
+                    do {
+                        print("✨ Loading map...")
+                        let start = CFAbsoluteTimeGetCurrent()
+                        let map = try Map.load(mapID, inspector: inspector)
+                        let diff = CFAbsoluteTimeGetCurrent() - start
+                        print(String(format: "✨✅ Successfully loaded map '%@', took %.1f seconds", map.basicInformation.name, diff))
+                        promise(.success(map))
+                    } catch {
+                        promise(.failure(AssetLoader.Error.failedToLoadMap(id: mapID, error: error)))
+                    }
+                }
+            }.eraseToAnyPublisher()
+        }.eraseToAnyPublisher()
+    }
+    
+    
+    func loadBasicInfoForMap(id mapID: Map.ID, inspector: Map.Loader.Parser.Inspector.BasicInfoInspector? = nil) -> AnyPublisher<Map.BasicInformation, AssetLoader.Error> {
         Future { promise in
-            DispatchQueue(label: "Parse Map", qos: .background).async {
+            DispatchQueue(label: "Parse Basic Info of Map", qos: .background).async {
                 do {
-                    print("✨ Loading map...")
+                    print("✨ Loading basic info for map...")
                     let start = CFAbsoluteTimeGetCurrent()
-                    let map = try Map.load(mapID, inspector: inspector)
+                    let mapBasicInfo = try Map.loadBasicInform(mapID, inspector: inspector)
                     let diff = CFAbsoluteTimeGetCurrent() - start
-                    print(String(format: "✨✅ Successfully loaded map '%@', took %.1f seconds", map.basicInformation.name, diff))
-                    promise(.success(map))
+                    print(String(format: "✨✅ Successfully loaded basic info for map '%@', took %.1f seconds", mapBasicInfo.name, diff))
+                    promise(.success(mapBasicInfo))
                 } catch {
-                    promise(.failure(AssetLoader.Error.failedToLoadMap(id: mapID, error: error)))
+                    promise(.failure(AssetLoader.Error.failedToLoadBasicInfoOfMap(id: mapID, error: error)))
                 }
             }
-        }.eraseToAnyPublisher()
         }.eraseToAnyPublisher()
     }
     
@@ -85,6 +104,17 @@ public extension AssetLoader {
                     promise(.failure(error))
                 } catch { uncaught(error: error, expectedType: AssetLoader.Error.self) }
             }
+        }.eraseToAnyPublisher()
+    }
+    
+    func loadBasicInfoForAllMaps() -> AnyPublisher<[Map.BasicInformation], AssetLoader.Error> {
+        return loadMapIDs().flatMap { (ids: [Map.ID]) -> AnyPublisher<[Map.BasicInformation], AssetLoader.Error> in
+            let publishers: [AnyPublisher<Map.BasicInformation, AssetLoader.Error>] = ids.map { [self] (id: Map.ID) -> AnyPublisher<Map.BasicInformation, AssetLoader.Error>  in
+                let basicInfoPublisher: AnyPublisher<Map.BasicInformation, AssetLoader.Error> = loadBasicInfoForMap(id: id)
+                return basicInfoPublisher
+            }
+            
+            return Publishers.MergeMany(publishers).collect().eraseToAnyPublisher()
         }.eraseToAnyPublisher()
     }
 }

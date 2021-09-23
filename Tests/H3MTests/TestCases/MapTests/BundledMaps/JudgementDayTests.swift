@@ -81,7 +81,7 @@ final class JudgementDayTests: BaseMapTest {
 //            XCTAssertTrue(predefinedHeroes.isEmpty)
 //        },
 //        onParseWorld: { world in
-//            XCTAssertNil(world.belowGround)
+//            XCTAssertNil(world.underground)
 //            XCTAssertFalse(world.above.isUnderworld)
 //            let tiles = world.above.tiles
 //            XCTAssertEqual(tiles.count, 36*36)

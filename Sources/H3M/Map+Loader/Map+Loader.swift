@@ -20,6 +20,13 @@ extension Map {
 // MARK: Load
 public extension Map {
     
+    static func loadBasicInform(
+        _ mapID: Map.ID,
+        inspector: Map.Loader.Parser.Inspector.BasicInfoInspector? = nil
+    ) throws -> Map.BasicInformation {
+        try loader.loadBasicInfo(id: mapID, inspector: inspector)
+    }
+    
     static func load(
         _ mapID: Map.ID,
         inspector: Map.Loader.Parser.Inspector? = nil
@@ -89,6 +96,17 @@ public extension Map.Loader {
         let parsedMap = try parser.parse(readMap: readMap, inspector: inspector)
         cache.save(map: parsedMap)
         return parsedMap
+    }
+    
+    func loadBasicInfo(
+        id mapID: Map.ID,
+        inspector: Map.Loader.Parser.Inspector.BasicInfoInspector? = nil
+    ) throws -> Map.BasicInformation {
+        if let cachedMap = cache.load(id: mapID) {
+            return cachedMap.basicInformation
+        }
+        let readMap = try reader.read(by: mapID)
+        return try parser.parseBasicInformation(readMap: readMap, inspector: inspector)
     }
 }
 

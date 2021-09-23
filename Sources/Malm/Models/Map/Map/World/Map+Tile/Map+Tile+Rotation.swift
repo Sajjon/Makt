@@ -14,7 +14,7 @@ public extension Map.Tile {
     /// Not to be confused with `Direction`.
     /// 
     /// TODO ASSERT CORRECT rawValue. this is A GUESS from Cyons cide
-    enum Rotation: UInt8, Equatable, CaseIterable, CustomDebugStringConvertible {
+    enum Rotation: UInt8, Hashable, CaseIterable, CustomDebugStringConvertible {
         case identity, clockwise90, rotation180, counterClockwise90
     }
 }

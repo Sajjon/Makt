@@ -118,7 +118,7 @@ final class RaceForArdintinnyTests: BaseMapTest {
             playersInfoInspector: playersInfoInspector,
             additionalInformationInspector: additionalInfoInspector,
             onParseWorld: { world in
-                XCTAssertNotNil(world.belowGround)
+                XCTAssertNotNil(world.underground)
             },
             onParseObject: { [self] object in
                 func assertEvent(expected: Map.GeoEvent, line: UInt = #line) {

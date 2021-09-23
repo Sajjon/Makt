@@ -8,7 +8,8 @@
 import Foundation
 import Util
 
-public struct Size: Hashable, CaseIterable, CustomDebugStringConvertible {
+public struct Size: Hashable, CaseIterable, CustomDebugStringConvertible, Comparable {
+    
     public typealias Scalar = Int
     public let width: Scalar
     public let height: Scalar
@@ -17,6 +18,8 @@ public struct Size: Hashable, CaseIterable, CustomDebugStringConvertible {
         self.width = width
         self.height = height
     }
+    
+    
 }
 
 private extension Size.Scalar {
@@ -41,6 +44,10 @@ private extension Size {
     }
 }
 public extension Size {
+    
+    static func < (lhs: Self, rhs: Self) -> Bool {
+        lhs.tileCount < rhs.tileCount
+    }
     
     var tileCount: Int { height * height }
     

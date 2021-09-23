@@ -9,7 +9,7 @@ import Foundation
 
 public extension Map.Tile {
     
-    struct Road: Equatable, CustomDebugStringConvertible {
+    struct Road: Hashable, CustomDebugStringConvertible {
         public let kind: Kind
         
         /// The direction of the the road. Not to be confused with `rotation` of image.
@@ -32,7 +32,7 @@ public extension Map.Tile {
 
 // MARK: Kind
 public extension Map.Tile.Road {
-    enum Kind: UInt8, Equatable, CaseIterable, CustomDebugStringConvertible {
+    enum Kind: UInt8, Hashable, CaseIterable, CustomDebugStringConvertible {
         // 0 means "no road", but we model it as `Optional<Road>.none` instead of Road.Kind having a specific case for it...
         case dirt = 1, gravel, cobbelStone
     }
@@ -127,7 +127,7 @@ public extension Map.Tile.Road {
     ///    (0x0F, EndHorz)
     ///    (0x10, Cross)
     ///
-    struct Direction: Equatable {
+    struct Direction: Hashable {
         public typealias RawValue = UInt8
         public let frameID: RawValue
         

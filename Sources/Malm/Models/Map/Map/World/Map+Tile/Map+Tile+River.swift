@@ -8,7 +8,7 @@
 import Foundation
 
 public extension Map.Tile {
-    struct River: Equatable, CustomDebugStringConvertible {
+    struct River: Hashable, CustomDebugStringConvertible {
         public let kind: Kind
         
         /// The direction of the river's "mouth" (three split smaller rivers). Not to be confused with `rotation` of image.
@@ -81,7 +81,7 @@ public extension Map.Tile.River {
     ///
     /// 
     ///
-    struct Direction: Equatable {
+    struct Direction: Hashable {
         public typealias RawValue = UInt8
         public let frameID: RawValue
         
@@ -101,7 +101,7 @@ public extension Map.Tile.River {
 
 // MARK: Kind
 public extension Map.Tile.River {
-    enum Kind: UInt8, Equatable, CaseIterable, CustomDebugStringConvertible {
+    enum Kind: UInt8, Hashable, CaseIterable, CustomDebugStringConvertible {
         // 0 means "no river", but we model it as `Optional<River>.none` instead of River.Kind having a specific case for it...
         case clear = 1, icy, muddy, lava
     }

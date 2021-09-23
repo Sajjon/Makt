@@ -38,12 +38,17 @@ internal typealias H3M = Map.Loader.Parser.H3M
 
 // MARK: Parse Map
 extension H3M {
+    
+    func parseBasicInformation(inspector: Map.Loader.Parser.Inspector.BasicInfoInspector? = nil) throws -> Map.BasicInformation {
+        try parseBasicInfo(inspector: inspector)
+    }
+    
     func parse(inspector: Map.Loader.Parser.Inspector? = nil) throws -> Map {
         
         let checksum = CRC32.checksum(readMap.data)
         
         let basicInfo = try parseBasicInfo(inspector: inspector?.basicInfoInspector)
-       
+        
         let format = basicInfo.format
         let size = basicInfo.size
         
@@ -59,7 +64,7 @@ extension H3M {
         inspector?.didParseWorld(world)
         
         let attributesOfObjects = try parseAttributesOfObjects()
-        assert(attributesOfObjects.attributes.count < (world.above.tiles.count + (world.belowGround?.tiles.count ?? 0)))
+        assert(attributesOfObjects.attributes.count < (world.above.tiles.count + (world.underground?.tiles.count ?? 0)))
         inspector?.didParseAttributesOfObjects(attributesOfObjects)
         
      

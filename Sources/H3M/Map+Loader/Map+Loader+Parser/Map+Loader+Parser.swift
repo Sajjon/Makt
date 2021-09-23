@@ -29,12 +29,27 @@ public extension Map.Loader {
 
 public extension Map.Loader.Parser {
 
+    func parseBasicInformation(
+        readMap: Map.Loader.ReadMap,
+        inspector: Map.Loader.Parser.Inspector.BasicInfoInspector? = nil
+    ) throws -> Map.BasicInformation {
+        let h3mParser = try parserFor(readMap: readMap)
+        return try h3mParser.parseBasicInformation(inspector: inspector)
+    }
   
     func parse(
         readMap: Map.Loader.ReadMap,
         inspector: Map.Loader.Parser.Inspector? = nil
     ) throws -> Map {
-    
+        let h3mParser = try parserFor(readMap: readMap)
+        return try h3mParser.parse(inspector: inspector)
+    }
+}
+
+private extension Map.Loader.Parser {
+    func parserFor(
+        readMap: Map.Loader.ReadMap
+    ) throws -> Map.Loader.Parser.H3M {
         let reader = DataReader(readMap: readMap)
         let formatRawValue = try reader.readUInt32()
         let h3mParser: H3M
@@ -67,11 +82,10 @@ public extension Map.Loader.Parser {
                 h3mParser = H3M(readMap: readMap)
             }
         }
-        return try h3mParser.parse(inspector: inspector)
         
+        return h3mParser
     }
 }
-
 
 
 

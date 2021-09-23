@@ -10,7 +10,7 @@ import Foundation
 
 public extension Map {
     
-    struct Level: Equatable, CustomDebugStringConvertible {
+    struct Level: Hashable, CustomDebugStringConvertible {
         public let tiles: [Tile]
         public let isUnderworld: Bool
         
@@ -35,27 +35,28 @@ public extension Map.Level {
         assert(rows.count == width)
         
         func printRow(_ row: [Map.Tile]) -> String {
-            
-            func printTile(_ tile: Map.Tile) -> String {
-                let t: String
-                switch tile.terrain.kind {
-                case .dirt: t = "◻️"
-                case .grass: t = "🟩" // "🍀" // 
-                case .lava: t = "🌋"
-                case .rock: t = "⬛️"
-                case .rough: t = "🟧"
-                case .sand: t = "🟨"
-                case .snow: t = "❄️"
-                case .subterranean: t = "📔" // "🟫" 
-                case .swamp: t = "🍄"
-                case .water: t = "💧"
-                }
-                return t
-            }
-            
-            return row.map(printTile).joined(separator: "")
+            return row.map { $0.emojiString }.joined(separator: "")
         }
         
         return rows.map(printRow).joined(separator: "\n")
+    }
+}
+
+public extension Map.Tile {
+    var emojiString: String {
+        let t: String
+        switch terrain.kind {
+        case .dirt: t = "◻️"
+        case .grass: t = "🟩" // "🍀" //
+        case .lava: t = "🌋"
+        case .rock: t = "⬛️"
+        case .rough: t = "🟧"
+        case .sand: t = "🟨"
+        case .snow: t = "❄️"
+        case .subterranean: t = "📔" // "🟫"
+        case .swamp: t = "🍄"
+        case .water: t = "💧"
+        }
+        return t
     }
 }

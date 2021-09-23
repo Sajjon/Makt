@@ -8,7 +8,7 @@
 import Foundation
 
 public extension Map {
-    struct AttributesOfObjects: Equatable {
+    struct AttributesOfObjects: Hashable {
         public let attributes: [Map.Object.Attributes]
         public init(attributes: [Map.Object.Attributes]) {
             self.attributes = attributes
