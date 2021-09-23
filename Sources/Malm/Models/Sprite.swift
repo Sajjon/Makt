@@ -17,6 +17,90 @@ public extension Sprite {
 public enum Sprite: String, Hashable, CaseIterable, ExpressibleByStringLiteral {
     
     /// riverDelta
+    /// Terrain kind: snow
+    case riverDelta_icedelt3 = "icedelt3.def"
+    
+    /// hero - wizard
+    /// Terrain kind: Land
+    case heroWizard_ah05_e = "ah05_e.def"
+    
+    /// creatureGenerator1 - unicornGlade
+    /// Terrain kind: Land
+    case unicornGlade_AVG2uni = "AVG2uni.def"
+    
+    /// lucidPools
+    /// Terrain kind: Land
+    case lucidPools_AVXlp6 = "AVXlp6.def"
+    
+    /// borderGate - brown
+    /// Terrain kind: Land
+    case borderGateBrown_avxbgt40 = "avxbgt40.def"
+
+    /// borderGate - darkBlue
+    /// Terrain kind: Land
+    case borderGateDarkBlue_avxbgt30 = "avxbgt30.def"
+    
+    /// cursedGround2
+    /// Terrain kind: Land
+    case cursedGround2_AVXcg7 = "AVXcg7.def"
+
+    /// magicPlains2
+    /// Terrain kind: Land
+    case magicPlains2_AVXmp1 = "AVXmp1.def"
+    
+    /// riverDelta
+    /// Terrain kind: snow, swamp, rough
+    case riverDelta_muddelt4 = "muddelt4.def"
+
+    /// monolithOneWayEntrance - yellowGlowing
+    /// Terrain kind: Land
+    case monolithOneWayEntranceYellowGlowing_AVXmn4i0 = "AVXmn4i0.def"
+
+    /// monolithOneWayExit - yellowGlowing
+    /// Terrain kind: Land
+    case monolithOneWayExitYellowGlowing_AVXmn4o0 = "AVXmn4o0.def"
+
+    /// magicPlains2
+    /// Terrain kind: Land
+    case magicPlains2_AVXmp6 = "AVXmp6.def"
+    
+    /// riverDelta
+    /// Terrain kind: snow, swamp, rough
+    case riverDelta_muddelt3 = "muddelt3.def"
+    
+    /// lucidPools
+    /// Terrain kind: Land
+    case lucidPools_AVXlp4 = "AVXlp4.def"
+
+    /// magicClouds
+    /// Terrain kind: Land
+    case magicClouds_AVXmc4 = "AVXmc4.def"
+    
+    /// borderGate - lightBlue
+    /// Terrain kind: Land
+    case borderGateLightBlue_avxbgt00 = "avxbgt00.def"
+    
+    /// garrison2
+    /// Terrain kind: Land
+    case garrison2_avcvgarm = "avcvgarm.def"
+    
+    /// creatureGenerator1 - gnollHut
+    /// Terrain kind: Land
+    case gnollHut_AVGnoll = "AVGnoll.def"
+    
+    /// sign
+    /// Terrain kind: swamp
+    case sign_AVXsnsw0 = "AVXsnsw0.def"
+    
+    /// creatureGenerator1 - pyre
+    /// Terrain kind: Land
+    case pyre_AVGfbrd = "AVGfbrd.def"
+    
+    /// riverDelta
+    /// Terrain kind: lava
+    case riverDelta_lavdelt2 = "lavdelt2.def"
+    
+    /// riverDelta
     /// Terrain kind: snow, swamp, rough
     case riverDelta_muddelt1 = "muddelt1.def"
     

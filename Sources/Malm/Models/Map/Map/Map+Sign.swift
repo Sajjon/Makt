@@ -9,9 +9,9 @@ import Foundation
 public extension Map {
 
     struct Sign: Hashable {
-        public let message: String
+        public let message: String?
         
-        public init(message: String) {
+        public init(message: String?) {
             self.message = message
         }
     }

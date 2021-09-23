@@ -40,7 +40,7 @@ let package = Package(
         .target(
             name: "Guld",
             dependencies: [
-                "Util", "Malm", "Decompressor", "H3C"
+                "Util", "Malm", "Decompressor", "H3C", "H3M"
             ]
         ),
    

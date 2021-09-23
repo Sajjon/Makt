@@ -11,6 +11,94 @@ extension Sprite: CustomDebugStringConvertible {
     public var debugDescription: String {
         switch self {
             
+            
+            
+            /// Sprite for object ID: 143
+            /// riverDelta
+            case .riverDelta_icedelt3: return "riverDelta"
+            
+            
+            /// Sprite for object ID: 34
+            /// hero - wizard
+            case .heroWizard_ah05_e: return "hero - wizard"
+            
+            /// Sprite for object ID: 17
+            /// creatureGenerator1 - unicornGlade
+            case .unicornGlade_AVG2uni: return "creatureGenerator1 - unicornGlade"
+            
+            /// Sprite for object ID: 228
+            /// lucidPools
+            case .lucidPools_AVXlp6: return "lucidPools"
+            
+            /// Sprite for object ID: 212
+            /// borderGate - brown
+            case .borderGateBrown_avxbgt40: return "borderGate - brown"
+
+            /// Sprite for object ID: 212
+            /// borderGate - darkBlue
+            case .borderGateDarkBlue_avxbgt30: return "borderGate - darkBlue"
+            
+            /// Sprite for object ID: 223
+            /// cursedGround2
+            case .cursedGround2_AVXcg7: return "cursedGround2"
+
+            /// Sprite for object ID: 230
+            /// magicPlains2
+            case .magicPlains2_AVXmp1: return "magicPlains2"
+            
+            /// Sprite for object ID: 143
+            /// riverDelta
+            case .riverDelta_muddelt4: return "riverDelta"
+
+            /// Sprite for object ID: 43
+            /// monolithOneWayEntrance - yellowGlowing
+            case .monolithOneWayEntranceYellowGlowing_AVXmn4i0: return "monolithOneWayEntrance - yellowGlowing"
+
+            /// Sprite for object ID: 44
+            /// monolithOneWayExit - yellowGlowing
+            case .monolithOneWayExitYellowGlowing_AVXmn4o0: return "monolithOneWayExit - yellowGlowing"
+
+            /// Sprite for object ID: 230
+            /// magicPlains2
+            case .magicPlains2_AVXmp6: return "magicPlains2"
+            
+            /// Sprite for object ID: 143
+            /// riverDelta
+            case .riverDelta_muddelt3: return "riverDelta"
+            
+            /// Sprite for object ID: 228
+            /// lucidPools
+            case .lucidPools_AVXlp4: return "lucidPools"
+
+            /// Sprite for object ID: 229
+            /// magicClouds
+            case .magicClouds_AVXmc4: return "magicClouds"
+            
+            /// Sprite for object ID: 212
+            /// borderGate - lightBlue
+            case .borderGateLightBlue_avxbgt00: return "borderGate - lightBlue"
+            
+            /// Sprite for object ID: 219
+            /// garrison2
+            case .garrison2_avcvgarm: return "garrison2"
+            
+            /// Sprite for object ID: 17
+            /// creatureGenerator1 - gnollHut
+            case .gnollHut_AVGnoll: return "creatureGenerator1 - gnollHut"
+            
+            /// Sprite for object ID: 91
+            /// sign
+            case .sign_AVXsnsw0: return "sign"
+            
+            /// Sprite for object ID: 17
+            /// creatureGenerator1 - pyre
+            case .pyre_AVGfbrd: return "creatureGenerator1 - pyre"
+            
+            
+            /// Sprite for object ID: 143
+            /// riverDelta
+            case .riverDelta_lavdelt2: return "riverDelta"
+            
             /// Sprite for object ID: 143
             /// riverDelta
             case .riverDelta_muddelt1: return "riverDelta"
