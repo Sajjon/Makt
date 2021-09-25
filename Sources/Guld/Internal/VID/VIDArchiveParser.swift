@@ -9,43 +9,34 @@ import Foundation
 import Util
 import Malm
 
-public final class VIDArchiveParser {
-    public init() {}
+internal protocol ArchiveFileCountParser {
+    func peekFileEntryCount(of archiveFile: ArchiveFile) throws -> Int
 }
 
-public struct VIDFile: Hashable {
-    public let videoArchiveFileName: String
-    public let fileEntries: [FileEntry]
-}
-
-public extension VIDFile {
-    
-    struct FileEntry: Hashable {
-        public let fileName: String
-        public let contents: Data
-        public var fileExtension: String {
-            fileName.fileExtension!
-        }
-        
-        /// Without file extension
-        public var name: String {
-            String(fileName.split(separator: ".").first!)
-        }
+extension ArchiveFileCountParser {
+    func peekFileEntryCount(of archiveFile: ArchiveFile) throws -> Int {
+        let reader = DataReader(data: archiveFile.data)
+        let fileCount = try reader.readUInt32()
+        return .init(fileCount)
     }
 }
 
-extension VIDFile.FileEntry: Identifiable {
-    public typealias ID = String
-    public var id: ID { fileName }
+internal final class VIDArchiveParser: ArchiveFileCountParser {
+    internal init() {}
 }
 
-public extension VIDArchiveParser {
-    func parse(assetFile: ArchiveFile) throws -> VIDFile {
+internal extension VIDArchiveParser {
+    
+    func parse(
+        assetFile: ArchiveFile,
+        inspector: AssetParsedInspector? = nil
+    ) throws -> VIDFile {
         precondition(assetFile.kind.isVIDFile)
         
         let reader = DataReader(data: assetFile.data)
         
         let fileCount = try reader.readUInt32()
+        
        
         let nameAndOffsetList: [(name: String, offset: Int)] = try fileCount.nTimes {
             let fileName = try reader.readStringOfKnownMaxLength(40)!
@@ -76,7 +67,13 @@ public extension VIDArchiveParser {
         let fileEntries: [VIDFile.FileEntry] = try metaDatas.map {
             try reader.seek(to: $0.offset)
             let contents = try reader.read(byteCount: $0.size)
-            return .init(fileName: $0.name, contents: contents)
+            let fileEntry = VIDFile.FileEntry(
+                parentArchiveName: assetFile.fileName,
+                fileName: $0.name,
+                contents: contents
+            )
+            inspector?.didParseFileEntry(fileEntry)
+            return fileEntry
         }
         
         return .init(

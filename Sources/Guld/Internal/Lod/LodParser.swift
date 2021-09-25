@@ -12,21 +12,35 @@ import Util
 import Malm
 import H3C
 
-public final class LodParser {
+
+internal final class LodParser: ArchiveFileCountParser {
     
-    internal let decompressor: Decompressor
+    fileprivate let decompressor: Decompressor
     
-    public init(
+    internal init(
         decompressor: Decompressor = GzipDecompressor()
     ) {
         self.decompressor = decompressor
     }
 }
 
-public extension LodParser {
-    func parse(assetFile: ArchiveFile) throws -> LodFile {
+internal extension LodParser {
+    
+    func peekFileEntryCount(of archiveFile: ArchiveFile) throws -> Int {
+        let reader = DataReader(data: archiveFile.data)
+        try reader.seek(to: 8)
+        let fileCount = try reader.readUInt32()
+        return .init(fileCount)
+    }
+    
+    func parse(
+        assetFile: ArchiveFile,
+        inspector: AssetParsedInspector? = nil
+    ) throws -> LodFile {
+            
         precondition(assetFile.kind.isLODFile)
-        
+        print("✨ LodParser parsing LOD file: \(assetFile.fileName)")
+            
         let reader = DataReader(data: assetFile.data)
         
         guard let header = try reader.readStringOfKnownMaxLength(4) else {
@@ -46,7 +60,15 @@ public extension LodParser {
         }
         
         let entries: [LodFile.FileEntry] = try compressedEntriesMetaData.compactMap {
-            try decompress($0, reader: reader)
+            guard let fileEntry = try decompress(
+                parentArchiveName: assetFile.fileName,
+                entryMetaData: $0,
+                reader: reader
+            ) else {
+                return nil
+            }
+            inspector?.didParseFileEntry(fileEntry)
+            return fileEntry
         }
         
         return LodFile(
@@ -120,7 +142,8 @@ internal extension LodParser {
     }
     
     func decompress(
-        _ entryMetaData: LodFile.CompressedFileEntryMetaData,
+        parentArchiveName: String,
+        entryMetaData: LodFile.CompressedFileEntryMetaData,
         reader: DataReader
     ) throws -> LodFile.FileEntry? {
         try reader.seek(to: entryMetaData.fileOffset)
@@ -139,8 +162,10 @@ internal extension LodParser {
         }
         
         return LodFile.FileEntry(
-            name: entryMetaData.name,
-            content: content
+            parentArchiveName: parentArchiveName,
+            fileName: entryMetaData.name,
+            content: content,
+            byteCount: data.count
         )
     }
     
@@ -276,7 +301,7 @@ internal extension LodParser {
     }
 }
 
-public extension LodParser {
+internal extension LodParser {
     enum Error: Swift.Error, Equatable {
         case failedToReadHeader
         case failedToParseKindFromFile(named: String)

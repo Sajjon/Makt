@@ -9,39 +9,17 @@ import Foundation
 import Util
 import Malm
 
-public final class SNDArchiveParser {
-    public init() {}
+internal final class SNDArchiveParser: ArchiveFileCountParser {
+    internal init() {}
 }
 
-public struct SNDFile: Hashable {
-    public let sndArchiveFileName: String
-    public let fileEntries: [FileEntry]
-}
+internal extension SNDArchiveParser {
 
-public extension SNDFile {
     
-    struct FileEntry: Hashable {
-        public let fileName: String
-        public let contents: Data
-        public var fileExtension: String {
-            fileName.fileExtension!
-        }
-    }
-    
-    struct FileEntryMetaData: Hashable {
-        public let fileName: String
-        public let fileOffset: Int
-        public let size: Int
-    }
-}
-
-extension SNDFile.FileEntry: Identifiable {
-    public typealias ID = String
-    public var id: ID { fileName }
-}
-
-public extension SNDArchiveParser {
-    func parse(assetFile: ArchiveFile) throws -> SNDFile {
+    func parse(
+        assetFile: ArchiveFile,
+        inspector: AssetParsedInspector? = nil
+    ) throws -> SNDFile {
         precondition(assetFile.kind.isSNDFile)
         
         let reader = DataReader(data: assetFile.data)
@@ -71,7 +49,13 @@ public extension SNDArchiveParser {
         let fileEntries: [SNDFile.FileEntry] = try metaDataAboutFiles.map { metaData in
             try reader.seek(to: metaData.fileOffset)
             let contents = try reader.read(byteCount: metaData.size)
-            return .init(fileName: metaData.fileName, contents: contents)
+            let fileEntry = SNDFile.FileEntry(
+                parentArchiveName: assetFile.fileName,
+                fileName: metaData.fileName,
+                contents: contents
+            )
+            inspector?.didParseFileEntry(fileEntry)
+            return fileEntry
         }
         
         return .init(

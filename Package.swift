@@ -7,7 +7,7 @@ let excludedFilenames = ["CMakeLists.txt", "README.md"]
 
 let package = Package(
     name: "Makt",
-    platforms: [.macOS(.v10_15), .iOS(.v13)],
+    platforms: [.macOS(.v11), .iOS(.v13)],
     products: [
         .library(name: "Makt", targets: ["Makt", "Malm"]),
     ],

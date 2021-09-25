@@ -24,4 +24,15 @@ public extension LoadedArchive {
             return vidFie.videoArchiveFileName
         }
     }
+    
+    var numberOfEntries: Int {
+        switch self {
+        case .archive(let lodFile):
+            return lodFile.entries.count
+        case .sound(let sndFile):
+            return sndFile.fileEntries.count
+        case .video(let vidFie):
+            return vidFie.fileEntries.count
+        }
+}
 }

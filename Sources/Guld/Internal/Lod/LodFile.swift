@@ -12,12 +12,15 @@ import Util
 import Malm
 
 
+
+
 public struct LodFile: Hashable {
     public let lodFileName: String
     public let entries: [FileEntry]
 }
 
 public extension LodFile {
+    
     struct CompressedFileEntryMetaData: Hashable {
         public let name: String
         public let fileOffset: Int
@@ -25,13 +28,16 @@ public extension LodFile {
         public let compressedSize: Int
     }
     
-    struct FileEntry: Hashable {
-        public let name: String
+    struct FileEntry: ArchiveFileEntry, Hashable {
+        public let parentArchiveName: String
+        public let fileName: String
         public let content: Content
+        public let byteCount: Int
         
         public func hash(into hasher: inout Hasher) {
+            hasher.combine(parentArchiveName)
             hasher.combine(content.kind)
-            hasher.combine(name)
+            hasher.combine(fileName)
         }
     }
 }

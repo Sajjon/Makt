@@ -56,6 +56,10 @@ public extension Archive {
         case armageddonsBladeBitmapArchive = "H3ab_bmp.lod"
         case armageddonsBladeSpriteArchive = "H3ab_spr.lod"
         case restorationOfErathiaBitmapArchive = "H3bitmap.lod"
+        
+        /// H3sprite.lod
+        /// Contains:
+        /// * terrain tiles (46 frames each?)
         case restorationOfErathiaSpriteArchive = "H3sprite.lod"
     }
     

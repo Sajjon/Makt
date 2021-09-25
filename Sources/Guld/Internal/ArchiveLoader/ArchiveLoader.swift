@@ -11,31 +11,56 @@ import Util
 import Combine
 
 internal final class ArchiveLoader {
-    internal init() {}
+    private let dispatchQueue: DispatchQueue
+    internal init(dispatchQueue: DispatchQueue = DispatchQueue(label: "LoadArchive", qos: .background)) {
+        self.dispatchQueue = dispatchQueue
+    }
 }
 
 internal extension ArchiveLoader {
     
     typealias Error = LodParser.Error
     
-    func load(archiveFile: ArchiveFile) -> AnyPublisher<LoadedArchive, Error> {
-        return Future { promise in
-            DispatchQueue(label: "LoadArchive", qos: .background).async {
+    
+    func peekFileEntryCount(of archiveFile: ArchiveFile) throws -> Int {
+        let archiveParser: ArchiveFileCountParser = {
+            switch archiveFile.kind {
+            case .sound:
+                return SNDArchiveParser()
+            case .lod:
+                return LodParser()
+            case .video:
+                return VIDArchiveParser()
+            }
+        }()
+        
+        return try archiveParser.peekFileEntryCount(of: archiveFile)
+    }
+    
+    func load(
+        archiveFile: ArchiveFile,
+        inspector: AssetParsedInspector? = nil
+    ) -> AnyPublisher<LoadedArchive, Error> {
+        
+        
+        return Future { [self] promise in
+            dispatchQueue.async {
                 do {
+                    print("✨ ArchiveLoader loading archive file: \(archiveFile.fileName)")
                     switch archiveFile.kind {
                     case .sound:
                         let sndArchiveParser = SNDArchiveParser()
-                        let sndFile = try sndArchiveParser.parse(assetFile: archiveFile)
+                        let sndFile = try sndArchiveParser.parse(assetFile: archiveFile, inspector: inspector)
                         let loadedAsset: LoadedArchive = .sound(sndFile)
                         promise(Result.success(loadedAsset))
                     case .lod:
                         let lodParser = LodParser()
-                        let lodFile = try lodParser.parse(assetFile: archiveFile)
+                        let lodFile = try lodParser.parse(assetFile: archiveFile, inspector: inspector)
                         let loadedAsset: LoadedArchive = .archive(lodFile)
                         promise(Result.success(loadedAsset))
                     case .video:
                         let vidParser = VIDArchiveParser()
-                        let vidArchiveFile = try vidParser.parse(assetFile: archiveFile)
+                        let vidArchiveFile = try vidParser.parse(assetFile: archiveFile, inspector: inspector)
                         let loadedAsset: LoadedArchive = .video(vidArchiveFile)
                         promise(Result.success(loadedAsset))
                     }
@@ -43,6 +68,8 @@ internal extension ArchiveLoader {
                     promise(Result.failure(error))
                 } catch { uncaught(error: error, expectedType: Error.self) }
             }
-        }.eraseToAnyPublisher()
+        }
+        .share()
+        .eraseToAnyPublisher()
     }
 }
