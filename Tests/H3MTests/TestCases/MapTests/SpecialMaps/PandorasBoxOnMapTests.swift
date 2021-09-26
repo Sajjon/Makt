@@ -48,7 +48,7 @@ final class PandorasBoxOnMapTests: BaseMapTest {
                 onParseSize: { XCTAssertEqual($0, .medium) },
                 onFinishedParsingBasicInfo: { XCTAssertTrue($0.hasTwoLevels) }
             ),
-            onParseObject: { [self] object in
+            onParseObject: { [unowned self] object in
                 
                 func assertPandorasBox(expected: Map.PandorasBox, line: UInt = #line) {
                     assertObjectPandorasBox(expected: expected, actual: object, line: line)

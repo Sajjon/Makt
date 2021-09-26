@@ -29,7 +29,7 @@ final class JudgementDayTests: BaseMapTest {
                     }
                 )
             ),
-            onParseObject: { [self] object in
+            onParseObject: { [unowned self] object in
                 switch object.position {
                 case at(1, y: 16):
                     assertObjectArtifact(

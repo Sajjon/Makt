@@ -11,9 +11,10 @@ import Util
 import Combine
 
 internal final class ArchiveLoader {
-    private let dispatchQueue: DispatchQueue
-    internal init(dispatchQueue: DispatchQueue = DispatchQueue(label: "LoadArchive", qos: .background)) {
-        self.dispatchQueue = dispatchQueue
+    
+    private let dispatchQueue: DispatchQueue = .init(label: "LoadArchive", qos: .background)
+    
+    internal init() {
     }
 }
 
@@ -43,24 +44,24 @@ internal extension ArchiveLoader {
     ) -> AnyPublisher<LoadedArchive, Error> {
         
         
-        return Future { [self] promise in
+        return Future { [unowned self] promise in
             dispatchQueue.async {
                 do {
                     print("✨ ArchiveLoader loading archive file: \(archiveFile.fileName)")
                     switch archiveFile.kind {
                     case .sound:
                         let sndArchiveParser = SNDArchiveParser()
-                        let sndFile = try sndArchiveParser.parse(assetFile: archiveFile, inspector: inspector)
+                        let sndFile = try sndArchiveParser.parse(archiveFile: archiveFile, inspector: inspector)
                         let loadedAsset: LoadedArchive = .sound(sndFile)
                         promise(Result.success(loadedAsset))
                     case .lod:
                         let lodParser = LodParser()
-                        let lodFile = try lodParser.parse(assetFile: archiveFile, inspector: inspector)
+                        let lodFile = try lodParser.parse(archiveFile: archiveFile, inspector: inspector)
                         let loadedAsset: LoadedArchive = .archive(lodFile)
                         promise(Result.success(loadedAsset))
                     case .video:
                         let vidParser = VIDArchiveParser()
-                        let vidArchiveFile = try vidParser.parse(assetFile: archiveFile, inspector: inspector)
+                        let vidArchiveFile = try vidParser.parse(archiveFile: archiveFile, inspector: inspector)
                         let loadedAsset: LoadedArchive = .video(vidArchiveFile)
                         promise(Result.success(loadedAsset))
                     }

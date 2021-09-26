@@ -7,13 +7,21 @@
 
 import Foundation
 
-public enum LoadedArchive: Hashable {
+public enum LoadedArchive {
     case archive(LodFile)
     case sound(SNDFile)
     case video(VIDFile)
 }
 
 public extension LoadedArchive {
+    
+    var lodArchive: LodFile? {
+        switch self {
+        case .archive(let lodFile): return lodFile
+        case .sound, .video: return nil 
+        }
+    }
+    
     var fileName: String {
         switch self {
         case .archive(let lodFile):

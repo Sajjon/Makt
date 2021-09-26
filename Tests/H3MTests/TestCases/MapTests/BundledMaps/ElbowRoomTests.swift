@@ -19,7 +19,7 @@ final class ElbowRoomTests: BaseMapTest {
                 onParseFormat: { XCTAssertEqual($0, .armageddonsBlade) },
                 onParseName: { XCTAssertEqual($0, "Elbow Room") }
             ),
-            onParseObject: { [self] object in
+            onParseObject: { [unowned self] object in
                 switch object.position {
                 case at(5, y: 19):
                     assertObjectRandomTown(

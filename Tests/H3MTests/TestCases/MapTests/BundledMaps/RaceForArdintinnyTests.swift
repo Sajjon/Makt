@@ -120,7 +120,7 @@ final class RaceForArdintinnyTests: BaseMapTest {
             onParseWorld: { world in
                 XCTAssertNotNil(world.underground)
             },
-            onParseObject: { [self] object in
+            onParseObject: { [unowned self] object in
                 func assertEvent(expected: Map.GeoEvent, line: UInt = #line) {
                     assertObjectEvent(expected: expected, actual: object, line: line)
                 }

@@ -48,7 +48,7 @@ final class ScholarOnMapTests: BaseMapTest {
                 onParseSize: { XCTAssertEqual($0, .small) },
                 onFinishedParsingBasicInfo: { XCTAssertFalse($0.hasTwoLevels) }
             ),
-            onParseObject: { [self] object in
+            onParseObject: { [unowned self] object in
                 
                 func assertScholar(
                     expected: Map.Scholar,

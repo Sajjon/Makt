@@ -38,15 +38,12 @@ public final class AssetsProvider {
     public static var sharedAssets: Assets?
     
     private let fileManager: FileManager
-    private let imageLoader: ImageLoader
-    private let archiveLoader: ArchiveLoader
+    private let archiveLoader: ArchiveLoader = .init()
     private let mapLoaderQueue: DispatchQueue = DispatchQueue(label: "MapLoader", qos: .background)
-    private let dispatchQueue: DispatchQueue
+    private let dispatchQueue: DispatchQueue = DispatchQueue(label: "AssetsProvider", qos: .background)
     
     private var archiveFileCache: [Archive: ArchiveFile] = [:]
-//    private var lodFileCache: [Archive.LOD: LodFile] = [:]
     private var archiveCache: [Archive: LoadedArchive] = [:]
-    private var imageCache: [ImageCacheKey: CGImage] = [:]
     
     private var cancellables = Set<AnyCancellable>()
     
@@ -54,32 +51,11 @@ public final class AssetsProvider {
     
     private init(
         config: Config,
-        imageLoader: ImageLoader = .init(),
         fileManager: FileManager = .default
     ) {
-        let dispatchQueue = DispatchQueue(label: "AssetsProvider", qos: .background)
         self.config = config
-        self.imageLoader = imageLoader
-        self.archiveLoader = ArchiveLoader(dispatchQueue: dispatchQueue)
         self.fileManager = fileManager
-        self.dispatchQueue = dispatchQueue
     }
-    
-
-    
-    /// VCMI: `TERRAIN_FILES`
-    private let terrainToDefFileName: [Map.Tile.Terrain.Kind: String] = [
-        .dirt:  "DIRTTL.def",
-        .sand: "SANDTL.def",
-        .grass: "GRASTL.def",
-        .snow: "SNOWTL.def",
-        .swamp: "SWMPTL.def",
-        .rough: "ROUGTL.def",
-        .subterranean: "SUBBTL.def",
-        .lava: "LAVATL.def",
-        .water: "WATRTL.def",
-        .rock: "ROCKTL.def"
-    ]
     
 }
 
@@ -105,7 +81,7 @@ private extension AssetsProvider {
         }
         return archiveLoader.load(archiveFile: archiveFile, inspector: inspector)
             .assertNoFailure()
-            .handleEvents(receiveOutput: { [self] (loadedArchive: LoadedArchive) in
+            .handleEvents(receiveOutput: { [unowned self] (loadedArchive: LoadedArchive) in
             archiveCache[archiveFile.kind] = loadedArchive
         })
             .share()
@@ -122,8 +98,8 @@ private extension AssetsProvider {
 //            return Just(cached).eraseToAnyPublisher()
 //        }
 //
-//        return Future<LodFile, Never> { [self] promise in
-//            dispatchQueue.async { [self] in
+//        return Future<LodFile, Never> { [unowned self] promise in
+//            dispatchQueue.async { [unowned self] in
 //                do {
 //                    let lodParser = LodParser()
 //                    let lodFile = try lodParser.parse(assetFile: archiveFile)
@@ -149,7 +125,7 @@ private extension AssetsProvider {
     
     
     func loadBasicInfoForMap(id mapID: Map.ID, inspector: Map.Loader.Parser.Inspector.BasicInfoInspector? = nil) -> AnyPublisher<Map.BasicInformation, AssetsProvider.Error> {
-        Future { [self] promise in
+        Future { [unowned self] promise in
             mapLoaderQueue.async {
                 do {
 //                    let start = CFAbsoluteTimeGetCurrent()
@@ -165,8 +141,8 @@ private extension AssetsProvider {
     }
     
     func loadMapIDs() -> AnyPublisher<[Map.ID], AssetsProvider.Error> {
-        Future { [self] promise in
-            dispatchQueue.async { [self] in
+        Future { [unowned self] promise in
+            dispatchQueue.async { [unowned self] in
                 do {
                     let path = config.gamesFilesDirectories.maps
                     let mapDirectoryContents = try fileManager.contentsOfDirectory(atPath: path)
@@ -187,7 +163,7 @@ private extension AssetsProvider {
         print("✨ Loading basic info for all maps...")
         var start: CFAbsoluteTime!
         return loadMapIDs().flatMap { (ids: [Map.ID]) -> AnyPublisher<[Map.BasicInformation], AssetsProvider.Error> in
-            let publishers: [AnyPublisher<Map.BasicInformation, AssetsProvider.Error>] = ids.map { [self] (id: Map.ID) -> AnyPublisher<Map.BasicInformation, AssetsProvider.Error>  in
+            let publishers: [AnyPublisher<Map.BasicInformation, AssetsProvider.Error>] = ids.map { [unowned self] (id: Map.ID) -> AnyPublisher<Map.BasicInformation, AssetsProvider.Error>  in
                 let basicInfoPublisher: AnyPublisher<Map.BasicInformation, AssetsProvider.Error> = loadBasicInfoForMap(id: id)
                 return basicInfoPublisher
             }
@@ -209,93 +185,8 @@ private extension AssetsProvider {
         .eraseToAnyPublisher()
     }
     
-    func loadImageFrom(
-        pcx: PCXImage
-    ) -> AnyPublisher<CGImage, AssetsProvider.Error> {
-        imageLoader.loadImageFrom(pcx: pcx).mapError({
-            AssetsProvider.Error.failedToLoadImage(name: pcx.name, error: $0)
-        }).eraseToAnyPublisher()
-    }
-    
-    func loadImageFrom(
-        defFilFrame frame: DefinitionFile.Frame,
-        palette: Palette?
-    ) -> AnyPublisher<CGImage, Never> {
-        
-        let cacheKey = frame.imageCacheKey
-        if let cached = imageCache[cacheKey] {
-            print("✅ Cache contains image for DEF frame: \(frame.fileName)")
-            return Just(cached).eraseToAnyPublisher()
-        }
-        print("⚠️ Image not found in cache")
-        return imageLoader.loadImageFrom(
-            pixelData: frame.pixelData,
-            width: frame.width,
-            palette: palette
-        ).assertNoFailure().eraseToAnyPublisher().handleEvents(receiveOutput: { [self]
-            newImage in
-            assert(imageCache[cacheKey] == nil)
-            imageCache[cacheKey] = newImage
-            assert(imageCache[cacheKey] != nil)
-        }).eraseToAnyPublisher()
-        
-    }
-    
-    
-    func loadImage(terrain: Map.Tile.Terrain) -> AnyPublisher<CGImage, Never> {
-        
-        guard let needleDefFileName = terrainToDefFileName[terrain.kind] else {
-            incorrectImplementation(shouldAlwaysBeAbleTo: "Get expected DEF file name for terrain kind.")
-        }
-        
-//        let archiveFilePublisher: AnyPublisher<ArchiveFile, Never> = open(archive: .lod(.restorationOfErathiaSpriteArchive))
-//
-//        let lodFilePublisher: AnyPublisher<LodFile, Never> = archiveFilePublisher.flatMap { [self] archiveFile in
-//            loadLODArchive(file: archiveFile)
-//        }.eraseToAnyPublisher()
-        
-        let lodFilePublisher: AnyPublisher<LodFile, Never> = archiveCache[.lod(.restorationOfErathiaSpriteArchive)].map {
-            guard case .archive(let spriteLodFile) = $0 else {
-                incorrectImplementation(reason: "Wrong archive")
-            }
-            return Just(spriteLodFile).eraseToAnyPublisher()
-        }!
-        
-        let fileEntryPublisher: AnyPublisher<LodFile.FileEntry, Never> = lodFilePublisher.map { lodFile in
-            guard let fileEntry = lodFile.entries.first(where: { $0.fileName.lowercased() == needleDefFileName.lowercased() }) else {
-                incorrectImplementation(shouldAlwaysBeAbleTo: "Find file entry matching expected DEF file.")
-            }
-            return fileEntry
-        }.eraseToAnyPublisher()
-
-        let defFilePublisher: AnyPublisher<DefinitionFile, Never> = fileEntryPublisher.flatMap({ (fileEntry: LodFile.FileEntry) -> AnyPublisher<DefinitionFile, Never> in
-            guard case .def(let defFilePublisher) = fileEntry.content else {
-                incorrectImplementation(reason: "Should be def file")
-            }
-            return defFilePublisher
-        }).eraseToAnyPublisher().map { defFile in
-            assert(defFile.kind == .terrain)
-            return defFile
-        }.eraseToAnyPublisher()
-
-        return defFilePublisher.flatMap { [self] (defFile: DefinitionFile) -> AnyPublisher<CGImage, Never> in
-            assert(defFile.blocks.count == 1)
-            let block = defFile.blocks[0]
-            let frame = block.frames[0]
-            return self.loadImageFrom(defFilFrame: frame, palette: defFile.palette) // uses cache
-        }.eraseToAnyPublisher()
-
-    }
 }
 
-private enum ImageCacheKey: Hashable {
-    case defFileFrame(id: DefinitionFile.Frame.ID)
-}
-private extension DefinitionFile.Frame {
-    var imageCacheKey: ImageCacheKey {
-        .defFileFrame(id: self.id)
-    }
-}
 
 // MARK: Private
 private extension AssetsProvider {
@@ -306,7 +197,7 @@ private extension AssetsProvider {
             print("✅ Cache contains archive file: \(archive.fileName)")
             return Just(cached).eraseToAnyPublisher()
         }
-        return Future<ArchiveFile, Never> { [self] promise in
+        return Future<ArchiveFile, Never> { [unowned self] promise in
             dispatchQueue.async {
                 do {
                     print("✨ Opening contents of archive named: \(archive.fileName)")
@@ -344,20 +235,72 @@ private extension AssetsProvider {
 public final class Assets {
     
     private let loadMapQueue = DispatchQueue(label: "LoadMapQueue", qos: .background)
-    public let basicInfoOfMaps: [Map.BasicInformation]
+
     private let loadedArchives: [LoadedArchive]
+   
+    public let basicInfoOfMaps: [Map.BasicInformation]
+    private let imageLoader: ImageLoader
     
     internal init(
         loadedArchives: [LoadedArchive],
-        basicInfoOfMaps: [Map.BasicInformation]
+        basicInfoOfMaps: [Map.BasicInformation],
+        imageLoader: ImageLoader
     ) {
         self.loadedArchives = loadedArchives
         self.basicInfoOfMaps = basicInfoOfMaps
+        self.imageLoader = imageLoader
     }
 }
 
+//public extension Assets {
+//    final class TerrainSprites {
+//
+//        public let surfaceSprites: SurfaceSprites
+//        public let roadSprites: RoadSprites
+//        public let riverSprites: RiverSprites
+//
+//        internal init(
+//            surfaceSprites: SurfaceSprites,
+//            roadSprites: RoadSprites,
+//            riverSprites: RiverSprites
+//        ) {
+//            self.surfaceSprites = surfaceSprites
+//            self.roadSprites = roadSprites
+//            self.riverSprites = riverSprites
+//        }
+//    }
+//}
+//
+//public extension Assets.TerrainSprites {
+//
+//    final class SurfaceSprites {
+//
+//    }
+//    final class RoadSprites {}
+//    final class RiverSprites {}
+//}
+
 // MARK: Provide
 private extension AssetsProvider {
+    
+    func imageLoaderWithPreloadedTerrainSprites(
+        archives: [LoadedArchive],
+        progressSubject: PassthroughSubject<LoadingProgress, Never>?
+    ) -> AnyPublisher<ImageLoader, Never> {
+        let imageLoader = ImageLoader(lodFiles: archives.compactMap { $0.lodArchive })
+        
+        let terrainPublishers = Map.Tile.Terrain.Kind.allCases.map { terrainKind in
+            imageLoader.loadAllSpritesForTerrainKind(terrainKind).handleEvents(receiveOutput: { _ in
+                progressSubject?.send(.step(named: "Loaded image for terrain kind: \(String(describing: terrainKind))"))
+            }).eraseToAnyPublisher()
+        }
+        let terrainImagesPublisher = Publishers.MergeMany(terrainPublishers).collect().eraseToAnyPublisher()
+        
+        return terrainImagesPublisher.map { _ in
+            return imageLoader
+        }.eraseToAnyPublisher()
+    }
+    
     func provide(
         config: Config,
         progressSubject: PassthroughSubject<LoadingProgress, Never>?,
@@ -376,7 +319,7 @@ private extension AssetsProvider {
                
             let numberOfItemsToLoad = archiveFiles.map { try! self.archiveLoader.peekFileEntryCount(of: $0) }.reduce(0, +)
             
-            let publishers = archiveFiles.map { [self] (archiveFile: ArchiveFile) in
+            let publishers = archiveFiles.map { [unowned self] (archiveFile: ArchiveFile) in
                 return load(archiveFile: archiveFile, inspector: assetParsedInspector).handleEvents(receiveOutput: { loadedArchive in
 //                    numberOfLoadedItems += loadedArchive.numberOfEntries
                     print("numberOfLoadedItems: \(numberOfLoadedItems)")
@@ -394,15 +337,28 @@ private extension AssetsProvider {
                     startLoadingArchivesTime = CFAbsoluteTimeGetCurrent()
                 }
             )
+            .share()
             .eraseToAnyPublisher()
         
-        return Publishers.CombineLatest(
+        let imageLoaderWithTerrainSprites = loadedArchives.flatMap { [self ]loadedArchives in
+            imageLoaderWithPreloadedTerrainSprites(archives: loadedArchives, progressSubject: progressSubject)
+        }.eraseToAnyPublisher()
+        
+        return Publishers.CombineLatest3(
             loadedArchives,
-            loadBasicInfoForAllMaps()
-        ).map { (loadedArchives: [LoadedArchive], basicInfoOfMaps: [Map.BasicInformation]) -> Assets in
+            loadBasicInfoForAllMaps(),
+            imageLoaderWithTerrainSprites
+        ).map {
+            (
+                loadedArchives: [LoadedArchive],
+                basicInfoOfMaps: [Map.BasicInformation],
+                imageLoaderWithTerrainSprites: ImageLoader
+            ) -> Assets in
+            
             let assets = Assets(
                 loadedArchives: loadedArchives,
-                basicInfoOfMaps: basicInfoOfMaps
+                basicInfoOfMaps: basicInfoOfMaps,
+                imageLoader: imageLoaderWithTerrainSprites
             )
             if AssetsProvider.sharedAssets == nil {
                 AssetsProvider.sharedAssets = assets
@@ -445,8 +401,8 @@ public extension Assets {
         fatalError()
     }
     
-    func loadImage(terrain: Map.Tile.Terrain) -> AnyPublisher<CGImage, Never> {
-        fatalError()
+    func loadImage(terrain: Map.Tile.Terrain) -> AnyPublisher<LoadedImage, Never> {
+        imageLoader.loadImage(terrain: terrain)
     }
     
     func loadBasicInfoForAllMaps() -> AnyPublisher<[Map.BasicInformation], Never> {
@@ -469,7 +425,7 @@ public extension Assets {
 //    }
     func loadMap(id mapID: Map.ID, inspector: Map.Loader.Parser.Inspector? = nil) -> AnyPublisher<Map, Never> {
         Deferred {
-            Future<Map, Never> { [self] promise in
+            Future<Map, Never> { [unowned self] promise in
                 loadMapQueue.async {
                     do {
                         print("✨ Loading map...")

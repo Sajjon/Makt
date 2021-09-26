@@ -51,7 +51,7 @@ final class DwellingsOnMapTests: BaseMapTest {
                 onParseSize: { XCTAssertEqual($0, .small) },
                 onFinishedParsingBasicInfo: { XCTAssertFalse($0.hasTwoLevels) }
             ),
-            onParseObject: { [self] object in
+            onParseObject: { [unowned self] object in
                 
                 func assertRandomDwelling(
                     expected expectedRandom: Map.Dwelling.Kind.Random,

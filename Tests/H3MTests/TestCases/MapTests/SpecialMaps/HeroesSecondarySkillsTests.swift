@@ -61,7 +61,7 @@ final class HeroesSecondarySkillsTests: BaseMapTest {
                 onParseCustomHeroes: { XCTAssertNil($0) },
                 onParseHeroSettings:  { XCTAssertNil($0) }
             ),
-            onParseObject: { [self] object in
+            onParseObject: { [unowned self] object in
                 
                 func assertHero(
                     skills: Hero.SecondarySkills,

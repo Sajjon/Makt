@@ -22,7 +22,7 @@ final class PeacefulEndingAlliesTests: BaseMapTest {
                 onParseDifficulty: { XCTAssertEqual($0, .hard)},
                 onParseSize: { XCTAssertEqual($0, .large)}
             ),
-            onParseObject: { [self] object in
+            onParseObject: { [unowned self] object in
                 switch object.position {
                 case at(55, y: 34):
                     if object.objectID.stripped == .randomTown {

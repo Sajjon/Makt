@@ -6,10 +6,25 @@
 //
 
 import Foundation
+import Malm
 
-public struct VIDFile: Hashable {
-    public let videoArchiveFileName: String
+public final class VIDFile {
+    public let archiveKind: Archive
     public let fileEntries: [FileEntry]
+    
+    public init(
+        archiveKind: Archive,
+        fileEntries: [FileEntry]
+    ) {
+        self.archiveKind = archiveKind
+        self.fileEntries = fileEntries
+    }
+}
+
+public extension VIDFile {
+    var videoArchiveFileName: String {
+        archiveKind.fileName
+    }
 }
 
 public extension VIDFile {

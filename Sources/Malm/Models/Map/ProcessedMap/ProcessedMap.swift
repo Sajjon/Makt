@@ -37,12 +37,15 @@ public extension ProcessedMap {
         public let position: Position
         private let mapTile: Map.Tile
         public let objects: [Map.Object]?
+        public let surfaceImage: LoadedImage
         
         public init(
             mapTile: Map.Tile,
+            surfaceImage: LoadedImage,
             objects: [Map.Object]?
         ) {
             self.position = mapTile.position
+            self.surfaceImage = surfaceImage
             self.mapTile = mapTile
             self.objects = objects
         }

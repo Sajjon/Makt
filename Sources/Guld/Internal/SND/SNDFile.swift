@@ -6,10 +6,25 @@
 //
 
 import Foundation
+import Malm
 
-public struct SNDFile: Hashable {
-    public let sndArchiveFileName: String
+public final class SNDFile {
+    public let archiveKind: Archive
     public let fileEntries: [FileEntry]
+    
+    public init(
+        archiveKind: Archive,
+        fileEntries: [FileEntry]
+    ) {
+        self.archiveKind = archiveKind
+        self.fileEntries = fileEntries
+    }
+}
+
+public extension SNDFile {
+    var sndArchiveFileName: String {
+        archiveKind.fileName
+    }
 }
 
 public extension SNDFile {

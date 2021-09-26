@@ -28,12 +28,12 @@ internal final class VIDArchiveParser: ArchiveFileCountParser {
 internal extension VIDArchiveParser {
     
     func parse(
-        assetFile: ArchiveFile,
+        archiveFile: ArchiveFile,
         inspector: AssetParsedInspector? = nil
     ) throws -> VIDFile {
-        precondition(assetFile.kind.isVIDFile)
+        precondition(archiveFile.kind.isVIDFile)
         
-        let reader = DataReader(data: assetFile.data)
+        let reader = DataReader(data: archiveFile.data)
         
         let fileCount = try reader.readUInt32()
         
@@ -54,7 +54,7 @@ internal extension VIDArchiveParser {
             
             let size: Int
             if index == fileCount - 1 { // last element
-                size = assetFile.data.count - offset
+                size = archiveFile.data.count - offset
             } else {
                 let offsetNext = nameAndOffsetList[index + 1].offset
                 assert(offsetNext > offset)
@@ -68,7 +68,7 @@ internal extension VIDArchiveParser {
             try reader.seek(to: $0.offset)
             let contents = try reader.read(byteCount: $0.size)
             let fileEntry = VIDFile.FileEntry(
-                parentArchiveName: assetFile.fileName,
+                parentArchiveName: archiveFile.fileName,
                 fileName: $0.name,
                 contents: contents
             )
@@ -77,7 +77,7 @@ internal extension VIDArchiveParser {
         }
         
         return .init(
-            videoArchiveFileName: assetFile.fileName,
+            archiveKind: archiveFile.kind,
             fileEntries: fileEntries
         )
     }

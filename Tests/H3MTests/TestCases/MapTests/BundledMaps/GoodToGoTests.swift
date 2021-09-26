@@ -26,7 +26,7 @@ final class GoodToGoMapTest: BaseMapTest {
             additionalInformationInspector: .init(
                 onParseTeamInfo: { XCTAssertEqual($0, [[1], [2], [4, 5]]) }
             ),
-            onParseObject: { [self] object in
+            onParseObject: { [unowned self] object in
                 switch object.position {
                 case at(34, y: 4):
                     assertObjectTown(

@@ -10,17 +10,23 @@ import Foundation
 public extension Map.Tile {
     struct Terrain: Hashable, CustomDebugStringConvertible {
         public let kind: Kind
-        public let viewID: ViewID
+        
+        /// The rawValue of the rotation is the index of the `block` within the `.def` file.
+        /// The block might contain many `frames` and the `defFileFrameIndexWithinRotationBlock`
+        /// property below is the `frameIndex` within this block.
         public let rotation: Rotation
+        
+        /// Index of frame within block, indexed by `rotation` above.
+        public let defFileFrameIndexWithinRotationBlock: UInt8
         
         public init(
             kind: Kind,
-            viewID: ViewID,
-            rotation: Rotation
+            rotation: Rotation,
+            defFileFrameIndexWithinRotationBlock: UInt8
         ) {
             self.kind = kind
-            self.viewID = viewID
             self.rotation = rotation
+            self.defFileFrameIndexWithinRotationBlock = defFileFrameIndexWithinRotationBlock
         }
     }
 }
@@ -30,8 +36,8 @@ public extension Map.Tile.Terrain {
     var debugDescription: String {
         """
         kind: \(kind)
-        viewID: \(viewID.view)
         rotation: \(rotation)
+        defFileFrameIndexWithinRotationBlock: \(defFileFrameIndexWithinRotationBlock)
         """
     }
 }
@@ -61,18 +67,5 @@ public extension Map.Tile.Terrain.Kind {
 public extension Map.Tile.Terrain {
     enum Kind: UInt8, Hashable, CustomDebugStringConvertible, CaseIterable {
         case dirt, sand, grass, snow, swamp, rough, subterranean, lava, water, rock
-    }
-}
-
-/// MARK: ViewID (Surface)
-public extension Map.Tile.Terrain {
-    
-    /// ID for a view to be rendered as a surface.
-    struct ViewID: Hashable {
-        public let view: UInt8
-        
-        public init(view: UInt8) {
-            self.view = view
-        }
     }
 }

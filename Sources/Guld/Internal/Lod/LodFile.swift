@@ -12,12 +12,25 @@ import Util
 import Malm
 
 
-
-
-public struct LodFile: Hashable {
-    public let lodFileName: String
+public final class LodFile {
+    public let archiveKind: Archive
     public let entries: [FileEntry]
+    
+    public init(
+        archiveKind: Archive,
+        entries: [FileEntry]
+    ) {
+        self.archiveKind = archiveKind
+        self.entries = entries
+    }
 }
+
+public extension LodFile {
+    var lodFileName: String {
+        archiveKind.fileName
+    }
+}
+
 
 public extension LodFile {
     

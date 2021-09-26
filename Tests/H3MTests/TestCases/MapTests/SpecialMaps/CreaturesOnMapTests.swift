@@ -48,7 +48,7 @@ final class CreaturesOnMapTests: BaseMapTest {
                 onParseSize: { XCTAssertEqual($0, .small) },
                 onFinishedParsingBasicInfo: { XCTAssertFalse($0.hasTwoLevels) }
             ),
-            onParseObject: { [self] object in
+            onParseObject: { [unowned self] object in
                 
                 func assertMonster(
                     expected: Map.Monster,

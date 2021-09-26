@@ -50,7 +50,7 @@ final class SeersHutOnMapTests: BaseMapTest {
                 onParseSize: { XCTAssertEqual($0, .small) },
                 onFinishedParsingBasicInfo: { XCTAssertFalse($0.hasTwoLevels) }
             ),
-            onParseObject: { [self] object in
+            onParseObject: { [unowned self] object in
                 
                 func assertSeersHut(expected: Map.Seershut, line: UInt = #line) {
                     assertObjectSeersHut(expected: expected, actual: object, line: line)

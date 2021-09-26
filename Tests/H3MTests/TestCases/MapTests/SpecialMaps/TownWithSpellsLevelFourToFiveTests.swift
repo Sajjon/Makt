@@ -52,7 +52,7 @@ final class TownWithSpellsLevelFourToFiveTests: BaseMapTest {
                 onParseSize: { XCTAssertEqual($0, .small) },
                 onFinishedParsingBasicInfo: { XCTAssertFalse($0.hasTwoLevels) }
             ),
-            onParseObject: { [self] object in
+            onParseObject: { [unowned self] object in
                 
                 func assertTown(
                     _ spell: Spell.ID,

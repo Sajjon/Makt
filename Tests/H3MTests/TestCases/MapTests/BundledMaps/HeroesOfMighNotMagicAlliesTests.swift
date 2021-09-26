@@ -45,7 +45,7 @@ final class HeroesOfMighNotMagicAlliesTests: BaseMapTest {
                     XCTAssertEqual($0, [[1, 5], [2, 4], [6, 7]])
                 }
             ),
-            onParseObject: { [self] object in
+            onParseObject: { [unowned self] object in
                 switch object.position {
                 case at(12, y: 67):
                     assertObjectRandomTown(

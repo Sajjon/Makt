@@ -23,7 +23,7 @@ internal extension H3M {
                     guard let terrainKind = Map.Tile.Terrain.Kind(rawValue: terrainKindRaw) else {
                         throw H3MError.unrecognizedTerrainKind(terrainKindRaw)
                     }
-                    let terrainView = try Map.Tile.Terrain.ViewID(view: reader.readUInt8())
+                    let terrainView = try reader.readUInt8()
                     let riverKindRaw = try reader.readUInt8()
                     let riverKind: Map.Tile.River.Kind? = .init(rawValue: riverKindRaw)
 
@@ -41,8 +41,8 @@ internal extension H3M {
                         position: position,
                         terrain: .init(
                             kind: terrainKind,
-                            viewID: terrainView,
-                            rotation: extraTileFlags.terrainGraphicRotation
+                            rotation: extraTileFlags.terrainGraphicRotation,
+                            defFileFrameIndexWithinRotationBlock: terrainView
                         ),
                         
                         river: riverKind.map {

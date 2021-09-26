@@ -83,7 +83,7 @@ final class VikingWeShallGoTests: BaseMapTest {
                         XCTAssertEqual(ch.allowedPlayers, [3, 5])
                     }
                 }),
-            onParseObject: { [self] object in
+            onParseObject: { [unowned self] object in
                 switch object.position {
                 case at(0, y: 0):
                     XCTAssertEqual(object.objectID.stripped, .shipwreckSurvivor)

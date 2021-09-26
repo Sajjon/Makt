@@ -69,7 +69,7 @@ final class GeneratedMapSoDTests: BaseMapTest {
                 onParseRumors: { XCTAssertNil($0) },
                 onParseHeroSettings: nil
             ),
-            onParseObject: { [self] object in
+            onParseObject: { [unowned self] object in
                 
                 switch object.position {
 

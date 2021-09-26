@@ -32,7 +32,7 @@ final class ThousandIslandsTests: BaseMapTest {
                     XCTAssertEqual($0, [[1, 2], [3, 4], [5, 7], [6]])
                 }
             ),
-            onParseObject: { [self] object in
+            onParseObject: { [unowned self] object in
                 switch object.position {
                 case at(9, y: 7):
                     assertObjectRandomHero(

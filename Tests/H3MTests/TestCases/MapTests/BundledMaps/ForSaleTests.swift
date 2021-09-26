@@ -35,7 +35,7 @@ final class ForSaleTests: BaseMapTest {
                     XCTAssertEqual($0, [[1], [2, 3]])
                 }
            ),
-            onParseObject: { [self] object in
+            onParseObject: { [unowned self] object in
                 switch object.position {
                 case at(11, y: 15):
                     assertObjectQuestGuard(

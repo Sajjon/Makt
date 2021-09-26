@@ -164,7 +164,7 @@ final class UnholyQuestMapTest: BaseMapTest {
             basicInfoInspector: basicInfoInspector,
             playersInfoInspector: playersInfoInspector,
             additionalInformationInspector: additionalInfoInspector,
-            onParseObject: { [self] object in
+            onParseObject: { [unowned self] object in
                
                 func assertTown(expected: Map.Town, line: UInt = #line) {
                     assertObjectTown(expected: expected, actual: object, line: line)

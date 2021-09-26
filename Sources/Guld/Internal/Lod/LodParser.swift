@@ -34,14 +34,14 @@ internal extension LodParser {
     }
     
     func parse(
-        assetFile: ArchiveFile,
+        archiveFile: ArchiveFile,
         inspector: AssetParsedInspector? = nil
     ) throws -> LodFile {
             
-        precondition(assetFile.kind.isLODFile)
-        print("✨ LodParser parsing LOD file: \(assetFile.fileName)")
+        precondition(archiveFile.kind.isLODFile)
+        print("✨ LodParser parsing LOD file: \(archiveFile.fileName)")
             
-        let reader = DataReader(data: assetFile.data)
+        let reader = DataReader(data: archiveFile.data)
         
         guard let header = try reader.readStringOfKnownMaxLength(4) else {
             throw Error.failedToReadHeader
@@ -61,7 +61,7 @@ internal extension LodParser {
         
         let entries: [LodFile.FileEntry] = try compressedEntriesMetaData.compactMap {
             guard let fileEntry = try decompress(
-                parentArchiveName: assetFile.fileName,
+                parentArchiveName: archiveFile.fileName,
                 entryMetaData: $0,
                 reader: reader
             ) else {
@@ -72,7 +72,7 @@ internal extension LodParser {
         }
         
         return LodFile(
-            lodFileName: assetFile.fileName,
+            archiveKind: archiveFile.kind,
             entries: entries
         )
     }

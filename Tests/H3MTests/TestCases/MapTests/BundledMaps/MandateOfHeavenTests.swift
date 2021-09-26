@@ -45,7 +45,7 @@ final class MandateOfHeavenTests: BaseMapTest {
                     
                 })
             ),
-            onParseObject: { [self] object in
+            onParseObject: { [unowned self] object in
                 switch object.position {
                 case at(124, y: 105):
                     assertObjectTown(expected: .init(

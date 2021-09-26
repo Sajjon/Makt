@@ -49,7 +49,7 @@ final class ArtifactsOnMapTests: BaseMapTest {
                 onParseSize: { XCTAssertEqual($0, .small) },
                 onFinishedParsingBasicInfo: { XCTAssertFalse($0.hasTwoLevels) }
             ),
-            onParseObject: { [self] object in
+            onParseObject: { [unowned self] object in
                 if object.position == at(15, y: 17) {
                     XCTAssertEqual(object.kind, .grail(.init(radius: 5)))
                     fulfill(object: object)
