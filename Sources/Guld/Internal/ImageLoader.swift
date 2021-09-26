@@ -5,17 +5,89 @@ import Combine
 import Util
 import Malm
 
+/// Creds to "Rob": https://stackoverflow.com/a/49307028/1311272
+internal struct ImageCache {
+    typealias Key = LoadedImage.ID
+    typealias Value = LoadedImage
+    
+    private var synchronizedImageCache = Synchronized([Key: Value]())
+    
+    internal func image(key: Key) -> LoadedImage? {
+        return synchronizedImageCache.value[key]
+    }
+    
+    internal func add(image: Value, key: Key, assertNew: Bool = true) {
+        synchronizedImageCache.writer { cache in
+            if assertNew {
+                assert(cache[key] == nil)
+            }
+            cache[key] = image
+        }
+    }
+    
+    internal var count: Int {
+        return synchronizedImageCache.reader { $0.count }
+    }
+}
+
+/// A structure to provide thread-safe access to some underlying object using reader-writer pattern.
+
+internal final class Synchronized<T> {
+    /// Private value. Use `public` `value` computed property (or `reader` and `writer` methods)
+    /// for safe, thread-safe access to this underlying value.
+    
+    private var _value: T
+    
+    /// Private reader-write synchronization queue
+    
+    private let queue = DispatchQueue(label: "Synchronized", qos: .default, attributes: .concurrent)
+    
+    /// Create `Synchronized` object
+    ///
+    /// - Parameter value: The initial value to be synchronized.
+    
+    internal init(_ value: T) {
+        _value = value
+    }
+    
+    /// A threadsafe variable to set and get the underlying object, as a convenience when higher level synchronization is not needed
+    
+    internal var value: T {
+        get { reader { $0 } }
+        set { writer { $0 = newValue } }
+    }
+    
+    /// A "reader" method to allow thread-safe, read-only concurrent access to the underlying object.
+    ///
+    /// - Warning: If the underlying object is a reference type, you are responsible for making sure you
+    ///            do not mutating anything. If you stick with value types (`struct` or primitive types),
+    ///            this will be enforced for you.
+    
+    internal func reader<U>(_ block: (T) throws -> U) rethrows -> U {
+        return try queue.sync { try block(_value) }
+    }
+    
+    /// A "writer" method to allow thread-safe write with barrier to the underlying object
+    
+    func writer(_ block: @escaping (inout T) -> Void) {
+        queue.async(flags: .barrier) {
+            block(&self._value)
+        }
+    }
+}
 
 // MARK: ImageLoader
 internal final class ImageLoader {
     
     private let dispatchQueue = DispatchQueue(label: "ImageLoader", qos: .background)
     
-    typealias ImageCache = [LoadedImage.ID: LoadedImage]
+//    typealias ImageCache = [LoadedImage.ID: LoadedImage]
     
     private let lodFiles: [LodFile]
     
-    private var imageCache: ImageCache
+//    private let readerWriterLock = ReaderWriterLock()
+//    private var _imageCache: ImageCache
+    private var _imageCache: ImageCache
     
     /// VCMI: `TERRAIN_FILES`
     private let terrainToDefFileName: [Map.Tile.Terrain.Kind: String] = [
@@ -32,12 +104,12 @@ internal final class ImageLoader {
     ]
     
     internal init(
-        lodFiles: [LodFile],
-        imageCache: ImageCache = [:]
+        lodFiles: [LodFile]
     ) {
         self.lodFiles = lodFiles
-        self.imageCache = imageCache
+        self._imageCache = .init()
     }
+
 }
 
 // MARK: Error
@@ -79,11 +151,12 @@ internal extension ImageLoader {
 internal extension ImageLoader {
     
     func loadImageFrom(
-        id: String,
+        cacheKey imageID: ImageCache.Key,
         pixelData: Data,
         width: Int,
         height: Int,
-        palette maybePalette: Palette?
+        palette maybePalette: Palette?,
+        mirroring maybeMirroring: Mirroring? = nil
     ) -> AnyPublisher<LoadedImage, Never> {
         return Future { [unowned self] promise in
             dispatchQueue.async { [unowned self] in
@@ -104,10 +177,10 @@ internal extension ImageLoader {
                    
                     let pixelMatrix = pixels.chunked(into: width)
                    
-                    let cgImage = try makeCGImage(pixelValueMatrix: pixelMatrix)
+                    let cgImage = try makeCGImage(pixelValueMatrix: pixelMatrix, height: .init(height), width: .init(width), mirroring: maybeMirroring)
                     assert(height == pixelMatrix.count)
                     
-                    let loadedImage = LoadedImage.init(id: id, width: width, height: pixelMatrix.count, image: cgImage)
+                    let loadedImage = LoadedImage.init(id: imageID, width: width, height: pixelMatrix.count, mirroring: maybeMirroring ?? .none, image: cgImage)
                     
                     promise(.success(loadedImage))
                     
@@ -118,47 +191,46 @@ internal extension ImageLoader {
         }.eraseToAnyPublisher()
     }
     
-    func loadImageFrom(
-        pcx: PCXImage
-    ) -> AnyPublisher<LoadedImage, Never> {
-        switch pcx.contents {
-        case .pixelData(let data, encodedByPalette: let palette):
-            return loadImageFrom(id: pcx.name, pixelData: data, width: pcx.width, height: pcx.height, palette: palette)
-        case .rawRGBPixelData(let data):
-            return loadImageFrom(id: pcx.name, pixelData: data, width: pcx.width, height: pcx.height, palette: nil)
-        }
-        
-    }
-    
-//
 //    func loadImageFrom(
 //        pcx: PCXImage
-//    ) -> AnyPublisher<CGImage, AssetsProvider.Error> {
-//        imageLoader.loadImageFrom(pcx: pcx).mapError({
-//            AssetsProvider.Error.failedToLoadImage(name: pcx.name, error: $0)
-//        }).eraseToAnyPublisher()
+//    ) -> AnyPublisher<LoadedImage, Never> {
+//        switch pcx.contents {
+//        case .pixelData(let data, encodedByPalette: let palette):
+//            return loadImageFrom(id: pcx.name, pixelData: data, width: pcx.width, height: pcx.height, palette: palette)
+//        case .rawRGBPixelData(let data):
+//            return loadImageFrom(id: pcx.name, pixelData: data, width: pcx.width, height: pcx.height, palette: nil)
+//        }
+//
 //    }
     
+
     func loadImageFrom(
+        cacheKey: ImageCache.Key,
         defFilFrame frame: DefinitionFile.Frame,
-        palette: Palette?
+        palette: Palette?,
+        mirroring: Mirroring
     ) -> AnyPublisher<LoadedImage, Never> {
-        let imageID = frame.fileName
-        print("imageID: \(imageID), width: \(frame.width), height: \(frame.height)", terminator: "")
-        if let cached = imageCache[imageID] {
-            print(" found in cache ✅")
+        
+//        print("cacheKey: \(cacheKey), width: \(frame.width), height: \(frame.height)")
+//        if let cached = imageCache[imageID] {
+        if let cached = _imageCache.image(key: cacheKey) {
+            print("Image with cacheKey: \(cacheKey), found in cache ✅")
+            assert(cached.mirroring == mirroring)
             return Just(cached).eraseToAnyPublisher()
         }
-        print(" not found in cache => loading now ⏳")
+        print("Image with cacheKey: \(cacheKey), found NOT in cache 😴")
         return loadImageFrom(
-            id: imageID,
+            cacheKey: cacheKey,
             pixelData: frame.pixelData,
             width: frame.width,
             height: frame.height,
-            palette: palette
-        ).assertNoFailure().eraseToAnyPublisher().handleEvents(receiveOutput: { [unowned self]
+            palette: palette,
+            mirroring: mirroring
+        )
+            .assertNoFailure()
+            .handleEvents(receiveOutput: { [unowned self]
             newImage in
-            imageCache[imageID] = newImage
+                _imageCache.add(image: newImage, key: cacheKey)
         }).eraseToAnyPublisher()
         
     }
@@ -184,23 +256,28 @@ internal extension ImageLoader {
         return defFilePublisher
     }
     
+  
+    
     func loadImage(terrain: Map.Tile.Terrain) -> AnyPublisher<LoadedImage, Never> {
         let defFilePublisher = defFilePublisherForImageForTerrainOf(kind: terrain.kind)
         
         return defFilePublisher.flatMap { [unowned self] (defFile: DefinitionFile) -> AnyPublisher<LoadedImage, Never> in
-            var blockIndex = Int(terrain.rotation.rawValue)
-            if blockIndex >= defFile.blocks.count {
-                print("⚠️ WARNING: blockIndex cannot be larger than number of blocks in DefFile => falling back to ` blockIndex = defFile.blocks.count - 1`")
-                blockIndex = defFile.blocks.count - 1
-            }
-            let block = defFile.blocks[blockIndex]
-            let frameIndex = Int(terrain.defFileFrameIndexWithinRotationBlock)
+            assert(defFile.blocks.count == 1, "Dont know what to do with more than one block.")
+            let block = defFile.blocks.first!
+            
+//            let frameIndex = Int(terrain.mirroring.rawValue)
+            let frameIndex = Int(terrain.viewID)
             guard frameIndex < block.frames.count else {
-                incorrectImplementation(reason: "frameIndex (`terrain.rotation.rawValue`) cannot be larger than number of frames in block (at index: `terrain.defFileBlockIndex`).")
+                incorrectImplementation(reason: "frameIndex cannot be larger than number of frames in block.")
             }
             let frame = block.frames[frameIndex]
             
-            return  self.loadImageFrom(defFilFrame: frame, palette: defFile.palette) // uses cache
+            return self.loadImageFrom(
+                cacheKey: .terrain(ImageCache.Key.Terrain.init(frameName: frame.fileName, mirroring: terrain.mirroring)),
+                defFilFrame: frame,
+                palette: defFile.palette,
+                mirroring: terrain.mirroring
+            ) // uses cache
         }.eraseToAnyPublisher()
     }
     
@@ -209,8 +286,15 @@ internal extension ImageLoader {
         
         return defFilePublisher.flatMap { (defFile: DefinitionFile) -> AnyPublisher<[LoadedImage], Never> in
             let publishers: [AnyPublisher<LoadedImage, Never>] = defFile.blocks.flatMap { block in
-                block.frames.map { [unowned self] frame in
-                    self.loadImageFrom(defFilFrame: frame, palette: defFile.palette) // uses cache
+                block.frames.flatMap { [unowned self] frame in
+                    Mirroring.allCases.map { mirroring in
+                        self.loadImageFrom(
+                            cacheKey: .terrain(ImageCache.Key.Terrain.init(frameName: frame.fileName, mirroring: mirroring)),
+                            defFilFrame: frame,
+                            palette: defFile.palette,
+                            mirroring: mirroring
+                        ) // uses cache
+                    }
                 }
             }
             return Publishers.MergeMany(publishers).collect().eraseToAnyPublisher()
@@ -222,11 +306,25 @@ internal extension ImageLoader {
 
 // MARK: internal
 internal extension ImageLoader {
-    func makeCGImage(pixelValueMatrix: [[UInt32]]) throws -> CGImage {
-        guard let ctx = CGContext.from(pixels: pixelValueMatrix) else {
+    
+    func makeCGImage(
+        pixelValueMatrix: [[UInt32]],
+        height: CGFloat,
+        width: CGFloat,
+        mirroring maybeMirroring: Mirroring?
+    ) throws -> CGImage {
+        guard let context = CGContext.from(pixels: pixelValueMatrix) else {
             throw Error.failedToCreateImageContext
         }
-        guard let cgImage = ctx.makeImage() else {
+   
+        let mirroring = maybeMirroring ?? .none
+     
+        context.scaleBy(
+            x: mirroring.flipHorizontal ? -1 : 1,
+            y: mirroring.flipVertical ? -1 : 1
+        )
+
+        guard let cgImage = context.makeImage() else {
             throw Error.failedToCreateImageFromContext
         }
         return cgImage

@@ -8,14 +8,26 @@
 import Foundation
 import Malm
 
+fileprivate enum ExtraTileFlags: UInt8, CaseIterable {
+    case terrainVertical
+    case terrainHorizontal
+    case riverVertical
+    case riverHorizontal
+    case roadVertical
+    case roadHorizontal
+    case isCoastal
+    case hasFavorableWinds
+}
+
+
 // MARK: Parse World/Tiles/Terrain
 internal extension H3M {
     func parseTerrain(hasUnderworld: Bool, size: Size) throws -> Map.World {
         
         func parseTiles(inUnderworld: Bool) throws -> [Map.Tile] {
             var tiles = [Map.Tile]()
-            for columnIndex in 0..<size.width {
-                for rowIndex in 0..<size.height {
+            for rowIndex in 0..<size.height {
+                for columnIndex in 0..<size.width {
                     
                     let position = Position(column: .init(columnIndex), row: .init(rowIndex), inUnderworld: inUnderworld)
                     
@@ -35,21 +47,31 @@ internal extension H3M {
                     /// Always read the road direction byte even though this tile might not have a road on it. Otherwise we mess up byte offset.
                     let roadDirection = try Map.Tile.Road.Direction(reader.readUInt8())
                     
-                    let extraTileFlags = try Map.Tile.ExtraTileFlags(flags: reader.readUInt8())
+//                    let extraTileFlags = try Map.Tile.ExtraTileFlags(flags: reader.readUInt8())
+                    let offset = reader.offset
+                    let flags: [ExtraTileFlags] = try parseBitmaskOfEnum()
+                    assert(reader.offset == offset + 1)
+                    
                     
                     let tile = Map.Tile(
                         position: position,
                         terrain: .init(
                             kind: terrainKind,
-                            rotation: extraTileFlags.terrainGraphicRotation,
-                            defFileFrameIndexWithinRotationBlock: terrainView
+                            mirroring: .init(
+                                flipVertical: flags.contains(.terrainVertical),
+                                flipHorizontal: flags.contains(.terrainHorizontal)
+                            ),
+                            viewID: terrainView
                         ),
                         
                         river: riverKind.map {
                             Map.Tile.River(
                                 kind: $0,
                                 direction: riverDirection,
-                                rotation: extraTileFlags.riverGraphicRotation
+                                mirroring: .init(
+                                    flipVertical: flags.contains(.riverVertical),
+                                    flipHorizontal: flags.contains(.riverHorizontal)
+                                )
                             )
                         },
                         
@@ -57,12 +79,15 @@ internal extension H3M {
                             Map.Tile.Road(
                                 kind: $0,
                                 direction: roadDirection,
-                                rotation: extraTileFlags.roadGraphicRotation
+                                mirroring: .init(
+                                    flipVertical: flags.contains(.roadVertical),
+                                    flipHorizontal: flags.contains(.roadHorizontal)
+                                )
                             )
                         },
                         
-                        isCoastal: extraTileFlags.isCoastal,
-                        hasFavourableWindEffect: extraTileFlags.hasFavourableWindEffect
+                        isCoastal: flags.contains(.isCoastal),
+                        hasFavourableWindEffect: flags.contains(.hasFavorableWinds)
                     )
                     
                     tiles.append(tile)
@@ -86,39 +111,5 @@ internal extension H3M {
         }() : nil
         
         return .init(above: aboveGround, underground: underworld)
-    }
-}
-
-// MARK: ExtraTileFlags
-extension Map.Tile {
-    
-    /// first two bits - how to rotate terrain graphic (next two - river graphic, next two - road)
-    /// 7h bit: whether tile is coastal (allows disembarking if land or block movement if water)
-    /// 8th bit: Favorable Winds effect
-    fileprivate struct ExtraTileFlags: Equatable {
-        
-        public let terrainGraphicRotation: Map.Tile.Rotation
-        public let riverGraphicRotation: Map.Tile.Rotation
-        public let roadGraphicRotation: Map.Tile.Rotation
-        
-        /// Whether tile is coastal (allows disembarking if land or block movement if water)
-        public let isCoastal: Bool
-        
-        /// If water tile, then we might have greater speed with our boats thanks to favourable winds.
-        public let hasFavourableWindEffect: Bool
-        
-        init(flags: UInt8) {
-            let rotationCount = UInt8(Map.Tile.Rotation.allCases.count)
-            let terrainGraphicRotationRaw = flags % rotationCount  // read bits at index 0 and 1
-            let riverGraphicRotationRaw = (flags >> 2) % rotationCount // read bits at index 2 and 3
-            let roadGraphicRotationRaw = (flags >> 4) % rotationCount // read bits at index 4 and 5
-            
-            self.isCoastal            = (flags & 0b01000000) != 0 // read 7th bit at index 6
-            self.hasFavourableWindEffect  = (flags & 0b10000000) != 0 // read 8th bit at index 7
-            
-            self.terrainGraphicRotation = .init(rawValue: terrainGraphicRotationRaw)!
-            self.riverGraphicRotation = .init(rawValue: riverGraphicRotationRaw)!
-            self.roadGraphicRotation = .init(rawValue: roadGraphicRotationRaw)!
-        }
     }
 }

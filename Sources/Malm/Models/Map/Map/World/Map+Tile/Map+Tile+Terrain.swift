@@ -11,22 +11,18 @@ public extension Map.Tile {
     struct Terrain: Hashable, CustomDebugStringConvertible {
         public let kind: Kind
         
-        /// The rawValue of the rotation is the index of the `block` within the `.def` file.
-        /// The block might contain many `frames` and the `defFileFrameIndexWithinRotationBlock`
-        /// property below is the `frameIndex` within this block.
-        public let rotation: Rotation
+        public let mirroring: Mirroring
         
-        /// Index of frame within block, indexed by `rotation` above.
-        public let defFileFrameIndexWithinRotationBlock: UInt8
+        public let viewID: UInt8
         
         public init(
             kind: Kind,
-            rotation: Rotation,
-            defFileFrameIndexWithinRotationBlock: UInt8
+            mirroring: Mirroring,
+            viewID: UInt8
         ) {
             self.kind = kind
-            self.rotation = rotation
-            self.defFileFrameIndexWithinRotationBlock = defFileFrameIndexWithinRotationBlock
+            self.mirroring = mirroring
+            self.viewID = viewID
         }
     }
 }
@@ -36,8 +32,8 @@ public extension Map.Tile.Terrain {
     var debugDescription: String {
         """
         kind: \(kind)
-        rotation: \(rotation)
-        defFileFrameIndexWithinRotationBlock: \(defFileFrameIndexWithinRotationBlock)
+        mirroring: \(mirroring)
+        viewID: \(viewID)
         """
     }
 }

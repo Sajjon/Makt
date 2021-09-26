@@ -492,7 +492,7 @@ Sixth byte - road properties
                          └─╨─┘
 ```
 
-### Mirroring of squares (rotation)
+### Mirroring of squares (mirroring)
 Seventh byte - sets mirroring of squares
 
 ```

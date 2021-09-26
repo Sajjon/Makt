@@ -11,20 +11,20 @@ public extension Map.Tile {
     struct River: Hashable, CustomDebugStringConvertible {
         public let kind: Kind
         
-        /// The direction of the river's "mouth" (three split smaller rivers). Not to be confused with `rotation` of image.
+        /// The direction of the river's "mouth" (three split smaller rivers). Not to be confused with `mirroring` of image.
         public let direction: Direction
         
-        /// Rotation of the image
-        public let rotation: Rotation
+        /// Mirroring of the image
+        public let mirroring: Mirroring
         
         public init(
             kind: Kind,
             direction: Direction,
-            rotation: Rotation
+            mirroring: Mirroring
         ) {
             self.kind = kind
             self.direction = direction
-            self.rotation = rotation
+            self.mirroring = mirroring
         }
     }
 }
@@ -34,7 +34,7 @@ public extension Map.Tile.River {
         """
         kind: \(kind)
         direction: \(direction)
-        rotation: \(rotation)
+        mirroring: \(mirroring)
         """
     }
 }

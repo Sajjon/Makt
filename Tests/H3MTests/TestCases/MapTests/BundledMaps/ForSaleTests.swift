@@ -10,6 +10,15 @@ import XCTest
 import Malm
 @testable import H3M
 
+extension Array where Element == Map.Tile {
+    func tile(at position: Position) -> Map.Tile {
+        guard let tile = self.first(where: { $0.position == position }) else {
+            fatalError("expected to find tile")
+        }
+        return tile
+    }
+}
+
 final class ForSaleTests: BaseMapTest {
     func test_forSale() throws {
         let mapID: Map.ID = .forSale
@@ -35,6 +44,58 @@ final class ForSaleTests: BaseMapTest {
                     XCTAssertEqual($0, [[1], [2, 3]])
                 }
            ),
+            onParseWorld: { world in
+                let tiles = world.above.tiles
+                
+                func terrainAt(
+                    x: Int32,
+                    y: Int32,
+                    is expectedTerrainKind: Map.Tile.Terrain.Kind,
+                    isCostal expectTileToBeCoastal: Bool = false,
+                    viewID expectedViewID: UInt8? = nil,
+                    isMirroredVertically expectTileToBeMirroredVertically: Bool? = nil,
+                    isMirroredHorizontally expectTileToBeMirroredHorizontally: Bool? = nil,
+                    line: UInt = #line
+                ) {
+                    let tile = tiles.tile(at: .init(x: x, y: y))
+                    XCTAssertEqual(tile.terrain.kind, expectedTerrainKind, line: line)
+
+                    if expectTileToBeCoastal {
+                        XCTAssertTrue(tile.isCoastal, "Expected tile to be costal, but it was not.", line: line)
+                    } else {
+                        XCTAssertFalse(tile.isCoastal, "Expected tile to not be costal, but it is.", line: line)
+                    }
+                    
+                    if let expectedViewID = expectedViewID {
+                        XCTAssertEqual(tile.terrain.viewID, expectedViewID, "Incorrect view id, expected: \(expectedViewID), but got: \(tile.terrain.viewID)", line: line)
+                    }
+                    
+                    if let expectTileToBeMirroredVertically = expectTileToBeMirroredVertically {
+                        if expectTileToBeMirroredVertically {
+                            XCTAssertTrue(tile.terrain.mirroring.flipVertical, "Expected tile to be flipped vertically, but it was not.", line: line)
+                        } else {
+                            XCTAssertFalse(tile.terrain.mirroring.flipVertical, "Expected tile to not be flipped vertically, but it is.", line: line)
+                        }
+                    }
+                    
+                    if let expectTileToBeMirroredHorizontally = expectTileToBeMirroredHorizontally {
+                        
+                        if expectTileToBeMirroredHorizontally {
+                            XCTAssertTrue(tile.terrain.mirroring.flipHorizontal, "Expected tile to be flipped horizontally, but it was not.", line: line)
+                        } else {
+                            XCTAssertFalse(tile.terrain.mirroring.flipHorizontal, "Expected tile to not be flipped horizontally, but it is.", line: line)
+                        }
+                    }
+                    
+                }
+
+                terrainAt(x: 34, y: 4, is: .water, viewID: 17, isMirroredVertically: false, isMirroredHorizontally: false)
+                
+                terrainAt(x: 0, y: 4, is: .water, viewID: 16, isMirroredVertically: true, isMirroredHorizontally: false)
+                terrainAt(x: 5, y: 15, is: .water, viewID: 16, isMirroredVertically: true, isMirroredHorizontally: true)
+                terrainAt(x: 7, y: 30, is: .water, viewID: 16, isMirroredVertically: false, isMirroredHorizontally: true)
+                
+            },
             onParseObject: { [unowned self] object in
                 switch object.position {
                 case at(11, y: 15):
