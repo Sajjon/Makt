@@ -151,15 +151,15 @@ internal extension ImageLoader {
 internal extension ImageLoader {
     
     func loadImageFrom(
-        cacheKey imageID: ImageCache.Key,
+        cacheKey: ImageCache.Key,
         pixelData: Data,
         width: Int,
         height: Int,
-        palette maybePalette: Palette?,
-        mirroring maybeMirroring: Mirroring? = nil
+        mirroring: Mirroring,
+        palette maybePalette: Palette?
     ) -> AnyPublisher<LoadedImage, Never> {
         return Future { [unowned self] promise in
-            dispatchQueue.async { [unowned self] in
+            dispatchQueue.async {
                 do {
                     
                     let pixels: [UInt32] = {
@@ -177,10 +177,20 @@ internal extension ImageLoader {
                    
                     let pixelMatrix = pixels.chunked(into: width)
                    
-                    let cgImage = try makeCGImage(pixelValueMatrix: pixelMatrix, height: .init(height), width: .init(width), mirroring: maybeMirroring)
-                    assert(height == pixelMatrix.count)
+                    let cgImage = try makeCGImage(
+                        pixelValueMatrix: pixelMatrix,
+                        height: .init(height),
+                        width: .init(width),
+                        mirroring: mirroring
+                    )
                     
-                    let loadedImage = LoadedImage.init(id: imageID, width: width, height: pixelMatrix.count, mirroring: maybeMirroring ?? .none, image: cgImage)
+                    let loadedImage = LoadedImage(
+                        id: cacheKey,
+                        width: width,
+                        height: height,
+                        mirroring: mirroring,
+                        image: cgImage
+                    )
                     
                     promise(.success(loadedImage))
                     
@@ -214,18 +224,18 @@ internal extension ImageLoader {
 //        print("cacheKey: \(cacheKey), width: \(frame.width), height: \(frame.height)")
 //        if let cached = imageCache[imageID] {
         if let cached = _imageCache.image(key: cacheKey) {
-            print("Image with cacheKey: \(cacheKey), found in cache ✅")
+//            print("Image with cacheKey: \(cacheKey), found in cache ✅")
             assert(cached.mirroring == mirroring)
             return Just(cached).eraseToAnyPublisher()
         }
-        print("Image with cacheKey: \(cacheKey), found NOT in cache 😴")
+//        print("Image with cacheKey: \(cacheKey), NOT found in cache 😴")
         return loadImageFrom(
             cacheKey: cacheKey,
             pixelData: frame.pixelData,
             width: frame.width,
             height: frame.height,
-            palette: palette,
-            mirroring: mirroring
+            mirroring: mirroring,
+            palette: palette
         )
             .assertNoFailure()
             .handleEvents(receiveOutput: { [unowned self]
@@ -273,7 +283,7 @@ internal extension ImageLoader {
             let frame = block.frames[frameIndex]
             
             return self.loadImageFrom(
-                cacheKey: .terrain(ImageCache.Key.Terrain.init(frameName: frame.fileName, mirroring: terrain.mirroring)),
+                cacheKey: .terrain(ImageCache.Key.Terrain(frameName: frame.fileName, mirroring: terrain.mirroring)),
                 defFilFrame: frame,
                 palette: defFile.palette,
                 mirroring: terrain.mirroring
@@ -311,19 +321,27 @@ internal extension ImageLoader {
         pixelValueMatrix: [[UInt32]],
         height: CGFloat,
         width: CGFloat,
-        mirroring maybeMirroring: Mirroring?
+        mirroring: Mirroring
     ) throws -> CGImage {
+        // context.scaleBy or context.concatenate(CGAffineTransform...) SHOULD work, but I've failed
+        // to get it working. Instead I just mutate the order of the pixels to achive
+        // the same result...
+        var pixelValueMatrix = pixelValueMatrix
+        
+        if mirroring.flipHorizontal {
+            // Reverse order of pixels per row => same as flipping whole image horizontally
+            pixelValueMatrix = pixelValueMatrix.map({ $0.reversed() })
+        }
+        
+        if mirroring.flipVertical {
+            // Reverse order of rows => same as flipping whole image vertically
+            pixelValueMatrix = pixelValueMatrix.reversed()
+        }
+       
         guard let context = CGContext.from(pixels: pixelValueMatrix) else {
             throw Error.failedToCreateImageContext
         }
-   
-        let mirroring = maybeMirroring ?? .none
-     
-        context.scaleBy(
-            x: mirroring.flipHorizontal ? -1 : 1,
-            y: mirroring.flipVertical ? -1 : 1
-        )
-
+        
         guard let cgImage = context.makeImage() else {
             throw Error.failedToCreateImageFromContext
         }

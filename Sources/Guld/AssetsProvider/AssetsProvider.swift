@@ -321,8 +321,6 @@ private extension AssetsProvider {
             
             let publishers = archiveFiles.map { [unowned self] (archiveFile: ArchiveFile) in
                 return load(archiveFile: archiveFile, inspector: assetParsedInspector).handleEvents(receiveOutput: { loadedArchive in
-//                    numberOfLoadedItems += loadedArchive.numberOfEntries
-                    print("numberOfLoadedItems: \(numberOfLoadedItems)")
                     progressSubject?.send(LoadingProgress.namedProgress("Load archive \(String(describing: archiveFile.fileName))", step: numberOfLoadedItems, of: numberOfItemsToLoad))
                 }).eraseToAnyPublisher()
             }
