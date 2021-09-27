@@ -8,14 +8,10 @@
 import Foundation
 import Malm
 import Util
-import Combine
 
 internal final class ArchiveLoader {
     
-    private let dispatchQueue: DispatchQueue = .init(label: "LoadArchive", qos: .background)
-    
-    internal init() {
-    }
+    internal init() {}
 }
 
 internal extension ArchiveLoader {
@@ -41,36 +37,26 @@ internal extension ArchiveLoader {
     func load(
         archiveFile: ArchiveFile,
         inspector: AssetParsedInspector? = nil
-    ) -> AnyPublisher<LoadedArchive, Error> {
+    ) throws -> LoadedArchive {
         
-        
-        return Future { [unowned self] promise in
-            dispatchQueue.async {
-                do {
-                    print("✨ ArchiveLoader loading archive file: \(archiveFile.fileName)")
-                    switch archiveFile.kind {
-                    case .sound:
-                        let sndArchiveParser = SNDArchiveParser()
-                        let sndFile = try sndArchiveParser.parse(archiveFile: archiveFile, inspector: inspector)
-                        let loadedAsset: LoadedArchive = .sound(sndFile)
-                        promise(Result.success(loadedAsset))
-                    case .lod:
-                        let lodParser = LodParser()
-                        let lodFile = try lodParser.parse(archiveFile: archiveFile, inspector: inspector)
-                        let loadedAsset: LoadedArchive = .archive(lodFile)
-                        promise(Result.success(loadedAsset))
-                    case .video:
-                        let vidParser = VIDArchiveParser()
-                        let vidArchiveFile = try vidParser.parse(archiveFile: archiveFile, inspector: inspector)
-                        let loadedAsset: LoadedArchive = .video(vidArchiveFile)
-                        promise(Result.success(loadedAsset))
-                    }
-                } catch let error as Error {
-                    promise(Result.failure(error))
-                } catch { uncaught(error: error, expectedType: Error.self) }
-            }
+        print("✨ ArchiveLoader loading archive file: \(archiveFile.fileName)")
+        switch archiveFile.kind {
+        case .sound:
+            let sndArchiveParser = SNDArchiveParser()
+            let sndFile = try sndArchiveParser.parse(archiveFile: archiveFile, inspector: inspector)
+            let loadedAsset: LoadedArchive = .sound(sndFile)
+            return loadedAsset
+        case .lod:
+            let lodParser = LodParser()
+            let lodFile = try lodParser.parse(archiveFile: archiveFile, inspector: inspector)
+            let loadedAsset: LoadedArchive = .archive(lodFile)
+            return loadedAsset
+        case .video:
+            let vidParser = VIDArchiveParser()
+            let vidArchiveFile = try vidParser.parse(archiveFile: archiveFile, inspector: inspector)
+            let loadedAsset: LoadedArchive = .video(vidArchiveFile)
+            return loadedAsset
         }
-        .share()
-        .eraseToAnyPublisher()
+        
     }
 }

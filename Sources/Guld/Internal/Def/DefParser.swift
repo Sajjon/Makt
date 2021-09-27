@@ -183,6 +183,12 @@ private extension DefParser {
         blockOffsetInfFile memberFileOffsetInDefFile: Int
     ) throws -> DefinitionFile.Frame? {
         
+        // These two sprites seems unused and they fail top margin checks.
+        guard !(fileName.starts(with: "SgTwMt") && fileName.hasSuffix(".pcx")) else {
+            print("⚠️ Skipping sprite named: \(fileName), since they have too large margin.")
+            return nil
+        }
+        
         try reader.seek(to: memberFileOffsetInDefFile)
         let size = try Int(reader.readUInt32())
         let encodingFormat = try reader.readUInt32()
@@ -216,10 +222,12 @@ private extension DefParser {
         ///      }
         ///
         guard topMargin <= fullHeight else {
+            print("🚨 FATAL ERROR blockFileName: \(fileName), topMargin <= fullHeight, topMargin: \(topMargin), fullHeight: \(fullHeight), height: \(height)")
             throw Error.topMarginLargerThanHeight
         }
         
         guard leftMargin <= fullWidth else {
+            print("🚨 FATAL ERROR blockFileName: \(fileName), leftMargin <= fullWidth, leftMargin: \(leftMargin), fullWidth: \(fullWidth), width: \(width)")
             throw Error.leftMarginLargerThanWidth
         }
 

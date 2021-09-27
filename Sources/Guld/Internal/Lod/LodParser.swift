@@ -78,8 +78,6 @@ internal extension LodParser {
     }
 }
 
-import Combine
-
 internal extension LodParser {
     
     func isPCX(data: Data) throws -> Bool {
@@ -127,19 +125,6 @@ internal extension LodParser {
         return PCXImage(name: named, width: width, height: height, contents: contents)
     }
     
-    
-    static func pcxPublisher(from data: Data, named name: String) -> AnyPublisher<PCXImage, Never> {
-        return Future { promise in
-            DispatchQueue(label: "LoadPCXImage", qos: .background).async {
-                do {
-                    let pcxImage = try LodParser.parsePCX(from: data, named: name)
-                    promise(.success(pcxImage))
-                } catch {
-                    incorrectImplementation(shouldAlwaysBeAbleTo: "Parse PCX Image")
-                }
-            }
-        }.eraseToAnyPublisher()
-    }
     
     func decompress(
         parentArchiveName: String,
@@ -190,94 +175,83 @@ internal extension LodParser {
         
         switch kind {
         case .pcx:
-            guard try isPCX(data: data) else {
-                throw Error.fileNameSuggestsEntryIsPCXButNotAccordingToData
-            }
-            return .pcx(LodParser.pcxPublisher(from: data, named: metaData.name))
-        case .palette:
-            let deferredPublisher = Deferred {
-                return Future<Palette, Never> { promise in
-                    do {
-                        let palette = try Palette(data: data)
-                        promise(.success(palette))
-                    } catch {
-                        uncaught(
-                            error: error,
-                            expectedToNeverFailBecause: "Palettes should be trivially parsed. Failed to parse palette with metadata: \(metaData)"
-                        )
+            let load: () -> PCXImage = { [unowned self] in
+                do {
+                    guard try isPCX(data: data) else {
+                        throw Error.fileNameSuggestsEntryIsPCXButNotAccordingToData
                     }
+                    let pcxImage = try LodParser.parsePCX(from: data, named: metaData.name)
+                    return pcxImage
+                } catch {
+                    uncaught(error: error)
                 }
-            }.eraseToAnyPublisher()
-            return .palette(deferredPublisher)
+            }
+            return .pcx(load)
+        case .palette:
+            let load: () -> Palette = {
+                do {
+                    let palette = try Palette(data: data, name: metaData.name)
+                    return palette
+                } catch {
+                    uncaught(error: error)
+                }
+            }
+
+            return .palette(load)
             
         case .text:
-            guard let text = String(bytes: data, encoding: .utf8) ?? String(bytes: data, encoding: .nonLossyASCII) ?? String(bytes: data, encoding: .ascii) else {
-                incorrectImplementation(shouldAlwaysBeAbleTo: "Parse text")
+            let load: () -> String = {
+                guard let text = String(bytes: data, encoding: .utf8) ?? String(bytes: data, encoding: .nonLossyASCII) ?? String(bytes: data, encoding: .ascii) else {
+                    incorrectImplementation(shouldAlwaysBeAbleTo: "Parse text")
+                }
+                return text
             }
-            return .text(Just(text).eraseToAnyPublisher())
+            return .text(load)
         case .font:
-
-            let deferredPublisher = Deferred {
-                // https://stackoverflow.com/a/49242027/1311272
-                // or maybe: https://stackoverflow.com/a/12497630/1311272
-                return Future<CGFont, Never> { promise in
-                    implementMe(comment: "How are Fonts represented? Have a look at: https://stackoverflow.com/a/49242027/1311272 or https://stackoverflow.com/a/12497630/1311272 maybe.")
-               
+            let load: () -> BitmapFont = {
+                do {
+                    let bitmapFontParser = BitmapFontParser.init()
+                    let bitmapFont = try bitmapFontParser.parse(data: data, name: metaData.name)
+                    return bitmapFont
+                } catch {
+                    uncaught(error: error)
                 }
-            }.eraseToAnyPublisher()
-            return .font(deferredPublisher)
-            
+            }
+            return .font(load)
         case .def:
-            let deferredPublisher = Deferred {
-                return Future<DefinitionFile, Never> { promise in
-                    DispatchQueue(label: "ParseDEFFile", qos: .background).async {
-                        do {
-                            let defParser = DefParser(data: data)
-                            let defFile = try defParser.parse()
-                            promise(.success(defFile))
-                        } catch {
-                            uncaught(error: error, expectedToNeverFailBecause: "We should be able to parse DEF files")
-                        }
-                    }
+            let load: () -> DefinitionFile = {
+                do {
+                    let defParser = DefParser(data: data)
+                    let defFile = try defParser.parse()
+                    return defFile
+                } catch {
+                    uncaught(error: error)
                 }
-            }.eraseToAnyPublisher()
-            return .def(deferredPublisher)
+            }
+            return .def(load)
         case .mask:
-            
-            let deferredPublisher = Deferred {
-                return Future<Mask, Never> { promise in
-                    do {
-                        let mask = try DataReader(data: data).readPathfindingMask()
-                        promise(.success(.init(relativePositionsOfPassableTiles: mask)))
-                    } catch {
-                        uncaught(error: error)
-                    }
+            let load: () -> Mask = {
+                do {
+                    let maskRaw = try DataReader(data: data).readPathfindingMask()
+                    let mask: Mask = .init(relativePositionsOfPassableTiles: maskRaw)
+                    return mask
+                } catch {
+                    uncaught(error: error)
                 }
-            }.eraseToAnyPublisher()
-            return .mask(deferredPublisher)
-        case .xmi:
-            let deferredPublisher = Deferred {
-                return Future<Data, Never> { promise in
-                    implementMe(comment: "How XMI files decoded?")
-               
-                }
-            }.eraseToAnyPublisher()
-            return .xmi(deferredPublisher)
+            }
+            return .mask(load)
         case .campaign:
-            let deferredPublisher = Deferred {
-                return Future<Campaign, Never> { promise in
-                    do {
-                        let h3cParser = H3CParser(data: data)
-                        let campaign = try h3cParser.parse()
-                        promise(.success(campaign))
-                    } catch {
-                        uncaught(error: error)
-                    }
+            let load: () -> Campaign = {
+                do {
+                    let h3cParser = H3CParser(data: data)
+                    let campaign = try h3cParser.parse()
+                    return campaign
+                }catch {
+                    uncaught(error: error)
                 }
-            }.eraseToAnyPublisher()
-            return .campaign(deferredPublisher)
+            }
+            return .campaign(load)
         }
-        
 
     }
     

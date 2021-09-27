@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import Util
 
 public struct Palette: Hashable {
     public let colors: [RGB]
@@ -15,13 +16,15 @@ public struct Palette: Hashable {
     }
     
     
-    public init(data: Data) throws {
-        guard data.count.isMultiple(of: Self.expectedSize) else {
-            throw Error.expectedPaletteToHave(
-                expectedSize: Self.expectedSize,
-                butByteCountIsNotAMultipleOfThatSizeGotByteCount: data.count
-            )
-        }
+    public init(data: Data, name: String) throws {
+        
+//        guard data.count.isMultiple(of: Self.expectedSize) else {
+//            print("🚨 failed to parse palette named: '\(name)', byte count: \(data.count)")
+//            throw Error.expectedPaletteToHave(
+//                expectedSize: Self.expectedSize,
+//                butByteCountIsNotAMultipleOfThatSizeGotByteCount: data.count
+//            )
+//        }
         
         if data.count.isMultiple(of: 3) {
             let colors: [RGB] = Array<UInt8>(data).chunked(into: 3).map { (chunk: [UInt8]) -> RGB in
@@ -33,10 +36,9 @@ public struct Palette: Hashable {
                 )
             }
             self.init(colors: colors)
-        } else if data.count.isMultiple(of: 4) {
-            fatalError("ah ok cool...investigate if we ONLY got this..?")
         } else {
-            throw Error.expectedPaletteToContainRGB
+            print("🚨 WARNING skipping font named: '\(name)', since it has strange length: \(data.count) bytes, expected multiple of 3 or 4. Trying to ASCII print this, to see if it contains any relevant text (probbly not): ASCII: \(String.init(bytes: data, encoding: .ascii))")
+            self.init(colors: [])
         }
     }
     

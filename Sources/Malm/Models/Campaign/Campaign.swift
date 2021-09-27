@@ -9,7 +9,9 @@ import Foundation
 import Util
 
 public struct Campaign: Hashable, CustomDebugStringConvertible {
-    public let header: Header
+//    public let header: Header
+    
+    public init() {}
     
     public var debugDescription: String {
         implementMe()

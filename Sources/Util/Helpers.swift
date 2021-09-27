@@ -9,12 +9,20 @@ import Foundation
 
 public func UNUSED(_: Any) { /* noop */ }
 
+public func fantasticUseThisSolution(
+    insteadOf: String,
+    file: StaticString = #file,
+    line: UInt = #line
+) -> Never {
+    fatalError("Fantastic! Use this solution, instead of \(insteadOf).", file: file, line: line)
+}
+
 public func incorrectImplementation(
     reason: String,
     file: StaticString = #file,
     line: UInt = #line
 ) -> Never {
-    fatalError("Incorrect implementation, \(reason), in file: \(file), line: \(line)")
+    fatalError("Incorrect implementation, \(reason)", file: file, line: line)
 }
 
 
