@@ -35,8 +35,7 @@ public extension Map.Tile {
 public extension Mirroring {
     var debugDescription: String {
         """
-        vertical: \(flipVertical)
-        horiztonal: \(flipHorizontal)
+        flip↕️: \(flipVertical), flip↔️: \(flipHorizontal)
         """
     }
 }
