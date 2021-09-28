@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import SwiftFFmpeg
+//import SwiftFFmpeg
 import AVFoundation
 import Combine
 import Util
@@ -40,7 +40,8 @@ public extension VideoExtractor {
         temporaryDirectory: URL,
         outputDirectory: URL
     ) -> AnyPublisher<URL, VideoExtractor.Error> {
-        
+        fatalError()
+        /*
         let tmpDataURL = temporaryDirectory.appendingPathComponent("tmp_data_safe_to_delete")
         let tmpImageURL = temporaryDirectory.appendingPathComponent("tmp_image_safe_to_delete.png")
         let outputURL = outputDirectory.appendingPathComponent([name, VideoExtractor.fileExtension].joined(separator: "."))
@@ -206,10 +207,14 @@ public extension VideoExtractor {
                 }
             }
         }.eraseToAnyPublisher()
+         */
     }
 }
 
+/*
+
 private extension VideoExtractor {
+    
     func savePNG(_ frame: AVFrame, to url: String) throws {
         let fmtCtx = try AVFormatContext(format: nil, filename: url)
         
@@ -305,3 +310,5 @@ private extension VideoExtractor {
         try fmtCtx.writeTrailer()
     }
 }
+
+*/

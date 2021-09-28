@@ -13,7 +13,8 @@ let package = Package(
     ],
     dependencies: [
         .package(url: "https://github.com/1024jp/GzipSwift", .upToNextMajor(from: "5.1.1")),
-        .package(url: "https://github.com/sunlubo/SwiftFFmpeg", .upToNextMajor(from: "1.5.0")),
+        // Commented out because it does not work in RELEASE mode.
+//        .package(url: "https://github.com/sunlubo/SwiftFFmpeg", .upToNextMajor("1.5.0")),
     ],
     targets: [
         .target(
@@ -28,7 +29,7 @@ let package = Package(
         .target(
             name: "Video",
             dependencies: [
-              "SwiftFFmpeg", "Util", "Guld"
+              /* "SwiftFFmpeg", */ "Util", "Guld"
             ]
         ),
         .target(

@@ -89,11 +89,11 @@ final class ForSaleTests: BaseMapTest {
                     
                 }
 
-                terrainAt(x: 34, y: 4, is: .water, viewID: 17, isMirroredVertically: false, isMirroredHorizontally: false)
+                terrainAt(x: 34, y: 4, is: .water, isCostal: true, viewID: 17, isMirroredVertically: true, isMirroredHorizontally: true)
                 
-                terrainAt(x: 0, y: 4, is: .water, viewID: 16, isMirroredVertically: true, isMirroredHorizontally: false)
-                terrainAt(x: 5, y: 15, is: .water, viewID: 16, isMirroredVertically: true, isMirroredHorizontally: true)
-                terrainAt(x: 7, y: 30, is: .water, viewID: 16, isMirroredVertically: false, isMirroredHorizontally: true)
+//                terrainAt(x: 0, y: 4, is: .water, viewID: 16, isMirroredVertically: true, isMirroredHorizontally: false)
+//                terrainAt(x: 5, y: 15, is: .water, viewID: 16, isMirroredVertically: true, isMirroredHorizontally: true)
+//                terrainAt(x: 7, y: 30, is: .water, viewID: 16, isMirroredVertically: false, isMirroredHorizontally: true)
                 
             },
             onParseObject: { [unowned self] object in

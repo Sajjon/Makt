@@ -160,7 +160,6 @@ internal extension ImageLoader {
         return loadedImage
         
     }
-    
 
     func loadImageFrom(
         cacheKey: ImageCache.Key,
@@ -178,21 +177,19 @@ internal extension ImageLoader {
         )
     }
     
-    
     func loadImage(terrain: Map.Tile.Terrain) throws  -> LoadedImage {
         let defFile = defFileForImageForTerrainOf(kind: terrain.kind)
         
         assert(defFile.blocks.count == 1, "Dont know what to do with more than one block.")
         let block = defFile.blocks.first!
         
-        //            let frameIndex = Int(terrain.mirroring.rawValue)
         let frameIndex = Int(terrain.viewID)
         guard frameIndex < block.frames.count else {
             incorrectImplementation(reason: "frameIndex cannot be larger than number of frames in block.")
         }
         let frame = block.frames[frameIndex]
         
-        return try self.loadImageFrom(
+        return try loadImageFrom(
             cacheKey: .terrain(ImageCache.Key.Terrain(frameName: frame.fileName, mirroring: terrain.mirroring)),
             defFilFrame: frame,
             palette: defFile.palette,
