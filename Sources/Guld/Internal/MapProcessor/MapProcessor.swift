@@ -22,17 +22,17 @@ public final class MapProcessor {
 private extension MapProcessor {
     struct TempTerrainImage {
         let tile: Map.Tile
-        let loadedImage: LoadedImage
+        let loadedImage: LoadedTerrainImage
     }
     
-    func loadTerrainImageForTilesOf(map: Map) throws -> [Map.Tile: LoadedImage] {
+    func loadTerrainImageForTilesOf(map: Map) throws -> [Map.Tile: LoadedTerrainImage] {
         let tiles = map.world.above.tiles + (map.world.underground?.tiles ?? [])
         
         let tempTerrainImages: [TempTerrainImage] = try tiles.map { tile in
             let loadedImage = try assets.loadImage(terrain: tile.terrain)
             return TempTerrainImage(tile: tile, loadedImage: loadedImage)
         }
-        return Dictionary<Map.Tile, LoadedImage>(uniqueKeysWithValues: tempTerrainImages.map { (key: $0.tile, value: $0.loadedImage) })
+        return Dictionary<Map.Tile, LoadedTerrainImage>(uniqueKeysWithValues: tempTerrainImages.map { (key: $0.tile, value: $0.loadedImage) })
     }
 }
 

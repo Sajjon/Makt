@@ -175,21 +175,7 @@ public final class Assets {
 // MARK: Provide
 private extension AssetsProvider {
     
-    func imageLoaderWithPreloadedTerrainSprites(
-        archives: [LoadedArchive],
-        onLoadingProgress: ((LoadingProgress) -> Void)? = nil
-    ) throws -> ImageLoader {
-        
-        let imageLoader = ImageLoader(lodFiles: archives.compactMap { $0.lodArchive })
-        try Map.Tile.Terrain.Kind.allCases.forEach { terrainKind in
-            let images = try imageLoader.loadAllSpritesForTerrainKind(terrainKind)
-            let progress: LoadingProgress = .step(named: "Loaded #\(images.count) images for terrain kind: \(String(describing: terrainKind))")
-            onLoadingProgress?(progress)
-        }
 
-        return imageLoader
-    }
-    
     func provide(
         config: Config,
         onLoadingProgress: ((LoadingProgress) -> Void)? = nil,
@@ -218,14 +204,14 @@ private extension AssetsProvider {
         let diff = CFAbsoluteTimeGetCurrent() - startTime
         print(String(format: "✨✅ Successfully loaded #\(loadedArchives.count) archives, took %.3f seconds", diff))
         
-        let imageLoaderWithTerrainSprites = try imageLoaderWithPreloadedTerrainSprites(archives: loadedArchives, onLoadingProgress: onLoadingProgress)
+        let imageLoader = ImageLoader(lodFiles: loadedArchives.compactMap { $0.lodArchive })
         
         let basicInfoOfMaps = try loadBasicInfoForAllMaps()
         
         let assets = Assets(
             loadedArchives: loadedArchives,
             basicInfoOfMaps: basicInfoOfMaps,
-            imageLoader: imageLoaderWithTerrainSprites
+            imageLoader: imageLoader
         )
         
         if AssetsProvider.sharedAssets == nil {
@@ -264,7 +250,7 @@ public extension AssetsProvider {
 
 public extension Assets {
    
-    func loadImage(terrain: Map.Tile.Terrain) throws -> LoadedImage {
+    func loadImage(terrain: Map.Tile.Terrain) throws -> LoadedTerrainImage {
         try imageLoader.loadImage(terrain: terrain)
     }
     

@@ -13,12 +13,13 @@ public extension Map.Tile {
         
         public let mirroring: Mirroring
         
-        public let viewID: UInt8
+        public typealias ViewID = UInt8
+        public let viewID: ViewID
         
         public init(
             kind: Kind,
             mirroring: Mirroring,
-            viewID: UInt8
+            viewID: ViewID
         ) {
             self.kind = kind
             self.mirroring = mirroring

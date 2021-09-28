@@ -37,11 +37,11 @@ public extension ProcessedMap {
         public let position: Position
         private let mapTile: Map.Tile
         public let objects: [Map.Object]?
-        public let surfaceImage: LoadedImage
+        public let surfaceImage: LoadedTerrainImage
         
         public init(
             mapTile: Map.Tile,
-            surfaceImage: LoadedImage,
+            surfaceImage: LoadedTerrainImage,
             objects: [Map.Object]?
         ) {
             self.position = mapTile.position

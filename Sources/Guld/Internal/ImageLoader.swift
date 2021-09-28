@@ -11,9 +11,10 @@ internal final class ImageLoader {
     
     private let lodFiles: [LodFile]
     
-    typealias ImageCache = [LoadedImage.ID: LoadedImage]
-    private var imageCache: ImageCache = [:]
- 
+    typealias TerrainImageCache = Cache<Map.Tile.Terrain, LoadedTerrainImage>
+    
+    private var terrainImageCache: TerrainImageCache = .init()
+    
     private typealias DefinitionFileID = String
     private var definitionFileCache: [DefinitionFileID: DefinitionFile] = [:]
     
@@ -22,10 +23,159 @@ internal final class ImageLoader {
     ) {
         self.lodFiles = lodFiles
     }
+    
+}
+
+// MARK: Error
+internal extension ImageLoader {
+    enum Error: Swift.Error {
+        case failedToCreateImageContext
+        case failedToCreateImageFromContext
+    }
+}
+
+// MARK: API
+internal extension ImageLoader {
+    
+    func loadImage(terrain: Map.Tile.Terrain) throws -> LoadedTerrainImage {
+        try loadImage(
+            forKey: terrain,
+            from: terrainImageCache,
+            elseMake: newImageForTerrain(terrain)
+        )
+    }
 
 }
 
+// MARK: Private
 private extension ImageLoader {
+    
+    func newImageForTerrain(
+        _ terrain: Map.Tile.Terrain
+    ) throws -> LoadedTerrainImage {
+        
+        let defFile = defFileForImageForTerrainOf(kind: terrain.kind) // uses cache of DEF file
+        
+        assert(defFile.blocks.count == 1, "Dont know what to do with more than one block.")
+        let block = defFile.blocks.first!
+        
+        let frameIndex = Int(terrain.viewID)
+        guard frameIndex < block.frames.count else {
+            incorrectImplementation(reason: "frameIndex cannot be larger than number of frames in block.")
+        }
+        let frame = block.frames[frameIndex]
+        
+        let image = try ImageLoader.imageFrom(
+            frame: frame,
+            mirroring: terrain.mirroring,
+            palette: defFile.palette
+        )
+        
+        return .init(key: terrain, image: image)
+    }
+    
+    static func imageFrom(
+        frame: DefinitionFile.Frame,
+        mirroring: Mirroring = .none,
+        palette: Palette?
+    ) throws -> Image {
+        
+        try imageFrom(
+            pixelData: frame.pixelData,
+            contentsHint: frame.fileName,
+            width: frame.height,
+            height: frame.height,
+            mirroring: mirroring,
+            palette: palette
+        )
+    }
+    
+    static func imageFrom(
+        pixelData: Data,
+        contentsHint: String,
+        width: Int,
+        height: Int,
+        mirroring: Mirroring = .none,
+        palette: Palette?
+    ) throws -> Image {
+
+        let pixels: [UInt32] = {
+            if let palette = palette {
+                let palette32Bit = palette.toU32Array()
+                
+                let pixels: [UInt32] = pixelData.map {
+                    palette32Bit[Int($0)]
+                }
+                return pixels
+            } else {
+                return pixelsFrom(data: pixelData)
+            }
+        }()
+         
+         let pixelMatrix = pixels.chunked(into: width)
+         
+        let cgImage = try ImageLoader.makeCGImage(
+             pixelValueMatrix: pixelMatrix,
+             height: .init(height),
+             width: .init(width),
+             mirroring: mirroring
+         )
+        
+         assert(cgImage.height == height)
+         assert(cgImage.width == width)
+         
+        let image = Image(
+            cgImage: cgImage,
+            hint: contentsHint
+        )
+        
+        return image
+    }
+    
+    func loadImage<CI: CachedImage>(
+        forKey cacheKey: CI.Key,
+        from cache: Cache<CI.Key, CI>,
+        elseMake makeImage: @autoclosure () throws -> CI
+    ) rethrows -> CI {
+        if let cached = cache[cacheKey] {
+            return cached
+        }
+        let newImage = try makeImage()
+        cache[cacheKey] = newImage
+        
+        return newImage
+    }
+        
+    static func makeCGImage(
+        pixelValueMatrix: [[UInt32]],
+        height: CGFloat,
+        width: CGFloat,
+        mirroring: Mirroring
+    ) throws -> CGImage {
+        // context.scaleBy or context.concatenate(CGAffineTransform...) SHOULD work, but I've failed
+        // to get it working. Instead I just mutate the order of the pixels to achive
+        // the same result...
+        var pixelValueMatrix = pixelValueMatrix
+        
+        if mirroring.flipHorizontal {
+            // Reverse order of pixels per row => same as flipping whole image horizontally
+            pixelValueMatrix = pixelValueMatrix.map({ $0.reversed() })
+        }
+        
+        if mirroring.flipVertical {
+            // Reverse order of rows => same as flipping whole image vertically
+            pixelValueMatrix = pixelValueMatrix.reversed()
+        }
+        
+        guard let context = CGContext.from(pixels: pixelValueMatrix) else {
+            throw Error.failedToCreateImageContext
+        }
+        
+        guard let cgImage = context.makeImage() else {
+            throw Error.failedToCreateImageFromContext
+        }
+        return cgImage
+    }
     
     /// VCMI: `TERRAIN_FILES`
     var terrainToDefFileName: [Map.Tile.Terrain.Kind: String] { [
@@ -42,7 +192,7 @@ private extension ImageLoader {
     ]
     }
     
-    private func defFileForImageForTerrainOf(kind terrainKind: Map.Tile.Terrain.Kind) -> DefinitionFile {
+    func defFileForImageForTerrainOf(kind terrainKind: Map.Tile.Terrain.Kind) -> DefinitionFile {
         
         guard let needleDefFileName = terrainToDefFileName[terrainKind] else {
             incorrectImplementation(shouldAlwaysBeAbleTo: "Get expected DEF file name for terrain kind.")
@@ -71,21 +221,7 @@ private extension ImageLoader {
         return defFile
     }
     
-}
-
-// MARK: Error
-internal extension ImageLoader {
-    enum Error: Swift.Error {
-        case failedToCreateImageContext
-        case failedToCreateImageFromContext
-    }
-}
-
-
-// MARK: To CGImage
-internal extension ImageLoader {
-    
-    func pixelsFrom(data pixelData: Data, bytesPerPixel: Int = 3) -> [UInt32] {
+    static func pixelsFrom(data pixelData: Data, bytesPerPixel: Int = 3) -> [UInt32] {
         assert(bytesPerPixel == 3 || bytesPerPixel == 4)
         assert(pixelData.count.isMultiple(of: bytesPerPixel))
         let pixels: [UInt32] = Array<UInt8>(pixelData).chunked(into: bytesPerPixel).map { (chunk: [UInt8]) -> UInt32 in
@@ -106,149 +242,4 @@ internal extension ImageLoader {
         }
         return pixels
     }
-
-}
-
-internal extension ImageLoader {
-    
-    func loadImageFrom(
-        cacheKey: ImageCache.Key,
-        pixelData: Data,
-        width: Int,
-        height: Int,
-        mirroring: Mirroring,
-        palette maybePalette: Palette?
-    ) throws -> LoadedImage {
-        
-        if let cached = imageCache[cacheKey] {
-            assert(cached.mirroring == mirroring)
-            return cached
-        }
-        
-        let pixels: [UInt32] = {
-            if let palette = maybePalette {
-                let palette32Bit = palette.toU32Array()
-                
-                let pixels: [UInt32] = pixelData.map {
-                    palette32Bit[Int($0)]
-                }
-                return pixels
-            } else {
-                return pixelsFrom(data: pixelData)
-            }
-        }()
-        
-        let pixelMatrix = pixels.chunked(into: width)
-        
-        let cgImage = try makeCGImage(
-            pixelValueMatrix: pixelMatrix,
-            height: .init(height),
-            width: .init(width),
-            mirroring: mirroring
-        )
-        
-        let loadedImage = LoadedImage(
-            id: cacheKey,
-            width: width,
-            height: height,
-            mirroring: mirroring,
-            image: cgImage
-        )
-        
-        imageCache[cacheKey] = loadedImage
-        
-        return loadedImage
-        
-    }
-
-    func loadImageFrom(
-        cacheKey: ImageCache.Key,
-        defFilFrame frame: DefinitionFile.Frame,
-        palette: Palette?,
-        mirroring: Mirroring
-    ) throws -> LoadedImage {
-       try loadImageFrom(
-            cacheKey: cacheKey,
-            pixelData: frame.pixelData,
-            width: frame.width,
-            height: frame.height,
-            mirroring: mirroring,
-            palette: palette
-        )
-    }
-    
-    func loadImage(terrain: Map.Tile.Terrain) throws  -> LoadedImage {
-        let defFile = defFileForImageForTerrainOf(kind: terrain.kind)
-        
-        assert(defFile.blocks.count == 1, "Dont know what to do with more than one block.")
-        let block = defFile.blocks.first!
-        
-        let frameIndex = Int(terrain.viewID)
-        guard frameIndex < block.frames.count else {
-            incorrectImplementation(reason: "frameIndex cannot be larger than number of frames in block.")
-        }
-        let frame = block.frames[frameIndex]
-        
-        return try loadImageFrom(
-            cacheKey: .terrain(ImageCache.Key.Terrain(frameName: frame.fileName, mirroring: terrain.mirroring)),
-            defFilFrame: frame,
-            palette: defFile.palette,
-            mirroring: terrain.mirroring
-        ) // uses cache
-    }
-    
-    func loadAllSpritesForTerrainKind(_ terrainKind: Map.Tile.Terrain.Kind) throws -> [LoadedImage] {
-        let defFile = defFileForImageForTerrainOf(kind: terrainKind)
-        
-        return try defFile.blocks.flatMap { block in
-            try block.frames.flatMap { [unowned self] frame in
-                try Mirroring.allCases.map { mirroring in
-                    try self.loadImageFrom(
-                        cacheKey: .terrain(ImageCache.Key.Terrain.init(frameName: frame.fileName, mirroring: mirroring)),
-                        defFilFrame: frame,
-                        palette: defFile.palette,
-                        mirroring: mirroring
-                    ) // uses cache
-                }
-            }
-        }
-        
-        
-    }
-}
-
-// MARK: internal
-internal extension ImageLoader {
-    
-    func makeCGImage(
-        pixelValueMatrix: [[UInt32]],
-        height: CGFloat,
-        width: CGFloat,
-        mirroring: Mirroring
-    ) throws -> CGImage {
-        // context.scaleBy or context.concatenate(CGAffineTransform...) SHOULD work, but I've failed
-        // to get it working. Instead I just mutate the order of the pixels to achive
-        // the same result...
-        var pixelValueMatrix = pixelValueMatrix
-        
-        if mirroring.flipHorizontal {
-            // Reverse order of pixels per row => same as flipping whole image horizontally
-            pixelValueMatrix = pixelValueMatrix.map({ $0.reversed() })
-        }
-        
-        if mirroring.flipVertical {
-            // Reverse order of rows => same as flipping whole image vertically
-            pixelValueMatrix = pixelValueMatrix.reversed()
-        }
-       
-        guard let context = CGContext.from(pixels: pixelValueMatrix) else {
-            throw Error.failedToCreateImageContext
-        }
-        
-        guard let cgImage = context.makeImage() else {
-            throw Error.failedToCreateImageFromContext
-        }
-        return cgImage
-    }
-
 }
