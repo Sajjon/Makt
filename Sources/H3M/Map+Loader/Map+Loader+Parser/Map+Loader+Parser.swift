@@ -54,7 +54,7 @@ private extension Map.Loader.Parser {
         let formatRawValue = try reader.readUInt32()
         let h3mParser: H3M
         
-        if decompressor.isNumberFlaggingCompression(number: formatRawValue) {
+        if decompressor.isCompressed(data: readMap.data) {
             let decompressedData: Data = try decompressor.decompress(data: readMap.data)
             
             let readMapDecompressed = Map.Loader.ReadMap(

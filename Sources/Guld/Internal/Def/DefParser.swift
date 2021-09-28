@@ -222,15 +222,12 @@ private extension DefParser {
         ///      }
         ///
         guard topMargin <= fullHeight else {
-            print("🚨 FATAL ERROR blockFileName: \(fileName), topMargin <= fullHeight, topMargin: \(topMargin), fullHeight: \(fullHeight), height: \(height)")
             throw Error.topMarginLargerThanHeight
         }
         
         guard leftMargin <= fullWidth else {
-            print("🚨 FATAL ERROR blockFileName: \(fileName), leftMargin <= fullWidth, leftMargin: \(leftMargin), fullWidth: \(fullWidth), width: \(width)")
             throw Error.leftMarginLargerThanWidth
         }
-
 
         guard width > 0 && height > 0 else {
             return nil
@@ -316,7 +313,10 @@ private extension DefParser {
                 ))
             }
             pixelData = pixelDataAgg
-        default: incorrectImplementation(reason: "Unhandled encoding format: \(encodingFormat). This should NEVER happen. Probably some wrong byte offset.")
+        default:
+            incorrectImplementation(
+                reason: "Unhandled encoding format: \(encodingFormat). This should NEVER happen. Probably some wrong byte offset."
+            )
         }
                     
         return DefinitionFile.Frame(
