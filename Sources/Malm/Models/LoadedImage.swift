@@ -7,7 +7,7 @@
 
 import Foundation
 
-public final class LoadedImage: Hashable, Identifiable {
+public final class LoadedImage: Hashable, Identifiable, CustomDebugStringConvertible {
     public enum ID: Hashable, CustomDebugStringConvertible {
         public struct Terrain: Hashable, CustomDebugStringConvertible {
             public let frameName: String
@@ -32,6 +32,11 @@ public final class LoadedImage: Hashable, Identifiable {
             case .terrain(let terrain): return String(describing: terrain)
             }
         }
+        public var frameName: String {
+            switch self {
+            case .terrain(let terrain): return terrain.frameName
+            }
+        }
     }
     
     /// globally unique id for this image
@@ -39,6 +44,15 @@ public final class LoadedImage: Hashable, Identifiable {
     public let width: Int
     public let height: Int
     public let mirroring: Mirroring
+    
+    public var debugDescription: String {
+        """
+        id: \(id)
+        widht: \(width)
+        height: \(height)
+        mirroring: \(mirroring)
+        """
+    }
     
     public let image: CGImage
     
@@ -54,6 +68,10 @@ public final class LoadedImage: Hashable, Identifiable {
         self.height = height
         self.image = image
         self.mirroring = mirroring
+        switch id {
+        case .terrain(let terrain):
+            assert(terrain.mirroring == mirroring)
+        }
     }
     
     public static func == (lhs: LoadedImage, rhs: LoadedImage) -> Bool {
@@ -71,5 +89,6 @@ public final class LoadedImage: Hashable, Identifiable {
     
     public func hash(into hasher: inout Hasher) {
         hasher.combine(id)
+        hasher.combine(mirroring)
     }
 }

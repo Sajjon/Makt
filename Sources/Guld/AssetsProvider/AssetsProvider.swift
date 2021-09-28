@@ -203,7 +203,7 @@ private extension AssetsProvider {
             }
         )
         
-        let startLoadingArchivesTime = CFAbsoluteTimeGetCurrent()
+        let startTime = CFAbsoluteTimeGetCurrent()
         
         let archiveFiles = try loadArchives()
         let numberOfItemsToLoad = try archiveFiles.map { try self.archiveLoader.peekFileEntryCount(of: $0) }.reduce(0, +)
@@ -215,7 +215,7 @@ private extension AssetsProvider {
             return loadedArchive
         }
 
-        let diff = CFAbsoluteTimeGetCurrent() - startLoadingArchivesTime
+        let diff = CFAbsoluteTimeGetCurrent() - startTime
         print(String(format: "✨✅ Successfully loaded #\(loadedArchives.count) archives, took %.3f seconds", diff))
         
         let imageLoaderWithTerrainSprites = try imageLoaderWithPreloadedTerrainSprites(archives: loadedArchives, onLoadingProgress: onLoadingProgress)

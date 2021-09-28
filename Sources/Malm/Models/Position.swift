@@ -8,7 +8,7 @@
 import Foundation
 
 /// Position on adventure map, three dimensions (x: Int, y: Int, inUnderworld: Bool)
-public struct Position: Hashable, CustomDebugStringConvertible {
+public struct Position: Hashable, CustomDebugStringConvertible, Comparable {
     public typealias Scalar = Int32
     public let x: Scalar
     public let y: Scalar
@@ -22,6 +22,18 @@ public struct Position: Hashable, CustomDebugStringConvertible {
     
     public init(column: Scalar, row: Scalar, inUnderworld: Bool = false) {
         self.init(x: column, y: row, inUnderworld: inUnderworld)
+    }
+    
+    public static func < (lhs: Self, rhs: Self) -> Bool {
+        guard lhs.inUnderworld == rhs.inUnderworld else {
+            return lhs.inUnderworld
+        }
+        
+        guard lhs.y == rhs.y else {
+            return lhs.y < rhs.y
+        }
+        
+        return lhs.x < rhs.x
     }
 }
 

@@ -47,7 +47,7 @@ internal extension H3M {
                     /// Always read the road direction byte even though this tile might not have a road on it. Otherwise we mess up byte offset.
                     let roadDirection = try Map.Tile.Road.Direction(reader.readUInt8())
                     
-                    let flags: [ExtraTileFlags] = try parseBitmaskOfEnum(negate: true)
+                    let flags: [ExtraTileFlags] = try parseBitmaskOfEnum()
                     
                     let tile = Map.Tile(
                         position: position,
