@@ -126,6 +126,7 @@ private extension ImageLoader {
          
         let image = Image(
             cgImage: cgImage,
+            mirroring: mirroring,
             hint: contentsHint
         )
         
@@ -157,12 +158,12 @@ private extension ImageLoader {
         // the same result...
         var pixelValueMatrix = pixelValueMatrix
         
-        if mirroring.flipVertical {
+        if mirroring.flipHorizontal {
             // Reverse order of pixels per row => same as flipping whole image horizontally
             pixelValueMatrix = pixelValueMatrix.map({ $0.reversed() })
         }
         
-        if mirroring.flipHorizontal {
+        if mirroring.flipVertical {
             // Reverse order of rows => same as flipping whole image vertically
             pixelValueMatrix = pixelValueMatrix.reversed()
         }
@@ -170,7 +171,7 @@ private extension ImageLoader {
         guard let context = CGContext.from(pixels: pixelValueMatrix) else {
             throw Error.failedToCreateImageContext
         }
-        
+
         guard let cgImage = context.makeImage() else {
             throw Error.failedToCreateImageFromContext
         }

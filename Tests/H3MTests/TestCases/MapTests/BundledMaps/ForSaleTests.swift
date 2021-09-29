@@ -106,11 +106,11 @@ final class ForSaleTests: BaseMapTest {
 
                 terrainAt(x: 0, y: 0, is: .dirt, viewID: 24)
                 terrainAt(x: 0, y: 3, is: .dirt, viewID: 10)
-                terrainAt(x: 0, y: 4, is: .water, viewID: 16, isMirroredVertically: true, isMirroredHorizontally: false)
+                terrainAt(x: 0, y: 4, is: .water, viewID: 16, isMirroredVertically: false, isMirroredHorizontally: true)
                 terrainAt(x: 0, y: 35, is: .grass, viewID: 55)
                 
-                terrainAt(x: 5, y: 6, is: .dirt, viewID: 16, isMirroredVertically: false, isMirroredHorizontally: true)
-                terrainAt(x: 6, y: 6, is: .dirt, viewID: 8, isMirroredVertically: false, isMirroredHorizontally: true)
+                terrainAt(x: 5, y: 6, is: .dirt, viewID: 16, isMirroredVertically: true, isMirroredHorizontally: false)
+                terrainAt(x: 6, y: 6, is: .dirt, viewID: 8, isMirroredVertically: true, isMirroredHorizontally: false)
 
 
                 terrainAt(x: 11, y: 22, is: .grass, viewID: 56)

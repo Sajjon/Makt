@@ -9,12 +9,12 @@ import Foundation
 import Malm
 
 fileprivate enum ExtraTileFlags: UInt8, CaseIterable {
-    case terrainVertical
     case terrainHorizontal
-    case riverVertical
+    case terrainVertical
     case riverHorizontal
-    case roadVertical
+    case riverVertical
     case roadHorizontal
+    case roadVertical
     case isCoastal
     case hasFavorableWinds
 }

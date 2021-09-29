@@ -10,13 +10,16 @@ import Foundation
 public final class Image: CGImageWrapper, Equatable, CustomDebugStringConvertible {
     public let cgImage: CGImage
     public let hint: String
+    public let mirroring: Mirroring
     
     public init(
         cgImage: CGImage,
+        mirroring: Mirroring,
         hint: String
     ) {
         self.cgImage = cgImage
         self.hint = hint
+        self.mirroring = mirroring
     }
 }
 
@@ -30,7 +33,8 @@ public extension Image {
         assert(lhs.height == rhs.height)
         assert(lhs.width == rhs.width)
         assert(lhs.hint == rhs.hint)
-        return true
+        let sameMirroring = lhs.mirroring == rhs.mirroring
+        return sameMirroring
     }
 }
 
@@ -40,6 +44,7 @@ public extension Image {
     var debugDescription: String {
         """
         hint about content: \(hint)
+        mirroring: \(mirroring)
         cgImage: \(String(describing: cgImage))
         image memory address: \(String.pointer(cgImage))
         """
