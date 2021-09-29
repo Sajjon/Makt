@@ -45,7 +45,7 @@ public extension Map.Level {
 public extension Map.Tile {
     var emojiString: String {
         let t: String
-        switch terrain.kind {
+        switch ground.terrain {
         case .dirt: t = "◻️"
         case .grass: t = "🟩" // "🍀" //
         case .lava: t = "🌋"

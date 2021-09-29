@@ -9,7 +9,8 @@ import Foundation
 
 public extension Map.Tile {
     
-    struct Road: Hashable, CustomDebugStringConvertible {
+    struct Road: TileLayer, CustomDebugStringConvertible {
+        public static let layerKind: TileLayerKind = .road
         public let kind: Kind
         
         /// The direction of the the road. Not to be confused with `mirroring` of image.
@@ -32,6 +33,9 @@ public extension Map.Tile {
 
 // MARK: Kind
 public extension Map.Tile.Road {
+    var zAxisIndex: Int { 2 }
+    var frameIndex: Int { direction.frameIndex }
+    
     enum Kind: UInt8, Hashable, CaseIterable, CustomDebugStringConvertible {
         // 0 means "no road", but we model it as `Optional<Road>.none` instead of Road.Kind having a specific case for it...
         case dirt = 1, gravel, cobbelStone
@@ -127,9 +131,9 @@ public extension Map.Tile.Road {
     ///    (0x0F, EndHorz)
     ///    (0x10, Cross)
     ///
-    struct Direction: Hashable {
+    struct Direction: Hashable, DefinitionFileFrameIndexing {
         public typealias RawValue = UInt8
-        public let frameID: RawValue
+        public let frameIndex: Int
         
         // 17 different configurations, see: https://github.com/Sajjon/HoMM3SwiftUI/blob/main/H3M.md#road-properties
         public static let max: RawValue = 17
@@ -140,7 +144,7 @@ public extension Map.Tile.Road {
         
         public init(_ rawValue: RawValue) throws {
             guard rawValue <= Self.max else { throw Error.valueTooLarge(mustAtMostBe: Self.max, butGot: rawValue) }
-            self.frameID = rawValue
+            self.frameIndex = Int(rawValue)
         }
     }
 }

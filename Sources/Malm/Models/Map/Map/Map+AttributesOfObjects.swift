@@ -22,23 +22,23 @@ public extension Map.Object {
         /// Name of sprite/animation file
         public let sprite: Sprite
         
-        public let supportedLandscapes: [Map.Tile.Terrain.Kind]
-        public let mapEditorLandscapeGroup: [Map.Tile.Terrain.Kind]
+        public let supportedLandscapes: [Map.Terrain]
+        public let mapEditorLandscapeGroup: [Map.Terrain]
 
         public let objectID: Map.Object.ID
 
         public let group: Group?
         public let pathfinding: Pathfinding
-        public let inUnderworld: Bool
+        public let zAxisRenderingPriority: Int
         
         public init(
             sprite: Sprite,
-            supportedLandscapes: [Map.Tile.Terrain.Kind],
-            mapEditorLandscapeGroup: [Map.Tile.Terrain.Kind],
+            supportedLandscapes: [Map.Terrain],
+            mapEditorLandscapeGroup: [Map.Terrain],
             objectID: Map.Object.ID,
             group: Group?,
             pathfinding: Pathfinding,
-            inUnderworld: Bool
+            zAxisRenderingPriority: Int
         ) {
             self.sprite = sprite
             self.supportedLandscapes = supportedLandscapes
@@ -46,7 +46,7 @@ public extension Map.Object {
             self.objectID = objectID
             self.group = group
             self.pathfinding = pathfinding
-            self.inUnderworld = inUnderworld
+            self.zAxisRenderingPriority = zAxisRenderingPriority
         }
     }
 }

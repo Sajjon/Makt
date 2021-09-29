@@ -16,7 +16,7 @@ enum H3MError: Swift.Error {
     case unrecognizedDifficulty(Difficulty.RawValue)
     case unrecognizedBehaviour(Behaviour.RawValue)
     case unrecognizedFaction(Faction.RawValue)
-    case unrecognizedTerrainKind(Map.Tile.Terrain.Kind.RawValue)
+    case unrecognizedTerrainKind(Map.Terrain.RawValue)
     case unrecognizedHeroID(Hero.ID.RawValue)
     case unrecognizedVictoryConditionKind(Map.VictoryCondition.Kind.Stripped.RawValue)
     case unrecognizedLossConditionKind(Map.VictoryCondition.Kind.Stripped.RawValue)

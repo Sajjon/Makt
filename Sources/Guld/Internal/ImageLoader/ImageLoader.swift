@@ -5,25 +5,20 @@ import Combine
 import Util
 import Malm
 
-
 // MARK: ImageLoader
 internal final class ImageLoader {
-    
+
     private let lodFiles: [LodFile]
-    
-    typealias TerrainImageCache = Cache<Map.Tile.Terrain, LoadedTerrainImage>
-    
-    private var terrainImageCache: TerrainImageCache = .init()
-    
-    private typealias DefinitionFileID = String
-    private var definitionFileCache: [DefinitionFileID: DefinitionFile] = [:]
+    private let groundImageCache: GroundImageCache = .init()
+    private let roadImageCache: RoadImageCache = .init()
+    private let riverImageCache: RiverImageCache = .init()
+    private let definitionFileCache: DefinitionFileCache = .init()
     
     internal init(
         lodFiles: [LodFile]
     ) {
         self.lodFiles = lodFiles
     }
-    
 }
 
 // MARK: Error
@@ -36,12 +31,31 @@ internal extension ImageLoader {
 
 // MARK: API
 internal extension ImageLoader {
+    typealias DefinitionFileID = String
+    typealias DefinitionFileCache = Cache<DefinitionFileID, DefinitionFile>
+    typealias ImageCache<CI: CacheableImage> = Cache<CI.Key, CI>
     
-    func loadImage(terrain: Map.Tile.Terrain) throws -> LoadedTerrainImage {
+    typealias GroundImageCache = ImageCache<GroundImage>
+    typealias RoadImageCache = ImageCache<RoadImage>
+    typealias RiverImageCache = ImageCache<RiverImage>
+    
+    func loadImage(ground: Map.Tile.Ground) throws -> GroundImage {
+        try loadImage(for: ground)
+    }
+    
+    func loadImage(river: Map.Tile.River) throws -> RiverImage {
+        try loadImage(for: river)
+    }
+    
+    func loadImage(road: Map.Tile.Road) throws -> RoadImage {
+        try loadImage(for: road)
+    }
+    
+    func loadImage<Key: DrawableTileLayer>(for key: Key) throws -> CachedImage<Key> {
         try loadImage(
-            forKey: terrain,
-            from: terrainImageCache,
-            elseMake: newImageForTerrain(terrain)
+            forKey: key,
+            from: cacheFor(key),
+            elseMake: newImage(key: key)
         )
     }
 
@@ -50,16 +64,24 @@ internal extension ImageLoader {
 // MARK: Private
 private extension ImageLoader {
     
-    func newImageForTerrain(
-        _ terrain: Map.Tile.Terrain
-    ) throws -> LoadedTerrainImage {
-        
-        let defFile = defFileForImageForTerrainOf(kind: terrain.kind) // uses cache of DEF file
+    // TODO remove separate caches and share?
+    func cacheFor<Key: DrawableTileLayer>(_ abstractTile: Key) -> ImageCache<CachedImage<Key>> {
+       switch Key.layerKind {
+       case .road: return roadImageCache as! ImageCache<CachedImage<Key>>
+       case .ground: return groundImageCache as! ImageCache<CachedImage<Key>>
+       case .river: return riverImageCache as! ImageCache<CachedImage<Key>>
+       }
+   }
+    
+    func newImage<Key: DrawableTileLayer>(
+        key: Key
+    ) throws -> CachedImage<Key> {
+        let defFile = definitionFileFor(key)
         
         assert(defFile.blocks.count == 1, "Dont know what to do with more than one block.")
         let block = defFile.blocks.first!
         
-        let frameIndex = Int(terrain.viewID)
+        let frameIndex = key.frameIndex
         guard frameIndex < block.frames.count else {
             incorrectImplementation(reason: "frameIndex cannot be larger than number of frames in block.")
         }
@@ -67,11 +89,11 @@ private extension ImageLoader {
         
         let image = try ImageLoader.imageFrom(
             frame: frame,
-            mirroring: terrain.mirroring,
+            mirroring: key.mirroring,
             palette: defFile.palette
         )
         
-        return .init(key: terrain, image: image)
+        return .init(key: key, image: image)
     }
     
     static func imageFrom(
@@ -83,8 +105,8 @@ private extension ImageLoader {
         try imageFrom(
             pixelData: frame.pixelData,
             contentsHint: frame.fileName,
-            width: frame.height,
-            height: frame.height,
+            fullSize: frame.fullSize,
+            rect: frame.rect,
             mirroring: mirroring,
             palette: palette
         )
@@ -93,8 +115,8 @@ private extension ImageLoader {
     static func imageFrom(
         pixelData: Data,
         contentsHint: String,
-        width: Int,
-        height: Int,
+        fullSize: CGSize,
+        rect: CGRect,
         mirroring: Mirroring = .none,
         palette: Palette?
     ) throws -> Image {
@@ -111,18 +133,21 @@ private extension ImageLoader {
                 return pixelsFrom(data: pixelData)
             }
         }()
+        
+        let width = rect.width
+        let height = rect.height
          
-         let pixelMatrix = pixels.chunked(into: width)
+        let pixelMatrix = pixels.chunked(into: .init(width))
          
         let cgImage = try ImageLoader.makeCGImage(
              pixelValueMatrix: pixelMatrix,
-             height: .init(height),
-             width: .init(width),
+             fullSize: fullSize,
+             rect: rect,
              mirroring: mirroring
          )
         
-         assert(cgImage.height == height)
-         assert(cgImage.width == width)
+        assert(cgImage.height == .init(height))
+        assert(cgImage.width == .init(width))
          
         let image = Image(
             cgImage: cgImage,
@@ -133,7 +158,7 @@ private extension ImageLoader {
         return image
     }
     
-    func loadImage<CI: CachedImage>(
+    func loadImage<CI: CacheableImage>(
         forKey cacheKey: CI.Key,
         from cache: Cache<CI.Key, CI>,
         elseMake makeImage: @autoclosure () throws -> CI
@@ -149,8 +174,8 @@ private extension ImageLoader {
         
     static func makeCGImage(
         pixelValueMatrix: [[UInt32]],
-        height: CGFloat,
-        width: CGFloat,
+        fullSize: CGSize,
+        rect: CGRect,
         mirroring: Mirroring
     ) throws -> CGImage {
         // context.scaleBy or context.concatenate(CGAffineTransform...) SHOULD work, but I've failed
@@ -178,36 +203,27 @@ private extension ImageLoader {
         return cgImage
     }
     
-    /// VCMI: `TERRAIN_FILES`
-    var terrainToDefFileName: [Map.Tile.Terrain.Kind: String] { [
-        .dirt:  "DIRTTL.def",
-        .sand: "SANDTL.def",
-        .grass: "GRASTL.def",
-        .snow: "SNOWTL.def",
-        .swamp: "SWMPTL.def",
-        .rough: "ROUGTL.def",
-        .subterranean: "SUBBTL.def",
-        .lava: "LAVATL.def",
-        .water: "WATRTL.def",
-        .rock: "ROCKTL.def"
-    ]
+    func definitionFileFor<A: DrawableTileLayer>(_ drawableTile: A) -> DefinitionFile {
+        definitionFile(
+            named: drawableTile.definitionFileName,
+            in: drawableTile.archive
+        )
     }
     
-    func defFileForImageForTerrainOf(kind terrainKind: Map.Tile.Terrain.Kind) -> DefinitionFile {
+    func definitionFile(
+        named targetDefinitionFileName: String,
+        in archive: Archive
+    ) -> DefinitionFile {
         
-        guard let needleDefFileName = terrainToDefFileName[terrainKind] else {
-            incorrectImplementation(shouldAlwaysBeAbleTo: "Get expected DEF file name for terrain kind.")
-        }
-        
-        if let cached = definitionFileCache[needleDefFileName] {
+        if let cached = definitionFileCache[targetDefinitionFileName] {
             return cached
         }
         
-        let spriteArchive: LodFile = {
-            lodFiles.first(where: { $0.archiveKind == .lod(.restorationOfErathiaSpriteArchive) })!
-        }()
+        guard let lodFile = lodFiles.first(where: { $0.archiveKind == archive }) else {
+            incorrectImplementation(reason: "Should always be able to find LODFile.")
+        }
         
-        guard let fileEntry = spriteArchive.entries.first(where: { $0.fileName.lowercased() == needleDefFileName.lowercased() }) else {
+        guard let fileEntry = lodFile.entries.first(where: { $0.fileName.lowercased() == targetDefinitionFileName.lowercased() }) else {
             incorrectImplementation(shouldAlwaysBeAbleTo: "Find file entry matching expected DEF file.")
         }
         
@@ -217,7 +233,7 @@ private extension ImageLoader {
         
         let defFile = loadDefinitionFile()
         
-        definitionFileCache[needleDefFileName] = defFile
+        definitionFileCache[targetDefinitionFileName] = defFile
         
         return defFile
     }

@@ -250,8 +250,12 @@ public extension AssetsProvider {
 
 public extension Assets {
    
-    func loadImage(terrain: Map.Tile.Terrain) throws -> LoadedTerrainImage {
-        try imageLoader.loadImage(terrain: terrain)
+    func loadImage(ground: Map.Tile.Ground) throws -> GroundImage {
+        try imageLoader.loadImage(ground: ground)
+    }
+    
+    func loadImage<Key: DrawableTileLayer>(for key: Key) throws -> CachedImage<Key> {
+        try imageLoader.loadImage(for: key)
     }
     
     func loadMap(

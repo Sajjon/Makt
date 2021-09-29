@@ -13,21 +13,30 @@ public extension DefinitionFile {
     struct Frame: Hashable, Identifiable {
         public typealias ID = String
         public var id: ID { fileName }
-        
         public let fileName: String
-        public let size: Int
-        public typealias Scalar = Int
-        public let fullWidth: Scalar
-        public let fullHeight: Scalar
-        public let width: Scalar
-        public let height: Scalar
-        public let margin: Margin
+        public let fullSize: CGSize
+        public let rect: CGRect
         public let pixelData: Data
-        
-        public struct Margin: Hashable {
-            public let left: Scalar
-            public let top: Scalar
-        }
     }
+}
 
+extension CGSize: Hashable {
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(width)
+        hasher.combine(height)
+    }
+}
+
+extension CGRect: Hashable {
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(self.size)
+        hasher.combine(self.origin)
+    }
+}
+
+extension CGPoint: Hashable {
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(self.x)
+        hasher.combine(self.y)
+    }
 }

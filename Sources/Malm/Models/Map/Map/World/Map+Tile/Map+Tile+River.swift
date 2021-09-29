@@ -7,8 +7,25 @@
 
 import Foundation
 
+public protocol RenderZAxisIndexing {
+    var zAxisIndex: Int { get }
+}
+
+public protocol DefinitionFileFrameIndexing {
+    var frameIndex: Int { get }
+}
+
+public enum TileLayerKind: String, Hashable {
+    case ground, river, road
+}
+
+public protocol TileLayer: DefinitionFileFrameIndexing, Flippable, RenderZAxisIndexing, Hashable {
+    static var layerKind: TileLayerKind { get }
+}
+
 public extension Map.Tile {
-    struct River: Hashable, CustomDebugStringConvertible {
+    struct River: TileLayer, CustomDebugStringConvertible {
+        public static let layerKind: TileLayerKind = .river
         public let kind: Kind
         
         /// The direction of the river's "mouth" (three split smaller rivers). Not to be confused with `mirroring` of image.
@@ -30,6 +47,9 @@ public extension Map.Tile {
 }
 
 public extension Map.Tile.River {
+    var zAxisIndex: Int { 1 }
+    var frameIndex: Int { direction.frameIndex }
+    
     var debugDescription: String {
         """
         kind: \(kind)
@@ -81,9 +101,9 @@ public extension Map.Tile.River {
     ///
     /// 
     ///
-    struct Direction: Hashable {
+    struct Direction: Hashable, DefinitionFileFrameIndexing {
         public typealias RawValue = UInt8
-        public let frameID: RawValue
+        public let frameIndex: Int
         
         // 13 different configurations, see: https://github.com/Sajjon/HoMM3SwiftUI/blob/main/H3M.md#river-properties
         public static let max: RawValue = 13
@@ -93,7 +113,7 @@ public extension Map.Tile.River {
         }
         public init(_ rawValue: RawValue) throws {
             guard rawValue <= Self.max else { throw Error.valueTooLarge(mustAtMostBe: Self.max, butGot: rawValue) }
-            self.frameID = rawValue
+            self.frameIndex = Int(rawValue)
         }
     }
 }

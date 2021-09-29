@@ -51,7 +51,7 @@ final class ForSaleTests: BaseMapTest {
                 func terrainAt(
                     x: Int32,
                     y: Int32,
-                    is expectedTerrainKind: Map.Tile.Terrain.Kind,
+                    is expectedTerrainKind: Map.Terrain,
                     isCostal expectTileToBeCoastal: Bool? = nil,
                     viewID expectedViewID: UInt8? = nil,
                     isMirroredVertically expectTileToBeMirroredVertically: Bool? = nil,

@@ -9,6 +9,10 @@ import Foundation
 
 public typealias Mirroring = Map.Tile.Mirroring
 
+public protocol Flippable {
+    var mirroring: Mirroring { get }
+}
+
 public extension Map.Tile {
     /// The mirroring of road, river, and terrain surface tiles.
     struct Mirroring: Hashable, CustomDebugStringConvertible, CaseIterable {

@@ -7,7 +7,7 @@
 
 import Foundation
 
-public final class Image: CGImageWrapper, Equatable, CustomDebugStringConvertible {
+public final class Image: CGImageWrapper, Hashable, CustomDebugStringConvertible {
     public let cgImage: CGImage
     public let hint: String
     public let mirroring: Mirroring
@@ -35,6 +35,14 @@ public extension Image {
         assert(lhs.hint == rhs.hint)
         let sameMirroring = lhs.mirroring == rhs.mirroring
         return sameMirroring
+    }
+}
+
+// MARK: Hashable
+public extension Image {
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(cgImage)
+        hasher.combine(mirroring)
     }
 }
 

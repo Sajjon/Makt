@@ -11,7 +11,7 @@ import Util
 public extension Map {
     struct Tile: Hashable, CustomDebugStringConvertible {
         public let position: Position
-        public let terrain: Terrain
+        public let ground: Ground 
         
         public let river: River?
         public let road: Road?
@@ -24,14 +24,14 @@ public extension Map {
         
         public init(
             position: Position,
-            terrain: Terrain,
+            ground: Ground,
             river: River? = nil,
             road: Road? = nil,
             isCoastal: Bool,
             hasFavourableWindEffect: Bool
         ) {
             self.position = position
-            self.terrain = terrain
+            self.ground = ground
             self.river = river
             self.road = road
             self.isCoastal = isCoastal
@@ -44,7 +44,7 @@ public extension Map.Tile {
     var debugDescription: String {
         let optionalStrings: [String?] = [
             "position: \(position)",
-            "terrain: \(terrain)",
+            "ground: \(ground)",
             river.map { "river: \($0)" },
             road.map { "road: \($0)" },
             "isCoastal: \(isCoastal)",

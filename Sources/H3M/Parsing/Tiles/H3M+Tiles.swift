@@ -32,10 +32,10 @@ internal extension H3M {
                     let position = Position(column: .init(columnIndex), row: .init(rowIndex), inUnderworld: inUnderworld)
                     
                     let terrainKindRaw = try reader.readUInt8()
-                    guard let terrainKind = Map.Tile.Terrain.Kind(rawValue: terrainKindRaw) else {
+                    guard let terrain = Map.Terrain(rawValue: terrainKindRaw) else {
                         throw H3MError.unrecognizedTerrainKind(terrainKindRaw)
                     }
-                    let terrainView = try reader.readUInt8()
+                    let groundFrameIndex = try reader.readUInt8()
                     let riverKindRaw = try reader.readUInt8()
                     let riverKind: Map.Tile.River.Kind? = .init(rawValue: riverKindRaw)
 
@@ -51,13 +51,13 @@ internal extension H3M {
                     
                     let tile = Map.Tile(
                         position: position,
-                        terrain: .init(
-                            kind: terrainKind,
+                        ground: .init(
+                            terrain: terrain,
                             mirroring: .init(
                                 flipVertical: flags.contains(.terrainVertical),
                                 flipHorizontal: flags.contains(.terrainHorizontal)
                             ),
-                            viewID: terrainView
+                            frameIndex: Int(groundFrameIndex)
                         ),
                         
                         river: riverKind.map {

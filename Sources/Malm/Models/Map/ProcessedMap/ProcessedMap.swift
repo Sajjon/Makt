@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import Util
 
 public struct ProcessedMap: Hashable {
     private let map: Map
@@ -37,24 +38,33 @@ public extension ProcessedMap {
         public let position: Position
         private let mapTile: Map.Tile
         public let objects: [Map.Object]?
-        public let surfaceImage: LoadedTerrainImage
+        private let groundImage: GroundImage
+        
+        public let images: [AnyCachedImage]
         
         public init(
             mapTile: Map.Tile,
-            surfaceImage: LoadedTerrainImage,
+            groundImage: GroundImage,
+            riverImage: RiverImage?,
+            roadImage: RoadImage?,
             objects: [Map.Object]?
         ) {
             self.position = mapTile.position
-            self.surfaceImage = surfaceImage
+            self.groundImage = groundImage
             self.mapTile = mapTile
             self.objects = objects
+            self.images = [
+                AnyCachedImage(groundImage),            // index 0: ground terrain image (always present)
+                riverImage.map { AnyCachedImage($0) },  // index 1: river image (sometimes present)
+                roadImage.map { AnyCachedImage($0) }    // index 2: road image (sometimes present)
+            ].filterNils()
         }
     }
 }
 
 public extension ProcessedMap.Tile {
-    var terrain: Map.Tile.Terrain {
-        mapTile.terrain
+    var terrain: Map.Terrain {
+        mapTile.ground.terrain
     }
     
     var emojiString: String {

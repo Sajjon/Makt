@@ -25,7 +25,7 @@ public extension Map.Loader.Parser {
 
 
 public extension DataReader {
- 
+    
     
     convenience init(readMap: Map.Loader.ReadMap) {
         self.init(data: readMap.data)
@@ -55,7 +55,7 @@ extension H3M {
         let playersInfo = try parseInformationAboutPlayers(inspector: inspector?.playersInfoInspector, format: format)
         
         let additionalInfo = try parseAdditionalInfo(inspector: inspector?.additionalInformationInspector, format: format, playersInfo: playersInfo)
-
+        
         let world = try parseTerrain(
             hasUnderworld: basicInfo.hasTwoLevels,
             size: size
@@ -67,7 +67,7 @@ extension H3M {
         assert(attributesOfObjects.attributes.count < (world.above.tiles.count + (world.underground?.tiles.count ?? 0)))
         inspector?.didParseAttributesOfObjects(attributesOfObjects)
         
-     
+        
         let detailsAboutObjects = try parseDetailsAboutObjects(
             inspector: inspector,
             format: format,
@@ -94,8 +94,8 @@ extension H3M {
 }
 
 internal extension H3M {
-
-
+    
+    
     func parseAllowedPlayers(availablePlayers: [Player]) throws -> [Player] {
         let players: [Player] = try parseBitmaskOfEnum()
         return players.filter { availablePlayers.contains($0) }
@@ -109,12 +109,8 @@ internal extension H3M {
     }
     
 }
-    
-public typealias Bitmask = BitArray
 
-var handledSprites = Set<String>()
-var spriteDefinitions = [String]()
-var spriteCustomDebugPrints = [String]()
+public typealias Bitmask = BitArray
 
 // MARK: Parse "Attributes
 private extension H3M {
@@ -128,7 +124,7 @@ private extension H3M {
         let attributes: [Map.Object.Attributes] = try (0..<attributesCount).compactMap { _ in
             /// aka "Sprite name"
             let animationFileName = try reader.readLengthOfStringAndString(assertingMaxLength: 20)! // arbitrarily chosen
-    
+            
             /// Which squares (of this object) are passable, counted from the bottom right corner
             /// (bit 1: passable, bit 0: impassable
             let passabilityBitmask = try reader.readPathfindingMask()
@@ -145,8 +141,8 @@ private extension H3M {
                     relativePositionsOfPassableTiles: passabilityBitmask
                 )
             )
-      
-            func parseLandscapes() throws -> [Map.Tile.Terrain.Kind] {
+            
+            func parseLandscapes() throws -> [Map.Terrain] {
                 try parseBitmaskOfEnum()
             }
             
@@ -162,64 +158,59 @@ private extension H3M {
                 id: objectIDRaw,
                 subId: reader.readUInt32()
             )
-
+            
             /// used by editor
             let objectGroupRaw = try reader.readUInt8()
             let group: Map.Object.Attributes.Group? = .init(rawValue: objectGroupRaw)
             
-            let maybeSprite: Sprite? = Sprite(rawValue: animationFileName)
-            if maybeSprite == nil && !handledSprites.contains(animationFileName) {
-                var caseBaseName = objectID.subtypeDescription.map({ "\(objectID.name)\($0.capitalizingFirstLetter())" }) ?? objectID.name
-                
-                if objectID.stripped == .creatureBank || objectID.stripped == .artifact || objectID.stripped == .monster || objectID.stripped == .resourceGenerator || objectID.stripped == .creatureGenerator1 {
-                    caseBaseName = objectID.subtypeDescription!
+            let sprite: Sprite = {
+                if let sprite = Sprite(rawValue: animationFileName) {
+                    return sprite
+                } else {
+                    var caseBaseName = objectID.subtypeDescription.map({ "\(objectID.name)\($0.capitalizingFirstLetter())" }) ?? objectID.name
+                    
+                    if objectID.stripped == .creatureBank || objectID.stripped == .artifact || objectID.stripped == .monster || objectID.stripped == .resourceGenerator || objectID.stripped == .creatureGenerator1 {
+                        caseBaseName = objectID.subtypeDescription!
+                    }
+                    
+                    let animationFileNameWithoutExtension = animationFileName.hasSuffix(".def") ? String(animationFileName.dropLast(4)) : animationFileName
+                    let caseName = "\(caseBaseName)_\(animationFileNameWithoutExtension)"
+                    var mapEditorLandscapeGroupString = ""
+                    if mapEditorLandscapeGroup == [.water] {
+                        mapEditorLandscapeGroupString = "Water"
+                    } else if mapEditorLandscapeGroup.count == 8 && !mapEditorLandscapeGroup.contains(.water) {
+                        mapEditorLandscapeGroupString = "Land"
+                    } else if mapEditorLandscapeGroup.count != 9 {
+                        mapEditorLandscapeGroupString = mapEditorLandscapeGroup.map({ String(describing: $0) }).joined(separator: ", ")
+                    }
+                    
+                    if !mapEditorLandscapeGroupString.isEmpty {
+                        mapEditorLandscapeGroupString = "\n/// Terrain kind: \(mapEditorLandscapeGroupString)"
+                    }
+                    
+                    let definiition = """
+                        
+                        /// \(objectID.debugDescription)\(mapEditorLandscapeGroupString)
+                        case \(caseName) = "\(animationFileName)"
+                        """
+                    
+                    let customDebugPrint = """
+                        
+                        /// Sprite for object ID: \(objectID.stripped.rawValue)
+                        /// \(objectID.debugDescription)
+                        case .\(caseName): return "\(objectID.debugDescription)"
+                        """
+                    
+                    fatalError("⚠️⚠️⚠️  New sprite found ⚠️⚠️⚠️\n\nAdd the sprite to the enum:\n\n\(definiition)\n and the Sprite extension for CustomDebugPrintConvertible as well: \n\n\(customDebugPrint)\\nn")
                 }
-                
-                let animationFileNameWithoutExtension = animationFileName.hasSuffix(".def") ? String(animationFileName.dropLast(4)) : animationFileName
-                let caseName = "\(caseBaseName)_\(animationFileNameWithoutExtension)"
-                var mapEditorLandscapeGroupString = ""
-                if mapEditorLandscapeGroup == [.water] {
-                    mapEditorLandscapeGroupString = "Water"
-                } else if mapEditorLandscapeGroup.count == 8 && !mapEditorLandscapeGroup.contains(.water) {
-                    mapEditorLandscapeGroupString = "Land"
-                } else if mapEditorLandscapeGroup.count != 9 {
-                    mapEditorLandscapeGroupString = mapEditorLandscapeGroup.map({ String(describing: $0) }).joined(separator: ", ")
-                }
-                
-                if !mapEditorLandscapeGroupString.isEmpty {
-                    mapEditorLandscapeGroupString = "\n/// Terrain kind: \(mapEditorLandscapeGroupString)"
-                }
-                
-                let definiition = """
-
-                /// \(objectID.debugDescription)\(mapEditorLandscapeGroupString)
-                case \(caseName) = "\(animationFileName)"
-                """
-                
-                spriteDefinitions.append(definiition)
-                
-                let customDebugPrint = """
-
-                /// Sprite for object ID: \(objectID.stripped.rawValue)
-                /// \(objectID.debugDescription)
-                case .\(caseName): return "\(objectID.debugDescription)"
-                """
-                
-                spriteCustomDebugPrints.append(customDebugPrint)
-                
-                handledSprites.insert(animationFileName)
-            }
-            let sprite = maybeSprite ?? .heroWitch_ah15_e
+            }()
             
-//            guard let sprite = Sprite(rawValue: animationFileName) else {
-//                throw H3MError.unknownSpriteName(animationFileName)
-//            }
             
-            let inUnderworld = try reader.readBool()
+            let zAxisRenderingPriority = Int(try reader.readUInt8()) * 10 // We multiply by 10 so that we can set values for terrain, river, road with lower values.
             
             /// Unknown
             let unknownBytes = try reader.read(byteCount: 16)
-    
+            
             guard unknownBytes.allSatisfy({ $0 == 0x00 }) else {
                 fatalError("If we hit this fatalError we can probably remove this check. I THINK I've identified behaviour that these 16 unknown bytes are always 16 zeroes. This might not be the case for some custom maps. I've added this assertion as a kind of 'offset check', meaning that it is helpful that we expect these 16 bytes to all be zero as an indicator that we are reading the correct values before at the expected offset in the maps byte blob.")
             }
@@ -231,57 +222,14 @@ private extension H3M {
                 objectID: objectID,
                 group: group,
                 pathfinding: pathfinding,
-                inUnderworld: inUnderworld
+                zAxisRenderingPriority: zAxisRenderingPriority
             )
             return attributes
         }
         
-        if !handledSprites.isEmpty {
-            
-        spriteDefinitions.forEach {
-            print($0)
-        }
-        print("\n\n\n\n\n\nTHIS_IS_A_SEPARATOR\n\n\n\n\n\n")
-        spriteCustomDebugPrints.forEach {
-            print($0)
-        }
-            fatalError("⚠️⚠️⚠️  New sprites found ⚠️⚠️⚠️\n\nAdd the sprites above and customdebugsprint convertible as well")
-        }
-   
         return .init(attributes: attributes)
     }
 }
-
-private extension Map.Object.Attributes {
-    static let invisibleHardcodedIntoEveryMapAttribute_RandomMonster: Self = .init(
-        sprite: .randomMonster_AVWmrnd0,
-        supportedLandscapes: [.water, .lava, .subterranean, .rock, .swamp, .snow, .grass, .sand],
-        mapEditorLandscapeGroup: [.sand],
-        objectID: .randomMonster,
-        group: .monsters,
-        pathfinding: Pathfinding(
-            visitability: [(0, 5)],
-            passability: [
-                (0, 0), (0, 1), (1, 0), (2, 0), (3, 0), (0, 2), (0, 3), (0, 4), (4, 0), (5, 0), (6, 0), (7, 0), (1, 1), (1, 2), (2, 1), (2, 2), (3, 1), (4, 1), (5, 1), (6, 1), (3, 2), (4, 2), (1, 3), (7, 1), (2, 3), (3, 3), (4, 3), (5, 2), (6, 2), (7, 2), (5, 3), (1, 4), (6, 3), (7, 3), (1, 5), (2, 4), (2, 5), (3, 4), (4, 4), (5, 4), (3, 5), (4, 5), (5, 5), (6, 4), (6, 5), (7, 4), (7, 5)
-            ]
-        ),
-        inUnderworld: false)
-
-    static let invisibleHardcodedIntoEveryMapAttribute_Hole: Self = .init(
-        sprite: .hole_AVLholg0,
-        supportedLandscapes: [.snow],
-        mapEditorLandscapeGroup: [.snow],
-        objectID: .hole,
-        group: nil,
-        pathfinding: Pathfinding(
-            visitability: [],
-            passability: [
-                (0, 2), (7, 4), (0, 5), (2, 5), (0, 1), (7, 1), (6, 5), (7, 2), (5, 1), (4, 5), (4, 0), (4, 1), (6, 1), (5, 0), (1, 0), (2, 4), (6, 2), (5, 2), (0, 3), (2, 0), (3, 1), (0, 0), (3, 3), (4, 3), (1, 2), (2, 3), (0, 4), (3, 0), (1, 4), (6, 4), (4, 2), (3, 2), (1, 3), (6, 3), (4, 4), (3, 5), (1, 5), (1, 1), (5, 5), (2, 1), (7, 5), (7, 0), (6, 0), (5, 3), (3, 4), (5, 4), (7, 3), (2, 2)
-            ]
-        ),
-        inUnderworld: true)
-}
-
 
 // MARK: Parse Events
 internal extension H3M {
@@ -299,7 +247,7 @@ internal extension H3M {
         let firstOccurence = try reader.readUInt16()
         let subsequentOccurenceRaw = try reader.readUInt8()
         let subsequentOccurence: Map.TimedEvent.Occurrences.Subsequent? = try subsequentOccurenceRaw == Map.TimedEvent.Occurrences.Subsequent.neverRawValue ? .never : Map.TimedEvent.Occurrences.Subsequent(integer: subsequentOccurenceRaw)
-
+        
         try reader.skip(byteCount: 17)
         return .init(
             name: name,

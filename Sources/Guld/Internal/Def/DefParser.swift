@@ -133,8 +133,8 @@ private extension DefParser {
                 return nil
             }
             
-            var fullWidth = frame.fullWidth
-            var fullHeight = frame.fullHeight
+            var fullWidth = Int(frame.fullSize.width)
+            var fullHeight = Int(frame.fullSize.height)
             
             if firstFrameFullWidth == nil && firstFrameFullHeight == nil {
                 firstFrameFullWidth = fullWidth
@@ -160,12 +160,8 @@ private extension DefParser {
             
             return DefinitionFile.Frame(
                 fileName: frame.fileName,
-                size: frame.size,
-                fullWidth: fullWidth,
-                fullHeight: fullHeight,
-                width: frame.width,
-                height: frame.height,
-                margin: frame.margin,
+                fullSize: .init(width: .init(fullWidth), height: .init(fullHeight)),
+                rect: frame.rect,
                 pixelData: frame.pixelData
             )
             
@@ -191,6 +187,7 @@ private extension DefParser {
         
         try reader.seek(to: memberFileOffsetInDefFile)
         let size = try Int(reader.readUInt32())
+        UNUSED(size) // smaller than pixelData.count, failed to understand what this is, might be smaller than pixeldata.count when we have margin, i.e. pixelData.count contains transparent pixels..? anyway dont seem like we need this.
         let encodingFormat = try reader.readUInt32()
         
         /// Might be enlarged
@@ -318,15 +315,23 @@ private extension DefParser {
                 reason: "Unhandled encoding format: \(encodingFormat). This should NEVER happen. Probably some wrong byte offset."
             )
         }
+        
+//        assert(size == pixelData.count)
                     
-        return DefinitionFile.Frame(
+//        return DefinitionFile.Frame(
+//            fileName: fileName,
+//            fullWidth: fullWidth,
+//            fullHeight: fullHeight,
+//            width: width,
+//            height: height,
+//            margin: .init(left: leftMargin, top: topMargin),
+//            pixelData: pixelData
+//        )
+        
+        return .init(
             fileName: fileName,
-            size: size,
-            fullWidth: fullWidth,
-            fullHeight: fullHeight,
-            width: width,
-            height: height,
-            margin: .init(left: leftMargin, top: topMargin),
+            fullSize: .init(width: fullWidth, height: fullHeight),
+            rect: .init(x: leftMargin, y: topMargin, width: width, height: height),
             pixelData: pixelData
         )
         
