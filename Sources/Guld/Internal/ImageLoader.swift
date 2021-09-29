@@ -157,12 +157,12 @@ private extension ImageLoader {
         // the same result...
         var pixelValueMatrix = pixelValueMatrix
         
-        if mirroring.flipHorizontal {
+        if mirroring.flipVertical {
             // Reverse order of pixels per row => same as flipping whole image horizontally
             pixelValueMatrix = pixelValueMatrix.map({ $0.reversed() })
         }
         
-        if mirroring.flipVertical {
+        if mirroring.flipHorizontal {
             // Reverse order of rows => same as flipping whole image vertically
             pixelValueMatrix = pixelValueMatrix.reversed()
         }
