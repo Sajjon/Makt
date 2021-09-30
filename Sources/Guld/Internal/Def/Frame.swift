@@ -12,6 +12,26 @@ public extension DefinitionFile {
     /// A picture frame as part of a file defined in the defintion file
     struct Frame: ArchiveFileEntry, Hashable, Identifiable, CustomDebugStringConvertible {
         public typealias ID = String
+        
+        enum EncodingFormat: UInt32, Hashable {
+            case nonCompressed
+            
+            /// Compressed with repeating code fragments
+            /// For each line we have offset of pixel data
+            case repeatingCodeFragment
+            
+            /// Compressed with repeating segment fragments
+            case repeatingSegmentFragments
+            
+            /// Compressed with repeating segment fragments.
+            /// Each row is split into 32 byte long blocks which are individually encoded
+            /// two bytes store the offset for each block per line
+            case repeatingSegmentFragmentsEncodingEachLineIndividually
+        }
+        
+        /// internals only... completely irrelevant for clients. this is what encoding
+        internal let encodingFormat: EncodingFormat
+        
         public var id: ID { fileName }
         public let blockIndex: Int
         public let rootArchiveName: String

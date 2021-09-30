@@ -55,12 +55,20 @@ public extension DefParser {
 }
 
 private extension DefParser {
+    
     enum Error: Swift.Error, Equatable {
+        
         case leftMarginLargerThanWidth
         case topMarginLargerThanHeight
         
         case widthLargerThanThatOfFirst
         case heightLargerThanThatOfFirst
+        
+        case encodingFormatOfThisFrame(
+            DefinitionFile.Frame.EncodingFormat,
+            doesNotMatchThatOfThePreviousFrame: DefinitionFile.Frame.EncodingFormat
+        )
+        
     }
 }
 
@@ -134,14 +142,22 @@ private extension DefParser {
         assert(blockMetaData.fileNames.count == entryCount)
         assert(blockMetaData.offsets.count == entryCount)
         
+        var encodingFormatOfPreviousFrame: DefinitionFile.Frame.EncodingFormat?
+        
         let frames: [DefinitionFile.Frame] = try (0..<entryCount).compactMap { entryIndex -> DefinitionFile.Frame? in
             
             guard let frame = try parseFrame(
+                encodingFormatOfPreviousFrame: encodingFormatOfPreviousFrame,
                 blockIndex: blockMetaData.blockIndex,
                 blockFileName: blockMetaData.fileNames[entryIndex],
                 blockOffsetInfFile: blockMetaData.offsets[entryIndex]
             ) else {
+                // We are skipping two invalid frames part of original game bundle (unused in VCMI and other implementations.).
                 return nil
+            }
+            
+            if encodingFormatOfPreviousFrame == nil {
+                encodingFormatOfPreviousFrame = frame.encodingFormat
             }
             
             var fullWidth = Int(frame.fullSize.width)
@@ -170,6 +186,7 @@ private extension DefParser {
             }
             
             return DefinitionFile.Frame(
+                encodingFormat: frame.encodingFormat,
                 blockIndex: blockMetaData.blockIndex,
                 rootArchiveName: parentArchiveName,
                 fileName: frame.fileName,
@@ -188,6 +205,7 @@ private extension DefParser {
     }
     
     func parseFrame(
+        encodingFormatOfPreviousFrame: DefinitionFile.Frame.EncodingFormat?,
         blockIndex: Int,
         blockFileName fileName: String,
         blockOffsetInfFile memberFileOffsetInDefFile: Int
@@ -202,7 +220,11 @@ private extension DefParser {
         try reader.seek(to: memberFileOffsetInDefFile)
         let size = try Int(reader.readUInt32())
         UNUSED(size) // smaller than pixelData.count, failed to understand what this is, might be smaller than pixeldata.count when we have margin, i.e. pixelData.count contains transparent pixels..? anyway dont seem like we need this.
-        let encodingFormat = try reader.readUInt32()
+        let encodingFormat = try DefinitionFile.Frame.EncodingFormat(integer: reader.readUInt32())
+        
+        if let encodingFormatOfPreviousFrame = encodingFormatOfPreviousFrame, encodingFormat != encodingFormatOfPreviousFrame {
+            throw Error.encodingFormatOfThisFrame(encodingFormat, doesNotMatchThatOfThePreviousFrame: encodingFormatOfPreviousFrame)
+        }
         
         /// Might be enlarged
         let fullWidth = try Int(reader.readUInt32())
@@ -210,6 +232,9 @@ private extension DefParser {
         let fullHeight = try Int(reader.readUInt32())
         
         let width = try Int(reader.readUInt32())
+//        assert(width.isMultiple(of: 16)) // must be a multiple of 16 ?
+        
+        
         let height = try Int(reader.readUInt32())
         let leftMargin = try Int(reader.readInt32())
         let topMargin = try Int(reader.readInt32())
@@ -291,24 +316,22 @@ private extension DefParser {
         
         
         switch encodingFormat {
-        case 0:
-            // pixel data is not compressed, copy data to surface
-
+        case .nonCompressed:
             pixelData = try reader.read(byteCount: .init(width * height))
-        case 1:
+        case .repeatingCodeFragment:
             pixelData = try perLineData(
                 integerTypePerLine: UInt32.self,
                 maxRowLength: width,
                 fragment: codeFragment
             )
-        case 2:
+        case .repeatingSegmentFragments:
             pixelData = try perLineData(
                 integerTypePerLine: UInt16.self,
                 maxRowLength: width,
                 bytesToSkipAfterLineOffsetsRead: 2,
                 fragment: segmentFragment
             )
-        case 3:
+        case .repeatingSegmentFragmentsEncodingEachLineIndividually:
             let maxRowLength = 32
             let lineOffsetMatrix: [[UInt16]] = try height.nTimes {
                 return try width.divide(by: maxRowLength, rounding: .up).nTimes {
@@ -324,13 +347,11 @@ private extension DefParser {
                 ))
             }
             pixelData = pixelDataAgg
-        default:
-            incorrectImplementation(
-                reason: "Unhandled encoding format: \(encodingFormat). This should NEVER happen. Probably some wrong byte offset."
-            )
+
         }
         
         return .init(
+            encodingFormat: encodingFormat,
             blockIndex: blockIndex,
             rootArchiveName: parentArchiveName,
             fileName: fileName,
