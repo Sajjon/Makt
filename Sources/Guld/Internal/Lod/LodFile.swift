@@ -11,7 +11,7 @@ import Util
 import Malm
 
 
-public final class LodFile {
+public final class LodFile: ArchiveProtocol {
     public let archiveKind: Archive
     public let entries: [FileEntry]
     
@@ -26,7 +26,7 @@ public final class LodFile {
 }
 
 public extension LodFile {
-    var lodFileName: String {
+    var archiveName: String {
         archiveKind.fileName
     }
 }

@@ -64,7 +64,7 @@ internal extension VIDArchiveParser {
             return (name, offset, size)
         }
         
-        let fileEntries: [VIDFile.FileEntry] = try metaDatas.map {
+        let entries: [VIDFile.FileEntry] = try metaDatas.map {
             try reader.seek(to: $0.offset)
             let contents = try reader.read(byteCount: $0.size)
             let fileEntry = VIDFile.FileEntry(
@@ -78,7 +78,7 @@ internal extension VIDArchiveParser {
         
         return .init(
             archiveKind: archiveFile.kind,
-            fileEntries: fileEntries
+            entries: entries
         )
     }
 }

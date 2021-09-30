@@ -77,8 +77,6 @@ final class DwellingsOnMapTests: BaseMapTest {
                     )
                 }
                 
-                XCTAssertFalse(object.attributes.inUnderworld)
-                
                 func assertRandomDwelling(
                     level: Creature.Level,
                     owner: Player? = nil,

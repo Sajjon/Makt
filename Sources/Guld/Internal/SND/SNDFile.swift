@@ -8,21 +8,21 @@
 import Foundation
 import Malm
 
-public final class SNDFile {
+public final class SNDFile: ArchiveProtocol {
     public let archiveKind: Archive
-    public let fileEntries: [FileEntry]
+    public let entries: [FileEntry]
     
     public init(
         archiveKind: Archive,
-        fileEntries: [FileEntry]
+        entries: [FileEntry]
     ) {
         self.archiveKind = archiveKind
-        self.fileEntries = fileEntries
+        self.entries = entries
     }
 }
 
 public extension SNDFile {
-    var sndArchiveFileName: String {
+    var archiveName: String {
         archiveKind.fileName
     }
 }

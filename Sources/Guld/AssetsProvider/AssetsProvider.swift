@@ -250,12 +250,12 @@ public extension AssetsProvider {
 
 public extension Assets {
    
-    func loadImage(ground: Map.Tile.Ground) throws -> GroundImage {
-        try imageLoader.loadImage(ground: ground)
+    func loadImage(ground: Map.Tile.Ground, skipCache: Bool = false) throws -> GroundImage {
+        try imageLoader.loadImage(ground: ground, skipCache: skipCache)
     }
     
-    func loadImage<Key: DrawableTileLayer>(for key: Key) throws -> CachedImage<Key> {
-        try imageLoader.loadImage(for: key)
+    func loadImage<Key: DrawableTileLayer>(for key: Key, skipCache: Bool = false) throws -> CachedImage<Key> {
+        try imageLoader.loadImage(for: key, skipCache: skipCache)
     }
     
     func loadMap(

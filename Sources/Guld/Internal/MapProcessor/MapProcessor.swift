@@ -53,6 +53,7 @@ public extension MapProcessor {
             }
             return images[tile]
         }
+        
         func roadImage(at tile: Map.Tile) -> RoadImage? {
             guard let images = roadImagesForTiles else {
                 return nil
@@ -60,10 +61,8 @@ public extension MapProcessor {
             return images[tile]
         }
         
-        
         func tilesAt(level: Map.Level) -> [ProcessedMap.Tile] {
-            let mapTiles = level.tiles
-            return mapTiles.map { tile in
+            return level.tiles.map { tile in
                 ProcessedMap.Tile(
                     mapTile: tile,
                     groundImage: groundImage(at: tile),

@@ -18,6 +18,9 @@ extension Map.ID {
     /// SOD, .small
     static let forSale: Self = .h3m("For Sale")
     
+    /// AB, .small
+    static let freedom: Self = .h3m("Freedom")
+    
     /// SOD, .small
     static let tooManyMonsters: Self = .h3m("Too Many Monsters")
     

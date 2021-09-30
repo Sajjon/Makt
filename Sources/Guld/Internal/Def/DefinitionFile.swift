@@ -7,7 +7,15 @@
 
 import Foundation
 
-public struct DefinitionFile: Hashable {
+public struct DefinitionFile: ArchiveProtocol, ArchiveFileEntry, Hashable, CustomDebugStringConvertible {
+    public let archiveName: String
+    
+    public let parentArchiveName: String
+    
+    public let fileName: String
+    
+    /// Original Definition file data size
+    public let byteCount: Int
     
     public let kind: Kind
     
@@ -15,6 +23,7 @@ public struct DefinitionFile: Hashable {
     public let height: Scalar
     public let palette: Palette
     public let blocks: [Block]
+    public var entries: [Frame] { blocks.flatMap({ $0.frames }) }
 }
 
 public extension DefinitionFile {
@@ -23,7 +32,18 @@ public extension DefinitionFile {
 
 public extension DefinitionFile {
     
-    enum Kind: UInt32, Hashable {
+    var debugDescription: String {
+        """
+        DEF file
+        kind: \(kind)
+        width: \(width)
+        height: \(height)
+        palette: #\(palette.colors)colors
+        blocks: \(blocks.map { String(describing: $0) }.joined(separator: "\n"))
+        """
+    }
+    
+    enum Kind: UInt32, Hashable, CustomDebugStringConvertible {
         case spell = 0x40
         case sprite
         case creature
@@ -37,3 +57,19 @@ public extension DefinitionFile {
     }
 }
 
+public extension DefinitionFile.Kind {
+    var debugDescription: String {
+        switch self {
+        case .spell: return "spell"
+        case .sprite: return "sprite"
+        case .creature: return "creature"
+        case .map: return "map"
+        case .mapHero: return "mapHero"
+        case .terrain: return "terrain"
+        case .cursor: return "cursor"
+        case .interface: return "interface"
+        case .spriteFrame: return "spriteFrame"
+        case .battleHero: return "battleHero"
+        }
+    }
+}

@@ -45,53 +45,29 @@ final class ForSaleTests: BaseMapTest {
                     XCTAssertEqual($0, [[1], [2, 3]])
                 }
            ),
-            onParseWorld: { world in
+            onParseWorld: { [self] world in
                 let tiles = world.above.tiles
                 
                 func terrainAt(
                     x: Int32,
                     y: Int32,
-                    is expectedTerrainKind: Map.Terrain,
+                    terrain expectedTerrainKind: Map.Terrain,
                     isCostal expectTileToBeCoastal: Bool? = nil,
-                    viewID expectedViewID: UInt8? = nil,
+                    frameIndex expectedFrameIndex: Int? = nil,
                     isMirroredVertically expectTileToBeMirroredVertically: Bool? = nil,
                     isMirroredHorizontally expectTileToBeMirroredHorizontally: Bool? = nil,
                     line: UInt = #line
                 ) {
-                    let tile = tiles.tile(at: .init(x: x, y: y))
-                    XCTAssertEqual(tile.terrain.kind, expectedTerrainKind, line: line)
-
-                    if let expectTileToBeCoastal = expectTileToBeCoastal {
-                        if expectTileToBeCoastal {
-                            XCTAssertTrue(tile.isCoastal, "Expected tile to be costal, but it was not.", line: line)
-                        } else {
-                            XCTAssertFalse(tile.isCoastal, "Expected tile to not be costal, but it is.", line: line)
-                        }
-                    }
-                    
-                    if let expectedViewID = expectedViewID {
-                        XCTAssertEqual(tile.terrain.viewID, expectedViewID, "Incorrect view id, expected: \(expectedViewID), but got: \(tile.terrain.viewID)", line: line)
-                    }
-                    
-                    if let expectTileToBeMirroredVertically = expectTileToBeMirroredVertically {
-                        if expectTileToBeMirroredVertically {
-                            XCTAssertTrue(tile.terrain.mirroring.flipVertical, "Expected tile to be flipped vertically, but it was not.", line: line)
-                        } else {
-                            XCTAssertFalse(tile.terrain.mirroring.flipVertical, "Expected tile to not be flipped vertically, but it is.", line: line)
-                        }
-                    }
-                    
-                    if let expectTileToBeMirroredHorizontally = expectTileToBeMirroredHorizontally {
-                        
-                        if expectTileToBeMirroredHorizontally {
-                            XCTAssertTrue(tile.terrain.mirroring.flipHorizontal, "Expected tile to be flipped horizontally, but it was not.", line: line)
-                        } else {
-                            XCTAssertFalse(tile.terrain.mirroring.flipHorizontal, "Expected tile to not be flipped horizontally, but it is.", line: line)
-                        }
-                    }
-                    
+                    assertTile(
+                        tiles.tile(at: .init(x: x, y: y)),
+                        terrain: expectedTerrainKind,
+                        isCostal: expectTileToBeCoastal,
+                        frameIndex: expectedFrameIndex,
+                        isMirroredVertically: expectTileToBeMirroredVertically,
+                        isMirroredHorizontally: expectTileToBeMirroredHorizontally,
+                        line: line
+                    )
                 }
-                
                 
                 let expectedCostalTilePositions: [Position] = [.init(x: 0, y: 3), .init(x: 1, y: 3), .init(x: 33, y: 3), .init(x: 34, y: 3), .init(x: 35, y: 3), .init(x: 1, y: 4), .init(x: 2, y: 4), .init(x: 3, y: 4), .init(x: 4, y: 4), .init(x: 30, y: 4), .init(x: 31, y: 4), .init(x: 32, y: 4), .init(x: 33, y: 4), .init(x: 4, y: 5), .init(x: 5, y: 5), .init(x: 29, y: 5), .init(x: 30, y: 5), .init(x: 5, y: 6), .init(x: 6, y: 6), .init(x: 7, y: 6), .init(x: 8, y: 6), .init(x: 29, y: 6), .init(x: 8, y: 7), .init(x: 9, y: 7), .init(x: 29, y: 7), .init(x: 9, y: 8), .init(x: 10, y: 8), .init(x: 29, y: 8), .init(x: 10, y: 9), .init(x: 11, y: 9), .init(x: 29, y: 9), .init(x: 11, y: 10), .init(x: 29, y: 10), .init(x: 30, y: 10), .init(x: 11, y: 11), .init(x: 30, y: 11), .init(x: 10, y: 12), .init(x: 11, y: 12), .init(x: 30, y: 12), .init(x: 31, y: 12), .init(x: 9, y: 13), .init(x: 10, y: 13), .init(x: 31, y: 13), .init(x: 8, y: 14), .init(x: 9, y: 14), .init(x: 31, y: 14), .init(x: 32, y: 14), .init(x: 6, y: 15), .init(x: 7, y: 15), .init(x: 8, y: 15), .init(x: 32, y: 15), .init(x: 33, y: 15), .init(x: 5, y: 16), .init(x: 6, y: 16), .init(x: 33, y: 16), .init(x: 34, y: 16), .init(x: 4, y: 17), .init(x: 5, y: 17), .init(x: 34, y: 17), .init(x: 4, y: 18), .init(x: 34, y: 18), .init(x: 35, y: 18), .init(x: 4, y: 19), .init(x: 4, y: 20), .init(x: 4, y: 21), .init(x: 5, y: 21), .init(x: 5, y: 22), .init(x: 6, y: 22), .init(x: 6, y: 23), .init(x: 7, y: 23), .init(x: 8, y: 23), .init(x: 9, y: 23), .init(x: 10, y: 23), .init(x: 11, y: 23), .init(x: 1, y: 24), .init(x: 2, y: 24), .init(x: 11, y: 24), .init(x: 12, y: 24), .init(x: 13, y: 24), .init(x: 0, y: 25), .init(x: 1, y: 25), .init(x: 2, y: 25), .init(x: 3, y: 25), .init(x: 13, y: 25), .init(x: 14, y: 25), .init(x: 15, y: 25), .init(x: 3, y: 26), .init(x: 4, y: 26), .init(x: 15, y: 26), .init(x: 16, y: 26), .init(x: 4, y: 27), .init(x: 16, y: 27), .init(x: 4, y: 28), .init(x: 5, y: 28), .init(x: 16, y: 28), .init(x: 5, y: 29), .init(x: 15, y: 29), .init(x: 16, y: 29), .init(x: 5, y: 30), .init(x: 6, y: 30), .init(x: 14, y: 30), .init(x: 15, y: 30), .init(x: 6, y: 31), .init(x: 7, y: 31), .init(x: 13, y: 31), .init(x: 14, y: 31), .init(x: 7, y: 32), .init(x: 8, y: 32), .init(x: 9, y: 32), .init(x: 10, y: 32), .init(x: 11, y: 32), .init(x: 12, y: 32), .init(x: 13, y: 32)]
                 
@@ -104,28 +80,25 @@ final class ForSaleTests: BaseMapTest {
                     expectedCostalTilePositions
                 )
 
-                terrainAt(x: 0, y: 0, is: .dirt, viewID: 24)
-                terrainAt(x: 0, y: 3, is: .dirt, viewID: 10)
-                terrainAt(x: 0, y: 4, is: .water, viewID: 16, isMirroredVertically: false, isMirroredHorizontally: true)
-                terrainAt(x: 0, y: 35, is: .grass, viewID: 55)
+                terrainAt(x: 0, y: 0, terrain: .dirt, frameIndex: 24)
+                terrainAt(x: 0, y: 3, terrain: .dirt, frameIndex: 10)
+                terrainAt(x: 0, y: 4, terrain: .water, frameIndex: 16, isMirroredVertically: false, isMirroredHorizontally: true)
+                terrainAt(x: 0, y: 35, terrain: .grass, frameIndex: 55)
                 
-                terrainAt(x: 5, y: 6, is: .dirt, viewID: 16, isMirroredVertically: true, isMirroredHorizontally: false)
-                terrainAt(x: 6, y: 6, is: .dirt, viewID: 8, isMirroredVertically: true, isMirroredHorizontally: false)
+                terrainAt(x: 5, y: 6, terrain: .dirt, frameIndex: 16, isMirroredVertically: true, isMirroredHorizontally: false)
+                terrainAt(x: 6, y: 6, terrain: .dirt, frameIndex: 8, isMirroredVertically: true, isMirroredHorizontally: false)
 
 
-                terrainAt(x: 11, y: 22, is: .grass, viewID: 56)
-                terrainAt(x: 11, y: 26, is: .water, viewID: 29)
-                terrainAt(x: 15, y: 13, is: .dirt, viewID: 22)
+                terrainAt(x: 11, y: 22, terrain: .grass, frameIndex: 56)
+                terrainAt(x: 11, y: 26, terrain: .water, frameIndex: 29)
+                terrainAt(x: 15, y: 13, terrain: .dirt, frameIndex: 22)
                 
-                terrainAt(x: 21, y: 11, is: .rough, viewID: 50)
-                terrainAt(x: 25, y: 20, is: .rough, viewID: 65)
-                terrainAt(x: 31, y: 4, is: .sand, viewID: 0)
-                terrainAt(x: 33, y: 16, is: .sand, viewID: 5)
-                terrainAt(x: 35, y: 13, is: .water, viewID: 31)
-                terrainAt(x: 35, y: 35, is: .grass, viewID: 53)
-                
-                
-                
+                terrainAt(x: 21, y: 11, terrain: .rough, frameIndex: 50)
+                terrainAt(x: 25, y: 20, terrain: .rough, frameIndex: 65)
+                terrainAt(x: 31, y: 4, terrain: .sand, frameIndex: 0)
+                terrainAt(x: 33, y: 16, terrain: .sand, frameIndex: 5)
+                terrainAt(x: 35, y: 13, terrain: .water, frameIndex: 31)
+                terrainAt(x: 35, y: 35, terrain: .grass, frameIndex: 53)
             },
             onParseObject: { [unowned self] object in
                 switch object.position {

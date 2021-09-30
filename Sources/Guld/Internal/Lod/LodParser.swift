@@ -142,7 +142,7 @@ internal extension LodParser {
             throw Error.lodFileEntryDecompressionResultedInWrongSize(expected: entryMetaData.size, butGot: data.count)
         }
         
-        guard let content = try fileEntryContent(metaData: entryMetaData, data: data) else {
+        guard let content = try fileEntryContent(metaData: entryMetaData, data: data, parentArchiveName: parentArchiveName) else {
             return nil
         }
         
@@ -156,7 +156,8 @@ internal extension LodParser {
     
     func fileEntryContent(
         metaData: LodFile.CompressedFileEntryMetaData,
-        data: Data
+        data: Data,
+        parentArchiveName: String
     ) throws -> LodFile.FileEntry.Content? {
         
         guard !LodFile.FileEntry.Content.Kind.ignored.contains(where: {
@@ -221,7 +222,7 @@ internal extension LodParser {
         case .def:
             let load: () -> DefinitionFile = {
                 do {
-                    let defParser = DefParser(data: data)
+                    let defParser = DefParser(data: data, definitionFileName: metaData.name, parentArchiveName: parentArchiveName)
                     let defFile = try defParser.parse()
                     return defFile
                 } catch {

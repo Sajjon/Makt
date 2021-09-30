@@ -39,22 +39,23 @@ internal extension ImageLoader {
     typealias RoadImageCache = ImageCache<RoadImage>
     typealias RiverImageCache = ImageCache<RiverImage>
     
-    func loadImage(ground: Map.Tile.Ground) throws -> GroundImage {
-        try loadImage(for: ground)
+    func loadImage(ground: Map.Tile.Ground, skipCache: Bool = false) throws -> GroundImage {
+        try loadImage(for: ground, skipCache: skipCache)
     }
     
-    func loadImage(river: Map.Tile.River) throws -> RiverImage {
-        try loadImage(for: river)
+    func loadImage(river: Map.Tile.River, skipCache: Bool = false) throws -> RiverImage {
+        try loadImage(for: river, skipCache: skipCache)
     }
     
-    func loadImage(road: Map.Tile.Road) throws -> RoadImage {
-        try loadImage(for: road)
+    func loadImage(road: Map.Tile.Road, skipCache: Bool = false) throws -> RoadImage {
+        try loadImage(for: road, skipCache: skipCache)
     }
     
-    func loadImage<Key: DrawableTileLayer>(for key: Key) throws -> CachedImage<Key> {
+    func loadImage<Key: DrawableTileLayer>(for key: Key, skipCache: Bool = false) throws -> CachedImage<Key> {
         try loadImage(
             forKey: key,
             from: cacheFor(key),
+            skipCache: skipCache,
             elseMake: newImage(key: key)
         )
     }
@@ -120,13 +121,26 @@ private extension ImageLoader {
         mirroring: Mirroring = .none,
         palette: Palette?
     ) throws -> Image {
+    
+//        let pixelReplacementMap: [Int: UInt32] = [
+//            0: 0x00000000,// [0, 0, 0, 0],
+//            1: 0x00000040,// [0, 0, 0, 0x40],
+//            4: 0x00000080,// [0, 0, 0, 0x80],
+//            6: 0x00000080,// [0, 0, 0, 0x80],
+//            7: 0x00000040,// [0, 0, 0, 0x40]
+//        ]
 
         let pixels: [UInt32] = {
             if let palette = palette {
                 let palette32Bit = palette.toU32Array()
                 
                 let pixels: [UInt32] = pixelData.map {
-                    palette32Bit[Int($0)]
+                    let pixel = Int($0)
+//                    if let pixelReplacement = pixelReplacementMap[pixel] {
+//                        return pixelReplacement
+//                    } else {
+                        return palette32Bit[pixel]
+//                    }
                 }
                 return pixels
             } else {
@@ -136,7 +150,8 @@ private extension ImageLoader {
         
         let width = rect.width
         let height = rect.height
-         
+        
+    
         let pixelMatrix = pixels.chunked(into: .init(width))
          
         let cgImage = try ImageLoader.makeCGImage(
@@ -148,10 +163,11 @@ private extension ImageLoader {
         
         assert(cgImage.height == .init(height))
         assert(cgImage.width == .init(width))
-         
+        
         let image = Image(
             cgImage: cgImage,
             mirroring: mirroring,
+            rect: rect,
             hint: contentsHint
         )
         
@@ -161,9 +177,11 @@ private extension ImageLoader {
     func loadImage<CI: CacheableImage>(
         forKey cacheKey: CI.Key,
         from cache: Cache<CI.Key, CI>,
+        skipCache: Bool = false,
         elseMake makeImage: @autoclosure () throws -> CI
     ) rethrows -> CI {
-        if let cached = cache[cacheKey] {
+        let useCache = !skipCache
+        if useCache, let cached = cache[cacheKey] {
             return cached
         }
         let newImage = try makeImage()
@@ -234,7 +252,7 @@ private extension ImageLoader {
         let defFile = loadDefinitionFile()
         
         definitionFileCache[targetDefinitionFileName] = defFile
-        
+//        print("🗂✅ loaded definition file, contents:\n\n\(String(describing: defFile))\n\n")
         return defFile
     }
     

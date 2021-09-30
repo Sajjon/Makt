@@ -10,13 +10,39 @@ import Foundation
 public extension DefinitionFile {
     
     /// A picture frame as part of a file defined in the defintion file
-    struct Frame: Hashable, Identifiable {
+    struct Frame: ArchiveFileEntry, Hashable, Identifiable, CustomDebugStringConvertible {
         public typealias ID = String
         public var id: ID { fileName }
+        public let blockIndex: Int
+        public let rootArchiveName: String
         public let fileName: String
         public let fullSize: CGSize
         public let rect: CGRect
         public let pixelData: Data
+        
+        public var debugDescription: String {
+            """
+            
+            =========================================
+            DEF frame
+            fileName: \(fileName)
+            fullSize: \(String(describing: fullSize))
+            rect: \(String(describing: rect))
+            pixelData: \(pixelData.hexEncodedString())
+            ------------------------------------------
+            
+            """
+        }
+    }
+}
+
+public extension DefinitionFile.Frame {
+    var byteCount: Int {
+        pixelData.count
+    }
+    
+    var parentArchiveName: String {
+        "\(rootArchiveName)/block_\(blockIndex)"
     }
 }
 

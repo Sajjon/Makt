@@ -24,6 +24,62 @@ class BaseMapTest: XCTestCase {
 
 extension BaseMapTest {
     
+    func assertTile(
+        _ tile: Map.Tile,
+        terrain expectedTerrainKind: Map.Terrain? = nil,
+        road expectedRoadKind: Map.Tile.Road.Kind? = nil,
+        river expectedRiverKind: Map.Tile.River.Kind? = nil,
+        isCostal expectTileToBeCoastal: Bool? = nil,
+        frameIndex expectedFrameIndex: Int? = nil,
+        isMirroredVertically expectTileToBeMirroredVertically: Bool? = nil,
+        isMirroredHorizontally expectTileToBeMirroredHorizontally: Bool? = nil,
+        line: UInt = #line,
+        file: StaticString = #file
+    ) {
+        
+        if let expectedTerrainKind = expectedTerrainKind {
+            XCTAssertEqual(tile.ground.terrain, expectedTerrainKind, file: file, line: line)
+        }
+       
+        if let expectedRoadKind = expectedRoadKind {
+            XCTAssertEqual(tile.road?.kind, expectedRoadKind, file: file, line: line)
+        }
+        
+        if let expectedRiverKind = expectedRiverKind {
+            XCTAssertEqual(tile.river?.kind, expectedRiverKind, file: file, line: line)
+        }
+
+        if let expectTileToBeCoastal = expectTileToBeCoastal {
+            if expectTileToBeCoastal {
+                XCTAssertTrue(tile.isCoastal, "Expected tile to be costal, but it was not.", file: file, line: line)
+            } else {
+                XCTAssertFalse(tile.isCoastal, "Expected tile to not be costal, but it is.", file: file, line: line)
+            }
+        }
+        
+        if let expectedFrameIndex = expectedFrameIndex {
+            XCTAssertEqual(tile.ground.frameIndex, expectedFrameIndex, "Incorrect view id, expected: \(expectedFrameIndex), but got: \(tile.ground.frameIndex)", file: file, line: line)
+        }
+        
+        if let expectTileToBeMirroredVertically = expectTileToBeMirroredVertically {
+            if expectTileToBeMirroredVertically {
+                XCTAssertTrue(tile.ground.mirroring.flipVertical, "Expected tile to be flipped vertically, but it was not.", file: file, line: line)
+            } else {
+                XCTAssertFalse(tile.ground.mirroring.flipVertical, "Expected tile to not be flipped vertically, but it is.", file: file, line: line)
+            }
+        }
+        
+        if let expectTileToBeMirroredHorizontally = expectTileToBeMirroredHorizontally {
+            
+            if expectTileToBeMirroredHorizontally {
+                XCTAssertTrue(tile.ground.mirroring.flipHorizontal, "Expected tile to be flipped horizontally, but it was not.", file: file, line: line)
+            } else {
+                XCTAssertFalse(tile.ground.mirroring.flipHorizontal, "Expected tile to not be flipped horizontally, but it is.", file: file, line: line)
+            }
+        }
+        
+    }
+    
     func assertObjectEvent(
         expected: Map.GeoEvent,
         actual object: Map.Object,

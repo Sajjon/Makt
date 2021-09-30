@@ -25,22 +25,22 @@ public extension LoadedArchive {
     var fileName: String {
         switch self {
         case .archive(let lodFile):
-            return lodFile.lodFileName
+            return lodFile.archiveName
         case .sound(let sndFile):
-            return sndFile.sndArchiveFileName
+            return sndFile.archiveName
         case .video(let vidFie):
-            return vidFie.videoArchiveFileName
+            return vidFie.archiveName
         }
     }
     
-    var numberOfEntries: Int {
+    var enries: [ArchiveFileEntry] {
         switch self {
         case .archive(let lodFile):
-            return lodFile.entries.count
+            return lodFile.entries
         case .sound(let sndFile):
-            return sndFile.fileEntries.count
+            return sndFile.entries
         case .video(let vidFie):
-            return vidFie.fileEntries.count
+            return vidFie.entries
         }
 }
 }

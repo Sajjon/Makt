@@ -11,14 +11,17 @@ public final class Image: CGImageWrapper, Hashable, CustomDebugStringConvertible
     public let cgImage: CGImage
     public let hint: String
     public let mirroring: Mirroring
+    public let rect: CGRect
     
     public init(
         cgImage: CGImage,
         mirroring: Mirroring,
+        rect: CGRect,
         hint: String
     ) {
         self.cgImage = cgImage
         self.hint = hint
+        self.rect = rect
         self.mirroring = mirroring
     }
 }

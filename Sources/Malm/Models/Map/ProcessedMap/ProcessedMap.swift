@@ -36,12 +36,11 @@ public extension ProcessedMap {
 public extension ProcessedMap {
     struct Tile: Hashable {
         public let position: Position
-        private let mapTile: Map.Tile
+        public let mapTile: Map.Tile
         public let objects: [Map.Object]?
-        private let groundImage: GroundImage
         
         public let images: [AnyCachedImage]
-        
+
         public init(
             mapTile: Map.Tile,
             groundImage: GroundImage,
@@ -50,9 +49,9 @@ public extension ProcessedMap {
             objects: [Map.Object]?
         ) {
             self.position = mapTile.position
-            self.groundImage = groundImage
             self.mapTile = mapTile
             self.objects = objects
+ 
             self.images = [
                 AnyCachedImage(groundImage),            // index 0: ground terrain image (always present)
                 riverImage.map { AnyCachedImage($0) },  // index 1: river image (sometimes present)
@@ -63,6 +62,7 @@ public extension ProcessedMap {
 }
 
 public extension ProcessedMap.Tile {
+    
     var terrain: Map.Terrain {
         mapTile.ground.terrain
     }

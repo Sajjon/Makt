@@ -46,7 +46,7 @@ internal extension SNDArchiveParser {
             )
         }
         
-        let fileEntries: [SNDFile.FileEntry] = try metaDataAboutFiles.map { metaData in
+        let entries: [SNDFile.FileEntry] = try metaDataAboutFiles.map { metaData in
             try reader.seek(to: metaData.fileOffset)
             let contents = try reader.read(byteCount: metaData.size)
             let fileEntry = SNDFile.FileEntry(
@@ -60,7 +60,7 @@ internal extension SNDArchiveParser {
         
         return .init(
             archiveKind: archiveFile.kind,
-            fileEntries: fileEntries
+            entries: entries
         )
     }
 }

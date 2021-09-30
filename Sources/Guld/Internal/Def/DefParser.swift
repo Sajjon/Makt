@@ -9,22 +9,27 @@ import Foundation
 import Util
 
 public final class DefParser {
-    internal let reader: DataReader
-    public init(data: Data) {
+    private let reader: DataReader
+    private let definitionFileName: String
+    private let parentArchiveName: String
+    public init(data: Data, definitionFileName: String, parentArchiveName: String) {
         self.reader = DataReader(data: data)
+        self.definitionFileName = definitionFileName
+        self.parentArchiveName = parentArchiveName
     }
 }
 
 public extension DefParser {
     func parse() throws -> DefinitionFile {
+     
         let kind = try DefinitionFile.Kind(integer: reader.readUInt32())
         let width = try reader.readUInt32()
         let height = try reader.readUInt32()
         let blockCount = try reader.readUInt32()
         let palette = try reader.readPalette()
         
-        let blockMetaDatas: [BlockMetaData] = try blockCount.nTimes {
-            try parseBlockMetaData()
+        let blockMetaDatas: [BlockMetaData] = try (0..<blockCount).map { blockIndex in
+            try parseBlockMetaData(blockIndex: .init(blockIndex))
         }
         
         var firstFrameFullHeight: Int!
@@ -35,6 +40,10 @@ public extension DefParser {
         }
         
         return .init(
+            archiveName: definitionFileName,
+            parentArchiveName: parentArchiveName,
+            fileName: definitionFileName,
+            byteCount: reader.sourceSize,
             kind: kind,
             width: .init(width),
             height: .init(height),
@@ -90,7 +99,7 @@ private extension DefParser {
         return (byteCount, data)
     }
     
-    func parseBlockMetaData() throws -> BlockMetaData {
+    func parseBlockMetaData(blockIndex: Int) throws -> BlockMetaData {
         let blockIdentifier = try reader.readUInt32()
         
         /// number of images in this block
@@ -112,6 +121,7 @@ private extension DefParser {
         }
         
         return .init(
+            blockIndex: blockIndex,
             identifier: .init(blockIdentifier),
             entryCount: entriesCount,
             fileNames: fileNames,
@@ -127,6 +137,7 @@ private extension DefParser {
         let frames: [DefinitionFile.Frame] = try (0..<entryCount).compactMap { entryIndex -> DefinitionFile.Frame? in
             
             guard let frame = try parseFrame(
+                blockIndex: blockMetaData.blockIndex,
                 blockFileName: blockMetaData.fileNames[entryIndex],
                 blockOffsetInfFile: blockMetaData.offsets[entryIndex]
             ) else {
@@ -159,6 +170,8 @@ private extension DefParser {
             }
             
             return DefinitionFile.Frame(
+                blockIndex: blockMetaData.blockIndex,
+                rootArchiveName: parentArchiveName,
                 fileName: frame.fileName,
                 fullSize: .init(width: .init(fullWidth), height: .init(fullHeight)),
                 rect: frame.rect,
@@ -175,6 +188,7 @@ private extension DefParser {
     }
     
     func parseFrame(
+        blockIndex: Int,
         blockFileName fileName: String,
         blockOffsetInfFile memberFileOffsetInDefFile: Int
     ) throws -> DefinitionFile.Frame? {
@@ -316,19 +330,9 @@ private extension DefParser {
             )
         }
         
-//        assert(size == pixelData.count)
-                    
-//        return DefinitionFile.Frame(
-//            fileName: fileName,
-//            fullWidth: fullWidth,
-//            fullHeight: fullHeight,
-//            width: width,
-//            height: height,
-//            margin: .init(left: leftMargin, top: topMargin),
-//            pixelData: pixelData
-//        )
-        
         return .init(
+            blockIndex: blockIndex,
+            rootArchiveName: parentArchiveName,
             fileName: fileName,
             fullSize: .init(width: fullWidth, height: fullHeight),
             rect: .init(x: leftMargin, y: topMargin, width: width, height: height),

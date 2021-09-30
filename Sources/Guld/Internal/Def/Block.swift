@@ -8,6 +8,7 @@
 import Foundation
 
 internal struct BlockMetaData: Hashable {
+    public let blockIndex: Int
     public let identifier: Int
     public let entryCount: Int
     public let fileNames: [String]
@@ -15,8 +16,15 @@ internal struct BlockMetaData: Hashable {
     
 }
 
-public struct Block: Hashable, Identifiable {
+public struct Block: Hashable, Identifiable, CustomDebugStringConvertible {
     public typealias ID = Int
     public let id: ID
     public let frames: [DefinitionFile.Frame]
+    
+    public var debugDescription: String {
+        """
+        DEF Block id: \(id)
+        frames: \(frames.map { String(describing: $0) }.joined(separator: "\n"))
+        """
+    }
 }
