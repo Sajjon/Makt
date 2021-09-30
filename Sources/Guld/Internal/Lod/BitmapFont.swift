@@ -45,7 +45,7 @@ internal final class BitmapFontParser {
 extension BitmapFontParser {
     func parse(data: Data, name: String) throws -> BitmapFont {
         print("BitmapFontParser, #\(data.count) bytes of data, named: \(name)")
-        if let cgFont = cgFontFromData(data) {
+        if let _ = cgFontFromData(data) {
             fantasticUseThisSolution(insteadOf: "BitmapFont below.")
         }
         let reader = DataReader(data: data)

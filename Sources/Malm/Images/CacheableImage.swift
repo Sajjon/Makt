@@ -7,13 +7,12 @@
 
 import Foundation
 
-public protocol CacheableImage: ImageWrapper, Identifiable {
-    associatedtype Key: Hashable
+public protocol CacheableImage: ImageWrapper, Identifiable where ID == Key {
+    associatedtype Key
     var key: Key { get }
     init(key: Key, image: Image)
 }
 
 public extension CacheableImage {
-    typealias ID = Key
     var id: ID { key }
 }

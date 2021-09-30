@@ -19,7 +19,7 @@ public final class LodFile: ArchiveProtocol {
         archiveKind: Archive,
         entries: [FileEntry]
     ) {
-        print("🗂 Archive named: '\(archiveKind.fileName)' contains these entries:\n\(entries.map({$0.fileName}).joined(separator: "\n"))\n")
+//        print("🗂 Archive named: '\(archiveKind.fileName)' contains these entries:\n\(entries.map({$0.fileName}).joined(separator: "\n"))\n")
         self.archiveKind = archiveKind
         self.entries = entries
     }

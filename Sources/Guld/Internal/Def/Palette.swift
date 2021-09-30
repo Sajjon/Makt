@@ -37,7 +37,7 @@ public struct Palette: Hashable {
             }
             self.init(colors: colors)
         } else {
-            print("🚨 WARNING skipping font named: '\(name)', since it has strange length: \(data.count) bytes, expected multiple of 3 or 4. Trying to ASCII print this, to see if it contains any relevant text (probbly not): ASCII: \(String.init(bytes: data, encoding: .ascii))")
+            print("🚨 WARNING skipping font named: '\(name)', since it has strange length: \(data.count) bytes, expected multiple of 3 or 4. Trying to ASCII print this, to see if it contains any relevant text (probbly not): ASCII: \(String.init(bytes: data, encoding: .ascii) ?? "FAILED")")
             self.init(colors: [])
         }
     }
