@@ -44,7 +44,7 @@ public final class AssetsProvider {
     
     private static var shared: AssetsProvider!
     
-    private init(
+    internal init(
         config: Config,
         fileManager: FileManager = .default
     ) {
@@ -118,8 +118,8 @@ private extension AssetsProvider {
 }
 
 
-// MARK: Private
-private extension AssetsProvider {
+// MARK: Internal
+internal extension AssetsProvider {
     
     func open(archive: Archive) throws -> ArchiveFile {
         
