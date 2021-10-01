@@ -76,7 +76,10 @@ let package = Package(
         ),
         .testTarget(
             name: "GuldTests",
-            dependencies: ["Guld", "Malm"]
+            dependencies: ["Guld", "Malm"],
+            resources: [
+                .copy("Resources/ExpectedHashesOfDefFilesInArchive__H3sprite_lod.json")
+            ]
         ),
         .testTarget(
             name: "H3MTests",

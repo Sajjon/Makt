@@ -121,9 +121,9 @@ private extension AssetsProvider {
 // MARK: Internal
 internal extension AssetsProvider {
     
-    func open(archive: Archive) throws -> ArchiveFile {
-        
-        if let cached = archiveFileCache[archive] {
+    func open(archive: Archive, skipCache: Bool = false) throws -> ArchiveFile {
+        let useCache = !skipCache
+        if useCache, let cached = archiveFileCache[archive] {
             print("✅ Cache contains archive file: \(archive.fileName)")
             return cached
         }

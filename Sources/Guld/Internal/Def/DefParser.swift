@@ -149,7 +149,7 @@ private extension DefParser {
             guard let frame = try parseFrame(
                 encodingFormatOfPreviousFrame: encodingFormatOfPreviousFrame,
                 blockIndex: blockMetaData.blockIndex,
-                blockFileName: blockMetaData.fileNames[entryIndex],
+                frameName: blockMetaData.fileNames[entryIndex],
                 blockOffsetInfFile: blockMetaData.offsets[entryIndex]
             ) else {
                 // We are skipping two invalid frames part of original game bundle (unused in VCMI and other implementations.).
@@ -207,13 +207,13 @@ private extension DefParser {
     func parseFrame(
         encodingFormatOfPreviousFrame: DefinitionFile.Frame.EncodingFormat?,
         blockIndex: Int,
-        blockFileName fileName: String,
+        frameName: String,
         blockOffsetInfFile memberFileOffsetInDefFile: Int
     ) throws -> DefinitionFile.Frame? {
         
         // These two sprites seems unused and they fail top margin checks.
-        guard !(fileName.starts(with: "SgTwMt") && fileName.hasSuffix(".pcx")) else {
-            print("⚠️ Skipping sprite named: \(fileName), since they have too large margin.")
+        guard !(frameName.starts(with: "SgTwMt") && frameName.hasSuffix(".pcx")) else {
+            print("⚠️ Skipping sprite named: \(frameName), since they have too large margin.")
             return nil
         }
         
@@ -354,7 +354,7 @@ private extension DefParser {
             encodingFormat: encodingFormat,
             blockIndex: blockIndex,
             rootArchiveName: parentArchiveName,
-            fileName: fileName,
+            fileName: frameName,
             fullSize: .init(width: fullWidth, height: fullHeight),
             rect: .init(x: leftMargin, y: topMargin, width: width, height: height),
             pixelData: pixelData
