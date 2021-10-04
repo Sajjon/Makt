@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import Malm
 import Util
 
 public final class DefParser {
@@ -249,8 +250,11 @@ private extension DefParser {
         
         /// Might be enlarged
         let fullWidth = try Int(reader.readUInt32())
+        assert(fullWidth.isMultiple(of: Image.pixelsPerTile))
+
         /// Might be enlarged
         let fullHeight = try Int(reader.readUInt32())
+        assert(fullHeight.isMultiple(of: Image.pixelsPerTile))
         
         let width = try Int(reader.readUInt32())
         
@@ -352,7 +356,7 @@ private extension DefParser {
             )
         case .repeatingSegmentFragmentsEncodingEachLineIndividually:
             
-            let maxRowLength = 32
+            let maxRowLength = Image.pixelsPerTile
             let lineOffsetMatrix: [[UInt16]] = try height.nTimes {
                 return try width.divide(by: maxRowLength, rounding: .up).nTimes {
                     try reader.readUInt16()

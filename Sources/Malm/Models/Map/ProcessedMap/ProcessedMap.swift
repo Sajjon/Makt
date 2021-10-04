@@ -86,7 +86,7 @@ public extension ProcessedMap.Tile {
 
 // MARK: Object
 public extension ProcessedMap {
-    struct Object: Hashable {
+    struct Object: Hashable, RenderZAxisIndexing {
         
         /// The kind of object this wrapper wraps.s
         public let mapObject: Map.Object
@@ -116,4 +116,12 @@ public extension ProcessedMap.Object {
     
     /// How many tile rows this object occupies.
     var height: Position.Scalar { mapObject.height }
+    
+    var zAxisIndex: Int {
+        mapObject.attributes.zAxisRenderingPriority
+    }
+}
+
+public extension CGFloat {
+    static let pixelsPerTile = Self(Image.pixelsPerTile)
 }

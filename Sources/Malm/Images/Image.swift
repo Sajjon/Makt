@@ -8,6 +8,7 @@
 import Foundation
 
 public final class Image: CGImageWrapper, Hashable, CustomDebugStringConvertible {
+    public static let pixelsPerTile = 32
     public let cgImage: CGImage
     public let hint: String
     public let mirroring: Mirroring
