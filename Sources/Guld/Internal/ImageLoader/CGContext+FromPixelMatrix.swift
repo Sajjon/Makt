@@ -16,8 +16,7 @@ extension CGContext {
         CGImageAlphaInfo.premultipliedLast.rawValue & CGBitmapInfo.alphaInfoMask.rawValue
     
     static let bitsPerByte = UInt8.bitWidth
-    typealias Pixel = UInt32
-    static let bitsPerPixel = Pixel.bitWidth
+    static let bitsPerPixel = Palette.Pixel.bitWidth
     static let bytesPerPixel = bitsPerPixel / bitsPerByte
     static func bytesPerRow(width: Int) -> Int { width * bytesPerPixel }
 
@@ -41,31 +40,5 @@ extension CGContext {
             releaseInfo: nil
         )
     }
-    
-    static let transparentPixel: Pixel = 0x00000000
-    
-    static func transparentImage(size: CGSize) -> CGImage {
-        let emptyRow: [UInt32] = .init(repeating: CGContext.transparentPixel, count: .init(size.width))
-            let pixelMatrix: [[UInt32]] = .init(repeating: emptyRow, count: .init(size.height))
-        let context = Self.from(pixels: pixelMatrix)
-        guard let image = context?.makeImage() else {
-            fatalError()
-        }
-        return image
-    }
-//
-//    static func transparentImage(size: CGSize) -> CGImage {
-//        .init(
-//            width: size.width,
-//            height: size.height,
-//            bitsPerComponent: bitsPerComponent,
-//            bitsPerPixel: bitsPerPixel,
-//            bytesPerRow: bytesPerRow,
-//            space: colorSpace,
-//            bitmapInfo: bitmapInfo,
-//            provider: <#T##CGDataProvider#>,
-//            decode: <#T##UnsafePointer<CGFloat>?#>,
-//            shouldInterpolate: false,
-//            intent: <#T##CGColorRenderingIntent#>)
-//    }
+
 }

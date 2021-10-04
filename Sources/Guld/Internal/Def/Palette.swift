@@ -56,6 +56,9 @@ public struct Palette: Hashable {
 
 public extension Palette {
     typealias Pixel = UInt32
+    
+    static let transparentPixel: Pixel = 0x00000000
+    
     static func rgbaColorsFrom(pixels: [Pixel]) -> [RGBA] {
         pixels.map { pixel in
             let red = RGB.Value(pixel >> 24 & 0xff)
