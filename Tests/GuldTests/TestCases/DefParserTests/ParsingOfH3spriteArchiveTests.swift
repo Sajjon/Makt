@@ -160,21 +160,6 @@ final class ParsingOfH3spriteArchiveTests: XCTestCase {
                     let sha256 = sha256Hex(frame.pixelData)
                     XCTAssertEqual(expectedHash, sha256)
                     setOfExpectedHashesToFulFill.remove(sha256)
-                    
-                    if frameName.lowercased().contains("TRDC000".lowercased()) {
-                       let image = try! ImageLoader.imageFrom(frame: frame, mirroring: .none, palette: definitionFile.palette)
-                        XCTAssertNotNil(image)
-                        
-//                        ImageLoader.imageFrom(pixelData: frame.pixelData, contentsHint: <#T##String#>, fullSize: <#T##CGSize#>, rect: <#T##CGRect#>, palette: <#T##Palette?#>)
-//                        static func imageFrom(
-//                            pixelData: Data,
-//                            contentsHint: String,
-//                            fullSize: CGSize,
-//                            rect: CGRect,
-//                            mirroring: Mirroring = .none,
-//                            palette: Palette?
-//                        fatalError("cool! printing pixelMatrix now\n\n\(pixelMatrix)\n")
-                    }
                 })
             })
             
