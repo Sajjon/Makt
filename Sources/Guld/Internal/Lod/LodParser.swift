@@ -220,10 +220,10 @@ internal extension LodParser {
             }
             return .font(load)
         case .def:
-            let load: () -> DefinitionFile = {
+            let load: (_ inspector: DefParser.Inspector?) -> DefinitionFile = { inspector in 
                 do {
                     let defParser = DefParser(data: data, definitionFileName: metaData.name, parentArchiveName: parentArchiveName)
-                    let defFile = try defParser.parse()
+                    let defFile = try defParser.parse(inspector: inspector)
                     return defFile
                 } catch {
                     uncaught(error: error)

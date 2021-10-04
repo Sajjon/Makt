@@ -19,3 +19,20 @@ public extension RGB {
         [red, green, blue].map { String(describing: $0) }.joined(separator: ", ")
     }
 }
+
+public struct RGBA: Hashable, CustomDebugStringConvertible {
+    public let rgb: RGB
+    public let alpha: RGB.Value
+    
+}
+
+public extension RGBA {
+    var red: RGB.Value { rgb.red }
+    var green: RGB.Value { rgb.green }
+    var blue: RGB.Value { rgb.blue }
+    
+    var debugDescription: String {
+        let values = [red, green, blue, alpha].map { String(describing: $0) }.joined(separator: ", ")
+        return "(\(values))"
+    }
+}

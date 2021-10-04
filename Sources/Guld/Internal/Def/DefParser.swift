@@ -20,7 +20,20 @@ public final class DefParser {
 }
 
 public extension DefParser {
-    func parse() throws -> DefinitionFile {
+    final class Inspector {
+        typealias OnParseFrame = (DefinitionFile.Frame) -> Void
+        private let onParseFrame: OnParseFrame?
+        init(onParseFrame: OnParseFrame?) {
+            self.onParseFrame = onParseFrame
+        }
+        func didParseFrame(_ frame: DefinitionFile.Frame) {
+            onParseFrame?(frame)
+        }
+    }
+}
+
+public extension DefParser {
+    func parse(inspector: Inspector? = nil) throws -> DefinitionFile {
      
         let kind = try DefinitionFile.Kind(integer: reader.readUInt32())
         let width = try reader.readUInt32()
@@ -36,7 +49,7 @@ public extension DefParser {
         var firstFrameFullWidth: Int!
         
         let blocks: [Block] = try blockMetaDatas.map {
-            try parseBlock(blockMetaData: $0, &firstFrameFullHeight, &firstFrameFullWidth)
+            try parseBlock(blockMetaData: $0, &firstFrameFullHeight, &firstFrameFullWidth, inspector: inspector)
         }
         
         return .init(
@@ -137,7 +150,13 @@ private extension DefParser {
         )
     }
     
-    func parseBlock(blockMetaData: BlockMetaData, _ firstFrameFullHeight: inout Int!, _ firstFrameFullWidth: inout Int!) throws -> Block {
+    func parseBlock(
+        blockMetaData: BlockMetaData,
+        _ firstFrameFullHeight: inout Int!,
+        _ firstFrameFullWidth: inout Int!,
+        inspector: Inspector? = nil
+    ) throws -> Block {
+        
         let entryCount = blockMetaData.entryCount
         assert(blockMetaData.fileNames.count == entryCount)
         assert(blockMetaData.offsets.count == entryCount)
@@ -184,6 +203,8 @@ private extension DefParser {
                 }
            
             }
+            
+            inspector?.didParseFrame(frame)
             
             return DefinitionFile.Frame(
                 encodingFormat: frame.encodingFormat,
@@ -232,8 +253,6 @@ private extension DefParser {
         let fullHeight = try Int(reader.readUInt32())
         
         let width = try Int(reader.readUInt32())
-//        assert(width.isMultiple(of: 16)) // must be a multiple of 16 ?
-        
         
         let height = try Int(reader.readUInt32())
         let leftMargin = try Int(reader.readInt32())
@@ -332,6 +351,7 @@ private extension DefParser {
                 fragment: segmentFragment
             )
         case .repeatingSegmentFragmentsEncodingEachLineIndividually:
+            
             let maxRowLength = 32
             let lineOffsetMatrix: [[UInt16]] = try height.nTimes {
                 return try width.divide(by: maxRowLength, rounding: .up).nTimes {

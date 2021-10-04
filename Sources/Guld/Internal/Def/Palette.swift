@@ -16,6 +16,7 @@ public struct Palette: Hashable {
     }
     
     
+    
     public init(data: Data, name: String) throws {
         
 //        guard data.count.isMultiple(of: Self.expectedSize) else {
@@ -54,15 +55,39 @@ public struct Palette: Hashable {
 }
 
 public extension Palette {
+    typealias Pixel = UInt32
+    static func rgbaColorsFrom(pixels: [Pixel]) -> [RGBA] {
+        pixels.map { pixel in
+            let red = RGB.Value(pixel >> 24 & 0xff)
+            let green = RGB.Value(pixel >> 16 & 0xff)
+            let blue = RGB.Value(pixel >> 8 & 0xff)
+            let alpha = RGB.Value(pixel & 0xff)
+            
+            return RGBA(
+                rgb:
+                        .init(
+                            red: red,
+                            green: green,
+                            blue: blue
+                        ),
+                alpha: alpha
+            )
+        }
+    }
+    
     func toU32Array() -> [UInt32] {
-        colors.enumerated().map { i, color in
+        let rgba = colors.map { RGBA.init(rgb: $0, alpha: 0xff) }
+        return Self.pixelsFrom(rgba: rgba)
+    }
+    static func pixelsFrom(rgba: [RGBA]) -> [Pixel] {
+        rgba.enumerated().map { i, color in
             var data = Data()
             data.append(color.red)
             data.append(color.green)
             data.append(color.blue)
             data.append(255) // alpha
             data.reverse() // fix endianess
-            return data.withUnsafeBytes { $0.load(as: UInt32.self) }
+            return data.withUnsafeBytes { $0.load(as: Pixel.self) }
         }
     }
 }

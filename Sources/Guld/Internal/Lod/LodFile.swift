@@ -65,7 +65,7 @@ public extension LodFile.FileEntry {
         }
         
         case pcx(() -> PCXImage)
-        case def(() -> DefinitionFile)
+        case def((DefParser.Inspector?) -> DefinitionFile)
         case text(() -> String)
         case font(() -> BitmapFont)
         case mask(() -> Mask)

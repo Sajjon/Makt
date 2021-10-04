@@ -102,7 +102,38 @@ final class ParsingOfH3spriteArchiveTests: XCTestCase {
         
         XCTAssertEqual(spriteLodFile.fileName, spriteLodName)
         
+//        let expectRepeatingSegmentFragmentsEncodingEachLineIndividually = expectation(description: "repeatingSegmentFragmentsEncodingEachLineIndividually")
+//        expectRepeatingSegmentFragmentsEncodingEachLineIndividually.assertForOverFulfill = false
+        
+        let expectRepeatingSegmentFragments = expectation(description: "repeatingSegmentFragments")
+        expectRepeatingSegmentFragments.assertForOverFulfill = false
+       
+//        let expectRepeatingCodeFragment = expectation(description: "repeatingCodeFragment")
+//        expectRepeatingCodeFragment.assertForOverFulfill = false
+        
+        let expectNonCompressed =  expectation(description: "nonCompressed")
+        expectNonCompressed.assertForOverFulfill = false
+        
         let parser = LodParser()
+        let defParserInspector: DefParser.Inspector = .init(onParseFrame: { frame in
+//            if frame.fileName.lowercased() == "TRDC000.pcx".lowercased() {
+//                print("cobble stone that app fails to draw: \(String.init(describing: frame))")
+//                print("cobble stone that app fails to draw: \(String.init(describing: frame))")
+//            }
+            switch frame.encodingFormat {
+            case .repeatingSegmentFragmentsEncodingEachLineIndividually:
+//                expectRepeatingSegmentFragmentsEncodingEachLineIndividually.fulfill()
+                break
+            case .repeatingSegmentFragments:
+                expectRepeatingSegmentFragments.fulfill()
+            case .repeatingCodeFragment:
+                break
+//                expectRepeatingCodeFragment.fulfill()
+            case .nonCompressed:
+                expectNonCompressed.fulfill()
+            }
+            
+        })
         let inspector = AssetParsedInspector(onParseFileEntry: { entry in
             XCTAssertEqual(entry.parentArchiveName, spriteLodName)
             guard let lodFileEntry = entry as? LodFile.FileEntry else {
@@ -117,9 +148,8 @@ final class ParsingOfH3spriteArchiveTests: XCTestCase {
                 return
             }
             
-            let definitionFile = definitionLoader()
+            let definitionFile = definitionLoader(defParserInspector)
             XCTAssertEqual(definitionFile.parentArchiveName, spriteLodName)
-            var globalFrameID = 0
             definitionFile.blocks.enumerated().forEach({ (blockIndex, block) in
                 block.frames.enumerated().forEach({ (frameIndex, frame) in
                     let frameName = frame.fileName.lowercased()
@@ -130,12 +160,29 @@ final class ParsingOfH3spriteArchiveTests: XCTestCase {
                     let sha256 = sha256Hex(frame.pixelData)
                     XCTAssertEqual(expectedHash, sha256)
                     setOfExpectedHashesToFulFill.remove(sha256)
+                    
+                    if frameName.lowercased().contains("TRDC000".lowercased()) {
+                       let image = try! ImageLoader.imageFrom(frame: frame, mirroring: .none, palette: definitionFile.palette)
+                        XCTAssertNotNil(image)
+                        
+//                        ImageLoader.imageFrom(pixelData: frame.pixelData, contentsHint: <#T##String#>, fullSize: <#T##CGSize#>, rect: <#T##CGRect#>, palette: <#T##Palette?#>)
+//                        static func imageFrom(
+//                            pixelData: Data,
+//                            contentsHint: String,
+//                            fullSize: CGSize,
+//                            rect: CGRect,
+//                            mirroring: Mirroring = .none,
+//                            palette: Palette?
+//                        fatalError("cool! printing pixelMatrix now\n\n\(pixelMatrix)\n")
+                    }
                 })
             })
+            
         })
         let spriteLod = try parser.parse(archiveFile: spriteLodFile, inspector: inspector)
         XCTAssertEqual(spriteLod.entries.count, 4013)
         XCTAssertTrue(setOfExpectedHashesToFulFill.isEmpty)
+        waitForExpectations(timeout: 1)
     }
 }
 

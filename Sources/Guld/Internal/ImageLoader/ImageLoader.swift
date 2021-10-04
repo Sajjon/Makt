@@ -62,8 +62,9 @@ internal extension ImageLoader {
 
 }
 
-// MARK: Private
-private extension ImageLoader {
+// MARK: Internal
+// for testing
+internal extension ImageLoader {
     
     // TODO remove separate caches and share?
     func cacheFor<Key: DrawableTileLayer>(_ abstractTile: Key) -> ImageCache<CachedImage<Key>> {
@@ -122,25 +123,27 @@ private extension ImageLoader {
         palette: Palette?
     ) throws -> Image {
     
-//        let pixelReplacementMap: [Int: UInt32] = [
-//            0: 0x00000000,// [0, 0, 0, 0],
-//            1: 0x00000040,// [0, 0, 0, 0x40],
-//            4: 0x00000080,// [0, 0, 0, 0x80],
-//            6: 0x00000080,// [0, 0, 0, 0x80],
-//            7: 0x00000040,// [0, 0, 0, 0x40]
-//        ]
+         /// Replace special colors
+        let pixelReplacementMap: [Int: UInt32] = [
+            0: CGContext.transparentPixel,  // full transparency
+            1: 0x00000040,  // shadow border
+            4: 0x00000080,  // shadow body
+            5: CGContext.transparentPixel,  // selection highlight, treat as full transparency
+            6: 0x00000080,  // shadow body below selection, treat as shadow body
+            7: 0x00000040   // shadow border below selection, treat as shadow border
+        ]
 
-        let pixels: [UInt32] = {
+        let pixelsNonPadded: [UInt32] = {
             if let palette = palette {
                 let palette32Bit = palette.toU32Array()
                 
                 let pixels: [UInt32] = pixelData.map {
                     let pixel = Int($0)
-//                    if let pixelReplacement = pixelReplacementMap[pixel] {
-//                        return pixelReplacement
-//                    } else {
+                    if let pixelReplacement = pixelReplacementMap[pixel] {
+                        return pixelReplacement
+                    } else {
                         return palette32Bit[pixel]
-//                    }
+                    }
                 }
                 return pixels
             } else {
@@ -148,30 +151,76 @@ private extension ImageLoader {
             }
         }()
         
-        let width = rect.width
-        let height = rect.height
+//        let width = rect.width
+//        let height = rect.height
+        let width = Int(fullSize.width)
+        let height = Int(fullSize.height)
+        let leftOffset = Int(rect.origin.x)
+        let topOffset = Int(rect.origin.y)
+        let transparantPixel = CGContext.transparentPixel
         
-    
-        let pixelMatrix = pixels.chunked(into: .init(width))
+        var pixelMatrix: [[UInt32]] = []
+        for row in 0..<height {
+            if row < topOffset || (row - topOffset) >= Int(rect.height) {
+                pixelMatrix.append(.init(repeating: transparantPixel, count: width))
+                continue
+            }
+            var rowOfPixels: [UInt32] = []
+//            for column in 0..<width {
+//                if column < leftOffset {
+            rowOfPixels.append(contentsOf: Array<UInt32>.init(repeating: transparantPixel, count: leftOffset))
+//                }
+                let startIndex = (row - topOffset) * Int(rect.width)
+                let endIndex = startIndex + Int(rect.width)
+                let slice = pixelsNonPadded[startIndex..<endIndex]
+                assert(slice.count == Int(rect.width), "Expected a count of \(Int(rect.width)), but got: \(slice.count)")
+                rowOfPixels.append(contentsOf: slice)
+            let numberOfTransparentPixelsOnRightSide = width - Int(rect.width) - leftOffset
+            rowOfPixels.append(contentsOf: Array<UInt32>.init(repeating: transparantPixel, count: numberOfTransparentPixelsOnRightSide))
+            assert(rowOfPixels.count == width, "Expected a count of \(width), but got: \(rowOfPixels.count) for entire row (padded)")
+//            }
+            pixelMatrix.append(rowOfPixels)
+        }
+        
+        assert(pixelMatrix.count == height)
+        assert(pixelMatrix.enumerated().allSatisfy({ (rowIndex, row) in
+//            print("asserting that row at index: \(rowIndex), indeed has expect width: \(width), in fact it has length: \(row.count)")
+            return row.count == width
+        }))
+        
+//        let pixelMatrix = pixels.chunked(into: .init(width))
+        
+        
+        
+        
+        if contentsHint.lowercased().contains("TRDC000".lowercased()) {
+            let rgba = pixelMatrix.flatMap { Palette.rgbaColorsFrom(pixels: $0) }
+            fatalError("cool! printing pixelMatrix now\n\n\(rgba)\n")
+        }
+//        print(contentsHint)
+        
+//        if fullSize == rect.size {
+            let cgImage = try ImageLoader.makeCGImage(
+                 pixelValueMatrix: pixelMatrix,
+                 fullSize: fullSize,
+                 rect: rect,
+                 mirroring: mirroring//,
+//                 drawInImage: fullSize == rect.size ? nil : CGContext.transparentImage(size: fullSize)
+             )
+            
+            assert(cgImage.height == .init(height))
+            assert(cgImage.width == .init(width))
+            
+            let image = Image(
+                cgImage: cgImage,
+                mirroring: mirroring,
+                rect: rect,
+                hint: contentsHint
+            )
+            return image
+     
          
-        let cgImage = try ImageLoader.makeCGImage(
-             pixelValueMatrix: pixelMatrix,
-             fullSize: fullSize,
-             rect: rect,
-             mirroring: mirroring
-         )
         
-        assert(cgImage.height == .init(height))
-        assert(cgImage.width == .init(width))
-        
-        let image = Image(
-            cgImage: cgImage,
-            mirroring: mirroring,
-            rect: rect,
-            hint: contentsHint
-        )
-        
-        return image
     }
     
     func loadImage<CI: CacheableImage>(
@@ -195,7 +244,11 @@ private extension ImageLoader {
         fullSize: CGSize,
         rect: CGRect,
         mirroring: Mirroring
+//        drawIn canvas: CGImage?
     ) throws -> CGImage {
+        
+        
+        
         // context.scaleBy or context.concatenate(CGAffineTransform...) SHOULD work, but I've failed
         // to get it working. Instead I just mutate the order of the pixels to achive
         // the same result...
@@ -211,9 +264,15 @@ private extension ImageLoader {
             pixelValueMatrix = pixelValueMatrix.reversed()
         }
         
+        
         guard let context = CGContext.from(pixels: pixelValueMatrix) else {
             throw Error.failedToCreateImageContext
         }
+        
+//        if fullSize != rect.size {
+//            // Need some transperent pixels
+//            context.draw(CGContext.transparentImage(size: fullSize), in: .init(x: 0, y: 0, width: fullSize.height, height: fullSize.width))
+//        }
 
         guard let cgImage = context.makeImage() else {
             throw Error.failedToCreateImageFromContext
@@ -249,7 +308,7 @@ private extension ImageLoader {
             incorrectImplementation(reason: "Should be def file")
         }
         
-        let defFile = loadDefinitionFile()
+        let defFile = loadDefinitionFile(nil) // no inspector
         
         definitionFileCache[targetDefinitionFileName] = defFile
 //        print("🗂✅ loaded definition file, contents:\n\n\(String(describing: defFile))\n\n")
