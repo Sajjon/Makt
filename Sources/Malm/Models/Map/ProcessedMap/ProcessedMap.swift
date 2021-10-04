@@ -10,17 +10,17 @@ import Util
 
 public struct ProcessedMap: Hashable {
     private let map: Map
-    public let aboveGroundTiles: [Tile]
-    public let undergroundTiles: [Tile]?
+    public let aboveGround: Level
+    public let underground: Level?
     
     public init(
         map: Map,
-        aboveGroundTiles: [Tile],
-        undergroundTiles: [Tile]?
+        aboveGround: Level,
+        underground: Level? = nil
     ) {
         self.map = map
-        self.aboveGroundTiles = aboveGroundTiles
-        self.undergroundTiles = undergroundTiles
+        self.aboveGround = aboveGround
+        self.underground = underground
     }
 }
 
@@ -32,12 +32,26 @@ public extension ProcessedMap {
     var width: Size.Scalar { size.width }
 }
 
+// MARK: Level
+public extension ProcessedMap {
+    struct Level: Hashable {
+        public let tiles: [Tile]
+        public let objects: [Object]
+        public let isUnderground: Bool
+        
+        public init(tiles: [Tile], objects: [Object], isUnderground: Bool = false) {
+            self.tiles = tiles
+            self.objects = objects
+            self.isUnderground = isUnderground
+        }
+    }
+}
+
 // MARK: Tile
 public extension ProcessedMap {
     struct Tile: Hashable {
         public let position: Position
         public let mapTile: Map.Tile
-        public let objects: [Map.Object]?
         
         public let images: [AnyCachedImage]
 
@@ -45,12 +59,10 @@ public extension ProcessedMap {
             mapTile: Map.Tile,
             groundImage: GroundImage,
             riverImage: RiverImage?,
-            roadImage: RoadImage?,
-            objects: [Map.Object]?
+            roadImage: RoadImage?
         ) {
             self.position = mapTile.position
             self.mapTile = mapTile
-            self.objects = objects
  
             self.images = [
                 AnyCachedImage(groundImage),            // index 0: ground terrain image (always present)
@@ -70,4 +82,38 @@ public extension ProcessedMap.Tile {
     var emojiString: String {
         mapTile.emojiString
     }
+}
+
+// MARK: Object
+public extension ProcessedMap {
+    struct Object: Hashable {
+        
+        /// The kind of object this wrapper wraps.s
+        public let mapObject: Map.Object
+
+        /// Image of map object
+        public let image: ObjectImage
+        
+        public init(
+            mapObject: Map.Object,
+            image: ObjectImage
+        ) {
+            self.mapObject = mapObject
+            self.image = image
+        }
+    }
+}
+
+public extension ProcessedMap.Object {
+    /// Number of tiles this object occupies, i.e. `width * height`.
+    var size: Position.Scalar { width * height }
+    
+    /// Top most left most coordinate of the object
+    var origin: Position { mapObject.origin }
+    
+    /// How many tile columns this object occupies.
+    var width: Position.Scalar { mapObject.width }
+    
+    /// How many tile rows this object occupies.
+    var height: Position.Scalar { mapObject.height }
 }

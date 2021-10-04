@@ -26,3 +26,4 @@ public extension CachedImage {
 public typealias GroundImage = CachedImage<Map.Tile.Ground>
 public typealias RoadImage = CachedImage<Map.Tile.Road>
 public typealias RiverImage = CachedImage<Map.Tile.River>
+public typealias ObjectImage = CachedImage<Sprite>

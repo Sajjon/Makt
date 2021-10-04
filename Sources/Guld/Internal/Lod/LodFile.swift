@@ -55,7 +55,7 @@ public extension LodFile {
     }
 }
 
-public typealias Mask = Map.Object.Attributes.Pathfinding.Passability
+public typealias Mask = Map.Object.Attributes.Pathfinding.RelativePositionOfTiles
 
 public extension LodFile.FileEntry {
     

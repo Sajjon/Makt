@@ -233,8 +233,7 @@ internal extension LodParser {
         case .mask:
             let load: () -> Mask = {
                 do {
-                    let maskRaw = try DataReader(data: data).readPathfindingMask()
-                    let mask: Mask = .init(relativePositionsOfPassableTiles: maskRaw)
+                    let mask: Mask = try DataReader(data: data).readPathfindingMask()
                     return mask
                 } catch {
                     uncaught(error: error)

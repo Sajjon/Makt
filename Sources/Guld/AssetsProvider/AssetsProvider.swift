@@ -254,6 +254,13 @@ public extension Assets {
         try imageLoader.loadImage(ground: ground, skipCache: skipCache)
     }
     
+//    func loadImage(object: Map.Object, skipCache: Bool = false) throws -> ObjectImage {
+//        try imageLoader.loadImage(object: object, skipCache: skipCache)
+//    }
+    func loadImage(sprite: Sprite, skipCache: Bool = false) throws -> ObjectImage {
+        try imageLoader.loadImage(sprite: sprite, skipCache: skipCache)
+    }
+    
     func loadImage<Key: DrawableTileLayer>(for key: Key, skipCache: Bool = false) throws -> CachedImage<Key> {
         try imageLoader.loadImage(for: key, skipCache: skipCache)
     }

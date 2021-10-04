@@ -4,6 +4,7 @@ import CoreGraphics
 import Combine
 import Util
 import Malm
+import CryptoKit
 
 // MARK: ImageLoader
 internal final class ImageLoader {
@@ -12,11 +13,13 @@ internal final class ImageLoader {
     private let groundImageCache: GroundImageCache = .init()
     private let roadImageCache: RoadImageCache = .init()
     private let riverImageCache: RiverImageCache = .init()
+    private let objectImageCache: ObjectImageCache = .init()
     private let definitionFileCache: DefinitionFileCache = .init()
     
     internal init(
         lodFiles: [LodFile]
     ) {
+        
         self.lodFiles = lodFiles
     }
 }
@@ -38,6 +41,42 @@ internal extension ImageLoader {
     typealias GroundImageCache = ImageCache<GroundImage>
     typealias RoadImageCache = ImageCache<RoadImage>
     typealias RiverImageCache = ImageCache<RiverImage>
+    typealias ObjectImageCache = ImageCache<ObjectImage>
+    
+//    func loadImage(object: Map.Object, skipCache: Bool = false) throws -> ObjectImage {
+    func loadImage(sprite: Sprite, skipCache: Bool = false) throws -> ObjectImage {
+        
+        let useCache = !skipCache
+        
+        if useCache, let cached = objectImageCache[sprite] {
+            return cached
+        }
+        
+        let defFile = definitionFile(
+            named: sprite.rawValue,
+            in: .lod(.restorationOfErathiaSpriteArchive)
+        )
+        
+        assert(defFile.blocks.count == 1, "Dont know what to do with more than one block.")
+        let block = defFile.blocks.first!
+        
+        if block.frames.count > 1 {
+            print("WARNING hardcoded to use frame at index 0, even though there are \(block.frames.count) frames. Which should we use?")
+        }
+        let frame = block.frames.first!
+        
+        let image = try ImageLoader.imageFrom(
+            frame: frame,
+            mirroring: .none,
+            palette: defFile.palette
+        )
+        
+        let cachedImage = ObjectImage(key: sprite, image: image)
+        
+        objectImageCache[sprite] = cachedImage
+        
+        return cachedImage
+    }
     
     func loadImage(ground: Map.Tile.Ground, skipCache: Bool = false) throws -> GroundImage {
         try loadImage(for: ground, skipCache: skipCache)
@@ -67,15 +106,17 @@ internal extension ImageLoader {
 internal extension ImageLoader {
     
     // TODO remove separate caches and share?
-    func cacheFor<Key: DrawableTileLayer>(_ abstractTile: Key) -> ImageCache<CachedImage<Key>> {
+    func cacheFor<Key: DrawableTileLayer>(_ abstractKey: Key) -> ImageCache<CachedImage<Key>> {
         switch Key.layerKind {
         case .road: return roadImageCache as! ImageCache<CachedImage<Key>>
         case .ground: return groundImageCache as! ImageCache<CachedImage<Key>>
         case .river: return riverImageCache as! ImageCache<CachedImage<Key>>
         }
+        
     }
     
-    func newImage<Key: DrawableTileLayer>(
+    
+    func newImage<Key: DrawableLayer>(
         key: Key
     ) throws -> CachedImage<Key> {
         let defFile = definitionFileFor(key)
@@ -177,7 +218,6 @@ internal extension ImageLoader {
             pixelMatrix.append(rowOfPixels)
         }
         
-        
         let cgImage = try ImageLoader.makeCGImage(
             pixelValueMatrix: pixelMatrix,
             fullSize: fullSize,
@@ -235,17 +275,26 @@ internal extension ImageLoader {
             pixelValueMatrix = pixelValueMatrix.reversed()
         }
         
-        guard let context = CGContext.from(pixels: pixelValueMatrix) else {
+        var pixels = pixelValueMatrix.flatMap({ $0 })
+        
+        guard let context = CGContext.from(
+            pixelPointer: &pixels,
+            width: .init(fullSize.width),
+            height: .init(fullSize.height)
+        ) else {
             throw Error.failedToCreateImageContext
         }
         
         guard let cgImage = context.makeImage() else {
             throw Error.failedToCreateImageFromContext
         }
+//        let copy = cgImage.copy()!
+        
+//        return copy
         return cgImage
     }
     
-    func definitionFileFor<A: DrawableTileLayer>(_ drawableTile: A) -> DefinitionFile {
+    func definitionFileFor<A: DrawableLayer>(_ drawableTile: A) -> DefinitionFile {
         definitionFile(
             named: drawableTile.definitionFileName,
             in: drawableTile.archive

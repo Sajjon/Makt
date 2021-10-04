@@ -69,6 +69,8 @@ final class ParsingOfH3spriteArchiveTests: XCTestCase {
         let defFilesInTestVector = expectedHashesOfArchive.hashesOfDefFiles.map { $0.defFileName }.map { $0.lowercased() }
 
         XCTAssertEqual(defFilesInTestVector, [
+            "avccasx0.def", // object that fails currently
+            
             "clrrvr.def",
             "cobbrd.def",
             "dirtrd.def",
@@ -102,33 +104,28 @@ final class ParsingOfH3spriteArchiveTests: XCTestCase {
         
         XCTAssertEqual(spriteLodFile.fileName, spriteLodName)
         
-//        let expectRepeatingSegmentFragmentsEncodingEachLineIndividually = expectation(description: "repeatingSegmentFragmentsEncodingEachLineIndividually")
-//        expectRepeatingSegmentFragmentsEncodingEachLineIndividually.assertForOverFulfill = false
+        let expectRepeatingSegmentFragmentsEncodingEachLineIndividually = expectation(description: "repeatingSegmentFragmentsEncodingEachLineIndividually")
+        expectRepeatingSegmentFragmentsEncodingEachLineIndividually.assertForOverFulfill = false
         
         let expectRepeatingSegmentFragments = expectation(description: "repeatingSegmentFragments")
         expectRepeatingSegmentFragments.assertForOverFulfill = false
        
-//        let expectRepeatingCodeFragment = expectation(description: "repeatingCodeFragment")
-//        expectRepeatingCodeFragment.assertForOverFulfill = false
+        let expectRepeatingCodeFragment = expectation(description: "repeatingCodeFragment")
+        expectRepeatingCodeFragment.assertForOverFulfill = false
+        expectRepeatingCodeFragment.isInverted = true /// remove this when we have found a def file which covers this scenario.
         
         let expectNonCompressed =  expectation(description: "nonCompressed")
         expectNonCompressed.assertForOverFulfill = false
         
         let parser = LodParser()
         let defParserInspector: DefParser.Inspector = .init(onParseFrame: { frame in
-//            if frame.fileName.lowercased() == "TRDC000.pcx".lowercased() {
-//                print("cobble stone that app fails to draw: \(String.init(describing: frame))")
-//                print("cobble stone that app fails to draw: \(String.init(describing: frame))")
-//            }
             switch frame.encodingFormat {
             case .repeatingSegmentFragmentsEncodingEachLineIndividually:
-//                expectRepeatingSegmentFragmentsEncodingEachLineIndividually.fulfill()
-                break
+                expectRepeatingSegmentFragmentsEncodingEachLineIndividually.fulfill()
             case .repeatingSegmentFragments:
                 expectRepeatingSegmentFragments.fulfill()
             case .repeatingCodeFragment:
-                break
-//                expectRepeatingCodeFragment.fulfill()
+                expectRepeatingCodeFragment.fulfill()
             case .nonCompressed:
                 expectNonCompressed.fulfill()
             }
@@ -153,6 +150,7 @@ final class ParsingOfH3spriteArchiveTests: XCTestCase {
             definitionFile.blocks.enumerated().forEach({ (blockIndex, block) in
                 block.frames.enumerated().forEach({ (frameIndex, frame) in
                     let frameName = frame.fileName.lowercased()
+                    
                     guard let expectedHash = expectedHashes[frameName] else {
                         fatalError("Failed to retrieve expected hash for frame named: '\(frameName)'")
                     }
@@ -167,7 +165,7 @@ final class ParsingOfH3spriteArchiveTests: XCTestCase {
         let spriteLod = try parser.parse(archiveFile: spriteLodFile, inspector: inspector)
         XCTAssertEqual(spriteLod.entries.count, 4013)
         XCTAssertTrue(setOfExpectedHashesToFulFill.isEmpty)
-        waitForExpectations(timeout: 1)
+        waitForExpectations(timeout: 2)
     }
 }
 

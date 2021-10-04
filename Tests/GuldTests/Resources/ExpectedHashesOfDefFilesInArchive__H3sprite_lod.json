@@ -2,6 +2,18 @@
     "archive": "H3sprite.lod",
     "hashesOfDefFiles": [
         {
+            "defFileName": "AVCcasx0.def",
+            "hashesOfFrames": [
+                {
+                    "frameName": "AVCcasx0.pcx",
+                    "globalFrameId": 0,
+                    "blockId": 0,
+                    "frameIdInBlock": 0,
+                    "hash": "02436a27c8b4254a2987e7a4a7113a04ead559d72642016ff93d393809b04231"
+                }
+            ]
+        },
+        {
             "defFileName": "Clrrvr.def",
             "hashesOfFrames": [
                 {

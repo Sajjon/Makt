@@ -24,6 +24,7 @@ public extension MapProcessor {
         let groundImagesForTiles = try loadGroundImagesForTiles(in: map)
         let riverImagesForTiles = try loadRiverImagesForTiles(in: map)
         let roadImagesForTiles = try loadRoadImagesForTiles(in: map)
+        let imageForObjects = try loadObjectImageForObjects(in: map)
         assert(map.world.above.tiles.count == map.basicInformation.size.tileCount)
         
         var positionToObjects: [Position: Objects] = [:]
@@ -67,22 +68,31 @@ public extension MapProcessor {
                     mapTile: tile,
                     groundImage: groundImage(at: tile),
                     riverImage: riverImage(at: tile),
-                    roadImage: roadImage(at: tile),
-                    objects: objects(at: tile.position)
+                    roadImage: roadImage(at: tile)
                 )
             }
         }
         
         let aboveGroundTiles = tilesAt(level: map.world.above)
         assert(aboveGroundTiles.count == map.basicInformation.size.tileCount)
-        let undergroundTiles = map.world.underground.map {
-            tilesAt(level: $0)
+//        let undergroundTiles = map.world.underground.map {
+//            tilesAt(level: $0)
+//        }
+        
+        let aboveGroundObjects: [ProcessedMap.Object] = positionToObjects.filter { $0.key.inUnderworld == false }.flatMap {
+            return $0.value.objects.map { (mapObject: Map.Object) in
+                return ProcessedMap.Object(
+                    mapObject: mapObject,
+                    image: imageForObjects[mapObject.attributes.sprite]!
+                )
+            }
         }
+        
+        let aboveGround: ProcessedMap.Level = .init(tiles: aboveGroundTiles, objects: aboveGroundObjects, isUnderground: false)
         
         let processedMap = ProcessedMap(
             map: map,
-            aboveGroundTiles: aboveGroundTiles,
-            undergroundTiles: undergroundTiles
+            aboveGround: aboveGround
         )
         
         let diff = CFAbsoluteTimeGetCurrent() - start
@@ -95,7 +105,11 @@ public extension MapProcessor {
 // MARK: Private
 private extension MapProcessor {
     
-    func _loadImagesForTile<K: DrawableTileLayer>(in map: Map, keyForTile: (Map.Tile) -> K?) throws -> [Map.Tile: CachedImage<K>] {
+    func _loadImagesForTile<K: DrawableTileLayer>(
+        in map: Map,
+        keyForTile: (Map.Tile) -> K?
+    ) throws -> [Map.Tile: CachedImage<K>] {
+        
         let tiles = map.world.above.tiles + (map.world.underground?.tiles ?? [])
         
         return Dictionary(uniqueKeysWithValues: try tiles.compactMap { tile in
@@ -131,6 +145,13 @@ private extension MapProcessor {
             return nil
         }
         return cache
+    }
+    
+    func loadObjectImageForObjects(in map: Map) throws -> [Sprite: ObjectImage] {
+        Dictionary<Sprite, ObjectImage>(try map.detailsAboutObjects.objects.compactMap { object in
+            let key = object.attributes.sprite
+            return (key: key, value: try assets.loadImage(sprite: key))
+        }, uniquingKeysWith: { (first, _) in first })
     }
 }
 

@@ -18,18 +18,13 @@ extension CGContext {
     static let bitsPerByte = UInt8.bitWidth
     static let bitsPerPixel = Palette.Pixel.bitWidth
     static let bytesPerPixel = bitsPerPixel / bitsPerByte
+    
     static func bytesPerRow(width: Int) -> Int { width * bytesPerPixel }
 
-
-    static func from(pixels pixelMatrix: [[UInt32]]) -> CGContext? {
-        let width = pixelMatrix.first?.count ?? 0
-        let height = pixelMatrix.count
-        assert(pixelMatrix.allSatisfy { $0.count == width })
-        let pixels: [UInt32] = pixelMatrix.flatMap { $0 }
-        var mutPixels = pixels
+    static func from(pixelPointer data: UnsafeMutablePointer<Palette.Pixel>, width: Int, height: Int) -> CGContext? {
        
         return CGContext(
-            data: &mutPixels,
+            data: data,
             width: width,
             height: height,
             bitsPerComponent: bitsPerByte,

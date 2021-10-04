@@ -127,19 +127,15 @@ private extension H3M {
             
             /// Which squares (of this object) are passable, counted from the bottom right corner
             /// (bit 1: passable, bit 0: impassable
-            let passabilityBitmask = try reader.readPathfindingMask()
+            let passability = try reader.readPathfindingMask()
             
             /// Active/visitable squares (overlaid on impassable squares)
             /// (bit 1: active, bit 0: passive
-            let visitabilityBitmask = try reader.readPathfindingMask()
+            let visitability = try reader.readPathfindingMask()
             
             let pathfinding = Map.Object.Attributes.Pathfinding(
-                visitability: .init(
-                    relativePositionsOfVisitableTiles: visitabilityBitmask
-                ),
-                passability: .init(
-                    relativePositionsOfPassableTiles: passabilityBitmask
-                )
+                visitability: visitability,
+                passability: passability
             )
             
             func parseLandscapes() throws -> [Map.Terrain] {

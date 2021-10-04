@@ -9,7 +9,7 @@ import Foundation
 import Malm
 import Util
 
-public protocol DrawableTileLayer: TileLayer {
+public protocol DrawableLayer: DefinitionFileFrameIndexing, Flippable, RenderZAxisIndexing, Hashable {
     associatedtype DefinitionFileNameKey: Hashable
     static var definitionFileNameTable: [DefinitionFileNameKey: String] { get }
     var definitionFileNameKey: DefinitionFileNameKey { get }
@@ -19,7 +19,8 @@ public protocol DrawableTileLayer: TileLayer {
     var archive: Archive { get }
 }
 
-public extension DrawableTileLayer {
+
+public extension DrawableLayer {
     var definitionFileName: String {
         guard let fileName = Self.definitionFileNameTable[definitionFileNameKey] else {
             incorrectImplementation(reason: "Should always be able to find definition file for key: '\(definitionFileNameKey)', but found none.")
@@ -31,8 +32,11 @@ public extension DrawableTileLayer {
     }
 }
 
+public typealias DrawableTileLayer = DrawableLayer & TileLayer
 
-extension Map.Tile.Ground: DrawableTileLayer {}
+
+
+extension Map.Tile.Ground: DrawableLayer {}
 public extension Map.Tile.Ground {
     typealias DefinitionFileNameKey = Map.Terrain
     var definitionFileNameKey: DefinitionFileNameKey { self.terrain }
@@ -50,7 +54,7 @@ public extension Map.Tile.Ground {
     ]
 }
 
-extension Map.Tile.Road: DrawableTileLayer {}
+extension Map.Tile.Road: DrawableLayer {}
 public extension Map.Tile.Road {
     typealias DefinitionFileNameKey = Self.Kind
     var definitionFileNameKey: DefinitionFileNameKey { self.kind }
@@ -61,7 +65,7 @@ public extension Map.Tile.Road {
     ]
 }
 
-extension Map.Tile.River: DrawableTileLayer {}
+extension Map.Tile.River: DrawableLayer {}
 public extension Map.Tile.River {
     typealias DefinitionFileNameKey = Self.Kind
     var definitionFileNameKey: DefinitionFileNameKey { self.kind }
@@ -72,4 +76,3 @@ public extension Map.Tile.River {
         .lava: "Lavrvr.def",
     ]
 }
-

@@ -17,6 +17,25 @@ public extension Map {
 }
 
 public extension Map.Object {
+    
+    
+    /// Top/Left most position of object, as opposed to `position` which is the bottom/right most tile of this object.
+    var origin: Position {
+        .init(
+            x: position.x - width,
+            y: position.y - height,
+            inUnderworld: position.inUnderworld
+        )
+    }
+    
+    var width: Position.Scalar {
+        attributes.width
+    }
+    
+    var height: Position.Scalar {
+        attributes.height
+    }
+    
     struct Attributes: Hashable, CustomDebugStringConvertible {
         
         /// Name of sprite/animation file
@@ -54,27 +73,47 @@ public extension Map.Object {
 
 public extension Map.Object.Attributes {
     
+    
+    var width: Position.Scalar {
+        pathfinding.width
+    }
+    
+    var height: Position.Scalar {
+        pathfinding.height
+    }
+    
     var debugDescription: String {
         "\(objectID)"
     }
     
     struct Pathfinding: Hashable, CustomDebugStringConvertible {
-        public let visitability: Visitability
-        public let passability: Passability
+        public let visitability: RelativePositionOfTiles
+        public let passability: RelativePositionOfTiles
         
         public init(
-            visitability: Visitability,
-            passability: Passability
+            visitability: RelativePositionOfTiles,
+            passability: RelativePositionOfTiles
         ) {
             self.visitability = visitability
             self.passability = passability
+            assert(visitability.isSorted())
+            assert(passability.isSorted())
+        }
+        
+        
+        var width: Position.Scalar {
+            max(visitability.width, passability.width)
+        }
+        
+        var height: Position.Scalar {
+            max(visitability.height, passability.height)
         }
         
         
         public var debugDescription: String {
             """
-            visitable: \(visitability.relativePositionsOfVisitableTiles)
-            passable: \(passability.relativePositionsOfPassableTiles)
+            visitable: \(visitability.values)
+            passable: \(passability.values)
             """
         }
     }
@@ -101,40 +140,31 @@ public extension Map.Object.Attributes.Group {
     }
 }
 
+//public protocol TileAreaMeasureable {
+//    var relativePositionOfTiles: [RelativePosition] { get }
+////    init(relativePositionOfTiles: [RelativePosition])
+//}
+//extension TileAreaMeasureable where Self: ExpressibleByArrayLiteral, Self.ArrayLiteralElement == RelativePosition {
+//    public init(arrayLiteral elements: ArrayLiteralElement...) {
+//        assert(elements.)
+//        self.init(relativePositionOfTiles: elements.map({ .init(x: $0.0, y: $0.1) }))
+//    }
+//}
+
 public extension Map.Object.Attributes.Pathfinding {
     
-    struct Visitability: Hashable, ExpressibleByArrayLiteral {
-        public let relativePositionsOfVisitableTiles: Set<RelativePosition>
-        public typealias ArrayLiteralElement = (RelativePosition.Scalar, RelativePosition.Scalar)
-        public init(arrayLiteral elements: ArrayLiteralElement...) {
-            self.init(relativePositionsOfVisitableTiles: Set(elements.map({ .init(x: $0.0, y: $0.1) })))
-        }
-        public init(relativePositionsOfVisitableTiles: Set<RelativePosition>) {
-            self.relativePositionsOfVisitableTiles = relativePositionsOfVisitableTiles
-        }
-    }
-    struct Passability: Hashable, ExpressibleByArrayLiteral {
-        public let relativePositionsOfPassableTiles: Set<RelativePosition>
-        
-        public typealias ArrayLiteralElement = (RelativePosition.Scalar, RelativePosition.Scalar)
-        public init(arrayLiteral elements: ArrayLiteralElement...) {
-            self.init(relativePositionsOfPassableTiles: Set(elements.map({ .init(x: $0.0, y: $0.1) })))
-        }
-        public init(relativePositionsOfPassableTiles: Set<RelativePosition>) {
-            self.relativePositionsOfPassableTiles = relativePositionsOfPassableTiles
-        }
-        
-     
-    }
-    
+    typealias RelativePositionOfTiles = ArrayOf<RelativePosition>
     static let columnCount = 8
     static let rowCount = 6
     
     /// A relative position on adventure map, two dimensions (x: Int, y: Int)
     struct RelativePosition: Hashable, Comparable, CustomDebugStringConvertible {
         public static func < (lhs: Self, rhs: Self) -> Bool {
-            if lhs.x < rhs.x { return true }
-            return lhs.y < rhs.y
+            guard lhs.y == rhs.y else {
+                return lhs.y < rhs.y
+            }
+            
+            return lhs.x < rhs.x
         }
         
         public var debugDescription: String {
@@ -155,4 +185,30 @@ public extension Map.Object.Attributes.Pathfinding {
 
     typealias IsPassable = Bool
     typealias IsVisitable = Bool
+}
+
+extension Collection where Element: Comparable, Index == Int {
+    func isSorted() -> Bool {
+        guard count > 1 else { return true }
+        for i in 1..<self.count {
+            if self[i-1] > self[i] { return false }
+        }
+        return true
+    }
+}
+
+extension Map.Object.Attributes.Pathfinding.RelativePositionOfTiles {
+    var width: Position.Scalar {
+        guard let lastPosition = values.last else {
+            return 0
+        }
+        return lastPosition.x
+    }
+    
+    var height: Position.Scalar {
+        guard let lastPosition = values.last else {
+            return 0
+        }
+        return lastPosition.y
+    }
 }
