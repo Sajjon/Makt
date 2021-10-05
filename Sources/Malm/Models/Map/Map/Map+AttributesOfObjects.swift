@@ -18,16 +18,6 @@ public extension Map {
 
 public extension Map.Object {
     
-    
-    /// Top/Left most position of object, as opposed to `position` which is the bottom/right most tile of this object.
-    var origin: Position {
-        .init(
-            x: position.x - width,
-            y: position.y - height,
-            inUnderworld: position.inUnderworld
-        )
-    }
-    
     var width: Position.Scalar {
         attributes.width
     }
@@ -73,7 +63,6 @@ public extension Map.Object {
 
 public extension Map.Object.Attributes {
     
-    
     var width: Position.Scalar {
         pathfinding.width
     }
@@ -96,8 +85,6 @@ public extension Map.Object.Attributes {
         ) {
             self.visitability = visitability
             self.passability = passability
-            assert(visitability.isSorted())
-            assert(passability.isSorted())
         }
         
         

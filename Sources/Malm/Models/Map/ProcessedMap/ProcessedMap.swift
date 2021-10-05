@@ -109,7 +109,7 @@ public extension ProcessedMap.Object {
     var size: Position.Scalar { width * height }
     
     /// Top most left most coordinate of the object
-    var origin: Position { mapObject.origin }
+    var position: Position { mapObject.position }
     
     /// How many tile columns this object occupies.
     var width: Position.Scalar { mapObject.width }
