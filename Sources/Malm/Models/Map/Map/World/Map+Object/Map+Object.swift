@@ -29,6 +29,10 @@ public extension Map {
 
 public extension Map.Object {
     var objectID: ID { attributes.objectID }
+    
+    var isVisitable: Bool {
+        attributes.isVisitable
+    }
 }
 
 public extension Map.Object {

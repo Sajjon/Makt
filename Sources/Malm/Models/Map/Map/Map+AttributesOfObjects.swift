@@ -63,6 +63,10 @@ public extension Map.Object {
 
 public extension Map.Object.Attributes {
     
+    var isVisitable: Bool {
+        !pathfinding.visitability.isEmpty
+    }
+    
     var width: Position.Scalar {
         pathfinding.width
     }
