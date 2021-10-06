@@ -9,6 +9,7 @@ import ArgumentParser
 import Guld
 import Malm
 import Util
+import Foundation
 
 extension Laka {
     
@@ -29,6 +30,19 @@ extension Laka {
 extension Laka.Textures {
     
     mutating func run() throws {
-        print("☑️ TODO implement subcommand: <\(Self.configuration.abstract)>")
+        print("🔮 Extracting texture images from entires exported by the `Laka LOD` command.")
+        try exportTerrain()
     }
+}
+
+// MARK: Export
+private extension Laka.Textures {
+    
+    var fileManager: FileManager { .default }
+    
+    func exportTerrain() throws {
+        
+    }
+    
+
 }

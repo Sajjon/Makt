@@ -10,10 +10,7 @@ import Foundation
 
 /// A set of CLI tools for extracting/exporting/converting orignal game resources
 /// from Heroes of Might and Magic III Complete - "HoMM3 -  needed to play the
-/// Swift rewrite of the game named [Tritium][tritium]
-///
-/// [tritium]: https://github.com/Sajjon/Tritium
-///
+/// Swift rewrite of the game named [Tritium](https://github.com/Sajjon/Tritium)
 @main
 struct Laka: ParsableCommand {
     
