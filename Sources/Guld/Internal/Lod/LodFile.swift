@@ -128,14 +128,3 @@ internal extension LodFile.FileEntry.Content.Kind {
         self = kind
     }
 }
-
-extension String {
-    var fileExtension: String? {
-        guard let fileExt = split(separator: ".").last else {
-            return nil
-        }
-
-        return String(fileExt)
-    }
-
-}

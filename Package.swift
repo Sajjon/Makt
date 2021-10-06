@@ -3,7 +3,7 @@
 
 import PackageDescription
 
-let excludedFilenames = ["CMakeLists.txt", "README.md"]
+let excludedFilenames = ["README.md"]
 
 let package = Package(
     name: "Makt",
@@ -52,7 +52,9 @@ let package = Package(
                 "Malm",
                 "Guld",
                 .product(name: "ArgumentParser", package: "swift-argument-parser")
-        ]),
+            ],
+            exclude: excludedFilenames
+        ),
         .target(
             name: "H3M",
             dependencies: [
