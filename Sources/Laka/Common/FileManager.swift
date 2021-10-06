@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import Malm
 
 extension FileManager {
     func createOutputDirectoryIfNeeded(path outputPath: String) throws {
@@ -93,5 +94,64 @@ extension FileManager {
         }
         
         return fileURLs
+    }
+}
+
+
+// MARK: Export
+extension FileManager {
+    
+    func export(
+        target: ExportTarget,
+        at source: URL,
+        to destination: URL,
+        verbose: Bool = false,
+        fileWritingOptions: Data.WritingOptions = .noFileProtection,
+        exporter: Exporter
+    ) throws {
+        
+        try createOutputDirectoryIfNeeded(path: destination.path)
+        
+        let targetFileExtensions: [String] = {
+            switch target {
+            case .anyFileWithExtension(let targetFileExtension): return [targetFileExtension]
+            case .specificFileList(let targetFiles): return targetFiles.compactMap { $0.fileExtension }
+            }
+        }()
+        
+        let urlsOfFoundFiles = try findFiles(
+            extensions: Set(targetFileExtensions),
+            at: source,
+            verbose: verbose
+        )
+        
+        let files: [URL] = {
+            switch target {
+            case .anyFileWithExtension: return urlsOfFoundFiles
+            case .specificFileList(let targetFileList):
+                let targetFiles = Set(targetFileList)
+                return urlsOfFoundFiles.filter { targetFiles.contains($0.lastPathComponent) }
+            }
+        }()
+        
+        let filesToExport: [SimpleFile] = try files.map{ file in
+            guard let data = contents(atPath: file.path) else {
+                throw Fail(description: "failed file at path: \(file.path)")
+            }
+            return .init(name: file.lastPathComponent, data: data)
+        }
+        
+        let filesToSave: [SimpleFile] = try filesToExport.flatMap { toExport in
+            try exporter.export(toExport)
+        }
+        
+        for fileToSave in filesToSave {
+            let fileURL = destination.appendingPathComponent(fileToSave.name)
+            if verbose {
+                print("Writing file: to '\(fileURL.path)' (#\(fileToSave.data.count) bytes)")
+            }
+            try fileToSave.data.write(to: fileURL, options: fileWritingOptions)
+        }
+      
     }
 }

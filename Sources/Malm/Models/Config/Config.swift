@@ -17,7 +17,6 @@ public struct Config: Hashable {
         gamesFilesDirectories: Directories = .init(),
         fileManager: FileManager = .default
     ) throws {
-        try gamesFilesDirectories.validate()
         self.gamesFilesDirectories = gamesFilesDirectories
         self.fileManager = fileManager
     }
@@ -65,25 +64,5 @@ internal extension Config.Directories {
         }
     }
     
-    func validateMapsDirectory() throws {
-        let maps = try FileManager.default.contentsOfDirectory(atPath: maps)
-        guard maps.contains(where: { map in
-            map.hasSuffix(Map.fileExtension)
-        }) else {
-            throw Error.noMapsFound
-        }
-    }
- 
-    func validateDataDirectory() throws {
-        let foundFiles = try FileManager.default.contentsOfDirectory(atPath: data)
-        
-        func exists(dataFileNamed name: String) throws {
-            guard foundFiles.contains(name) else {
-                throw Error.missingDataFile(named: name)
-            }
-        }
-        
-        try Self.allArchives.map({ $0.fileName }).forEach(exists(dataFileNamed:))
-    }
    
 }

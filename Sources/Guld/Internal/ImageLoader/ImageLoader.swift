@@ -46,58 +46,62 @@ internal extension ImageLoader {
 //    func loadImage(object: Map.Object, skipCache: Bool = false) throws -> ObjectImage {
     func loadImage(sprite: Sprite, skipCache: Bool = false) throws -> ObjectImage {
         
-        let useCache = !skipCache
-        
-        if useCache, let cached = objectImageCache[sprite] {
-            return cached
-        }
-        
-        let defFile = definitionFile(
-            named: sprite.rawValue,
-            in: .lod(.restorationOfErathiaSpriteArchive)
-        )
-        
-        assert(defFile.blocks.count == 1, "Dont know what to do with more than one block.")
-        let block = defFile.blocks.first!
-        
-        if block.frames.count > 1 {
-            print("WARNING hardcoded to use frame at index 0, even though there are \(block.frames.count) frames. Which should we use?")
-        }
-        let frame = block.frames.first!
-        
-        let image = try ImageLoader.imageFrom(
-            frame: frame,
-            mirroring: .none,
-            palette: defFile.palette
-        )
-        
-        let cachedImage = ObjectImage(key: sprite, image: image)
-        
-        objectImageCache[sprite] = cachedImage
-        
-        return cachedImage
+//        let useCache = !skipCache
+//
+//        if useCache, let cached = objectImageCache[sprite] {
+//            return cached
+//        }
+//
+//        let defFile = definitionFile(
+//            named: sprite.rawValue,
+//            in: .lod(.restorationOfErathiaSpriteArchive)
+//        )
+//
+//        assert(defFile.blocks.count == 1, "Dont know what to do with more than one block.")
+//        let block = defFile.blocks.first!
+//
+//        if block.frames.count > 1 {
+//            print("WARNING hardcoded to use frame at index 0, even though there are \(block.frames.count) frames. Which should we use?")
+//        }
+//        let frame = block.frames.first!
+//
+//        let image = try ImageLoader.imageFrom(
+//            frame: frame,
+//            mirroring: .none,
+//            palette: defFile.palette
+//        )
+//
+//        let cachedImage = ObjectImage(key: sprite, image: image)
+//
+//        objectImageCache[sprite] = cachedImage
+//
+//        return cachedImage
+        fatalError()
     }
     
     func loadImage(ground: Map.Tile.Ground, skipCache: Bool = false) throws -> GroundImage {
-        try loadImage(for: ground, skipCache: skipCache)
+//        try loadImage(for: ground, skipCache: skipCache)
+        fatalError()
     }
     
     func loadImage(river: Map.Tile.River, skipCache: Bool = false) throws -> RiverImage {
-        try loadImage(for: river, skipCache: skipCache)
+//        try loadImage(for: river, skipCache: skipCache)
+        fatalError()
     }
     
     func loadImage(road: Map.Tile.Road, skipCache: Bool = false) throws -> RoadImage {
-        try loadImage(for: road, skipCache: skipCache)
+//        try loadImage(for: road, skipCache: skipCache)
+        fatalError()
     }
     
-    func loadImage<Key: DrawableTileLayer>(for key: Key, skipCache: Bool = false) throws -> CachedImage<Key> {
-        try loadImage(
-            forKey: key,
-            from: cacheFor(key),
-            skipCache: skipCache,
-            elseMake: newImage(key: key)
-        )
-    }
+//    func loadImage<Key: DrawableTileLayer>(for key: Key, skipCache: Bool = false) throws -> CachedImage<Key> {
+//        try loadImage(
+//            forKey: key,
+//            from: cacheFor(key),
+//            skipCache: skipCache,
+//            elseMake: newImage(key: key)
+//        )
+//    }
     
 }
 
@@ -105,39 +109,39 @@ internal extension ImageLoader {
 // for testing
 internal extension ImageLoader {
     
-    // TODO remove separate caches and share?
-    func cacheFor<Key: DrawableTileLayer>(_ abstractKey: Key) -> ImageCache<CachedImage<Key>> {
-        switch Key.layerKind {
-        case .road: return roadImageCache as! ImageCache<CachedImage<Key>>
-        case .ground: return groundImageCache as! ImageCache<CachedImage<Key>>
-        case .river: return riverImageCache as! ImageCache<CachedImage<Key>>
-        }
-        
-    }
-    
-    
-    func newImage<Key: DrawableLayer>(
-        key: Key
-    ) throws -> CachedImage<Key> {
-        let defFile = definitionFileFor(key)
-        
-        assert(defFile.blocks.count == 1, "Dont know what to do with more than one block.")
-        let block = defFile.blocks.first!
-        
-        let frameIndex = key.frameIndex
-        guard frameIndex < block.frames.count else {
-            incorrectImplementation(reason: "frameIndex cannot be larger than number of frames in block.")
-        }
-        let frame = block.frames[frameIndex]
-        
-        let image = try ImageLoader.imageFrom(
-            frame: frame,
-            mirroring: key.mirroring,
-            palette: defFile.palette
-        )
-        
-        return .init(key: key, image: image)
-    }
+//    // TODO remove separate caches and share?
+//    func cacheFor<Key: DrawableTileLayer>(_ abstractKey: Key) -> ImageCache<CachedImage<Key>> {
+//        switch Key.layerKind {
+//        case .road: return roadImageCache as! ImageCache<CachedImage<Key>>
+//        case .ground: return groundImageCache as! ImageCache<CachedImage<Key>>
+//        case .river: return riverImageCache as! ImageCache<CachedImage<Key>>
+//        }
+//
+//    }
+//
+//
+//    func newImage<Key: DrawableLayer>(
+//        key: Key
+//    ) throws -> CachedImage<Key> {
+//        let defFile = definitionFileFor(key)
+//
+//        assert(defFile.blocks.count == 1, "Dont know what to do with more than one block.")
+//        let block = defFile.blocks.first!
+//
+//        let frameIndex = key.frameIndex
+//        guard frameIndex < block.frames.count else {
+//            incorrectImplementation(reason: "frameIndex cannot be larger than number of frames in block.")
+//        }
+//        let frame = block.frames[frameIndex]
+//
+//        let image = try ImageLoader.imageFrom(
+//            frame: frame,
+//            mirroring: key.mirroring,
+//            palette: defFile.palette
+//        )
+//
+//        return .init(key: key, image: image)
+//    }
     
     static func imageFrom(
         frame: DefinitionFile.Frame,
@@ -294,40 +298,40 @@ internal extension ImageLoader {
         return cgImage
     }
     
-    func definitionFileFor<A: DrawableLayer>(_ drawableTile: A) -> DefinitionFile {
-        definitionFile(
-            named: drawableTile.definitionFileName,
-            in: drawableTile.archive
-        )
-    }
-    
-    func definitionFile(
-        named targetDefinitionFileName: String,
-        in archive: Archive
-    ) -> DefinitionFile {
-        
-        if let cached = definitionFileCache[targetDefinitionFileName] {
-            return cached
-        }
-        
-        guard let lodFile = lodFiles.first(where: { $0.archiveName == archive.fileName }) else {
-            incorrectImplementation(reason: "Should always be able to find LODFile.")
-        }
-        
-        guard let fileEntry = lodFile.entries.first(where: { $0.fileName.lowercased() == targetDefinitionFileName.lowercased() }) else {
-            incorrectImplementation(shouldAlwaysBeAbleTo: "Find file entry matching expected DEF file.")
-        }
-        
-        guard case .def(let loadDefinitionFile) = fileEntry.content else {
-            incorrectImplementation(reason: "Should be def file")
-        }
-        
-        let defFile = loadDefinitionFile(nil) // no inspector
-        
-        definitionFileCache[targetDefinitionFileName] = defFile
-        //        print("🗂✅ loaded definition file, contents:\n\n\(String(describing: defFile))\n\n")
-        return defFile
-    }
+//    func definitionFileFor<A: DrawableLayer>(_ drawableTile: A) -> DefinitionFile {
+//        definitionFile(
+//            named: drawableTile.definitionFileName,
+//            in: drawableTile.archive
+//        )
+//    }
+//
+//    func definitionFile(
+//        named targetDefinitionFileName: String,
+//        in archive: Archive
+//    ) -> DefinitionFile {
+//
+//        if let cached = definitionFileCache[targetDefinitionFileName] {
+//            return cached
+//        }
+//
+//        guard let lodFile = lodFiles.first(where: { $0.archiveName == archive.fileName }) else {
+//            incorrectImplementation(reason: "Should always be able to find LODFile.")
+//        }
+//
+//        guard let fileEntry = lodFile.entries.first(where: { $0.fileName.lowercased() == targetDefinitionFileName.lowercased() }) else {
+//            incorrectImplementation(shouldAlwaysBeAbleTo: "Find file entry matching expected DEF file.")
+//        }
+//
+//        guard case .def(let loadDefinitionFile) = fileEntry.content else {
+//            incorrectImplementation(reason: "Should be def file")
+//        }
+//
+//        let defFile = loadDefinitionFile(nil) // no inspector
+//
+//        definitionFileCache[targetDefinitionFileName] = defFile
+//        //        print("🗂✅ loaded definition file, contents:\n\n\(String(describing: defFile))\n\n")
+//        return defFile
+//    }
     
     static func pixelsFrom(data pixelData: Data, bytesPerPixel: Int = 3) -> [UInt32] {
         assert(bytesPerPixel == 3 || bytesPerPixel == 4)

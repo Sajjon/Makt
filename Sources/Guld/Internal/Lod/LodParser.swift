@@ -36,9 +36,8 @@ public extension LodParser {
         archiveFile: ArchiveFile,
         inspector: AssetParsedInspector? = nil
     ) throws -> LodFile {
-        precondition(archiveFile.kind.isLODFile)
         return try parse(
-            archiveFileName: archiveFile.fileName,
+            archiveFileName: archiveFile.name,
             archiveFileData: archiveFile.data,
             inspector: inspector
         )
@@ -49,10 +48,6 @@ public extension LodParser {
         archiveFileData: Data,
         inspector: AssetParsedInspector? = nil
     ) throws -> LodFile {
-        
-
-        print("✨ LodParser parsing LOD file: \(archiveFileName)")
-            
         let reader = DataReader(data: archiveFileData)
         
         guard let header = try reader.readStringOfKnownMaxLength(4) else {
@@ -153,120 +148,16 @@ internal extension LodParser {
         guard data.count == entryMetaData.size else {
             throw Error.lodFileEntryDecompressionResultedInWrongSize(expected: entryMetaData.size, butGot: data.count)
         }
-        
-        guard let content = try fileEntryContent(metaData: entryMetaData, data: data, parentArchiveName: parentArchiveName) else {
-            return nil
-        }
+
         
         return LodFile.FileEntry(
             parentArchiveName: parentArchiveName,
             fileName: entryMetaData.name,
-            content: content,
-            rawData: data
+            data: data
         )
     }
     
-    func fileEntryContent(
-        metaData: LodFile.CompressedFileEntryMetaData,
-        data: Data,
-        parentArchiveName: String
-    ) throws -> LodFile.FileEntry.Content? {
-        
-        guard !LodFile.FileEntry.Content.Kind.ignored.contains(where: {
-            guard let fileExtension = metaData.name.fileExtension else {
-                incorrectImplementation(shouldAlwaysBeAbleTo: "Get file extension of entry.")
-            }
-            return fileExtension == $0
-        }) else {
-            print("⚠️ Ignoring LodFile entry named: \(metaData.name) since its file extension is unsupported.")
-            return nil
-        }
-        
-        guard let kind = LodFile.FileEntry.Content.Kind(fileName: metaData.name) else {
-            throw Error.failedToParseKindFromFile(named: metaData.name)
-        }
-        
-        switch kind {
-        case .pcx:
-            let load: () -> PCXImage = { [unowned self] in
-                do {
-                    guard try isPCX(data: data) else {
-                        throw Error.fileNameSuggestsEntryIsPCXButNotAccordingToData
-                    }
-                    let pcxImage = try LodParser.parsePCX(from: data, named: metaData.name)
-                    return pcxImage
-                } catch {
-                    uncaught(error: error)
-                }
-            }
-            return .pcx(load)
-        case .palette:
-            let load: () -> Palette = {
-                do {
-                    let palette = try Palette(data: data, name: metaData.name)
-                    return palette
-                } catch {
-                    uncaught(error: error)
-                }
-            }
-
-            return .palette(load)
-            
-        case .text:
-            let load: () -> String = {
-                guard let text = String(bytes: data, encoding: .utf8) ?? String(bytes: data, encoding: .nonLossyASCII) ?? String(bytes: data, encoding: .ascii) else {
-                    incorrectImplementation(shouldAlwaysBeAbleTo: "Parse text")
-                }
-                return text
-            }
-            return .text(load)
-        case .font:
-            let load: () -> BitmapFont = {
-                do {
-                    let bitmapFontParser = BitmapFontParser.init()
-                    let bitmapFont = try bitmapFontParser.parse(data: data, name: metaData.name)
-                    return bitmapFont
-                } catch {
-                    uncaught(error: error)
-                }
-            }
-            return .font(load)
-        case .def:
-            let load: (_ inspector: DefParser.Inspector?) -> DefinitionFile = { inspector in 
-                do {
-                    let defParser = DefParser(data: data, definitionFileName: metaData.name, parentArchiveName: parentArchiveName)
-                    let defFile = try defParser.parse(inspector: inspector)
-                    return defFile
-                } catch {
-                    uncaught(error: error)
-                }
-            }
-            return .def(load)
-        case .mask:
-            let load: () -> Mask = {
-                do {
-                    let mask: Mask = try DataReader(data: data).readPathfindingMask()
-                    return mask
-                } catch {
-                    uncaught(error: error)
-                }
-            }
-            return .mask(load)
-        case .campaign:
-            let load: () -> Campaign = {
-                do {
-                    let h3cParser = H3CParser(data: data)
-                    let campaign = try h3cParser.parse()
-                    return campaign
-                }catch {
-                    uncaught(error: error)
-                }
-            }
-            return .campaign(load)
-        }
-
-    }
-    
+   
     func parseCompressedEntryMetaData(reader: DataReader) throws -> LodFile.CompressedFileEntryMetaData {
 
         guard let fileName = try reader.readStringOfKnownMaxLength(16) else {

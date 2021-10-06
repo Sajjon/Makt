@@ -9,23 +9,18 @@ import Foundation
 import Malm
 
 public final class SNDFile: ArchiveProtocol {
-    public let archiveKind: Archive
+    public let archiveName: String
     public let entries: [FileEntry]
     
     public init(
-        archiveKind: Archive,
+        archiveName: String,
         entries: [FileEntry]
     ) {
-        self.archiveKind = archiveKind
+        self.archiveName = archiveName
         self.entries = entries
     }
 }
 
-public extension SNDFile {
-    var archiveName: String {
-        archiveKind.fileName
-    }
-}
 
 public extension SNDFile {
     
