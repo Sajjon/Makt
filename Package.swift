@@ -13,6 +13,7 @@ let package = Package(
     ],
     dependencies: [
         .package(url: "https://github.com/1024jp/GzipSwift", .upToNextMajor(from: "5.1.1")),
+        .package(url: "https://github.com/apple/swift-argument-parser", from: "1.0.1"),
         // Commented out because it does not work in RELEASE mode.
 //        .package(url: "https://github.com/sunlubo/SwiftFFmpeg", .upToNextMajor("1.5.0")),
     ],
@@ -44,7 +45,14 @@ let package = Package(
                 "Util", "Malm", "Decompressor", "H3C", "H3M"
             ]
         ),
-   
+        .executableTarget(
+            name: "Laka",
+            dependencies: [
+                "Util",
+                "Malm",
+                "Guld",
+                .product(name: "ArgumentParser", package: "swift-argument-parser")
+        ]),
         .target(
             name: "H3M",
             dependencies: [
@@ -74,12 +82,17 @@ let package = Package(
             name: "UtilTests",
             dependencies: ["Util"]
         ),
+    
         .testTarget(
             name: "GuldTests",
             dependencies: ["Guld", "Malm"],
             resources: [
                 .copy("Resources/ExpectedHashesOfDefFilesInArchive__H3sprite_lod.json")
             ]
+        ),
+        .testTarget(
+            name: "LakaTests",
+            dependencies: ["Laka"]
         ),
         .testTarget(
             name: "H3MTests",

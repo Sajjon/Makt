@@ -310,7 +310,7 @@ internal extension ImageLoader {
             return cached
         }
         
-        guard let lodFile = lodFiles.first(where: { $0.archiveKind == archive }) else {
+        guard let lodFile = lodFiles.first(where: { $0.archiveName == archive.fileName }) else {
             incorrectImplementation(reason: "Should always be able to find LODFile.")
         }
         

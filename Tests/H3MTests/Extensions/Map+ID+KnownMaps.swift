@@ -26,7 +26,6 @@ extension Map.ID {
     
     /// ROE, small
     static let kneeDeepInTheDead: Self = .h3m("Knee Deep in the Dead")
-    
 
     /// ROE, .small, smallest file size
     static let goodToGo: Self = .h3m("Good to Go")

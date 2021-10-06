@@ -12,22 +12,23 @@ import Malm
 
 
 public final class LodFile: ArchiveProtocol {
-    public let archiveKind: Archive
+    public let archiveName: String
     public let entries: [FileEntry]
     
     public init(
+        archiveName: String,
+        entries: [FileEntry]
+    ) {
+//        print("🗂 Archive named: '\(archiveName)' contains these entries:\n\(entries.map({$0.fileName}).joined(separator: "\n"))\n")
+        self.archiveName = archiveName
+        self.entries = entries
+    }
+    
+    public convenience init(
         archiveKind: Archive,
         entries: [FileEntry]
     ) {
-//        print("🗂 Archive named: '\(archiveKind.fileName)' contains these entries:\n\(entries.map({$0.fileName}).joined(separator: "\n"))\n")
-        self.archiveKind = archiveKind
-        self.entries = entries
-    }
-}
-
-public extension LodFile {
-    var archiveName: String {
-        archiveKind.fileName
+        self.init(archiveName: archiveKind.fileName, entries: entries)
     }
 }
 
@@ -45,7 +46,8 @@ public extension LodFile {
         public let parentArchiveName: String
         public let fileName: String
         public let content: Content
-        public let byteCount: Int
+        public let rawData: Data
+        public var byteCount: Int { rawData.count }
         
         public func hash(into hasher: inout Hasher) {
             hasher.combine(parentArchiveName)
