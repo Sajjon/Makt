@@ -9,20 +9,6 @@ import Foundation
 import Util
 import Malm
 
-public typealias ArchiveFile = SimpleFile
-
-internal protocol ArchiveFileCountParser {
-    func peekFileEntryCount(of archiveFile: ArchiveFile) throws -> Int
-}
-
-extension ArchiveFileCountParser {
-    func peekFileEntryCount(of archiveFile: ArchiveFile) throws -> Int {
-        let reader = DataReader(data: archiveFile.data)
-        let fileCount = try reader.readUInt32()
-        return .init(fileCount)
-    }
-}
-
 internal final class VIDArchiveParser: ArchiveFileCountParser {
     internal init() {}
 }
@@ -30,7 +16,7 @@ internal final class VIDArchiveParser: ArchiveFileCountParser {
 internal extension VIDArchiveParser {
     
     func parse(
-        archiveFile: ArchiveFile,
+        archiveFile: SimpleFile,
         inspector: AssetParsedInspector? = nil
     ) throws -> VIDFile {
         

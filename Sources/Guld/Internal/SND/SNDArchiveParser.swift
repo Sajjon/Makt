@@ -17,7 +17,7 @@ internal extension SNDArchiveParser {
 
     
     func parse(
-        archiveFile: ArchiveFile,
+        archiveFile: SimpleFile,
         inspector: AssetParsedInspector? = nil
     ) throws -> SNDFile {
         

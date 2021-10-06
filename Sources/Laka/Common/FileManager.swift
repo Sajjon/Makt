@@ -9,6 +9,7 @@ import Foundation
 import Malm
 
 extension FileManager {
+    
     func createOutputDirectoryIfNeeded(path outputPath: String) throws {
         
         do {
@@ -97,7 +98,6 @@ extension FileManager {
     }
 }
 
-
 // MARK: Export
 extension FileManager {
     
@@ -105,10 +105,14 @@ extension FileManager {
         target: ExportTarget,
         at source: URL,
         to destination: URL,
+        nameOfWorkflow: String? = nil,
         verbose: Bool = false,
         fileWritingOptions: Data.WritingOptions = .noFileProtection,
+        calculateWorkload: ((_ filesToExport: [SimpleFile]) -> Void)? = nil,
         exporter: Exporter
     ) throws {
+
+        var stepper = Stepper(totalStepCount: calculateWorkload != nil ? 5 : 4)
         
         try createOutputDirectoryIfNeeded(path: destination.path)
         
@@ -118,6 +122,8 @@ extension FileManager {
             case .specificFileList(let targetFiles): return targetFiles.compactMap { $0.fileExtension }
             }
         }()
+        
+        stepper.step("🔎 Finding files")
         
         let urlsOfFoundFiles = try findFiles(
             extensions: Set(targetFileExtensions),
@@ -134,6 +140,8 @@ extension FileManager {
             }
         }()
         
+        stepper.step("📖 Reading files")
+        
         let filesToExport: [SimpleFile] = try files.map{ file in
             guard let data = contents(atPath: file.path) else {
                 throw Fail(description: "failed file at path: \(file.path)")
@@ -141,10 +149,19 @@ extension FileManager {
             return .init(name: file.lastPathComponent, data: data)
         }
         
+        
+        if let calculateWorkload = calculateWorkload {
+            stepper.step("💡 Calculating workload")
+            calculateWorkload(filesToExport)
+        }
+        
+        stepper.start("⚙️  Exporting files", note: "(takes some time)")
         let filesToSave: [SimpleFile] = try filesToExport.flatMap { toExport in
             try exporter.export(toExport)
         }
+        stepper.finishedStep()
         
+        stepper.step("💾 Saving files")
         for fileToSave in filesToSave {
             let fileURL = destination.appendingPathComponent(fileToSave.name)
             if verbose {
@@ -152,6 +169,6 @@ extension FileManager {
             }
             try fileToSave.data.write(to: fileURL, options: fileWritingOptions)
         }
-      
+        stepper.done("✨ Done\(nameOfWorkflow.map { " with \($0)" } ?? "")")
     }
 }

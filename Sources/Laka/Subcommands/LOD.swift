@@ -35,20 +35,44 @@ extension Laka.LOD {
             🔮
             About to files from all '*.lod' archives
             Located at: \(options.inputPath)
-            To folder:\(inDataURL)
-            This will take about 5 seconds on a fast machine (Macbook Pro 2019).
+            To folder: \(options.outputPath)
+            This will take about 10 seconds on a fast machine (Macbook Pro 2019 - Intel CPU)
             ☕️
             
             """
         )
 
-        let lodParser = LodParser()
+        var numberOfParsedEntries = 0
+        var numberOfEntriesToParse = 0
+        
+        var progressBar = ProgressBar()
+        
+        let verbose = options.printDebugInformation
+        let progressInspector = AssetParsedInspector(onParseFileEntry: { _ in
+            numberOfParsedEntries += 1
+            progressBar.render(count: numberOfParsedEntries, total: numberOfEntriesToParse)
+        })
+        let lodParser = LodParser(inspector: progressInspector)
         
         try fileManager.export(
             target: .anyFileWithExtension("lod"),
             at: inDataURL,
             to: outEntryURL,
-            verbose: options.printDebugInformation,
+            nameOfWorkflow: "exporting LOD archives",
+            verbose: verbose,
+            calculateWorkload: { lodArchives in
+                do {
+                    numberOfEntriesToParse = try lodArchives.map { try lodParser.peekFileEntryCount(of: $0) }.reduce(0, +)
+                    if verbose {
+                        print("✨ Found #\(numberOfEntriesToParse) entries to parse.")
+                    }
+                } catch {
+                    if verbose {
+                        let fail = Fail(description: "⚠️ Failed to count nubmer of entries in lod archives to parse, error: \(String(describing: error))")
+                        print(fail)
+                    }
+                }
+            },
             exporter: lodParser.exporter
         )
     }
@@ -67,6 +91,8 @@ extension Laka.LOD {
         .init(fileURLWithPath: options.outputPath).appendingPathComponent("entries")
     }
 }
+
+
 
 // MARK: LodParser Exporter
 extension LodParser {

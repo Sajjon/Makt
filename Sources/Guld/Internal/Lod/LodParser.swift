@@ -14,18 +14,21 @@ import H3C
 
 public final class LodParser: ArchiveFileCountParser {
     
+    fileprivate let inspector: AssetParsedInspector?
     fileprivate let decompressor: Decompressor
     
     public init(
+        inspector: AssetParsedInspector? = nil,
         decompressor: Decompressor = GzipDecompressor()
     ) {
+        self.inspector = inspector
         self.decompressor = decompressor
     }
 }
 
 public extension LodParser {
     
-    func peekFileEntryCount(of archiveFile: ArchiveFile) throws -> Int {
+    func peekFileEntryCount(of archiveFile: SimpleFile) throws -> Int {
         let reader = DataReader(data: archiveFile.data)
         try reader.seek(to: 8)
         let fileCount = try reader.readUInt32()
@@ -33,20 +36,17 @@ public extension LodParser {
     }
     
     internal func parse(
-        archiveFile: ArchiveFile,
-        inspector: AssetParsedInspector? = nil
+        archiveFile: SimpleFile
     ) throws -> LodFile {
         return try parse(
             archiveFileName: archiveFile.name,
-            archiveFileData: archiveFile.data,
-            inspector: inspector
+            archiveFileData: archiveFile.data
         )
     }
     
     func parse(
         archiveFileName: String,
-        archiveFileData: Data,
-        inspector: AssetParsedInspector? = nil
+        archiveFileData: Data
     ) throws -> LodFile {
         let reader = DataReader(data: archiveFileData)
         

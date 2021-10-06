@@ -39,7 +39,7 @@ public final class AssetsProvider {
     private let fileManager: FileManager
 //    private let archiveLoader: ArchiveLoader = .init()
     
-//    private var archiveFileCache: [Archive: ArchiveFile] = [:]
+//    private var archiveFileCache: [Archive: SimpleFile] = [:]
 //    private var archiveCache: [Archive: LoadedArchive] = [:]
     
     private static var shared: AssetsProvider!
@@ -69,7 +69,7 @@ private extension AssetsProvider {
 // MARK: Load
 private extension AssetsProvider {
     
-//    func load(archiveFile: ArchiveFile, inspector: AssetParsedInspector? = nil) throws -> LoadedArchive {
+//    func load(archiveFile: SimpleFile, inspector: AssetParsedInspector? = nil) throws -> LoadedArchive {
 //        if let cached = archiveCache[archiveFile.kind] {
 //            print("✅ Cache contains loaded archive: \(cached.fileName)")
 //            return cached
@@ -80,9 +80,9 @@ private extension AssetsProvider {
 //    }
 //
 //
-//    func loadArchives() throws -> [ArchiveFile] {
+//    func loadArchives() throws -> [SimpleFile] {
 //        let allArchives = config.gamesFilesDirectories.allArchives
-//        let archiveFiles: [ArchiveFile] = try allArchives.map { try open(archive: $0) }
+//        let archiveFiles: [SimpleFile] = try allArchives.map { try open(archive: $0) }
 //        return archiveFiles
 //    }
 //
@@ -121,7 +121,7 @@ private extension AssetsProvider {
 // MARK: Internal
 internal extension AssetsProvider {
     
-//    func open(archive: Archive, skipCache: Bool = false) throws -> ArchiveFile {
+//    func open(archive: Archive, skipCache: Bool = false) throws -> SimpleFile {
 //        let useCache = !skipCache
 //        if useCache, let cached = archiveFileCache[archive] {
 //            print("✅ Cache contains archive file: \(archive.fileName)")
@@ -129,7 +129,7 @@ internal extension AssetsProvider {
 //        }
 //        print("✨ Opening contents of archive named: \(archive.fileName)")
 //        let data = try loadContentsOfDataFile(name: archive.fileName)
-//        let archiveFile = ArchiveFile(kind: archive, data: data)
+//        let archiveFile = SimpleFile(kind: archive, data: data)
 //        archiveFileCache[archive] = archiveFile
 //        return archiveFile
 //
