@@ -17,7 +17,8 @@ protocol TextureGenerating {
     
     func generateTexture(
         name atlasName: String,
-        list fileList: [ImageExport]
+        list fileList: [ImageExport],
+        limit: Int?
     ) throws
 }
 
@@ -37,9 +38,16 @@ extension TextureGenerating {
             let atlasHeight = rowCount * Int(singleHeight)
             let atlasPixelCount = atlasWidth * atlasHeight
             
-            var transparentPixels: [Palette.Pixel] = .init(repeating: Palette.transparentPixel, count: atlasPixelCount)
+            var transparentPixels: [Palette.Pixel] = .init(
+                repeating: Palette.transparentPixel,
+                count: atlasPixelCount
+            )
             
-            let context = CGContext.from(pixelPointer: &transparentPixels, width: atlasWidth, height: atlasHeight)!
+            let context = CGContext.from(
+                pixelPointer: &transparentPixels,
+                width: atlasWidth,
+                height: atlasHeight
+            )!
             
             let meta: FramesInAtlas.Meta = .init(
                 atlasName: atlasName,
@@ -49,7 +57,9 @@ extension TextureGenerating {
             
             var framesInAtlas = FramesInAtlas(meta: meta)
             
-            for (imageIndex, image) in images.enumerated() {
+            let sortedImages = images.sorted(by: \.name)
+            
+            for (imageIndex, image) in sortedImages.enumerated() {
                 let (rowIndex, columnIndex) = imageIndex.quotientAndRemainder(dividingBy: columnCount)
                 let x =  CGFloat(columnIndex) * singleWidth
                 let y = CGFloat(rowIndex) * singleHeight
@@ -74,14 +84,20 @@ extension TextureGenerating {
                 
                 framesInAtlas.add(
                     frame: .init(
-                        name: image.name, sourceRect: image.rect, rectInAtlas: rectInAtlas
+                        name: image.name,
+                        sourceRect: image.rect,
+                        rectInAtlas: rectInAtlas
                     )
                 )
             }
             
             let mergedCGImage = context.makeImage()!
             
-            let aggregatedImageFile = SimpleFile(name: "\(atlasName).png", data: mergedCGImage.png!)
+            let aggregatedImageFile = SimpleFile(
+                name: "\(atlasName).png",
+                data: mergedCGImage.png!
+            )
+            
             let jsonEncoder = JSONEncoder()
             jsonEncoder.outputFormatting = .prettyPrinted
             let framesInAtlasJSONData = try jsonEncoder.encode(framesInAtlas)
@@ -97,7 +113,8 @@ extension TextureGenerating {
     
     func generateTexture(
         name atlasName: String,
-        list fileList: [ImageExport]
+        list fileList: [ImageExport],
+        limit: Int? = nil
     ) throws {
         let defFileList = fileList.map{ $0.defFileName }
         print("⚙️ Generating \(atlasName) texture.")
@@ -110,9 +127,13 @@ extension TextureGenerating {
             to: outImagesURL,
             verbose: verbose,
             calculateWorkload: { unparsedDefFles in
-                try unparsedDefFles.map { try defParser.peekFileEntryCount(of: $0) }.reduce(0, +)
+                if limit != nil {
+                    return unparsedDefFles.count
+                } else {
+                    return try unparsedDefFles.map { try defParser.peekFileEntryCount(of: $0) }.reduce(0, +)
+                }
             },
-            exporter: defParser.exporter(fileList: fileList),
+            exporter: defParser.exporter(fileList: fileList, limit: limit),
             aggregator: makeAggregator(atlasName: atlasName)
         )
         
