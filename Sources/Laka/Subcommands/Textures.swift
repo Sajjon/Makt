@@ -49,12 +49,6 @@ extension Laka.Textures {
     }
 }
 
-//extension CGImage {
-//    var byteCount: Int {
-//        bytesPerRow * height
-//    }
-//}
-
 /*
  {
      "meta": {
@@ -155,7 +149,7 @@ private extension Laka.Textures {
         list fileList: [ImageExport]
     ) throws {
         let defFileList = fileList.map{ $0.defFileName }
-        print("⚙️ Generating \(atlasName) texture 🟩 🟨 ⬜️, defFileList: \(defFileList)")
+        print("⚙️ Generating \(atlasName) texture.")
         
         let verbose = parentOptions.printDebugInformation
         
@@ -164,26 +158,40 @@ private extension Laka.Textures {
         let aggregator = Aggregator<ImageFromFrame> { (images: [ImageFromFrame]) -> [File] in
             precondition(!images.isEmpty)
             
-            assert(images.allSatisfy({ $0.fullSize == images[0].fullSize }))
-            assert(images.allSatisfy({ $0.cgImage.bitsPerComponent == images[0].cgImage.bitsPerComponent }))
-            assert(images.allSatisfy({ $0.cgImage.bytesPerRow == images[0].cgImage.bytesPerRow }))
-            assert(images.allSatisfy({ $0.cgImage.colorSpace == images[0].cgImage.colorSpace }))
-            assert(images.allSatisfy({ $0.cgImage.bitmapInfo == images[0].cgImage.bitmapInfo }))
+            let singleWidth = images[0].fullSize.width
+            let singleHeight = images[0].fullSize.height
+
+            let columnCount = Int(sqrt(Double(images.count)).rounded(.up))
+            let rowCount = Int((Double(images.count)/Double(columnCount)).rounded(.up))
+            assert(columnCount == rowCount)
             
-            let width = Int(images[0].fullSize.width)
-            let height = Int(images[0].fullSize.height) * images.count
-            var transparentPixels: [Palette.Pixel] = .init(repeating: Palette.transparentPixel, count: width * height)
+            let atlasWidth = Int(singleWidth) * columnCount
+            let atlasHeight = rowCount * Int(singleHeight)
+            assert(atlasHeight == atlasWidth)
+            let atlasPixelCount = atlasWidth * atlasHeight
             
-            let context = CGContext.from(pixelPointer: &transparentPixels, width: width, height: height)!
+            var transparentPixels: [Palette.Pixel] = .init(repeating: Palette.transparentPixel, count: atlasPixelCount)
+            
+            let context = CGContext.from(pixelPointer: &transparentPixels, width: atlasWidth, height: atlasHeight)!
             
             for (imageIndex, image) in images.enumerated() {
+                let (rowIndex, columnIndex) = imageIndex.quotientAndRemainder(dividingBy: columnCount)
+                let x =  CGFloat(columnIndex) * singleWidth
+                let y = CGFloat(rowIndex) * singleHeight
+                
+                let width = image.fullSize.width
+                assert(width == singleWidth)
+                
+                let height = image.fullSize.height
+                assert(height == singleHeight)
+                
                 context.draw(
                     image.cgImage,
                     in: .init(
-                        x: 0,
-                        y: CGFloat(imageIndex) * image.fullSize.height,
-                        width: image.fullSize.width,
-                        height: image.fullSize.height
+                        x: x,
+                        y: y,
+                        width: width,
+                        height: height
                     )
                 )
             }
@@ -219,13 +227,8 @@ struct ImageFromFrame: File {
     var data: Data {
         let data = cgImage.png!
         return data
-//        assert(data.count == self.byteCount, "cgImage.byteCount: \(cgImage.byteCount) !=  data.count \(data.count)") // asserts correctness of `self.byteCount`
-//        return data
     }
     
-//    var byteCount: Int {
-//        cgImage.byteCount
-//    }
 }
 
 extension DefParser {
