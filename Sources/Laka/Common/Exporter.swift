@@ -7,9 +7,11 @@
 
 import Malm
 
-final class Exporter {
-    typealias ExportToMany = (SimpleFile) throws -> [SimpleFile]
-    typealias ExportToOne = (SimpleFile) throws -> SimpleFile
+typealias SimpleFileExporter = Exporter<SimpleFile>
+
+final class Exporter<Output: File> {
+    typealias ExportToMany = (File) throws -> [Output]
+    typealias ExportToOne = (File) throws -> Output
     
     private let exportToMany: ExportToMany
     
@@ -27,8 +29,7 @@ final class Exporter {
         }
     }
     
-    func export(_ simpleFile: SimpleFile) throws -> [SimpleFile] {
-        try exportToMany(simpleFile)
+    func export(_ file: File) throws -> [Output] {
+        try exportToMany(file)
     }
 }
-

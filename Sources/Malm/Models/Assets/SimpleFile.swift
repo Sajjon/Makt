@@ -7,7 +7,12 @@
 
 import Foundation
 
-public struct SimpleFile: Hashable, CustomDebugStringConvertible {
+public protocol File {
+    var name: String { get }
+    var data: Data { get }
+}
+
+public struct SimpleFile: File, Hashable, CustomDebugStringConvertible {
     
     public let name: String
     public let data: Data

@@ -49,6 +49,83 @@ extension Laka.Textures {
     }
 }
 
+//extension CGImage {
+//    var byteCount: Int {
+//        bytesPerRow * height
+//    }
+//}
+
+/*
+ {
+     "meta": {
+         "image": "edges.png",
+         "format": "RGBA8888",
+         "size":
+         {
+             "w": 192,
+             "h": 192
+         },
+         "scale": 1
+     },
+
+     "frames": {
+         
+         "edge_18.png": {
+             "frame":
+             {
+                 "x": 0,
+                 "y": 0,
+                 "w": 32,
+                 "h": 32
+             },
+             "rotated": false,
+             "trimmed": false,
+             "spriteSourceSize":
+             {
+                 "x": 0,
+                 "y": 0,
+                 "w": 32,
+                 "h": 32
+             },
+             "sourceSize":
+             {
+                 "w": 32,
+                 "h": 32
+             }
+         },
+ */
+//struct FramesInAtlas: Codable {
+//    struct Frame: Codable {
+//        let name: String
+//        let trimmed: Bool
+//        let spriteSourceSize: CGRect
+//        let sourceSize: CGSize
+//        init(frame: DefinitionFile.Frame, rect: CGRect) {
+//            self.name = frame.fileName
+//            self.trimmed = rect.width != frame.re  //file.width !== file.item.fullWidth || file.height !== file.item.fullHeight,
+//            self.spriteSourceSize = frame.rect
+//            self.sourceSize = frame.fullSize
+//        }
+//    }
+//    struct Meta: Codable {
+//        let image: String
+//        let format: String
+//        init(atlasName: String, colorSpace: CGColorSpaceCreateDeviceRGB) {
+//
+//        }
+//    }
+//    let meta: Meta
+//    private var frames: [Frame]
+//    init(meta: Meta) {
+//        self.meta = meta
+//        self.frames = []
+//    }
+//    mutating func add(frame: Frame) {
+//        frames.append(frame)
+//    }
+//}
+
+
 // MARK: Export
 import Malm
 import Util
@@ -63,15 +140,50 @@ private extension Laka.Textures {
     }
     
     func generateTexture(
-        name: String,
+        name atlasName: String,
         list fileList: [ImageExport]
     ) throws {
         let defFileList = fileList.map{ $0.defFileName }
-        print("⚙️ Generating \(name) texture 🟩 🟨 ⬜️, defFileList: \(defFileList)")
+        print("⚙️ Generating \(atlasName) texture 🟩 🟨 ⬜️, defFileList: \(defFileList)")
         
         let verbose = parentOptions.printDebugInformation
         
         let defParser = DefParser()
+        
+        let aggregator = Aggregator<ImageFromFrame> { (images: [ImageFromFrame]) -> [File] in
+            precondition(!images.isEmpty)
+            
+            assert(images.allSatisfy({ $0.fullSize == images[0].fullSize }))
+            assert(images.allSatisfy({ $0.cgImage.bitsPerComponent == images[0].cgImage.bitsPerComponent }))
+            assert(images.allSatisfy({ $0.cgImage.bytesPerRow == images[0].cgImage.bytesPerRow }))
+            assert(images.allSatisfy({ $0.cgImage.colorSpace == images[0].cgImage.colorSpace }))
+            assert(images.allSatisfy({ $0.cgImage.bitmapInfo == images[0].cgImage.bitmapInfo }))
+            
+            let width = Int(images[0].fullSize.width)
+            let height = Int(images[0].fullSize.height) * images.count
+            var transparentPixels: [Palette.Pixel] = .init(repeating: Palette.transparentPixel, count: width * height)
+            
+            let context = CGContext.from(pixelPointer: &transparentPixels, width: width, height: height)!
+            
+            for (imageIndex, image) in images.enumerated() {
+                context.draw(
+                    image.cgImage,
+                    in: .init(
+                        x: 0,
+                        y: CGFloat(imageIndex) * image.fullSize.height,
+                        width: image.fullSize.width,
+                        height: image.fullSize.height
+                    )
+                )
+            }
+   
+            let mergedCGImage = context.makeImage()!
+            
+            let aggregatedImageFile = SimpleFile(name: "\(atlasName).png", data: mergedCGImage.png!)
+            
+            return [aggregatedImageFile]
+            
+        }
         
         try fileManager.export(
             target: .specificFileList(defFileList),
@@ -81,15 +193,33 @@ private extension Laka.Textures {
             calculateWorkload: { unparsedDefFles in
                 try unparsedDefFles.map { try defParser.peekFileEntryCount(of: $0) }.reduce(0, +)
             },
-            exporter: defParser.exporter(fileList: fileList)
+            exporter: defParser.exporter(fileList: fileList),
+            aggregator: aggregator
         )
         
     }
 }
 
+struct ImageFromFrame: File {
+    let name: String
+    let cgImage: CGImage
+    let fullSize: CGSize
+    let rect: CGRect
+    var data: Data {
+        let data = cgImage.png!
+        return data
+//        assert(data.count == self.byteCount, "cgImage.byteCount: \(cgImage.byteCount) !=  data.count \(data.count)") // asserts correctness of `self.byteCount`
+//        return data
+    }
+    
+//    var byteCount: Int {
+//        cgImage.byteCount
+//    }
+}
+
 extension DefParser {
     
-    func exporter(fileList: [ImageExport]) -> Exporter {
+    func exporter(fileList: [ImageExport]) -> Exporter<ImageFromFrame> {
         .exportingMany { [self] toExport in
             
             let defFile = try parse(data: toExport.data, definitionFileName: toExport.name)
@@ -98,10 +228,9 @@ extension DefParser {
             }
             
             return try defFile.entries.enumerated().map { (frameIndex, frame) in
-                try SimpleFile(
-                    name: imageToExportFileTemplate.nameFromFrameIndex(frameIndex),
-                    data: frame.exportablePNGImageData(palette: defFile.palette)
-                )
+                let imageName = imageToExportFileTemplate.nameFromFrameIndex(frameIndex)
+                let cgImage = try ImageImporter.imageFrom(frame: frame, palette: defFile.palette)
+                return ImageFromFrame(name: imageName, cgImage: cgImage, fullSize: frame.fullSize, rect: frame.rect)
             }
         }
     }

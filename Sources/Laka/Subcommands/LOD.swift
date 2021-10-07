@@ -75,7 +75,7 @@ extension Laka.LOD {
 
 // MARK: LodParser Exporter
 extension LodParser {
-    var exporter: Exporter {
+    var exporter: SimpleFileExporter {
         .exportingMany { [self] toExport in
             let lodFile = try parse(
                 archiveFileName: toExport.name,

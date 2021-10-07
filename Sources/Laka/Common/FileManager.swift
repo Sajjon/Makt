@@ -103,7 +103,7 @@ extension FileManager {
 // MARK: Export
 extension FileManager {
     
-    func export(
+    func export<Output: File>(
         target: ExportTarget,
         at source: URL,
         to destination: URL,
@@ -111,11 +111,18 @@ extension FileManager {
         verbose: Bool = false,
         fileWritingOptions: Data.WritingOptions = .noFileProtection,
         calculateWorkload: ((_ filesToExport: [SimpleFile]) throws -> Int)? = nil,
-        exporter: Exporter
+        exporter: Exporter<Output>,
+        aggregator: Aggregator<Output>? = nil
     ) throws {
 
-        var stepper = Stepper(totalStepCount: calculateWorkload != nil ? 5 : 4)
-        
+        var totalStepCount = 4
+        if calculateWorkload != nil {
+            totalStepCount += 1
+        }
+        if aggregator != nil {
+            totalStepCount += 1
+        }
+        var stepper = Stepper(totalStepCount: totalStepCount)
         
         var exporterProgress = 0
         var exporterWorkload: Int?
@@ -151,7 +158,7 @@ extension FileManager {
         
         stepper.step("📖 Reading files")
         
-        let filesToExport: [SimpleFile] = try files.map{ file in
+        let filesRead: [SimpleFile] = try files.map{ file in
             guard let data = contents(atPath: file.path) else {
                 throw Fail(description: "failed file at path: \(file.path)")
             }
@@ -161,14 +168,14 @@ extension FileManager {
         
         if let calculateWorkload = calculateWorkload {
             stepper.step("💡 Calculating workload")
-            exporterWorkload = try calculateWorkload(filesToExport)
+            exporterWorkload = try calculateWorkload(filesRead)
             if verbose {
                 print("✨ found workload of #\(exporterWorkload!).")
             }
         }
         
         stepper.start("⚙️  Exporting files", note: "(takes some time)")
-        let filesToSave: [SimpleFile] = try filesToExport.flatMap { (toExport: SimpleFile) throws -> [SimpleFile] in
+        let exportedFiles: [Output] = try filesRead.flatMap { (toExport: File) throws -> [Output] in
             let exported = try exporter.export(toExport)
             exporterProgress += exported.count
             if let exporterWorkload = exporterWorkload {
@@ -177,6 +184,15 @@ extension FileManager {
             return exported
         }
         stepper.finishedStep()
+        
+        let filesToSave: [File]
+        if let aggregator = aggregator {
+            stepper.step("💡 Aggregating files")
+            let aggregatedFiles = try aggregator.aggregate(files: exportedFiles)
+            filesToSave = aggregatedFiles
+        } else {
+            filesToSave = exportedFiles
+        }
         
         stepper.step("💾 Saving files")
         for fileToSave in filesToSave {
