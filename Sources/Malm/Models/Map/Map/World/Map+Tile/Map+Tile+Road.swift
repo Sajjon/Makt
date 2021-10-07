@@ -43,12 +43,16 @@ public extension Map.Tile.Road {
 }
 
 public extension Map.Tile.Road.Kind {
-    var debugDescription: String {
+    var name: String {
         switch self {
         case .dirt: return "dirt"
         case .gravel: return "gravel"
         case .cobbelStone: return "cobbelStone"
         }
+    }
+    
+    var debugDescription: String {
+        name
     }
 }
 

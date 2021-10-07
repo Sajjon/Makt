@@ -128,12 +128,17 @@ public extension Map.Tile.River {
 }
 
 public extension Map.Tile.River.Kind {
-    var debugDescription: String {
+    
+    var name: String {
         switch self {
         case .clear: return "clear"
         case .icy: return "icy"
         case .muddy: return "muddy"
         case .lava: return "lava"
         }
+    }
+    
+    var debugDescription: String {
+        name
     }
 }

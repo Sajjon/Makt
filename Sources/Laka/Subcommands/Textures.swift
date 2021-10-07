@@ -131,11 +131,22 @@ import Malm
 import Util
 private extension Laka.Textures {
     
+    var roadFiles: [ImageExport] {
+        Map.Tile.Road.Kind.listOfFilesToExport
+    }
+    var groundFiles: [ImageExport] {
+        Map.Terrain.listOfFilesToExport
+    }
+    var riverFiles: [ImageExport] {
+        Map.Tile.River.Kind.listOfFilesToExport
+    }
+    
+    
     func exportTerrain() throws {
         
         try generateTexture(
-            name: "Terrain",
-            list: Map.Terrain.listOfFilesToExport
+            name: "terrain",
+            list: roadFiles + riverFiles + groundFiles
         )
     }
     
@@ -291,4 +302,31 @@ extension Map.Terrain: PNGExportable {
     
     static var namePrefix: String { "ground" }
 
+}
+
+// MARK: River + PNGExportable
+extension Map.Tile.River.Kind: PNGExportable {
+    var defFileName: String {
+        switch self {
+            case .clear: return "clrrvr.def"
+            case .icy: return "icyrvr.def"
+            case .muddy: return "mudrvr.def"
+            case .lava: return "lavrvr.def"
+        }
+    }
+    
+    static var namePrefix: String { "river" }
+}
+
+// MARK: Road + PNGExportable
+extension Map.Tile.Road.Kind: PNGExportable {
+    var defFileName: String {
+        switch self {
+        case .dirt: return "dirtrd.def"
+        case .gravel: return "gravrd.def"
+        case .cobbelStone: return "cobbrd.def"
+        }
+    }
+    
+    static var namePrefix: String { "road" }
 }
