@@ -33,8 +33,8 @@ public extension DefinitionFile {
         internal let encodingFormat: EncodingFormat
         
         public var id: ID { fileName }
+        public let defFileName: String
         public let blockIndex: Int
-        public let rootArchiveName: String
         public let fileName: String
         public let fullSize: CGSize
         public let rect: CGRect
@@ -60,9 +60,9 @@ public extension DefinitionFile.Frame {
     var byteCount: Int {
         pixelData.count
     }
-    
+   
     var parentArchiveName: String {
-        "\(rootArchiveName)/block_\(blockIndex)"
+        defFileName
     }
 }
 

@@ -124,7 +124,7 @@ final class ParsingOfH3spriteArchiveTests: XCTestCase {
         let expectNonCompressed =  expectation(description: "nonCompressed")
         expectNonCompressed.assertForOverFulfill = false
         
-        let parser = LodParser()
+    
         let defParserInspector: DefParser.Inspector = .init(onParseFrame: { frame in
             switch frame.encodingFormat {
             case .repeatingSegmentFragmentsEncodingEachLineIndividually:
@@ -154,10 +154,9 @@ final class ParsingOfH3spriteArchiveTests: XCTestCase {
             
 //            let definitionFile = definitionLoader(defParserInspector)
             
-            let defParser = DefParser(data: lodFileEntry.data, definitionFileName: lodFileEntry.fileName, parentArchiveName: spriteLodName)
-            let definitionFile = try! defParser.parse(inspector: defParserInspector)
+            let defParser = DefParser(inspector: defParserInspector)
+            let definitionFile = try! defParser.parse(data: lodFileEntry.data, definitionFileName: lodFileEntry.fileName)
             
-            XCTAssertEqual(definitionFile.parentArchiveName, spriteLodName)
             definitionFile.blocks.enumerated().forEach({ (blockIndex, block) in
                 block.frames.enumerated().forEach({ (frameIndex, frame) in
                     let frameName = frame.fileName.lowercased()
@@ -173,8 +172,9 @@ final class ParsingOfH3spriteArchiveTests: XCTestCase {
             })
             
         })
+        let parser = LodParser(inspector: inspector)
 //        let spriteLod = try parser.parse(archiveFile: spriteLodFile, inspector: inspector)
-        let spriteLod = try parser.parse(archiveFileName: spriteLodName, archiveFileData: lodData, inspector: inspector)
+        let spriteLod = try parser.parse(archiveFileName: spriteLodName, archiveFileData: lodData)
         XCTAssertEqual(spriteLod.entries.count, 4013)
         XCTAssertTrue(setOfExpectedHashesToFulFill.isEmpty)
         waitForExpectations(timeout: 2)

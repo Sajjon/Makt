@@ -42,17 +42,8 @@ extension Laka.LOD {
             """
         )
 
-        var numberOfParsedEntries = 0
-        var numberOfEntriesToParse = 0
-        
-        var progressBar = ProgressBar()
-        
         let verbose = options.printDebugInformation
-        let progressInspector = AssetParsedInspector(onParseFileEntry: { _ in
-            numberOfParsedEntries += 1
-            progressBar.render(count: numberOfParsedEntries, total: numberOfEntriesToParse)
-        })
-        let lodParser = LodParser(inspector: progressInspector)
+        let lodParser = LodParser()
         
         try fileManager.export(
             target: .anyFileWithExtension("lod"),
@@ -61,17 +52,7 @@ extension Laka.LOD {
             nameOfWorkflow: "exporting LOD archives",
             verbose: verbose,
             calculateWorkload: { lodArchives in
-                do {
-                    numberOfEntriesToParse = try lodArchives.map { try lodParser.peekFileEntryCount(of: $0) }.reduce(0, +)
-                    if verbose {
-                        print("✨ Found #\(numberOfEntriesToParse) entries to parse.")
-                    }
-                } catch {
-                    if verbose {
-                        let fail = Fail(description: "⚠️ Failed to count nubmer of entries in lod archives to parse, error: \(String(describing: error))")
-                        print(fail)
-                    }
-                }
+                try lodArchives.map { try lodParser.peekFileEntryCount(of: $0) }.reduce(0, +)
             },
             exporter: lodParser.exporter
         )
@@ -92,13 +73,10 @@ extension Laka.LOD {
     }
 }
 
-
-
 // MARK: LodParser Exporter
 extension LodParser {
     var exporter: Exporter {
-        .toMany { [self] toExport in
-            
+        .exportingMany { [self] toExport in
             let lodFile = try parse(
                 archiveFileName: toExport.name,
                 archiveFileData: toExport.data
@@ -106,7 +84,7 @@ extension LodParser {
             
             return lodFile.entries.map {
                 SimpleFile(
-                    name: $0.fileName,
+                    name: $0.fileName.lowercased(),
                     data: $0.data
                 )
             }

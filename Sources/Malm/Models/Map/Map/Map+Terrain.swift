@@ -16,6 +16,10 @@ public extension Map {
 
 public extension Map.Terrain {
     var debugDescription: String {
+        name
+    }
+    
+    var name: String {
         switch self {
         case .dirt: return "dirt"
         case .sand: return "sand"

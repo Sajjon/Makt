@@ -28,7 +28,9 @@ extension FileManager {
         failOnEmpty: Bool = true,
         verbose: Bool = false
     ) throws -> [URL] {
-        
+        targetFileExtensions.forEach {
+            assert($0.lowercased() == $0)
+        }
         let resourceKeys = Set<URLResourceKey>([.nameKey, .isDirectoryKey])
         
         var failureToReadFile: Swift.Error?
@@ -62,29 +64,29 @@ extension FileManager {
             }
             
             guard !isDirectory else {
-                if verbose {
-                    print("💡 Skipped: '\(fileURL.path)' since it is a directory.")
-                }
+//                if verbose {
+//                    print("💡 Skipped: '\(fileURL.path)' since it is a directory.")
+//                }
                 continue
             }
             
-            guard let fileExtension = name.fileExtension else {
-                if verbose {
-                    print("💡 Skipped: '\(fileURL.path)' since we failed to read its fileextension.")
-                }
+            guard let fileExtensionCased = name.fileExtension else {
+//                if verbose {
+//                    print("💡 Skipped: '\(fileURL.path)' since we failed to read its fileextension.")
+//                }
                 continue
             }
             
-            guard targetFileExtensions.contains(fileExtension) else {
-                if verbose {
-                    print("💡 Skipped: '\(fileURL.path)' since it is not in our target file extension set.")
-                }
+            guard targetFileExtensions.contains(fileExtensionCased.lowercased()) else {
+//                if verbose {
+//                    print("💡 Skipped: '\(fileURL.path)' since it is not in our target file extension set.")
+//                }
                 continue
             }
             
-            if verbose {
-                print("Found relevant file at: \(fileURL.path)")
-            }
+//            if verbose {
+//                print("Found relevant file at: \(fileURL.path)")
+//            }
             
             fileURLs.append(fileURL)
             
@@ -108,11 +110,18 @@ extension FileManager {
         nameOfWorkflow: String? = nil,
         verbose: Bool = false,
         fileWritingOptions: Data.WritingOptions = .noFileProtection,
-        calculateWorkload: ((_ filesToExport: [SimpleFile]) -> Void)? = nil,
+        calculateWorkload: ((_ filesToExport: [SimpleFile]) throws -> Int)? = nil,
         exporter: Exporter
     ) throws {
 
         var stepper = Stepper(totalStepCount: calculateWorkload != nil ? 5 : 4)
+        
+        
+        var exporterProgress = 0
+        var exporterWorkload: Int?
+        
+        var progressBar = ProgressBar()
+        
         
         try createOutputDirectoryIfNeeded(path: destination.path)
         
@@ -152,12 +161,20 @@ extension FileManager {
         
         if let calculateWorkload = calculateWorkload {
             stepper.step("💡 Calculating workload")
-            calculateWorkload(filesToExport)
+            exporterWorkload = try calculateWorkload(filesToExport)
+            if verbose {
+                print("✨ found workload of #\(exporterWorkload!).")
+            }
         }
         
         stepper.start("⚙️  Exporting files", note: "(takes some time)")
-        let filesToSave: [SimpleFile] = try filesToExport.flatMap { toExport in
-            try exporter.export(toExport)
+        let filesToSave: [SimpleFile] = try filesToExport.flatMap { (toExport: SimpleFile) throws -> [SimpleFile] in
+            let exported = try exporter.export(toExport)
+            exporterProgress += exported.count
+            if let exporterWorkload = exporterWorkload {
+                progressBar.render(count: exporterProgress, total: exporterWorkload)
+            }
+            return exported
         }
         stepper.finishedStep()
         
