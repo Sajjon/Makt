@@ -32,11 +32,9 @@ extension TextureGenerating {
             
             let columnCount = Int(sqrt(Double(images.count)).rounded(.up))
             let rowCount = Int((Double(images.count)/Double(columnCount)).rounded(.up))
-            assert(columnCount == rowCount)
             
             let atlasWidth = Int(singleWidth) * columnCount
             let atlasHeight = rowCount * Int(singleHeight)
-            assert(atlasHeight == atlasWidth)
             let atlasPixelCount = atlasWidth * atlasHeight
             
             var transparentPixels: [Palette.Pixel] = .init(repeating: Palette.transparentPixel, count: atlasPixelCount)

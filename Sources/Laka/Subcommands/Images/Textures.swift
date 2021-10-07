@@ -12,6 +12,7 @@ import Util
 import Malm
 import Guld
 
+// MARK: Textures
 extension Laka {
     
     /// A command to extract all textures, such as terrain, monsters, artifacts,
@@ -45,6 +46,7 @@ extension Laka.Textures {
             """
         )
         try exportTerrain()
+        try exportTowns()
     }
 }
 
@@ -53,19 +55,7 @@ extension Laka.Textures {
 extension Laka.Textures {
     
     var verbose: Bool { parentOptions.printDebugInformation }
-    
-    var roadFiles: [ImageExport] {
-        Map.Tile.Road.Kind.listOfFilesToExport
-    }
-    
-    var groundFiles: [ImageExport] {
-        Map.Terrain.listOfFilesToExport
-    }
-    
-    var riverFiles: [ImageExport] {
-        Map.Tile.River.Kind.listOfFilesToExport
-    }
-    
+
     var fileManager: FileManager { .default }
     
     var inDataURL: URL {
@@ -81,6 +71,10 @@ extension Laka.Textures {
 // MARK: -
 private extension Laka.Textures {
     func exportTerrain() throws {
+        let roadFiles = Map.Tile.Road.Kind.listOfFilesToExport
+        let groundFiles = Map.Terrain.listOfFilesToExport
+        let riverFiles = Map.Tile.River.Kind.listOfFilesToExport
+        
         try generateTexture(
             name: "terrain",
             list: roadFiles + riverFiles + groundFiles
@@ -129,5 +123,56 @@ extension Map.Tile.Road.Kind: PNGExportable {
         case .gravel: return "gravrd.def"
         case .cobbelStone: return "cobbrd.def"
         }
+    }
+}
+
+// MARK: - TOWNS
+// MARK: -
+private extension Laka.Textures {
+    
+    // MARK: Town + Files
+    var townDefFiles: [String] {
+        [
+            "avccasx0.def",
+            "avccast0.def",
+            "avccasz0.def",
+            "avchforx.def",
+            "avchfor0.def",
+            "avchforz.def",
+            "avcdunx0.def",
+            "avcdung0.def",
+            "avcdunz0.def",
+            "avcftrx0.def",
+            "avcftrt0.def",
+            "avcforz0.def",
+            "avcinfx0.def",
+            "avcinft0.def",
+            "avcinfz0.def",
+            "avcnecx0.def",
+            "avcnecr0.def",
+            "avcnecz0.def",
+            "avcramx0.def",
+            "avcramp0.def",
+            "avcramz0.def",
+            "avcranx0.def",
+            "avcrand0.def",
+            "avcranz0.def",
+            "avcstrx0.def",
+            "avcstro0.def",
+            "avcstrz0.def",
+            "avctowx0.def",
+            "avctowr0.def",
+            "avctowz0.def"
+        ]
+    }
+    
+    func exportTowns() throws {
+        let townFiles: [ImageExport] = townDefFiles.map { defFileName in
+            ImageExport(defFileName: defFileName, nameFromFrameIndex: { _ in defFileName })
+        }
+        try generateTexture(
+            name: "towns",
+            list: townFiles
+        )
     }
 }
