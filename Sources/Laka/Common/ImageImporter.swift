@@ -189,7 +189,7 @@ extension CGContext {
     static func bytesPerRow(width: Int) -> Int { width * bytesPerPixel }
 
     static func from(pixelPointer data: UnsafeMutablePointer<Palette.Pixel>, width: Int, height: Int) -> CGContext? {
-       
+        
         return CGContext(
             data: data,
             width: width,

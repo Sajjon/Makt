@@ -31,37 +31,7 @@ extension TextureGenerating {
         
         return Aggregator<ImageFromFrame> { (images: [ImageFromFrame]) throws -> [File] in
             precondition(!images.isEmpty)
-            
-            let maxWidthOfAllImages = images.map { $0.fullSize.width }.max()!
-            let maxHeightOfAllImages = images.map { $0.fullSize.height }.max()!
-            
-            let columnCount = sqrt(Double(images.count)).rounded(.up)
-            let rowCount = (Double(images.count)/Double(columnCount)).rounded(.up)
-            
-            let margin = 1.1 // 10 % margin
-            let atlasWidth = Int(maxWidthOfAllImages * columnCount * margin)
-            let atlasHeight = Int(maxHeightOfAllImages * rowCount * margin)
-            let atlasPixelCount = atlasWidth * atlasHeight
-            
-            var transparentPixels: [Palette.Pixel] = .init(
-                repeating: Palette.transparentPixel,
-                count: atlasPixelCount
-            )
-            
-            let context = CGContext.from(
-                pixelPointer: &transparentPixels,
-                width: atlasWidth,
-                height: atlasHeight
-            )!
-            
-            let meta: FramesInAtlas.Meta = .init(
-                atlasName: atlasName,
-                colorSpace: context.colorSpace!,
-                size: .init(width: atlasWidth, height: atlasHeight)
-            )
-            
-            var framesInAtlas = FramesInAtlas(meta: meta)
-            
+
             let packer = Packer()
             
             let canvasOfPackedImages = try packer.sync.pack(
@@ -71,6 +41,28 @@ extension TextureGenerating {
             
             let packedImages = canvasOfPackedImages.packed
             
+            var transparentPixels: [Palette.Pixel] = .init(
+                repeating: Palette.transparentPixel,
+                count: .init(canvasOfPackedImages.canvasSize.area)
+            )
+            
+            guard let context = CGContext.from(
+                pixelPointer: &transparentPixels,
+                width: .init(canvasOfPackedImages.canvasSize.width),
+                height: .init(canvasOfPackedImages.canvasSize.height)
+            ) else {
+                incorrectImplementation(shouldAlwaysBeAbleTo: "Create a CGContext. Please check for inconsistencies between `width*height` and `transparentPixels.count` and possibly colorSpace/bitmapInfo values.")
+            }
+            
+            let meta: FramesInAtlas.Meta = .init(
+                atlasName: atlasName,
+                colorSpace: context.colorSpace!,
+                size: canvasOfPackedImages.canvasSize
+            )
+            
+            var framesInAtlas = FramesInAtlas(meta: meta)
+            
+   
             for image in packedImages {
                 let packedX = image.positionOnCanvas.x
                 let packedY = image.positionOnCanvas.y
@@ -97,9 +89,8 @@ extension TextureGenerating {
             }
             
             guard
-                let imageWithExcessTransparentPixels = context.makeImage(),
-//                let atlasImage = imageWithExcessTransparentPixels.cropping(to: .init(origin: .zero, size: canvasOfPackedImages.canvasSize)),
-                let atlasImageAsPNGData = imageWithExcessTransparentPixels.png
+                let atlasImage = context.makeImage(),
+                let atlasImageAsPNGData = atlasImage.png
             else {
                 throw Fail(description: "Failed ot create atlas of images.")
             }

@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import Util
 
 public protocol Packable: Identifiable {
     var width: CGFloat { get }
@@ -18,6 +19,6 @@ extension Packable {
     var maxSide: CGFloat { max(width, height) }
     
     var area: CGFloat {
-        width * height
+        size.area
     }
 }
