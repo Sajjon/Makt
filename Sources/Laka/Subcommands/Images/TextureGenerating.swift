@@ -28,6 +28,7 @@ protocol TextureGenerating {
 extension TextureGenerating {
     
     func makeAggregator(atlasName: String) -> Aggregator<ImageFromFrame> {
+        
         return Aggregator<ImageFromFrame> { (images: [ImageFromFrame]) throws -> [File] in
             precondition(!images.isEmpty)
             
@@ -61,47 +62,16 @@ extension TextureGenerating {
             
             var framesInAtlas = FramesInAtlas(meta: meta)
             
-////            let sortedImages = images.sorted(by: \.fullSize)
-//            let packedImagesResult = try Alpacka.pack(
-//                images,
-//                origin: \.packedOrigin,
-//                in: Alpacka.Size(w: Double(atlasWidth), h: Double(atlasHeight))
-//            ).syncSink()
-//
-//
-//            let packedImages: [ImageFromFrame]
-//
-//            switch packedImagesResult {
-//            case .overFlow(_, let overFlow):
-//                throw Fail(description: "Failed to fit all images inside rect: width: \(atlasWidth), height: \(atlasHeight) without overflow: \(overFlow.map { $0.rect })")
-//            case .packed(let packed):
-//                packedImages = packed
-//            }
+            let packer = Packer()
             
+            let canvasOfPackedImages = try packer.sync.pack(
+                packables: images,
+                sorting: .byArea
+            )
             
-            let fittedImages = try syncPack(packables: images)
-            let packedImages = fittedImages.packed
+            let packedImages = canvasOfPackedImages.packed
             
-//            var aggregatedY: CGFloat = 0
             for image in packedImages {
-//                let (rowIndex, columnIndex) = imageIndex.quotientAndRemainder(dividingBy: columnCount)
-//
-//                let referenceWidth = //maxWidthOfAllImages
-//                let referenceHeight = //maxWidthOfAllImages
-//
-//                let x = CGFloat(columnIndex) * referenceWidth
-//                let y = aggregatedY //CGFloat(rowIndex) * referenceHeight
-//
-//                if columnIndex == columnCount {
-//                    aggregatedY += referenceHeight
-//                }
-//
-//                let width = image.fullSize.width
-//                assert(width <= referenceWidth)
-//
-//                let height = image.fullSize.height
-//                assert(height <= referenceHeight)
-//
                 let packedX = image.positionOnCanvas.x
                 let packedY = image.positionOnCanvas.y
                 
@@ -126,11 +96,17 @@ extension TextureGenerating {
                 )
             }
             
-            let mergedCGImage = context.makeImage()!
+            guard
+                let imageWithExcessTransparentPixels = context.makeImage(),
+//                let atlasImage = imageWithExcessTransparentPixels.cropping(to: .init(origin: .zero, size: canvasOfPackedImages.canvasSize)),
+                let atlasImageAsPNGData = imageWithExcessTransparentPixels.png
+            else {
+                throw Fail(description: "Failed ot create atlas of images.")
+            }
             
-            let aggregatedImageFile = SimpleFile(
+            let atlasImageFile = SimpleFile(
                 name: "\(atlasName).png",
-                data: mergedCGImage.png!
+                data: atlasImageAsPNGData
             )
             
             let jsonEncoder = JSONEncoder()
@@ -139,7 +115,7 @@ extension TextureGenerating {
             let aggregatedImageFileMetaData = SimpleFile(name: "\(atlasName).json", data: framesInAtlasJSONData)
             
             return [
-                aggregatedImageFile,
+                atlasImageFile,
                 aggregatedImageFileMetaData
             ]
             

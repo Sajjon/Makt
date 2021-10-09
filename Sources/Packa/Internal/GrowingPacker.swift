@@ -14,13 +14,23 @@ internal final class GrowingPacker {
 
 extension GrowingPacker {
     
-    func fit<Content: Packable>(packables nonSorted: [Content]) throws -> [Packed<Content>] {
+    func fit<Content: Packable>(
+        packables: [Content],
+        sorting: Sorting
+    ) throws -> [Packed<Content>] {
 
-        guard !nonSorted.isEmpty else {
+        guard !packables.isEmpty else {
             throw Fail(description: "`packables` must not be empty")
         }
         
-        let squares = nonSorted.sorted(by: \.maxSide, descending: true)
+        let squares: [Content]
+        switch sorting {
+        case .alreadySorted: squares = packables
+        case .byMaxSide:
+            squares = packables.sorted(by: \.maxSide, descending: true)
+        case .byArea:
+            squares = packables.sorted(by: \.area, descending: true)
+        }
         
         self.rootNode = Node(
             origin: .zero,
