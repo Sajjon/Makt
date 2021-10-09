@@ -45,13 +45,26 @@ public extension Array {
 }
 
 public extension Array {
-    func sorted<Member>(by keyPath: KeyPath<Element, Member>) -> Self where Member: Comparable {
-        sorted(by: { $0[keyPath: keyPath] < $1[keyPath: keyPath] })
+    func sorted<Member>(by keyPath: KeyPath<Element, Member>, descending: Bool = false) -> Self where Member: Comparable {
+        sorted(by: {
+            if !descending {
+                return $0[keyPath: keyPath] < $1[keyPath: keyPath]
+            } else {
+                return $0[keyPath: keyPath] > $1[keyPath: keyPath]
+            }
+        })
     }
 }
 
 public extension Array {
-    func sorted<Member>(by keyPath: KeyPath<Element, Member>) -> Self where Member: RawRepresentable, Member.RawValue: Comparable {
-        sorted(by: { $0[keyPath: keyPath].rawValue < $1[keyPath: keyPath].rawValue })
+    func sorted<Member>(by keyPath: KeyPath<Element, Member>, descending: Bool = false) -> Self where Member: RawRepresentable, Member.RawValue: Comparable {
+        sorted(by: {
+            if !descending {
+                return $0[keyPath: keyPath].rawValue < $1[keyPath: keyPath].rawValue
+            } else {
+                return $0[keyPath: keyPath].rawValue > $1[keyPath: keyPath].rawValue
+            }
+            
+        })
     }
 }

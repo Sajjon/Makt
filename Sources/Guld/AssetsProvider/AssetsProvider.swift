@@ -182,14 +182,14 @@ private extension AssetsProvider {
         fileManager: FileManager = .default
     ) throws -> Assets {
 
-        var numberOfLoadedItems = 0
-        let assetParsedInspector = AssetParsedInspector(
-            onParseFileEntry: { fileEntry in
-                numberOfLoadedItems += 1
-            }
-        )
-        
-        let startTime = CFAbsoluteTimeGetCurrent()
+//        var numberOfLoadedItems = 0
+//        let assetParsedInspector = AssetParsedInspector(
+//            onParseFileEntry: { fileEntry in
+//                numberOfLoadedItems += 1
+//            }
+//        )
+//        
+//        let startTime = CFAbsoluteTimeGetCurrent()
         
         fatalError()
         

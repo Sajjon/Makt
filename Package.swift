@@ -43,7 +43,8 @@ let package = Package(
             name: "Packa",
             dependencies: [
                 "Util"
-            ]
+            ],
+            exclude: excludedFilenames
         ),
         .target(
             name: "Guld",
