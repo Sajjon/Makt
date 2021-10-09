@@ -203,4 +203,29 @@ extension CGContext {
         )
     }
 
+    // Unfortunately CGContext.draw seems to draw images in the BOTTOM left corner
+    // instead of top as we expect it to. We correct this by mirroring the origin
+    // by the Y axis.
+    func nonYMirroredDraw(
+        image cgImage: CGImage,
+        in yMirroredRect: CGRect,
+        onCanvasOfHeight canvasHeight: CGFloat
+    ) {
+        let imageSize = yMirroredRect.size
+        
+        // correct inverted Y
+        let nonMirroredY = canvasHeight - yMirroredRect.origin.y - imageSize.height
+        
+        let nonYMirroredOrigin = CGPoint(
+            x: yMirroredRect.origin.x,
+            y: nonMirroredY // mirror the origin by Y axis.
+        )
+        
+        let rectInAtlas = CGRect(
+            origin: nonYMirroredOrigin,
+            size: imageSize
+        )
+            
+        draw(cgImage, in: rectInAtlas)
+    }
 }

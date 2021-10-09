@@ -39,7 +39,14 @@ extension TextureGenerating {
                 sorting: .byArea
             )
             
+            // Sorting here will only affect position of frames in JSON array,
+            // it will not affect drawing in atlas (position in image),
+            // since that is determined by property `positionOnCanvas`.
+            // Sorting here makes perfect sense because we expect to see order
+            // in JSON array to match the position in the atlas image.
             let packedImages = canvasOfPackedImages.packed
+                .sorted(by: \.positionOnCanvas.x)
+                .sorted(by: \.positionOnCanvas.y)
             
             var transparentPixels: [Palette.Pixel] = .init(
                 repeating: Palette.transparentPixel,
@@ -51,7 +58,9 @@ extension TextureGenerating {
                 width: .init(canvasOfPackedImages.canvasSize.width),
                 height: .init(canvasOfPackedImages.canvasSize.height)
             ) else {
-                incorrectImplementation(shouldAlwaysBeAbleTo: "Create a CGContext. Please check for inconsistencies between `width*height` and `transparentPixels.count` and possibly colorSpace/bitmapInfo values.")
+                incorrectImplementation(
+                    shouldAlwaysBeAbleTo: "Create a CGContext. Please check for inconsistencies between `width*height` and `transparentPixels.count` and possibly colorSpace/bitmapInfo values."
+                )
             }
             
             let meta: FramesInAtlas.Meta = .init(
@@ -62,28 +71,25 @@ extension TextureGenerating {
             
             var framesInAtlas = FramesInAtlas(meta: meta)
             
-   
             for image in packedImages {
-                let packedX = image.positionOnCanvas.x
-                let packedY = image.positionOnCanvas.y
+                let sourceRect = image.content.rect
                 
-                let rectInAtlas = CGRect(
-                    x: packedX,
-                    y: packedY,
-                    width: image.content.width,
-                    height: image.content.height
-                )
+                let rectInAtlas = CGRect(origin: image.positionOnCanvas, size: sourceRect.size)
                 
-                context.draw(
-                    image.content.cgImage,
-                    in: rectInAtlas
+                // It is very unfortunate but CGRect.draw seems to begin drawing
+                // in the BOTTOM left corner, We correct this my mirroring the
+                // origin by the Y axis.
+                context.nonYMirroredDraw(
+                    image: image.content.cgImage,
+                    in: rectInAtlas,
+                    onCanvasOfHeight: canvasOfPackedImages.canvasSize.height
                 )
                 
                 framesInAtlas.add(
                     frame: .init(
                         name: image.content.name,
-                        sourceRect: image.content.rect,
-                        rectInAtlas: rectInAtlas
+                        sourceRect: sourceRect,
+                        rectInAtlas: .init(origin: image.positionOnCanvas, size: sourceRect.size)
                     )
                 )
             }
