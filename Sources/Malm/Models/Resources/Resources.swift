@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import Util
 
 public struct Resources: Hashable, CustomDebugStringConvertible, ExpressibleByArrayLiteral {
     
@@ -30,17 +31,5 @@ public struct Resources: Hashable, CustomDebugStringConvertible, ExpressibleByAr
 public extension Resources {
     var debugDescription: String {
         resources.map { $0.value }.sorted(by: \.kind).map { $0.debugDescription }.joined(separator: "\n")
-    }
-}
-
-public extension Array {
-    func sorted<Member>(by keyPath: KeyPath<Element, Member>) -> Self where Member: Comparable {
-        sorted(by: { $0[keyPath: keyPath] < $1[keyPath: keyPath] })
-    }
-}
-
-public extension Array {
-    func sorted<Member>(by keyPath: KeyPath<Element, Member>) -> Self where Member: RawRepresentable, Member.RawValue: Comparable {
-        sorted(by: { $0[keyPath: keyPath].rawValue < $1[keyPath: keyPath].rawValue })
     }
 }

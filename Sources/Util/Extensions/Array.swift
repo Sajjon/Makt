@@ -43,3 +43,15 @@ public extension Array {
         }
     }
 }
+
+public extension Array {
+    func sorted<Member>(by keyPath: KeyPath<Element, Member>) -> Self where Member: Comparable {
+        sorted(by: { $0[keyPath: keyPath] < $1[keyPath: keyPath] })
+    }
+}
+
+public extension Array {
+    func sorted<Member>(by keyPath: KeyPath<Element, Member>) -> Self where Member: RawRepresentable, Member.RawValue: Comparable {
+        sorted(by: { $0[keyPath: keyPath].rawValue < $1[keyPath: keyPath].rawValue })
+    }
+}

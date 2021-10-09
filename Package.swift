@@ -40,6 +40,12 @@ let package = Package(
             ]
         ),
         .target(
+            name: "Packa",
+            dependencies: [
+                "Util"
+            ]
+        ),
+        .target(
             name: "Guld",
             dependencies: [
                 "Util", "Malm", "Decompressor", "H3C", "H3M"
@@ -51,7 +57,8 @@ let package = Package(
                 "Util",
                 "Malm",
                 "Guld",
-                .product(name: "ArgumentParser", package: "swift-argument-parser")
+                "Packa",
+                .product(name: "ArgumentParser", package: "swift-argument-parser"),
             ],
             exclude: excludedFilenames
         ),
