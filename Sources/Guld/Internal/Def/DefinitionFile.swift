@@ -21,7 +21,10 @@ public struct DefinitionFile: ArchiveProtocol, Hashable, CustomDebugStringConver
     public let height: Scalar
     public let palette: Palette
     public let blocks: [Block]
-    public var entries: [Frame] { blocks.flatMap({ $0.frames }) }
+
+    public var entries: [Frame] {
+        blocks.flatMap { $0.frames }
+    }
 }
 
 public extension DefinitionFile {

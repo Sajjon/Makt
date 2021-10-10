@@ -14,7 +14,7 @@ internal final class GrowingPacker {
 
 extension GrowingPacker {
     
-    func fit<Content: Packable>(
+    func pack<Content: Packable>(
         packables: [Content],
         sorting: Sorting
     ) throws -> [Packed<Content>] {
@@ -73,9 +73,11 @@ private extension GrowingPacker {
         node: Node,
         size: CGSize
     ) -> Node {
+        
         let height = size.height
         let width = size.width
         node.isUsed = true
+        
         node.down = Node(
             origin: .init(
                 x: node.x,
@@ -102,15 +104,14 @@ private extension GrowingPacker {
             let newRightNode = Node(
                 origin: .init(x: rootNode.width,
                               y: 0),
-                size: .init( width: width,
+                size: .init(width: width,
                              height: rootNode.height)
             )
             
             let oldRoot = rootNode
             
             rootNode = Node(
-                origin: .init(x: 0,
-                              y: 0),
+                origin: .zero,
                 size: .init(width: rootNode.width + width,
                             height: rootNode.height),
                 isUsed: true,
@@ -126,6 +127,7 @@ private extension GrowingPacker {
             
         }
         func growDown() -> Node? {
+            
             let newDownNode = Node(
                 origin: .init(x: 0,
                               y: rootNode.height),
@@ -134,9 +136,9 @@ private extension GrowingPacker {
             )
             
             let oldRoot = rootNode
+            
             rootNode = Node(
-                origin: .init(x: 0,
-                              y: 0),
+                origin: .zero,
                 size: .init(width: rootNode.width,
                             height: rootNode.height + height),
                 isUsed: true,
@@ -154,10 +156,10 @@ private extension GrowingPacker {
         let canGrowDown = width <= rootNode.width
         let canGrowRight = height <= rootNode.height
         
-        // attempt to keep square-ish by growing right when height is much greater than width
+        // attempt to keep square-ish by growing right when height is greater than width
         let shouldGrowRight = canGrowRight && rootNode.height >= (rootNode.width + width)
         
-        // attempt to keep square-ish by growing down  when width  is much greater than height
+        // attempt to keep square-ish by growing down when width is greater than height
         let shouldGrowDown = canGrowDown && rootNode.width >= (rootNode.height + height)
         
         var fit: Node?

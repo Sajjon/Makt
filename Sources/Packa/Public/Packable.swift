@@ -8,14 +8,15 @@
 import Foundation
 import Util
 
-public protocol Packable: Identifiable {
-    var width: CGFloat { get }
-    var height: CGFloat { get }
+public protocol Packable {
+    var size: CGSize { get }
 }
 
 extension Packable {
     
-    var size: CGSize { .init(width: width, height: height) }
+    var width: CGFloat { size.width }
+    var height: CGFloat { size.height }
+    
     var maxSide: CGFloat { max(width, height) }
     
     var area: CGFloat {

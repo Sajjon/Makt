@@ -9,7 +9,7 @@ import Foundation
 import Malm
 import Packa
 
-struct ImageFromFrame: Hashable, File {
+struct ImageFromFrame: Hashable, File, Packable {
     let name: String
     let cgImage: CGImage
     let fullSize: CGSize
@@ -27,14 +27,13 @@ struct ImageFromFrame: Hashable, File {
         self.rect = rect
     }
 }
-extension ImageFromFrame: Packable {
-    var width: CGFloat { rect.width }
-    var height: CGFloat { rect.height }
-    
-    typealias ID = String
-    var id: ID { name  }
+
+// MARK: Packable
+extension ImageFromFrame {
+    var size: CGSize { rect.size }
 }
 
+// MARK: File
 extension ImageFromFrame {
     var data: Data {
         let data = cgImage.png!

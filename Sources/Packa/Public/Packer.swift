@@ -46,21 +46,26 @@ public struct SyncPacker {
     fileprivate init() {}
 }
 
+private extension Packed {
+    var rightMostPixel: CGFloat { x + width }
+    var bottomMostPixel: CGFloat { y + height }
+}
+
 public extension SyncPacker {
     func pack<Content: Packable>(
         packables: [Content],
         sorting: Sorting
     ) throws -> FittedItems<Content> {
         
-        let packer = GrowingPacker()
-        let fittedItems = try packer.fit(packables: packables, sorting: sorting)
+        let growingPacker = GrowingPacker()
         
-        let canvasWidth = fittedItems.reduce(0) { curr, item in
-            max(curr, item.x + item.width)
-        }
-        let canvasHeight = fittedItems.reduce(0) { curr, item in
-            max(curr, item.y + item.height)
-        }
+        let fittedItems = try growingPacker.pack(
+            packables: packables,
+            sorting: sorting
+        )
+        
+        let canvasWidth = fittedItems.map({ $0.rightMostPixel }).max()!
+        let canvasHeight = fittedItems.map({ $0.bottomMostPixel }).max()!
         
         return .init(
             packed: fittedItems,
