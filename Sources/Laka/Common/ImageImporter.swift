@@ -209,6 +209,7 @@ extension CGContext {
     func nonYMirroredDraw(
         image cgImage: CGImage,
         in yMirroredRect: CGRect,
+        cropToRect: CGRect?,
         onCanvasOfHeight canvasHeight: CGFloat
     ) {
         let imageSize = yMirroredRect.size
@@ -225,7 +226,12 @@ extension CGContext {
             origin: nonYMirroredOrigin,
             size: imageSize
         )
-            
-        draw(cgImage, in: rectInAtlas)
+        if let cropToRect = cropToRect {
+            let cropped = cgImage.cropping(to: cropToRect)!
+            draw(cropped, in: rectInAtlas)
+        } else {
+            draw(cgImage, in: rectInAtlas)
+        }
+        
     }
 }

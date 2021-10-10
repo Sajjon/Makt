@@ -46,11 +46,13 @@ extension FramesInAtlas {
     struct Frame: Codable {
         let name: String
         let sourceRect: Rect
+        let fullSize: Size
         let rectInAtlas: Rect
         
-        init(name: String, sourceRect: CGRect, rectInAtlas: CGRect) {
+        init(name: String, sourceRect: CGRect, fullSize: Size, rectInAtlas: CGRect) {
             self.name = name
             self.sourceRect = .init(cgRect: sourceRect)
+            self.fullSize = fullSize
             self.rectInAtlas = .init(cgRect: rectInAtlas)
         }
     }

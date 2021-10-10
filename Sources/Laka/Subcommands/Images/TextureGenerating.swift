@@ -76,12 +76,15 @@ extension TextureGenerating {
                 
                 let rectInAtlas = CGRect(origin: image.positionOnCanvas, size: sourceRect.size)
                 
+                let cropToRect: CGRect? = image.content.rect.size == image.content.fullSize ? nil : image.content.rect
+                
                 // It is very unfortunate but CGRect.draw seems to begin drawing
                 // in the BOTTOM left corner, We correct this my mirroring the
                 // origin by the Y axis.
                 context.nonYMirroredDraw(
                     image: image.content.cgImage,
                     in: rectInAtlas,
+                    cropToRect: cropToRect,
                     onCanvasOfHeight: canvasOfPackedImages.canvasSize.height
                 )
                 
@@ -89,6 +92,7 @@ extension TextureGenerating {
                     frame: .init(
                         name: image.content.name,
                         sourceRect: sourceRect,
+                        fullSize: .init(width: .init(image.content.fullSize.width), height: .init(image.content.fullSize.height)),
                         rectInAtlas: .init(origin: image.positionOnCanvas, size: sourceRect.size)
                     )
                 )
