@@ -50,5 +50,5 @@ struct ImageExport {
     let defFileName: String
     
     /// Returning `nil` means that the frame should be skipped
-    let nameFromFrameAtIndexIndex: (_ frame: DefinitionFile.Frame, _ frameIndex: Int) -> String?
+    let nameFromFrameAtIndexIndex: (_ frame: DefinitionFile.Frame, _ frameIndex: Int) throws -> String?
 }

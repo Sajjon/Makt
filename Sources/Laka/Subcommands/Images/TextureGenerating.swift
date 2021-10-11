@@ -121,15 +121,16 @@ extension TextureGenerating {
     func generateTexture(
         atlasName: String,
         defFileName: String,
-        nameFromFrameAtIndexIndex: @escaping ((DefinitionFile.Frame, Int) -> String?) = { f, i in f.fileName }
+        nameFromFrameAtIndexIndex: @escaping ((DefinitionFile.Frame, Int) throws -> String?) = { f, i in f.fileName }
     ) throws {
         try generateTexture(
             name: atlasName,
-            list: [.init(
-                defFileName: defFileName,
-                nameFromFrameAtIndexIndex: nameFromFrameAtIndexIndex
-            )
-                  ]
+            list: [
+                .init(
+                    defFileName: defFileName,
+                    nameFromFrameAtIndexIndex: nameFromFrameAtIndexIndex
+                )
+            ]
         )
     }
     

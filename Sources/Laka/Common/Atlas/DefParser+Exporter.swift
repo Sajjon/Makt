@@ -29,7 +29,7 @@ extension DefParser {
             }
             
             return try defFile.entries.prefix(maxImageCountPerDefFile ?? defFile.entries.count).enumerated().compactMap { (frameIndex, frame) in
-                guard let imageName = imageToExportFileTemplate.nameFromFrameAtIndexIndex(frame, frameIndex) else {
+                guard let imageName = try imageToExportFileTemplate.nameFromFrameAtIndexIndex(frame, frameIndex) else {
                     // Skip frame, since it is deemed irrelevant.
                     return nil
                 }
