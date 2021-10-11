@@ -67,5 +67,71 @@ extension Laka.UI {
         try exportArtifacts()
         try exportFlags()
         try exportHallBuildings()
+        try exportPrimarySkill()
+        try exportSecondarySkill()
+        try exportSpells()
+    }
+    
+    func exportArtifacts() throws {
+        try generateTexture(
+            atlasName: "artifacts",
+            defFileName: "artifact.def"
+        ) { frame, frameIndex in
+            let namePrefix = "artifact_icon"
+            if let artifactID = try? Artifact.ID(integer: frameIndex) {
+                return [namePrefix, String(describing: artifactID)].joined(separator: "_")
+            } else {
+                /// Special case artifacts
+                return [namePrefix, frame.fileName.lowercased()].joined(separator: "_")
+            }
+        }
+    }
+    
+    func exportFlags() throws {
+        try generateTexture(
+            atlasName: "flags",
+            defFileName: "crest58.def"
+        )
+    }
+    
+    func exportPrimarySkill() throws {
+        try generateTexture(
+            atlasName: "primary_skill",
+            defFileName: "pskill.def"
+        )
+    }
+    
+    func exportSecondarySkill() throws {
+        try generateTexture(
+            atlasName: "secondary_skill",
+            defFileName: "secskill.def"
+        ) { frame, frameIndex in
+            let namePrefix = "secondary_skill"
+            let offset = 1
+            let iconsPerSkill = Hero.SecondarySkill.Level.allCases.count
+            guard frameIndex >= offset*iconsPerSkill else { return nil } // ignore empty
+            let value = frameIndex - offset*iconsPerSkill
+            let valueQaR = value.quotientAndRemainder(dividingBy: iconsPerSkill)
+            let skillKindRaw = valueQaR.quotient
+            let skillLeveKindRaw = valueQaR.remainder
+            let skillKind = try Hero.SecondarySkill.Kind(integer: skillKindRaw)
+            let skillLevel = try Hero.SecondarySkill.Level(integer: skillLeveKindRaw + 1)
+            return [
+                namePrefix,
+                String(describing: skillKind),
+                String(describing: skillLevel),
+            ].joined(separator: "_")
+        }
+    }
+    
+    func exportSpells() throws {
+        try generateTexture(
+            atlasName: "spells",
+            defFileName: "spells.def"
+        ) { frame, frameIndex in
+            let namePrefix = "spell_icon"
+            let spellID = try Spell.ID(integer: frameIndex)
+            return [namePrefix, String(describing: spellID)].joined(separator: "_")
+        }
     }
 }

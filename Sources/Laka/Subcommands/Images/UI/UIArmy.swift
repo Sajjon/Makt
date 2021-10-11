@@ -26,31 +26,6 @@ extension Laka.UI {
             defFileName: "cprsmall.def"
         )
     }
-    
-    func exportArtifacts() throws {
-        try generateTexture(
-            atlasName: "artifacts",
-            defFileName: "artifact.def"
-        ) { frame, frameIndex in
-            let namePrefix = "artifact_icon"
-            if let artifactID = try? Artifact.ID(integer: frameIndex) {
-                return [namePrefix, String(describing: artifactID)].joined(separator: "_")
-            } else {
-                /// Special case artifacts
-                return [namePrefix, frame.fileName.lowercased()].joined(separator: "_")
-            }
-        }
-    }
-    
-    func exportFlags() throws {
-        try generateTexture(
-            atlasName: "flags",
-            defFileName: "crest58.def"
-        )
-    }
-    
-  
-
 }
 
 

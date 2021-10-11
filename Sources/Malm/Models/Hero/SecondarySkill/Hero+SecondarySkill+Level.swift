@@ -8,7 +8,7 @@
 import Foundation
 
 public extension Hero.SecondarySkill {
-    enum Level: UInt8, Comparable, Hashable {
+    enum Level: UInt8, Comparable, Hashable, CaseIterable {
         case basic = 1, advanced, expert
     }
 }
