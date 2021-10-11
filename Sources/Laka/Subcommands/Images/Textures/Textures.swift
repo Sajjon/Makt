@@ -65,14 +65,14 @@ extension Laka.Textures {
     
     var verbose: Bool { parentOptions.printDebugInformation }
     
-    var fileManager: FileManager { .default }
-    
     var inDataURL: URL {
-        .init(fileURLWithPath: parentOptions.outputPath).appendingPathComponent("entries")
+        .init(fileURLWithPath: parentOptions.outputPath).appendingPathComponent("Raw")
     }
     
     var outImagesURL: URL {
-        .init(fileURLWithPath: parentOptions.outputPath).appendingPathComponent("images")
+        .init(fileURLWithPath: parentOptions.outputPath)
+            .appendingPathComponent("Converted")
+            .appendingPathComponent("Texture")
     }
 }
 

@@ -116,7 +116,7 @@ extension Laka.Textures {
     
     func exportDwelling() throws {
         let dwellingFileList = dwelling.map { defFileName in
-            ImageExport(defFileName: defFileName, nameFromFrameIndex: { _ in defFileName })
+            ImageExport(defFileName: defFileName, nameFromFrameAtIndexIndex: { _, _ in defFileName })
         }
         
         try generateTexture(

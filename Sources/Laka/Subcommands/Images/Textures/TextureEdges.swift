@@ -16,7 +16,7 @@ extension Laka.Textures {
             list: [
                 .init(
                     defFileName: "edg.def",
-                    nameFromFrameIndex: { frameIndex in "edge_\(frameIndex).png" })
+                    nameFromFrameAtIndexIndex: { _, frameIndex in "edge_\(frameIndex).png" })
             ]
         )
     }

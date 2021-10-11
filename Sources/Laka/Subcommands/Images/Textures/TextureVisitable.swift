@@ -185,7 +185,7 @@ extension Laka.Textures {
     
     func exportVisitable() throws {
         let visitableFileList = visitable.map { defFileName in
-            ImageExport(defFileName: defFileName, nameFromFrameIndex: { _ in defFileName })
+            ImageExport(defFileName: defFileName, nameFromFrameAtIndexIndex: { _, _ in defFileName })
         }
         
         try generateTexture(

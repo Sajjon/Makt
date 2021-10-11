@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import Guld
 
 protocol Exportable {
     static var listOfFilesToExport: [ImageExport] { get }
@@ -29,7 +30,7 @@ extension PNGExportable {
 
 extension PNGExportable where Self: CaseIterable, AllCases == [Self] {
     var imageExport: ImageExport {
-        .init(defFileName: defFileName) { frameIndex in
+        .init(defFileName: defFileName) { _, frameIndex in
             [
                 [
                     Self.namePrefix,
@@ -47,5 +48,7 @@ extension PNGExportable where Self: CaseIterable, AllCases == [Self] {
 
 struct ImageExport {
     let defFileName: String
-    let nameFromFrameIndex: (_ frameIndex: Int) -> String
+    
+    /// Returning `nil` means that the frame should be skipped
+    let nameFromFrameAtIndexIndex: (_ frame: DefinitionFile.Frame, _ frameIndex: Int) -> String?
 }

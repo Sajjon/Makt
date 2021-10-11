@@ -294,11 +294,13 @@ private extension DefParser {
         
         /// Might be enlarged
         let fullWidth = try Int(reader.readUInt32())
-        assert(fullWidth.isMultiple(of: Image.pixelsPerTile))
+        
+        // Frame named `CPrLBlk.pcx` in `twcrport.def` (army icons) breaks this, it has fullWidth of 58.
+        //assert(fullWidth.isMultiple(of: Image.pixelsPerTile), "Expected `fullWidth` of frame in DEF files to always be a multiple of `\(Image.pixelsPerTile)`, but frame named: '\(frameName)' in DEF file '\(defFileName)' is `\(fullWidth)` (which is not a multiple...)")
 
         /// Might be enlarged
         let fullHeight = try Int(reader.readUInt32())
-        assert(fullHeight.isMultiple(of: Image.pixelsPerTile))
+        assert(fullHeight.isMultiple(of: Image.pixelsPerTile), "Expected `fullHeight` of frame in DEF files to always be a multiple of `\(Image.pixelsPerTile)`, but frame named: '\(frameName)' in DEF file '\(defFileName)' is `\(fullHeight)` (which is not a multiple...)")
         
         let width = try Int(reader.readUInt32())
         

@@ -34,7 +34,7 @@ swift run all -i <inputPath> -o <outputPath>
 
 For example:
 ```sh
-swift run all -i ~/Library/Application\ Support/Tritium/Original -o ~/Library/Application\ Support/Tritium/Converted
+swift run all -i ~/Library/Application\ Support/Tritium/Original -o ~/Library/Application\ Support/Tritium/Extracted
 ```
 
 ## Etymology

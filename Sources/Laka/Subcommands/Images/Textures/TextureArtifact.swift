@@ -158,7 +158,7 @@ extension Laka.Textures {
     
     func exportArtifact() throws {
         let artifactFileList = artifacts.map { defFileName in
-            ImageExport(defFileName: defFileName, nameFromFrameIndex: { _ in defFileName })
+            ImageExport(defFileName: defFileName, nameFromFrameAtIndexIndex: { _, _ in defFileName })
         }
         
         try generateTexture(

@@ -25,7 +25,7 @@ struct Options: ParsableArguments {
     @Option(
         name: [.customShort("o"), .long],
         help: "Path to directory for saving extracted resources..")
-    var outputPath: String = TritiumAssets.path.appending("Converted/")
+    var outputPath: String = TritiumAssets.path.appending("Extracted/")
 
 }
 

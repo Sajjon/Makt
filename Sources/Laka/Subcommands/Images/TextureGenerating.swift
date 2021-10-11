@@ -27,6 +27,8 @@ protocol TextureGenerating {
 
 extension TextureGenerating {
     
+    var fileManager: FileManager { .default }
+    
     func makeAggregator(atlasName: String) -> Aggregator<ImageFromFrame> {
         
         return Aggregator<ImageFromFrame> { (images: [ImageFromFrame]) throws -> [File] in

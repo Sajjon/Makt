@@ -36,7 +36,7 @@ extension Laka.Textures {
     
     func exportHero() throws {
         let heroFileList = heroes.map { defFileName in
-            ImageExport(defFileName: defFileName, nameFromFrameIndex: { _ in defFileName })
+            ImageExport(defFileName: defFileName, nameFromFrameAtIndexIndex: { _, _ in defFileName })
         }
         
         try generateTexture(

@@ -69,7 +69,7 @@ extension Laka.LOD {
     }
     
     var outEntryURL: URL {
-        .init(fileURLWithPath: options.outputPath).appendingPathComponent("entries")
+        .init(fileURLWithPath: options.outputPath).appendingPathComponent("Raw")
     }
 }
 

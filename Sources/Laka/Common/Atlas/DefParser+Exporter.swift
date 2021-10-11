@@ -28,8 +28,11 @@ extension DefParser {
                 throw Fail(description: "Expected to find name in list")
             }
             
-            return try defFile.entries.prefix(maxImageCountPerDefFile ?? defFile.entries.count).enumerated().map { (frameIndex, frame) in
-                let imageName = imageToExportFileTemplate.nameFromFrameIndex(frameIndex)
+            return try defFile.entries.prefix(maxImageCountPerDefFile ?? defFile.entries.count).enumerated().compactMap { (frameIndex, frame) in
+                guard let imageName = imageToExportFileTemplate.nameFromFrameAtIndexIndex(frame, frameIndex) else {
+                    // Skip frame, since it is deemed irrelevant.
+                    return nil
+                }
                 let cgImage = try ImageImporter.imageFrom(frame: frame, palette: defFile.palette)
                 return ImageFromFrame(name: imageName, cgImage: cgImage, fullSize: frame.fullSize, rect: frame.rect)
             }
