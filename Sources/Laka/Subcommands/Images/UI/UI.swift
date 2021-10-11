@@ -134,4 +134,24 @@ extension Laka.UI {
             return [namePrefix, String(describing: spellID)].joined(separator: "_")
         }
     }
+    
+    func exportSpellScrolls() throws {
+        try generateTexture(
+            atlasName: "spell_scrolls",
+            defFileName: "spellscr.def"
+        )  { frame, frameIndex in
+            let namePrefix = "spell_icon"
+            do {
+                let spellID = try Spell.ID(integer: frameIndex)
+                return [namePrefix, String(describing: spellID)].joined(separator: "_")
+            } catch {
+                guard frame.fileName.lowercased() == "sm99all.pcx" else {
+                    incorrectImplementation(reason: "Have covered all spell scrolls")
+                }
+                let humanReadable = "every_spell_in_the_game"
+                return [namePrefix, humanReadable].joined(separator: "_")
+            }
+        }
+    }
+    
 }
