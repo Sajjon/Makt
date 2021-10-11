@@ -7,7 +7,7 @@
 
 import Foundation
 
-public struct FittedItems<Content: Packable> {
+public struct PackedCanvas<Content: Packable> {
     public let packed: [Packed<Content>]
     public let canvasSize: CGSize
 }

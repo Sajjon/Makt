@@ -34,29 +34,22 @@ extension TextureGenerating {
 
             let packer = Packer()
             
-            let canvasOfPackedImages = try packer.sync.pack(
+            let packedCanvas = try packer.sync.pack(
                 packables: images,
                 sorting: .byArea
             )
             
-            // Sorting here will only affect position of frames in JSON array,
-            // it will not affect drawing in atlas (position in image),
-            // since that is determined by property `positionOnCanvas`.
-            // Sorting here makes perfect sense because we expect to see order
-            // in JSON array to match the position in the atlas image.
-            let packedImages = canvasOfPackedImages.packed
-                .sorted(by: \.positionOnCanvas.x)
-                .sorted(by: \.positionOnCanvas.y)
+            let packedImages = packedCanvas.packed
             
             var transparentPixels: [Palette.Pixel] = .init(
                 repeating: Palette.transparentPixel,
-                count: .init(canvasOfPackedImages.canvasSize.area)
+                count: .init(packedCanvas.canvasSize.area)
             )
             
             guard let context = CGContext.from(
                 pixelPointer: &transparentPixels,
-                width: .init(canvasOfPackedImages.canvasSize.width),
-                height: .init(canvasOfPackedImages.canvasSize.height)
+                width: .init(packedCanvas.canvasSize.width),
+                height: .init(packedCanvas.canvasSize.height)
             ) else {
                 incorrectImplementation(
                     shouldAlwaysBeAbleTo: "Create a CGContext. Please check for inconsistencies between `width*height` and `transparentPixels.count` and possibly colorSpace/bitmapInfo values."
@@ -66,7 +59,7 @@ extension TextureGenerating {
             let meta: FramesInAtlas.Meta = .init(
                 atlasName: atlasName,
                 colorSpace: context.colorSpace!,
-                size: canvasOfPackedImages.canvasSize
+                size: packedCanvas.canvasSize
             )
             
             var framesInAtlas = FramesInAtlas(meta: meta)
@@ -85,7 +78,7 @@ extension TextureGenerating {
                     image: image.content.cgImage,
                     in: rectInAtlas,
                     cropToRect: cropToRect,
-                    onCanvasOfHeight: canvasOfPackedImages.canvasSize.height
+                    onCanvasOfHeight: packedCanvas.canvasSize.height
                 )
                 
                 framesInAtlas.add(

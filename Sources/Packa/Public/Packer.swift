@@ -24,7 +24,7 @@ public extension Packer {
     func pack<Content: Packable>(
         packables: [Content],
         sorting: Sorting,
-        done: @escaping (Result<FittedItems<Content>, Error>) -> Void
+        done: @escaping (Result<PackedCanvas<Content>, Error>) -> Void
     ) {
         DispatchQueue.global(qos: .background).async { [sync] in
             do {
@@ -55,20 +55,27 @@ public extension SyncPacker {
     func pack<Content: Packable>(
         packables: [Content],
         sorting: Sorting
-    ) throws -> FittedItems<Content> {
+    ) throws -> PackedCanvas<Content> {
         
         let growingPacker = GrowingPacker()
         
-        let fittedItems = try growingPacker.pack(
+        let packedItems = try growingPacker.pack(
             packables: packables,
             sorting: sorting
         )
         
-        let canvasWidth = fittedItems.map({ $0.rightMostPixel }).max()!
-        let canvasHeight = fittedItems.map({ $0.bottomMostPixel }).max()!
+        let canvasWidth = packedItems.map({ $0.rightMostPixel }).max()!
+        let canvasHeight = packedItems.map({ $0.bottomMostPixel }).max()!
+        
+        // Sorting here does not affect the result of the growing packer above
+        // But it makes sense to have the packed items sorted according to
+        // their position relative to origin (0, 0).
+        let sorted = packedItems
+            .sorted(by: \.positionOnCanvas.x)
+            .sorted(by: \.positionOnCanvas.y)
         
         return .init(
-            packed: fittedItems,
+            packed: sorted,
             canvasSize: .init(
                 width: canvasWidth,
                 height: canvasHeight
