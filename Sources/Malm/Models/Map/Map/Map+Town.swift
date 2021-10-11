@@ -136,6 +136,10 @@ public extension Map.Town {
     enum Building: UInt8, Hashable, CaseIterable, CustomDebugStringConvertible {
         
         public var debugDescription: String {
+            name
+        }
+        
+        public var name: String {
             switch self {
             case .townHall: return "townHall"
             case .cityHall: return "cityHall"
@@ -184,9 +188,11 @@ public extension Map.Town {
         case townHall
         case cityHall
         case capitol
+        
         case fort
         case citadel
         case castle
+        
         case tavern
         case blacksmith
         
@@ -202,25 +208,192 @@ public extension Map.Town {
         case shipyard
         case grail
         
-        /// Fortress: `Blood obelisk` (? or special2 or special3)
-        /// Stronghold: `Escape tunnel` (?)
+        
+        /// Castle: lighthouse
+        /// [Conflux, Dungeon, Tower]: artifactMerchant
+        /// Fortress: cageOfWarlords
+        /// Necropolis: coverOfDarkness
+        /// Rampart: mysticPond
+        /// Stronghold: escapeTunnel
+        ///
+        /// NOTE that Inferno lacks `special1`.
         case special1
         
-        /// Fortress: `Glyphs of fear` (? or special1 or special3)
-        /// Stronghold: `Ballista Yard` (?)
+        /// Special1 for towns: [Castle]
+        static let lighthouse: Self = .special1
+        
+        /// Special1 for towns: [Conflux, Dungeon, Tower]
+        static let artifactMerchant: Self = .special1
+        
+        /// Special1 for towns: [Fortress]
+        static let cageOfWarlords: Self = .special1
+        
+        /// Special1 for towns: [Necropolis]
+        static let coverOfDarkness: Self = .special1
+        
+        /// Special1 for towns: [Rampart]
+        static let mysticPond: Self = .special1
+        
+        /// Special1 for towns: [Stronghold]
+        static let escapeTunnel: Self = .special1
+        
+        /// Castle: stables
+        /// Conflux: magicUniversity
+        /// Dungeon: manaVortex
+        /// Fortress: bloodObelisk
+        /// Inferno: brimstoneStormclouds
+        /// Necropolis: necromancyAmplifier
+        /// Rampart: fountainOfFortune
+        /// Stronghold: freelancersGuild
+        /// Tower: lookoutTower
         case special2
         
-        /// Fortress: `Cage of warlords` (? or special2 or special1)
-        /// Stronghold: `Freelancer's guild` (?)
+        /// Special2 for towns: [Castle]
+        static let stables: Self = .special2
+        
+        /// Special2 for towns: [Conflux]
+        static let magicUniversity: Self = .special2
+        
+        /// Special2 for towns: [Dungeon]
+        static let manaVortex: Self = .special2
+        
+        /// Special2 for towns: [Fortress]
+        static let bloodObelisk: Self = .special2
+        
+        /// Special2 for towns: [Inferno]
+        static let brimstoneStormclouds: Self = .special2
+        
+        /// Special2 for towns: [Necropolis]
+        static let necromancyAmplifier: Self = .special2
+        
+        /// Special2 for towns: [Rampart]
+        static let fountainOfFortune: Self = .special2
+        
+        /// Special2 for towns: [Stronghold]
+        static let freelancersGuild: Self = .special2
+        
+        /// Special2 for towns: [Tower]
+        static let lookoutTower: Self = .special2
+        
+        /// Castle: brotherhoodOfSword
+        /// Dungeon: portalOfSummoning
+        /// Fortress: glyphsOfFear
+        /// Inferno: castleGate
+        /// Necropolis: skeletonTransformer
+        /// Rampart: treasury
+        /// Stronghold: ballistaYard
+        /// Tower: library
+        ///
+        /// NOTE that Conflux lacks `speclial3`
         case special3
         
-        /// Fortress: `Carnivorous Plant`
-        /// Stronghold: `Hall of Valhalla` (?)
+        /// Special3 for towns: [Castle]
+        static let brotherhoodOfSword: Self = special3
+        
+        /// Special3 for towns: [Dungeon]
+        static let portalOfSummoning: Self = special3
+        
+        /// Special3 for towns: [Fortress]
+        static let glyphsOfFear: Self = special3
+        
+        /// Special3 for towns: [Inferno]
+        static let castleGate: Self = special3
+        
+        /// Special3 for towns: [Necropolis]
+        static let skeletonTransformer: Self = special3
+        
+        /// Special3 for towns: [Rampart]
+        static let treasury: Self = special3
+        
+        /// Special3 for towns: [Stronghold]
+        static let ballistaYard: Self = special3
+        
+        /// Special3 for towns: [Tower]
+        static let library: Self = special3
+        
+        /// Dungeon: battleScholarAcademy
+        /// Inferno: orderOfFire
+        /// Stronghold: hallOfValhalla
+        /// Tower: wallOfKnowledge
+        ///
+        /// NOTE that these town lacks `special4`: [Castle, Conflux, Dungeon, Fortress, Necropolis, Rampart]
         case special4
+        
+        /// Special4 for towns: [Dungeon]
+        static let battleScholarAcademy: Self = .special4
+        
+        /// Special4 for towns: [Inferno]
+        static let orderOfFire: Self = .special4
+        
+        /// Special4 for towns: [Stronghold]
+        static let hallOfValhalla: Self = .special4
+        
+        /// Special4 for towns: [Tower]
+        static let wallOfKnowledge: Self = .special4
         
         case dwelling1
         case upgradedDwelling1
+        
+        /// Castle: griffinBastion
+        /// Castle: minersGuild
         case horde1
+        
+        /// Castle horde 1
+        static let griffinBastion: Self = .horde1
+        /// Castle horde 2 ???
+        static let griffinBastionUpg_NOT_SURE_THIS_IS_HORDE2: Self = .horde2
+        
+        /// Rampart horde 1
+        static let minersGuild: Self = .horde1
+        /// Rampart horde 2 ???
+        static let minersGuildUpg_NOT_SURE_THIS_IS_HORDE2: Self = .horde2
+        
+        /// Tower horde 1
+        static let sculptorsWings: Self = .horde1
+        /// Tower horde 2 ???
+        static let sculptorsWingsUpg_NOT_SURE_THIS_IS_HORDE2: Self = .horde2
+        
+        /// Inferno horde 1
+        static let birthingPools: Self = .horde1
+        /// Inferno horde 2 ???
+        static let birthingPoolsUpg_NOT_SURE_THIS_IS_HORDE2: Self = .horde2
+        
+        /// Necropolis horde 1
+        static let unearthedGraves: Self = .horde1
+        /// Necropolis horde 2 ???
+        static let unearthedGravesUpg_NOT_SURE_THIS_IS_HORDE2: Self = .horde2
+
+        /// Dungeon horde 1
+        static let mushroomRings: Self = .horde1
+        /// Dungeon horde 2 ???
+        static let mushroomRingsUpg_NOT_SURE_THIS_IS_HORDE2: Self = .horde2
+        
+        /// Stronghold horde 1
+        static let messHall: Self = .horde1
+        /// Stronghold horde 2 ???
+        static let messHallUpg_NOT_SURE_THIS_IS_HORDE2: Self = .horde2
+        
+        /// Fortress horde 1
+        static let captainsQuarters: Self = .horde1
+        /// Fortress horde 2 ???
+        static let captainsQuartersUpg_NOT_SURE_THIS_IS_HORDE2: Self = .horde2
+        
+        /// Conflux horde 1
+        static let gardenOfLife: Self = .horde1
+        /// Conflux horde 2 ???
+        static let gardenOfLifeUpg_NOT_SURE_THIS_IS_HORDE2: Self = .horde2
+        
+        /// Rampart horde 3
+        static let dendroidSaplings: Self = .horde3
+        /// Rampart horde 4 ???
+        static let dendroidSaplingsUpg_NOT_SURE_THIS_IS_HORDE4: Self = .horde4
+        
+        /// Inferno horde 3
+        static let cages: Self = .horde3
+        /// Inferno horde 4 ???
+        static let cagesUpg_NOT_SURE_THIS_IS_HORDE4: Self = .horde4
+   
+        
         case dwelling2
         case upgradedDwelling2
         case horde2

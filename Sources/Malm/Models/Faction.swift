@@ -13,7 +13,10 @@ public enum Faction: UInt8, Equatable, CaseIterable, CustomDebugStringConvertibl
 
 // MARK: CustomStringConvertible
 public extension Faction {
-    var debugDescription: String {
+    
+    var debugDescription: String { name }
+    
+    var name: String {
         switch self {
         case .castle: return "castle"
         case .rampart: return "rampart"
