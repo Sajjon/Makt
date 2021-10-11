@@ -46,5 +46,19 @@ A tile might contain multiple objects, in fact more than two! E.g. a Hero has a 
 ## Package *H3C* 🏕
 HoMM3 campaign file - `.h3c` - parser.
 
+## Package *Laka*
+A CLI toolset for extraction of game resources. 
+
+See [README](Sources/Laka/README.md).
+
+### Etymology
+"Laka" means "Extract" in Swedish 🇸🇪
+
+## Package *Packa* 📦
+Binary tree packing algorithm used by *Laka*, to fit as many images in an as small square as possible.
+
+See [README](Sources/Packa/README.md).
+
+
 ## Package *Makt* ⚔️
 The game engine.
