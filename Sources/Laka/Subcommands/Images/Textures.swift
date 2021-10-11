@@ -342,7 +342,7 @@ extension Laka.Textures {
         try generateTexture(
             name: "monsters",
             list: monsterFiles,
-            limit: 1
+            maxImageCountPerDefFile: 1
         )
     }
     
@@ -949,10 +949,11 @@ extension Laka.Textures {
         let impassableTerrainFiles = impassableTerrain.map { defFileName in
             ImageExport(defFileName: defFileName, nameFromFrameIndex: { _ in defFileName })
         }
+        
         try generateTexture(
             name: "impassable_terrain",
             list: impassableTerrainFiles,
-            limit: 1
+            maxImageCountPerDefFile: 1
         )
     }
     

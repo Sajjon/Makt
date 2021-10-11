@@ -21,7 +21,7 @@ protocol TextureGenerating {
     func generateTexture(
         name atlasName: String,
         list fileList: [ImageExport],
-        limit: Int?
+        maxImageCountPerDefFile: Int?
     ) throws
 }
 
@@ -126,7 +126,7 @@ extension TextureGenerating {
     func generateTexture(
         name atlasName: String,
         list fileList: [ImageExport],
-        limit: Int? = nil
+        maxImageCountPerDefFile: Int? = nil
     ) throws {
         let defFileList = fileList.map{ $0.defFileName }
         print("⚙️ Generating \(atlasName) texture.")
@@ -138,14 +138,20 @@ extension TextureGenerating {
             at: inDataURL,
             to: outImagesURL,
             verbose: verbose,
+            
             calculateWorkload: { unparsedDefFles in
-                if limit != nil {
-                    return unparsedDefFles.count
+                if let imageCountPerFile = maxImageCountPerDefFile{
+                    return unparsedDefFles.count * imageCountPerFile
                 } else {
                     return try unparsedDefFles.map { try defParser.peekFileEntryCount(of: $0) }.reduce(0, +)
                 }
             },
-            exporter: defParser.exporter(fileList: fileList, limit: limit),
+            
+            exporter: defParser.exporter(
+                fileList: fileList,
+                maxImageCountPerDefFile: maxImageCountPerDefFile
+            ),
+            
             aggregator: makeAggregator(atlasName: atlasName)
         )
         

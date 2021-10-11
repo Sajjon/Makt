@@ -14,7 +14,7 @@ extension DefParser {
     
     func exporter(
         fileList: [ImageExport],
-        limit: Int? = nil
+        maxImageCountPerDefFile: Int? = nil
     ) -> Exporter<ImageFromFrame> {
         
         .exportingMany { [self] toExport in
@@ -28,7 +28,7 @@ extension DefParser {
                 throw Fail(description: "Expected to find name in list")
             }
             
-            return try defFile.entries.prefix(limit ?? defFile.entries.count).enumerated().map { (frameIndex, frame) in
+            return try defFile.entries.prefix(maxImageCountPerDefFile ?? defFile.entries.count).enumerated().map { (frameIndex, frame) in
                 let imageName = imageToExportFileTemplate.nameFromFrameIndex(frameIndex)
                 let cgImage = try ImageImporter.imageFrom(frame: frame, palette: defFile.palette)
                 return ImageFromFrame(name: imageName, cgImage: cgImage, fullSize: frame.fullSize, rect: frame.rect)
