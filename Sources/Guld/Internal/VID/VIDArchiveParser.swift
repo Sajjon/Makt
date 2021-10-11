@@ -9,18 +9,6 @@ import Foundation
 import Util
 import Malm
 
-internal protocol ArchiveFileCountParser {
-    func peekFileEntryCount(of archiveFile: ArchiveFile) throws -> Int
-}
-
-extension ArchiveFileCountParser {
-    func peekFileEntryCount(of archiveFile: ArchiveFile) throws -> Int {
-        let reader = DataReader(data: archiveFile.data)
-        let fileCount = try reader.readUInt32()
-        return .init(fileCount)
-    }
-}
-
 internal final class VIDArchiveParser: ArchiveFileCountParser {
     internal init() {}
 }
@@ -28,10 +16,9 @@ internal final class VIDArchiveParser: ArchiveFileCountParser {
 internal extension VIDArchiveParser {
     
     func parse(
-        archiveFile: ArchiveFile,
+        archiveFile: SimpleFile,
         inspector: AssetParsedInspector? = nil
     ) throws -> VIDFile {
-        precondition(archiveFile.kind.isVIDFile)
         
         let reader = DataReader(data: archiveFile.data)
         
@@ -68,7 +55,7 @@ internal extension VIDArchiveParser {
             try reader.seek(to: $0.offset)
             let contents = try reader.read(byteCount: $0.size)
             let fileEntry = VIDFile.FileEntry(
-                parentArchiveName: archiveFile.fileName,
+                parentArchiveName: archiveFile.name,
                 fileName: $0.name,
                 contents: contents
             )
@@ -77,7 +64,7 @@ internal extension VIDArchiveParser {
         }
         
         return .init(
-            archiveKind: archiveFile.kind,
+            archiveName: archiveFile.name,
             entries: entries
         )
     }

@@ -37,10 +37,10 @@ public final class AssetsProvider {
     public static var sharedAssets: Assets?
     
     private let fileManager: FileManager
-    private let archiveLoader: ArchiveLoader = .init()
+//    private let archiveLoader: ArchiveLoader = .init()
     
-    private var archiveFileCache: [Archive: ArchiveFile] = [:]
-    private var archiveCache: [Archive: LoadedArchive] = [:]
+//    private var archiveFileCache: [Archive: SimpleFile] = [:]
+//    private var archiveCache: [Archive: LoadedArchive] = [:]
     
     private static var shared: AssetsProvider!
     
@@ -59,7 +59,7 @@ private extension AssetsProvider {
     enum Error: Swift.Error {
         case noAssetExistsAtPath(String)
         case failedToLoadAssetAtPath(String)
-        case failedToLoadArchive(Archive, error: Swift.Error)
+//        case failedToLoadArchive(Archive, error: Swift.Error)
         case failedToLoadMap(id: Map.ID, error: Swift.Error)
         case failedToLoadBasicInfoOfMap(id: Map.ID, error: Swift.Error)
         case failedToLoadImage(name: String, error: Swift.Error)
@@ -69,23 +69,23 @@ private extension AssetsProvider {
 // MARK: Load
 private extension AssetsProvider {
     
-    func load(archiveFile: ArchiveFile, inspector: AssetParsedInspector? = nil) throws -> LoadedArchive {
-        if let cached = archiveCache[archiveFile.kind] {
-            print("✅ Cache contains loaded archive: \(cached.fileName)")
-            return cached
-        }
-        let loaded = try archiveLoader.load(archiveFile: archiveFile, inspector: inspector)
-        archiveCache[archiveFile.kind] = loaded
-        return loaded
-    }
-
-    
-    func loadArchives() throws -> [ArchiveFile] {
-        let allArchives = config.gamesFilesDirectories.allArchives
-        let archiveFiles: [ArchiveFile] = try allArchives.map { try open(archive: $0) }
-        return archiveFiles
-    }
-    
+//    func load(archiveFile: SimpleFile, inspector: AssetParsedInspector? = nil) throws -> LoadedArchive {
+//        if let cached = archiveCache[archiveFile.kind] {
+//            print("✅ Cache contains loaded archive: \(cached.fileName)")
+//            return cached
+//        }
+//        let loaded = try archiveLoader.load(archiveFile: archiveFile, inspector: inspector)
+//        archiveCache[archiveFile.kind] = loaded
+//        return loaded
+//    }
+//
+//
+//    func loadArchives() throws -> [SimpleFile] {
+//        let allArchives = config.gamesFilesDirectories.allArchives
+//        let archiveFiles: [SimpleFile] = try allArchives.map { try open(archive: $0) }
+//        return archiveFiles
+//    }
+//
     
     func loadBasicInfoForMap(
         id mapID: Map.ID,
@@ -121,19 +121,19 @@ private extension AssetsProvider {
 // MARK: Internal
 internal extension AssetsProvider {
     
-    func open(archive: Archive, skipCache: Bool = false) throws -> ArchiveFile {
-        let useCache = !skipCache
-        if useCache, let cached = archiveFileCache[archive] {
-            print("✅ Cache contains archive file: \(archive.fileName)")
-            return cached
-        }
-        print("✨ Opening contents of archive named: \(archive.fileName)")
-        let data = try loadContentsOfDataFile(name: archive.fileName)
-        let archiveFile = ArchiveFile(kind: archive, data: data)
-        archiveFileCache[archive] = archiveFile
-        return archiveFile
-        
-    }
+//    func open(archive: Archive, skipCache: Bool = false) throws -> SimpleFile {
+//        let useCache = !skipCache
+//        if useCache, let cached = archiveFileCache[archive] {
+//            print("✅ Cache contains archive file: \(archive.fileName)")
+//            return cached
+//        }
+//        print("✨ Opening contents of archive named: \(archive.fileName)")
+//        let data = try loadContentsOfDataFile(name: archive.fileName)
+//        let archiveFile = SimpleFile(kind: archive, data: data)
+//        archiveFileCache[archive] = archiveFile
+//        return archiveFile
+//
+//    }
     
     func loadContentsOfFileAt(path: String) throws -> Data {
         guard fileManager.fileExists(atPath: path) else {
@@ -156,17 +156,17 @@ public final class Assets {
     
     private let loadMapQueue = DispatchQueue(label: "LoadMapQueue", qos: .background)
 
-    private let loadedArchives: [LoadedArchive]
+//    private let loadedArchives: [LoadedArchive]
    
     public let basicInfoOfMaps: [Map.BasicInformation]
     private let imageLoader: ImageLoader
     
     internal init(
-        loadedArchives: [LoadedArchive],
+//        loadedArchives: [LoadedArchive],
         basicInfoOfMaps: [Map.BasicInformation],
         imageLoader: ImageLoader
     ) {
-        self.loadedArchives = loadedArchives
+//        self.loadedArchives = loadedArchives
         self.basicInfoOfMaps = basicInfoOfMaps
         self.imageLoader = imageLoader
     }
@@ -182,43 +182,45 @@ private extension AssetsProvider {
         fileManager: FileManager = .default
     ) throws -> Assets {
 
-        var numberOfLoadedItems = 0
-        let assetParsedInspector = AssetParsedInspector(
-            onParseFileEntry: { fileEntry in
-                numberOfLoadedItems += 1
-            }
-        )
+//        var numberOfLoadedItems = 0
+//        let assetParsedInspector = AssetParsedInspector(
+//            onParseFileEntry: { fileEntry in
+//                numberOfLoadedItems += 1
+//            }
+//        )
+//        
+//        let startTime = CFAbsoluteTimeGetCurrent()
         
-        let startTime = CFAbsoluteTimeGetCurrent()
+        fatalError()
         
-        let archiveFiles = try loadArchives()
-        let numberOfItemsToLoad = try archiveFiles.map { try self.archiveLoader.peekFileEntryCount(of: $0) }.reduce(0, +)
-        let loadedArchives:  [LoadedArchive] = try archiveFiles.map { archiveFile in
-            let loadedArchive = try load(archiveFile: archiveFile, inspector: assetParsedInspector)
-            let loadingProgress: LoadingProgress = .namedProgress("Load archive \(String(describing: archiveFile.fileName))", step: numberOfLoadedItems, of: numberOfItemsToLoad)
-            print(loadingProgress)
-            onLoadingProgress?(loadingProgress)
-            return loadedArchive
-        }
-
-        let diff = CFAbsoluteTimeGetCurrent() - startTime
-        print(String(format: "✨✅ Successfully loaded #\(loadedArchives.count) archives, took %.3f seconds", diff))
-        
-        let imageLoader = ImageLoader(lodFiles: loadedArchives.compactMap { $0.lodArchive })
-        
-        let basicInfoOfMaps = try loadBasicInfoForAllMaps()
-        
-        let assets = Assets(
-            loadedArchives: loadedArchives,
-            basicInfoOfMaps: basicInfoOfMaps,
-            imageLoader: imageLoader
-        )
-        
-        if AssetsProvider.sharedAssets == nil {
-            AssetsProvider.sharedAssets = assets
-        }
-        
-        return assets
+//        let archiveFiles = try loadArchives()
+//        let numberOfItemsToLoad = try archiveFiles.map { try self.archiveLoader.peekFileEntryCount(of: $0) }.reduce(0, +)
+//        let loadedArchives:  [LoadedArchive] = try archiveFiles.map { archiveFile in
+//            let loadedArchive = try load(archiveFile: archiveFile, inspector: assetParsedInspector)
+//            let loadingProgress: LoadingProgress = .namedProgress("Load archive \(String(describing: archiveFile.name))", step: numberOfLoadedItems, of: numberOfItemsToLoad)
+//            print(loadingProgress)
+//            onLoadingProgress?(loadingProgress)
+//            return loadedArchive
+//        }
+//
+//        let diff = CFAbsoluteTimeGetCurrent() - startTime
+//        print(String(format: "✨✅ Successfully loaded #\(loadedArchives.count) archives, took %.3f seconds", diff))
+//
+//        let imageLoader = ImageLoader(lodFiles: loadedArchives.compactMap { $0.lodArchive })
+//
+//        let basicInfoOfMaps = try loadBasicInfoForAllMaps()
+//
+//        let assets = Assets(
+//            loadedArchives: loadedArchives,
+//            basicInfoOfMaps: basicInfoOfMaps,
+//            imageLoader: imageLoader
+//        )
+//
+//        if AssetsProvider.sharedAssets == nil {
+//            AssetsProvider.sharedAssets = assets
+//        }
+//
+//        return assets
     }
 }
 
@@ -253,17 +255,14 @@ public extension Assets {
     func loadImage(ground: Map.Tile.Ground, skipCache: Bool = false) throws -> GroundImage {
         try imageLoader.loadImage(ground: ground, skipCache: skipCache)
     }
-    
-//    func loadImage(object: Map.Object, skipCache: Bool = false) throws -> ObjectImage {
-//        try imageLoader.loadImage(object: object, skipCache: skipCache)
-//    }
+
     func loadImage(sprite: Sprite, skipCache: Bool = false) throws -> ObjectImage {
         try imageLoader.loadImage(sprite: sprite, skipCache: skipCache)
     }
     
-    func loadImage<Key: DrawableTileLayer>(for key: Key, skipCache: Bool = false) throws -> CachedImage<Key> {
-        try imageLoader.loadImage(for: key, skipCache: skipCache)
-    }
+//    func loadImage<Key: DrawableTileLayer>(for key: Key, skipCache: Bool = false) throws -> CachedImage<Key> {
+//        try imageLoader.loadImage(for: key, skipCache: skipCache)
+//    }
     
     func loadMap(
         id mapID: Map.ID,

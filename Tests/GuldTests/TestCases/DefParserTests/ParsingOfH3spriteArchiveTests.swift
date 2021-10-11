@@ -54,9 +54,16 @@ final class ParsingOfH3spriteArchiveTests: XCTestCase {
     // For the 17 def files of interest it takes 0.7 seconds
     func test__H3sprite_lod__parsing() throws {
         let config = try Config()
-        let assetsProvider = AssetsProvider(config: config)
-        let spriteLodFile = try assetsProvider.open(archive: .lod(.restorationOfErathiaSpriteArchive))
+//        let spriteLodFile = try assetsProvider.open(archive: .lod(.restorationOfErathiaSpriteArchive))
         let spriteLodName = "H3sprite.lod"
+
+        
+        let lodFilePath = config.gamesFilesDirectories.data.appending(spriteLodName)
+        
+        guard let lodData = FileManager.default.contents(atPath: lodFilePath) else {
+            XCTFail("Failed to open LOD archive named: \(spriteLodName)")
+            return
+        }
         
         let testVectorURL = try XCTUnwrap(Bundle.module.url(forResource: "ExpectedHashesOfDefFilesInArchive__H3sprite_lod", withExtension: "json"))
         let testVectorData = try Data(contentsOf: testVectorURL)
@@ -102,7 +109,7 @@ final class ParsingOfH3spriteArchiveTests: XCTestCase {
                 })
         )
         
-        XCTAssertEqual(spriteLodFile.fileName, spriteLodName)
+//        XCTAssertEqual(spriteLodFile.fileName, spriteLodName)
         
         let expectRepeatingSegmentFragmentsEncodingEachLineIndividually = expectation(description: "repeatingSegmentFragmentsEncodingEachLineIndividually")
         expectRepeatingSegmentFragmentsEncodingEachLineIndividually.assertForOverFulfill = false
@@ -117,7 +124,7 @@ final class ParsingOfH3spriteArchiveTests: XCTestCase {
         let expectNonCompressed =  expectation(description: "nonCompressed")
         expectNonCompressed.assertForOverFulfill = false
         
-        let parser = LodParser()
+    
         let defParserInspector: DefParser.Inspector = .init(onParseFrame: { frame in
             switch frame.encodingFormat {
             case .repeatingSegmentFragmentsEncodingEachLineIndividually:
@@ -137,16 +144,19 @@ final class ParsingOfH3spriteArchiveTests: XCTestCase {
                 XCTFail("Wrong fileEntry type.")
                 return
             }
-            guard case .def(let definitionLoader) = lodFileEntry.content else {
-                return
-            }
-            
+//            guard case .def(let definitionLoader) = lodFileEntry.content else {
+//                return
+//            }
+//
             guard defFilesInTestVector.contains(lodFileEntry.fileName.lowercased()) else {
                 return
             }
             
-            let definitionFile = definitionLoader(defParserInspector)
-            XCTAssertEqual(definitionFile.parentArchiveName, spriteLodName)
+//            let definitionFile = definitionLoader(defParserInspector)
+            
+            let defParser = DefParser(inspector: defParserInspector)
+            let definitionFile = try! defParser.parse(data: lodFileEntry.data, definitionFileName: lodFileEntry.fileName)
+            
             definitionFile.blocks.enumerated().forEach({ (blockIndex, block) in
                 block.frames.enumerated().forEach({ (frameIndex, frame) in
                     let frameName = frame.fileName.lowercased()
@@ -162,7 +172,9 @@ final class ParsingOfH3spriteArchiveTests: XCTestCase {
             })
             
         })
-        let spriteLod = try parser.parse(archiveFile: spriteLodFile, inspector: inspector)
+        let parser = LodParser(inspector: inspector)
+//        let spriteLod = try parser.parse(archiveFile: spriteLodFile, inspector: inspector)
+        let spriteLod = try parser.parse(archiveFileName: spriteLodName, archiveFileData: lodData)
         XCTAssertEqual(spriteLod.entries.count, 4013)
         XCTAssertTrue(setOfExpectedHashesToFulFill.isEmpty)
         waitForExpectations(timeout: 2)

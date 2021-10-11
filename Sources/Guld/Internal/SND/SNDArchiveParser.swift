@@ -17,12 +17,11 @@ internal extension SNDArchiveParser {
 
     
     func parse(
-        archiveFile: ArchiveFile,
+        archiveFile: SimpleFile,
         inspector: AssetParsedInspector? = nil
     ) throws -> SNDFile {
-        precondition(        archiveFile.kind.isSNDFile)
         
-        let reader = DataReader(data:         archiveFile.data)
+        let reader = DataReader(data: archiveFile.data)
         
         let fileCount = try reader.readUInt32()
        
@@ -50,7 +49,7 @@ internal extension SNDArchiveParser {
             try reader.seek(to: metaData.fileOffset)
             let contents = try reader.read(byteCount: metaData.size)
             let fileEntry = SNDFile.FileEntry(
-                parentArchiveName:         archiveFile.fileName,
+                parentArchiveName:         archiveFile.name,
                 fileName: metaData.fileName,
                 contents: contents
             )
@@ -59,7 +58,7 @@ internal extension SNDArchiveParser {
         }
         
         return .init(
-            archiveKind: archiveFile.kind,
+            archiveName: archiveFile.name,
             entries: entries
         )
     }

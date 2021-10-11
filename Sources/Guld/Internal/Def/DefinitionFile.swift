@@ -7,11 +7,9 @@
 
 import Foundation
 
-public struct DefinitionFile: ArchiveProtocol, ArchiveFileEntry, Hashable, CustomDebugStringConvertible {
-    public let archiveName: String
+public struct DefinitionFile: ArchiveProtocol, Hashable, CustomDebugStringConvertible {
     
-    public let parentArchiveName: String
-    
+    /// Name of the definition file
     public let fileName: String
     
     /// Original Definition file data size
@@ -23,7 +21,15 @@ public struct DefinitionFile: ArchiveProtocol, ArchiveFileEntry, Hashable, Custo
     public let height: Scalar
     public let palette: Palette
     public let blocks: [Block]
-    public var entries: [Frame] { blocks.flatMap({ $0.frames }) }
+
+    public var entries: [Frame] {
+        blocks.flatMap { $0.frames }
+    }
+}
+
+public extension DefinitionFile {
+    /// Name of the definition file
+    var archiveName: String { fileName }
 }
 
 public extension DefinitionFile {

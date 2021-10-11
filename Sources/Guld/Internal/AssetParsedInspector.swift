@@ -7,11 +7,11 @@
 
 import Foundation
 
-internal final class AssetParsedInspector {
-    
+public final class AssetParsedInspector {
+    public typealias OnParseFileEntry = (ArchiveFileEntry) -> Void
     private let onParseFileEntry: OnParseFileEntry
     
-    internal init(
+    public init(
         onParseFileEntry: @escaping OnParseFileEntry
     ) {
         self.onParseFileEntry = onParseFileEntry
@@ -20,7 +20,7 @@ internal final class AssetParsedInspector {
 }
 
 internal extension AssetParsedInspector {
-    typealias OnParseFileEntry = (ArchiveFileEntry) -> Void
+    
     
     func didParseFileEntry(_ fileEntry: ArchiveFileEntry) -> Void {
         onParseFileEntry(fileEntry)

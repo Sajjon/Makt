@@ -66,13 +66,3 @@ public extension Map.ID {
   
     static let supportedFileExtensions = [Map.fileExtension, Map.fileExtensionTutorialMap]
 }
-
-
-private extension String {
-    var fileExtension: String? {
-        guard let fileExtensionComponent = split(separator: ".").last else {
-            return nil
-        }
-        return String(fileExtensionComponent)
-    }
-}

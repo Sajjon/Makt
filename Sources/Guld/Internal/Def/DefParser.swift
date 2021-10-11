@@ -9,33 +9,50 @@ import Foundation
 import Malm
 import Util
 
-public final class DefParser {
-    private let reader: DataReader
-    private let definitionFileName: String
-    private let parentArchiveName: String
-    public init(data: Data, definitionFileName: String, parentArchiveName: String) {
-        self.reader = DataReader(data: data)
-        self.definitionFileName = definitionFileName
-        self.parentArchiveName = parentArchiveName
+public final class DefParser: ArchiveFileCountParser {
+    private let inspector: Inspector?
+
+    public init(inspector: Inspector? = nil) {
+        self.inspector = inspector
+//        self.reader = DataReader(data: data)
+//        self.definitionFileName = definitionFileName
+//        self.parentArchiveName = parentArchiveName
     }
 }
 
 public extension DefParser {
     final class Inspector {
-        typealias OnParseFrame = (DefinitionFile.Frame) -> Void
+        public typealias OnParseFrame = (DefinitionFile.Frame) -> Void
         private let onParseFrame: OnParseFrame?
-        init(onParseFrame: OnParseFrame?) {
+        public init(onParseFrame: OnParseFrame?) {
             self.onParseFrame = onParseFrame
         }
-        func didParseFrame(_ frame: DefinitionFile.Frame) {
+        public func didParseFrame(_ frame: DefinitionFile.Frame) {
             onParseFrame?(frame)
         }
     }
 }
 
 public extension DefParser {
-    func parse(inspector: Inspector? = nil) throws -> DefinitionFile {
+    
+    func peekFileEntryCount(of unparsedDefFile: SimpleFile) throws -> Int {
+        let reader = DataReader(data: unparsedDefFile.data)
+        try reader.skip(byteCount: 3 * 4 /* kind, width, height: à 4 bytes*/)
+        let blockCount = try reader.readUInt32()
+        try reader.skip(byteCount: 256 * 3) // palette
+        let frameCounts = try blockCount.nTimes {
+            try peekFrameCountOFBlock(reader: reader)
+        }
+        return frameCounts.reduce(0, +)
+    }
+    
+    func parse(
+        data: Data,
+        definitionFileName: String
+    ) throws -> DefinitionFile {
      
+        let reader = DataReader(data: data)
+        
         let kind = try DefinitionFile.Kind(integer: reader.readUInt32())
         let width = try reader.readUInt32()
         let height = try reader.readUInt32()
@@ -43,19 +60,23 @@ public extension DefParser {
         let palette = try reader.readPalette()
         
         let blockMetaDatas: [BlockMetaData] = try (0..<blockCount).map { blockIndex in
-            try parseBlockMetaData(blockIndex: .init(blockIndex))
+            try parseBlockMetaData(reader: reader, blockIndex: .init(blockIndex))
         }
         
         var firstFrameFullHeight: Int!
         var firstFrameFullWidth: Int!
         
         let blocks: [Block] = try blockMetaDatas.map {
-            try parseBlock(blockMetaData: $0, &firstFrameFullHeight, &firstFrameFullWidth, inspector: inspector)
+            try parseBlock(
+                reader: reader,
+                defFileName: definitionFileName,
+                blockMetaData: $0,
+                &firstFrameFullHeight,
+                &firstFrameFullWidth
+            )
         }
         
         return .init(
-            archiveName: definitionFileName,
-            parentArchiveName: parentArchiveName,
             fileName: definitionFileName,
             byteCount: reader.sourceSize,
             kind: kind,
@@ -92,36 +113,23 @@ extension FixedWidthInteger {
 
 private extension DefParser {
     
-    func codeFragment() throws -> (length: Int, data: Data) {
-        let code = try reader.readUInt8()
-        let length = Int(try reader.readUInt8()) + 1
-        let byteCount = Int(length)
-        let data: Data
-        if code == 0xff {
-            // Raw data
-            data = try reader.read(byteCount: byteCount)
-        } else {
-            data = Data(Array<UInt8>(repeating: code, count: byteCount))
-        }
-        
-        return (byteCount, data)
+    
+    func peekFrameCountOFBlock(
+        reader: DataReader
+    ) throws -> Int {
+        try reader.skip(byteCount: 4) // skip block identifier
+        let frameCount = try Int(reader.readUInt32())
+        try reader.skip(byteCount: 8) // 2x unknown à 4
+        try reader.skip(byteCount: frameCount * (DefParser.frameNameByteCount + 4 /* offset size */ ) )
+        return frameCount
     }
     
-    func segmentFragment() throws -> (length: Int, data: Data) {
-        let segment = try reader.readUInt8()
-        let code = segment >> 5
-        let length = (segment & 0x1f) + 1
-        let byteCount = Int(length)
-        let data: Data
-        if code == 7 {
-            data = try reader.read(byteCount: byteCount)
-        } else {
-            data = Data(Array<UInt8>(repeating: code, count: byteCount))
-        }
-        return (byteCount, data)
-    }
+    static let frameNameByteCount = 13
     
-    func parseBlockMetaData(blockIndex: Int) throws -> BlockMetaData {
+    func parseBlockMetaData(
+        reader: DataReader,
+        blockIndex: Int
+    ) throws -> BlockMetaData {
         let blockIdentifier = try reader.readUInt32()
         
         /// number of images in this block
@@ -132,7 +140,7 @@ private extension DefParser {
         
         
         let fileNames: [String] = try entriesCount.nTimes {
-            guard let fileName = try reader.readStringOfKnownMaxLength(13) else {
+            guard let fileName = try reader.readStringOfKnownMaxLength(UInt32(DefParser.frameNameByteCount)) else {
                 fatalError("Failed to read file name")
             }
             return fileName
@@ -152,10 +160,11 @@ private extension DefParser {
     }
     
     func parseBlock(
+        reader: DataReader,
+        defFileName: String,
         blockMetaData: BlockMetaData,
         _ firstFrameFullHeight: inout Int!,
-        _ firstFrameFullWidth: inout Int!,
-        inspector: Inspector? = nil
+        _ firstFrameFullWidth: inout Int!
     ) throws -> Block {
         
         let entryCount = blockMetaData.entryCount
@@ -167,6 +176,8 @@ private extension DefParser {
         let frames: [DefinitionFile.Frame] = try (0..<entryCount).compactMap { entryIndex -> DefinitionFile.Frame? in
             
             guard let frame = try parseFrame(
+                reader: reader,
+                defFileName: defFileName,
                 encodingFormatOfPreviousFrame: encodingFormatOfPreviousFrame,
                 blockIndex: blockMetaData.blockIndex,
                 frameName: blockMetaData.fileNames[entryIndex],
@@ -209,8 +220,8 @@ private extension DefParser {
             
             return DefinitionFile.Frame(
                 encodingFormat: frame.encodingFormat,
+                defFileName: defFileName,
                 blockIndex: blockMetaData.blockIndex,
-                rootArchiveName: parentArchiveName,
                 fileName: frame.fileName,
                 fullSize: .init(width: .init(fullWidth), height: .init(fullHeight)),
                 rect: frame.rect,
@@ -227,11 +238,44 @@ private extension DefParser {
     }
     
     func parseFrame(
+        reader: DataReader,
+        defFileName: String,
         encodingFormatOfPreviousFrame: DefinitionFile.Frame.EncodingFormat?,
         blockIndex: Int,
         frameName: String,
         blockOffsetInfFile memberFileOffsetInDefFile: Int
     ) throws -> DefinitionFile.Frame? {
+        
+        
+        func codeFragment() throws -> (length: Int, data: Data) {
+            let code = try reader.readUInt8()
+            let length = Int(try reader.readUInt8()) + 1
+            let byteCount = Int(length)
+            let data: Data
+            if code == 0xff {
+                // Raw data
+                data = try reader.read(byteCount: byteCount)
+            } else {
+                data = Data(Array<UInt8>(repeating: code, count: byteCount))
+            }
+            
+            return (byteCount, data)
+        }
+        
+        func segmentFragment() throws -> (length: Int, data: Data) {
+            let segment = try reader.readUInt8()
+            let code = segment >> 5
+            let length = (segment & 0x1f) + 1
+            let byteCount = Int(length)
+            let data: Data
+            if code == 7 {
+                data = try reader.read(byteCount: byteCount)
+            } else {
+                data = Data(Array<UInt8>(repeating: code, count: byteCount))
+            }
+            return (byteCount, data)
+        }
+        
         
         // These two sprites seems unused and they fail top margin checks.
         guard !(frameName.starts(with: "SgTwMt") && frameName.hasSuffix(".pcx")) else {
@@ -376,8 +420,8 @@ private extension DefParser {
         
         return .init(
             encodingFormat: encodingFormat,
+            defFileName: defFileName,
             blockIndex: blockIndex,
-            rootArchiveName: parentArchiveName,
             fileName: frameName,
             fullSize: .init(width: fullWidth, height: fullHeight),
             rect: .init(x: leftMargin, y: topMargin, width: width, height: height),
