@@ -55,6 +55,7 @@ extension Laka.Textures {
         try exportArtifact()
         try exportHero()
         try exportResource()
+        try exportEdges()
     }
 }
 
