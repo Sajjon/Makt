@@ -11,16 +11,11 @@ public struct Packer {
     public init() {}
 }
 
-public enum Sorting {
-    case alreadySorted
-    case byArea
-    case byMaxSide
-}
-
+// MARK: Pack
 public extension Packer {
     
-    var sync: SyncPacker { .init() }
-    
+    /// "Packs" an array of 2D boxes with content onto a square-ish canvas with
+    /// an as small as possible area, by use of binary tree packing algorithm.
     func pack<Content: Packable>(
         packables: [Content],
         sorting: Sorting,
@@ -28,18 +23,28 @@ public extension Packer {
     ) {
         DispatchQueue.global(qos: .background).async { [sync] in
             do {
-                let success = try sync.pack(packables: packables, sorting: sorting)
+                
+                let packed = try sync.pack(
+                    packables: packables,
+                    sorting: sorting
+                )
+                
                 DispatchQueue.main.sync {
-                    done(Result.success(success))
+                    done(.success(packed))
                 }
             } catch {
                 DispatchQueue.main.sync {
-                    done(Result.failure(error))
+                    done(.failure(error))
                 }
             }
         }
     }
     
+}
+
+// MARK: Sync
+public extension Packer {
+    var sync: SyncPacker { .init() }
 }
 
 public struct SyncPacker {
@@ -52,6 +57,9 @@ private extension Packed {
 }
 
 public extension SyncPacker {
+    
+    /// "Packs" an array of 2D boxes with content onto a square-ish canvas with
+    /// an as small as possible area, by use of binary tree packing algorithm.
     func pack<Content: Packable>(
         packables: [Content],
         sorting: Sorting
