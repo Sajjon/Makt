@@ -65,5 +65,6 @@ extension Laka.UI {
         try exportArmyIcons()
         try exportArmyIconsSmall()
         try exportArtifacts()
+        try exportFlags()
     }
 }

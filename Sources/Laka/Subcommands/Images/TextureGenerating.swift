@@ -119,6 +119,21 @@ extension TextureGenerating {
     }
     
     func generateTexture(
+        atlasName: String,
+        defFileName: String,
+        nameFromFrameAtIndexIndex: @escaping ((DefinitionFile.Frame, Int) -> String?) = { f, i in f.fileName }
+    ) throws {
+        try generateTexture(
+            name: atlasName,
+            list: [.init(
+                defFileName: defFileName,
+                nameFromFrameAtIndexIndex: nameFromFrameAtIndexIndex
+            )
+                  ]
+        )
+    }
+    
+    func generateTexture(
         name atlasName: String,
         list fileList: [ImageExport],
         maxImageCountPerDefFile: Int? = nil
