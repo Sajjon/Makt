@@ -40,7 +40,7 @@ extension Laka.Textures {
             About to extract textures from entries exported by the `Laka LOD` command.
             Located at: \(inDataURL.path)
             To folder: \(outImagesURL.path)
-            This will take about 30 seconds on a fast machine (Macbook Pro 2019 - Intel CPU)
+            This will take about 15 seconds on a fast machine (Macbook Pro 2019 - Intel CPU)
             ☕️
             
             """
