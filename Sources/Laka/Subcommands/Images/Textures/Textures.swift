@@ -51,6 +51,7 @@ extension Laka.Textures {
         try exportImpassableTerrain()
         try exportPassableTerrain()
         try exportVisitable()
+        try exportDwelling()
     }
 }
 
