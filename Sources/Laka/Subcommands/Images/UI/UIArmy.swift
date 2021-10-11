@@ -26,6 +26,27 @@ extension Laka.UI {
         )
     }
     
+    func exportArtifacts() throws {
+        try generateTexture(
+            name: "artifacts",
+            list: [
+                .init(
+                    defFileName: "artifact.def",
+                    nameFromFrameAtIndexIndex: { frame, frameIndex in
+                        let namePrefix = "artifact_icon"
+                        let artifactIDRaw = frameIndex
+                        
+                        if let artifactID = try? Artifact.ID(integer: artifactIDRaw) {
+                            
+                            return [namePrefix, String(describing: artifactID)].joined(separator: "_")
+                        } else {
+                            /// Special case
+                            return [namePrefix, frame.fileName.lowercased()].joined(separator: "_")
+                        }
+                    })
+            ]
+        )
+    }
 }
 
 private extension Laka.UI {

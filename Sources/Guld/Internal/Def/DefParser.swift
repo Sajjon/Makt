@@ -295,12 +295,14 @@ private extension DefParser {
         /// Might be enlarged
         let fullWidth = try Int(reader.readUInt32())
         
-        // Frame named `CPrLBlk.pcx` in `twcrport.def` (army icons) breaks this, it has fullWidth of 58.
+        // Frame named `CPrLBlk.pcx` in `twcrport.def` (army icons) breaks this, it has fullWidth of 58 (which is NOT a multiple of 32 (`Image.pixelsPerTile`)).
         //assert(fullWidth.isMultiple(of: Image.pixelsPerTile), "Expected `fullWidth` of frame in DEF files to always be a multiple of `\(Image.pixelsPerTile)`, but frame named: '\(frameName)' in DEF file '\(defFileName)' is `\(fullWidth)` (which is not a multiple...)")
 
         /// Might be enlarged
         let fullHeight = try Int(reader.readUInt32())
-        assert(fullHeight.isMultiple(of: Image.pixelsPerTile), "Expected `fullHeight` of frame in DEF files to always be a multiple of `\(Image.pixelsPerTile)`, but frame named: '\(frameName)' in DEF file '\(defFileName)' is `\(fullHeight)` (which is not a multiple...)")
+        
+        // Frame named `HrArt000.pcx` in `artifact.def` (army icons) breaks this, it has fullHeight of 44 (which is NOT a multiple of 32 (`Image.pixelsPerTile`)).
+        // assert(fullHeight.isMultiple(of: Image.pixelsPerTile), "Expected `fullHeight` of frame in DEF files to always be a multiple of `\(Image.pixelsPerTile)`, but frame named: '\(frameName)' in DEF file '\(defFileName)' is `\(fullHeight)` (which is not a multiple...)")
         
         let width = try Int(reader.readUInt32())
         
