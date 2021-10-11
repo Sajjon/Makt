@@ -53,6 +53,7 @@ extension Laka.Textures {
         try exportVisitable()
         try exportDwelling()
         try exportArtifact()
+        try exportHero()
     }
 }
 
