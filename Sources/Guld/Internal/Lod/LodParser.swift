@@ -85,6 +85,38 @@ public extension LodParser {
     }
 }
 
+public extension LodParser {
+    
+    func parsePCX(from data: Data, named: String) throws -> PCXImage {
+        guard try isPCX(data: data) else { throw Error.notPCXImage }
+        let pcxReader = DataReader(data: data)
+        let size = try Int(pcxReader.readUInt32())
+        let width = try Int(pcxReader.readUInt32())
+        let height = try Int(pcxReader.readUInt32())
+        let contents: PCXImage.Contents = try {
+            if size == width*height {
+                let rawImageData = try pcxReader.read(byteCount: width*height)
+                let palette = try pcxReader.readPalette()
+                // VCMI calls this format: `PCX8B`
+                return .pixelData(rawImageData, encodedByPalette: palette)
+            } else if size == width*height*3 {
+                let rawImageData = try pcxReader.readRest()
+                // VCMI calls this format: `PCX24B`
+                return .rawRGBPixelData(rawImageData)
+            } else {
+                incorrectImplementation(shouldAlreadyHave: "Handled where size != width*height*Factor")
+            }
+        }()
+        
+        return PCXImage(
+            name: named,
+            width: width,
+            height: height,
+            contents: contents
+        )
+    }
+}
+   
 internal extension LodParser {
     
     func isPCX(data: Data) throws -> Bool {
@@ -108,30 +140,6 @@ internal extension LodParser {
         }
         return size == pixelCountX3
     }
-    
-    static func parsePCX(from data: Data, named: String) throws -> PCXImage {
-        let pcxReader = DataReader(data: data)
-        let size = try Int(pcxReader.readUInt32())
-        let width = try Int(pcxReader.readUInt32())
-        let height = try Int(pcxReader.readUInt32())
-        let contents: PCXImage.Contents = try {
-            if size == width*height {
-                let rawImageData = try pcxReader.read(byteCount: width*height)
-                let palette = try pcxReader.readPalette()
-                // VCMI calls this format: `PCX8B`
-                return .pixelData(rawImageData, encodedByPalette: palette)
-            } else if size == width*height*3 {
-                let rawImageData = try pcxReader.readRest()
-                // VCMI calls this format: `PCX24B`
-                return .rawRGBPixelData(rawImageData)
-            } else {
-                incorrectImplementation(shouldAlreadyHave: "Handled where size != width*height*Factor")
-            }
-        }()
-        
-        return PCXImage(name: named, width: width, height: height, contents: contents)
-    }
-    
     
     func decompress(
         parentArchiveName: String,
@@ -182,7 +190,7 @@ public extension LodParser {
     enum Error: Swift.Error, Equatable {
         case failedToReadHeader
         case failedToParseKindFromFile(named: String)
-        case fileNameSuggestsEntryIsPCXButNotAccordingToData
+        case notPCXImage
         case notLodFile(gotHeader: String)
         case failedToReadFileNameOfEntry
         case lodFileEntryDecompressionResultedInWrongSize(expected: Int, butGot: Int)

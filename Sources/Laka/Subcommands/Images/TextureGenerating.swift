@@ -32,7 +32,7 @@ extension TextureGenerating {
     func makeAggregator(atlasName: String) -> Aggregator<ImageFromFrame> {
         
         return Aggregator<ImageFromFrame> { (images: [ImageFromFrame]) throws -> [File] in
-            precondition(!images.isEmpty)
+            precondition(!images.isEmpty, "list of images cannot be empty. Cannot aggregate an empty list of images.")
 
             let packer = Packer()
             
@@ -121,6 +121,7 @@ extension TextureGenerating {
     func generateTexture(
         atlasName: String,
         defFileName: String,
+        maxImageCountPerDefFile: Int? = nil,
         nameFromFrameAtIndexIndex: @escaping ((DefinitionFile.Frame, Int) throws -> String?) = { f, i in f.fileName }
     ) throws {
         try generateTexture(
@@ -130,7 +131,8 @@ extension TextureGenerating {
                     defFileName: defFileName,
                     nameFromFrameAtIndexIndex: nameFromFrameAtIndexIndex
                 )
-            ]
+            ],
+            maxImageCountPerDefFile: maxImageCountPerDefFile
         )
     }
     
@@ -167,4 +169,34 @@ extension TextureGenerating {
         )
         
     }
+    
+    
+    func generateTexture(
+        imageName: String,
+        pcxImageName: String
+    ) throws {
+        let lodParser = LodParser()
+        
+        let pcxImageExporter: Exporter<ImageFromFrame> = .exportingOne { toExport in
+            let pcx = try lodParser.parsePCX(from: toExport.data, named: toExport.name)
+            let cgImage = try ImageImporter.imageFrom(pcx: pcx)
+            
+            return ImageFromFrame(
+                name: imageName,
+                cgImage: cgImage,
+                fullSize: pcx.size,
+                rect: pcx.rect
+            )
+        }
+        
+        try fileManager.export(
+            target: .specificFileList([pcxImageName]),
+            at: inDataURL,
+            to: outImagesURL,
+            verbose: verbose,
+            exporter: pcxImageExporter
+        )
+    }
+    
+    
 }

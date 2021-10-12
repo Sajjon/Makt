@@ -139,7 +139,7 @@ extension FileManager {
             case .specificFileList(let targetFiles): return targetFiles.compactMap { $0.fileExtension }
             }
         }()
-        
+      
         stepper.step("🔎 Finding files")
         
         let urlsOfFoundFiles = try findFiles(
@@ -156,6 +156,10 @@ extension FileManager {
                 return urlsOfFoundFiles.filter { targetFiles.contains($0.lastPathComponent) }
             }
         }()
+        
+        guard !files.isEmpty else {
+            throw Fail(description: "Failed to find any files for target: \(String(describing: target))")
+        }
         
         stepper.step("📖 Reading files")
         

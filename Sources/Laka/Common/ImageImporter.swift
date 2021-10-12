@@ -13,7 +13,37 @@ import CoreGraphics
 
 enum ImageImporter {}
 
+extension PCXImage {
+    var size: CGSize { .init(width: width, height: height) }
+    var rect: CGRect { .init(origin: .zero, size: size) }
+}
+
 extension ImageImporter {
+    
+    static func imageFrom(
+        pcx: PCXImage,
+        mirroring: Mirroring = .none
+    ) throws -> CGImage {
+        
+        var maybePalette: Palette?
+        let pixelData: Data
+        switch pcx.contents {
+        case .pixelData(let pixels, let palette):
+            pixelData = pixels
+            maybePalette = palette
+        case .rawRGBPixelData(let pixels):
+            pixelData = pixels
+        }
+        
+        return try imageFrom(
+            pixelData: pixelData,
+            contentsHint: pcx.name,
+            fullSize: pcx.size,
+            rect: pcx.rect,
+            mirroring: mirroring,
+            palette: maybePalette
+        )
+    }
     
     static func imageFrom(
         frame: DefinitionFile.Frame,

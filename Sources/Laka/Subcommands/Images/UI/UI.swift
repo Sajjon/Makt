@@ -70,6 +70,12 @@ extension Laka.UI {
         try exportPrimarySkill()
         try exportSecondarySkill()
         try exportSpells()
+        try exportSpellScrolls()
+        try exportSpellTabs()
+        try exportMagicSchools()
+        try exportResource()
+        try exportDialogBorder()
+        try exportArmyBackgrounds()
     }
     
     func exportArtifacts() throws {
@@ -154,4 +160,34 @@ extension Laka.UI {
         }
     }
     
+    func exportSpellTabs() throws {
+        try generateTexture(
+            atlasName: "spell_tabs",
+            defFileName: "speltab.def"
+        )
+    }
+    
+    func exportMagicSchools() throws {
+        try generateTexture(
+            atlasName: "magic_schools",
+            defFileName: "schools.def"
+        )
+    }
+    
+    func exportResource() throws {
+        try generateTexture(
+            atlasName: "resource_icons",
+            defFileName: "resource.def"
+        )
+    }
+    
+    func exportDialogBorder() throws {
+        try generateTexture(
+            atlasName: "dialog_border_image",
+            defFileName: "dialgbox.def"
+        )
+    }
+    
+
 }
+
