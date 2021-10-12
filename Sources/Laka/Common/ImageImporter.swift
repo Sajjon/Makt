@@ -41,7 +41,8 @@ extension ImageImporter {
             fullSize: pcx.size,
             rect: pcx.rect,
             mirroring: mirroring,
-            palette: maybePalette
+            palette: maybePalette,
+            useReplacementMap: false
         )
     }
     
@@ -67,7 +68,8 @@ extension ImageImporter {
         fullSize: CGSize,
         rect: CGRect,
         mirroring: Mirroring = .none,
-        palette: Palette?
+        palette: Palette?,
+        useReplacementMap: Bool = true
     ) throws -> CGImage {
         
         /// Replace special colors
@@ -86,7 +88,7 @@ extension ImageImporter {
                 
                 let pixels: [UInt32] = pixelData.map {
                     let pixel = Int($0)
-                    if let pixelReplacement = pixelReplacementMap[pixel] {
+                    if useReplacementMap, let pixelReplacement = pixelReplacementMap[pixel] {
                         return pixelReplacement
                     } else {
                         return palette32Bit[pixel]
