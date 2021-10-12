@@ -22,7 +22,8 @@ extension ImageImporter {
     
     static func imageFrom(
         pcx: PCXImage,
-        mirroring: Mirroring = .none
+        mirroring: Mirroring = .none,
+        usePaletteReplacementMap: Bool = true
     ) throws -> CGImage {
         
         var maybePalette: Palette?
@@ -42,7 +43,7 @@ extension ImageImporter {
             rect: pcx.rect,
             mirroring: mirroring,
             palette: maybePalette,
-            useReplacementMap: false
+            usePaletteReplacementMap: usePaletteReplacementMap
         )
     }
     
@@ -69,7 +70,7 @@ extension ImageImporter {
         rect: CGRect,
         mirroring: Mirroring = .none,
         palette: Palette?,
-        useReplacementMap: Bool = true
+        usePaletteReplacementMap: Bool = true
     ) throws -> CGImage {
         
         /// Replace special colors
@@ -88,7 +89,7 @@ extension ImageImporter {
                 
                 let pixels: [UInt32] = pixelData.map {
                     let pixel = Int($0)
-                    if useReplacementMap, let pixelReplacement = pixelReplacementMap[pixel] {
+                    if usePaletteReplacementMap, let pixelReplacement = pixelReplacementMap[pixel] {
                         return pixelReplacement
                     } else {
                         return palette32Bit[pixel]

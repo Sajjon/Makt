@@ -19,8 +19,9 @@ protocol TextureGenerating {
     var fileManager: FileManager { get }
     
     func generateTexture(
-        name atlasName: String,
+        name atlasName: String?,
         list fileList: [ImageExport],
+        skipImagesWithSameNameAndData: Bool,
         maxImageCountPerDefFile: Int?
     ) throws
 }
@@ -29,10 +30,36 @@ extension TextureGenerating {
     
     var fileManager: FileManager { .default }
     
-    func makeAggregator(atlasName: String) -> Aggregator<ImageFromFrame> {
+    func makeAggregator(atlasName: String, skipImagesWithSameNameAndData: Bool = false) -> Aggregator<ImageFromFrame> {
         
-        return Aggregator<ImageFromFrame> { (images: [ImageFromFrame]) throws -> [File] in
-            precondition(!images.isEmpty, "list of images cannot be empty. Cannot aggregate an empty list of images.")
+        return Aggregator<ImageFromFrame> { (possiblyDuplicatedImages: [ImageFromFrame]) throws -> [File] in
+            precondition(!possiblyDuplicatedImages.isEmpty, "list of images cannot be empty. Cannot aggregate an empty list of images.")
+            
+            var images: [ImageFromFrame] = []
+            
+            if skipImagesWithSameNameAndData {
+                for image in possiblyDuplicatedImages {
+                    if let prev = images.first(where: { $0.name == image.name }) {
+                        if prev.data == image.data {
+                            print("💡 Avoding image duplicate named: '\(image.name)' in atlas: '\(atlasName)' (same data too)")
+                            // Avoid duplicate
+                            continue
+                        } else {
+                            let duplicateCount = images.filter({ $0.name.contains(image.name) }).count
+                            // Retain, but rename
+                            let newUniqueName = "duplicate_\(duplicateCount)_\(image.name)"
+                            print("⚠️ WARNING image with duplicate name, but unique data, retaining it, but renaming it\nfrom: '\(image.name)'\nto: '\(newUniqueName)'")
+                            let modifiedName = ImageFromFrame(name: newUniqueName, cgImage: image.cgImage, fullSize: image.fullSize, rect: image.rect)
+                            images.append(modifiedName)
+                        }
+                    } else {
+                        // Retain as is
+                        images.append(image)
+                    }
+                }
+            } else {
+                images = possiblyDuplicatedImages
+            }
 
             let packer = Packer()
             
@@ -121,6 +148,7 @@ extension TextureGenerating {
     func generateTexture(
         atlasName: String,
         defFileName: String,
+        skipImagesWithSameNameAndData: Bool = false,
         maxImageCountPerDefFile: Int? = nil,
         nameFromFrameAtIndexIndex: @escaping ((DefinitionFile.Frame, Int) throws -> String?) = { f, i in f.fileName }
     ) throws {
@@ -132,17 +160,20 @@ extension TextureGenerating {
                     nameFromFrameAtIndexIndex: nameFromFrameAtIndexIndex
                 )
             ],
+            skipImagesWithSameNameAndData: skipImagesWithSameNameAndData,
             maxImageCountPerDefFile: maxImageCountPerDefFile
         )
     }
+
     
     func generateTexture(
-        name atlasName: String,
+        name atlasName: String?,
         list fileList: [ImageExport],
+        skipImagesWithSameNameAndData: Bool = false,
         maxImageCountPerDefFile: Int? = nil
     ) throws {
         let defFileList = fileList.map{ $0.defFileName }
-        print("⚙️ Generating \(atlasName) texture.")
+        print("⚙️ Generating \(atlasName.map{ "\($0) " } ?? "")texture.")
         
         let defParser = DefParser()
         
@@ -165,7 +196,7 @@ extension TextureGenerating {
                 maxImageCountPerDefFile: maxImageCountPerDefFile
             ),
             
-            aggregator: makeAggregator(atlasName: atlasName)
+            aggregator: atlasName.map { makeAggregator(atlasName: $0, skipImagesWithSameNameAndData: skipImagesWithSameNameAndData) }
         )
         
     }
@@ -173,13 +204,14 @@ extension TextureGenerating {
     
     func generateTexture(
         imageName: String,
-        pcxImageName: String
+        pcxImageName: String,
+        usePaletteReplacementMap: Bool = true
     ) throws {
         let lodParser = LodParser()
         
         let pcxImageExporter: Exporter<ImageFromFrame> = .exportingOne { toExport in
             let pcx = try lodParser.parsePCX(from: toExport.data, named: toExport.name)
-            let cgImage = try ImageImporter.imageFrom(pcx: pcx)
+            let cgImage = try ImageImporter.imageFrom(pcx: pcx, usePaletteReplacementMap: usePaletteReplacementMap)
             
             return ImageFromFrame(
                 name: imageName,
