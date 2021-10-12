@@ -76,6 +76,15 @@ extension Laka.UI {
         try exportResource()
         try exportDialogBorder()
         try exportArmyBackgrounds()
+        try exportMageGuild()
+        try exportSpellBookBackground()
+        try exportSpellBookCornerRight()
+        try exportSpellBookCornerLeft()
+        try exportHeroStatsSummaryBackground()
+        try exportDialogBoxBackground()
+        try exportDialogBoxBackgroundSmall()
+        try exportCreatureStatsSummaryBackground()
+        try exportLogo()
     }
     
     func exportArtifacts() throws {
@@ -188,6 +197,67 @@ extension Laka.UI {
         )
     }
     
+    func exportMageGuild() throws {
+        try generateTexture(
+            imageName: "mage_guild.png",
+            pcxImageName: "tpmage.pcx"
+        )
+    }
+    
+    func exportSpellBookBackground() throws {
+        try generateTexture(
+            imageName: "spellbook_background.png",
+            pcxImageName: "spelback.pcx"
+        )
+    }
 
+    func exportSpellBookCornerRight() throws {
+        try generateTexture(
+            imageName: "spellbook_corner_right.png",
+            pcxImageName: "speltrnr.pcx"
+        )
+    }
+    
+    func exportSpellBookCornerLeft() throws {
+        try generateTexture(
+            imageName: "spellbook_corner_left.png",
+            pcxImageName: "speltrnl.pcx"
+        )
+    }
+    
+    func exportHeroStatsSummaryBackground() throws {
+        try generateTexture(
+            imageName: "hero_stats_summary_background.png",
+            pcxImageName: "heroqvbk.pcx"
+        )
+    }
+    
+    func exportDialogBoxBackgroundSmall() throws {
+        try generateTexture(
+            imageName: "dialog_box_background_small.png",
+            pcxImageName: "dibox128.pcx"
+        )
+    }
+    
+    func exportDialogBoxBackground() throws {
+        try generateTexture(
+            imageName: "dialog_box_background.png",
+            pcxImageName: "diboxbck.pcx"
+        )
+    }
+    
+    func exportCreatureStatsSummaryBackground() throws {
+        try generateTexture(
+            imageName: "creature_stats_summary_background.png",
+            pcxImageName: "crstkpu.pcx"
+        )
+    }
+    
+    func exportLogo() throws {
+        try generateTexture(
+            imageName: "logo.png",
+            pcxImageName: "puzzlogo.pcx"
+        )
+    }
 }
 
