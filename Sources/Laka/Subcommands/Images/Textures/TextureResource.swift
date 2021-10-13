@@ -73,12 +73,12 @@ extension Laka.Textures {
     
     func exportResource() throws {
         let resourceFileList = resource.map { defFileName in
-            ImageExport(defFileName: defFileName, nameFromFrameAtIndexIndex: { _, _ in defFileName })
+            DefImageExport(defFileName: defFileName, nameFromFrameAtIndexIndex: { _, _ in defFileName })
         }
         
         try generateTexture(
             name: "resource",
-            list: resourceFileList,
+            list: resourceFileList.map { .def($0) },
             maxImageCountPerDefFile: 1
         )
     }

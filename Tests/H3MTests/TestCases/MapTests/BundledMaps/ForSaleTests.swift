@@ -130,12 +130,12 @@ final class ForSaleTests: BaseMapTest {
                                             .marketplace, .resourceSilo,
                                             .mageGuildLevel1, .mageGuildLevel2, .mageGuildLevel3, .mageGuildLevel4,
                                             .grail, .special2, .special3,
-                                            .dwelling1, .upgradedDwelling1, .dwelling2, .upgradedDwelling2,
-                                            .dwelling3, .upgradedDwelling3, .horde3,
-                                            .dwelling4,. upgradedDwelling4,
-                                            .dwelling5, .upgradedDwelling5,
-                                            .dwelling6, .upgradedDwelling6,
-                                            .dwelling7, .upgradedDwelling7
+                                            .dwellingLevel1, .dwellingLevel1Upgraded, .dwellingLevel2, .dwellingLevel2Upgraded,
+                                            .dwellingLevel3, .dwellingLevel3Upgraded, .horde3,
+                                            .dwellingLevel4,. dwellingLevel4Upgraded,
+                                            .dwellingLevel5, .dwellingLevel5Upgraded,
+                                            .dwellingLevel6, .dwellingLevel6Upgraded,
+                                            .dwellingLevel7, .dwellingLevel7Upgraded
                                         ],
                                         forbidden: []
                                     )

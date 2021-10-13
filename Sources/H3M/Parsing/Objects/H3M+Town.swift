@@ -136,7 +136,7 @@ internal extension H3M {
 // MARK: Private
 private extension H3M {
     
-    func parseBuildings() throws -> [Map.Town.Building] {
+    func parseBuildings() throws -> [Building.ID.Common] {
         try parseBitmaskOfEnum()
     }
     

@@ -60,7 +60,7 @@ final class MandateOfHeavenTests: BaseMapTest {
                             .specific(id: .pikeman, quantity: 10)
                         ]),
                         buildings: .custom(.init(built: [
-                            .townHall, .tavern, .mageGuildLevel1, .shipyard, .dwelling1, .dwelling2
+                            .townHall, .tavern, .mageGuildLevel1, .shipyard, .dwellingLevel1, .dwellingLevel2
                         ], forbidden: [.fort, .grail])),
                         alignment: nil
                     ), actual: object)

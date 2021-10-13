@@ -27,7 +27,7 @@ final class ElbowRoomTests: BaseMapTest {
                             id: .fromMapFile(3352760721),
                             buildings: .custom(.init(
                                 built: [
-                                    .townHall, .fort, .tavern, .mageGuildLevel1, .dwelling1, .horde1
+                                    .townHall, .fort, .tavern, .mageGuildLevel1, .dwellingLevel1, .horde1
                                 ]
                             )),
                             events: .init(values: [

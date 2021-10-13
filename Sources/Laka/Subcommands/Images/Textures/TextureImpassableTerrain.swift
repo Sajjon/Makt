@@ -607,12 +607,12 @@ extension Laka.Textures {
     
     func exportImpassableTerrain() throws {
         let impassableTerrainFiles = impassableTerrain.map { defFileName in
-            ImageExport(defFileName: defFileName, nameFromFrameAtIndexIndex: { _, _ in defFileName })
+            DefImageExport(defFileName: defFileName, nameFromFrameAtIndexIndex: { _, _ in defFileName })
         }
         
         try generateTexture(
             name: "impassable_terrain",
-            list: impassableTerrainFiles,
+            list: impassableTerrainFiles.map { .def($0) },
             maxImageCountPerDefFile: 1
         )
     }

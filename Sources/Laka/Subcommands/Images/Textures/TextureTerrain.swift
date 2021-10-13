@@ -18,7 +18,7 @@ internal extension Laka.Textures {
         
         try generateTexture(
             name: "terrain",
-            list: roadFiles + riverFiles + groundFiles
+            list: (roadFiles + riverFiles + groundFiles).map { .def($0) }
         )
     }
 }
