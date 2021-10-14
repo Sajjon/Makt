@@ -30,7 +30,6 @@ extension Laka.Towns {
     
     var verbose: Bool { parentOptions.printDebugInformation }
     
-    
     var inDataURL: URL {
         .init(fileURLWithPath: parentOptions.outputPath).appendingPathComponent("Raw")
     }

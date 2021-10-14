@@ -367,7 +367,11 @@ public extension Creature.ID {
         .mummy,
         .nomad,
         .troll,
-        .sharpshooter,
+        
+            .goldGolem,
+        .diamondGolem,
+        
+            .sharpshooter,
         .enchanter,
         .faerieDragon,
         .crystalDragon,
@@ -881,8 +885,12 @@ public extension Creature {
         earthElemental = 113,
         fireElemental = 114,
         waterElemental = 115,
+        
+        // MARK: Neutral
         goldGolem = 116,
         diamondGolem = 117,
+             
+        // MARK: Conflux (ctd)
         pixie = 118,
         sprite = 119,
         psychicElemental = 120,
@@ -898,7 +906,7 @@ public extension Creature {
         firebird = 130,
         phoenix = 131,
         
-        // MARK: Neutral
+        // MARK: Neutral (ctd)
         azureDragon = 132,
         crystalDragon = 133,
         faerieDragon = 134,

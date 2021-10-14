@@ -8,7 +8,13 @@
 import Foundation
 
 public extension Creature.ID {
+    
+    
     var debugDescription: String {
+        name
+    }
+    
+    var name: String {
         switch self {
         case .pikeman: return "pikeman"
         case .halberdier: return "halberdier"
