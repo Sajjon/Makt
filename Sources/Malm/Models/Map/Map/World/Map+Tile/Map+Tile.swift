@@ -9,7 +9,7 @@ import Foundation
 import Util
 
 public extension Map {
-    struct Tile: Hashable, CustomDebugStringConvertible {
+    struct Tile: Hashable, CustomDebugStringConvertible, Codable {
         public let position: Position
         public let ground: Ground 
         

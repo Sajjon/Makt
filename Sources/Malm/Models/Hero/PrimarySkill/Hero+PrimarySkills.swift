@@ -9,7 +9,7 @@ import Foundation
 import Util
 
 public extension Hero {
-    struct PrimarySkills: Hashable, CustomDebugStringConvertible, ExpressibleByArrayLiteral {
+    struct PrimarySkills: Hashable, CustomDebugStringConvertible, ExpressibleByArrayLiteral, Codable {
         
         public static let defaultLevel: PrimarySkill.Level = 0
         

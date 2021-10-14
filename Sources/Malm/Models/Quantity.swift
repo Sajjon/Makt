@@ -7,7 +7,7 @@
 
 import Foundation
 /// Used by Map.Monster and GuardedResource (resources on Map)
-public enum Quantity: Hashable, CustomDebugStringConvertible {
+public enum Quantity: Hashable, CustomDebugStringConvertible, Codable {
     case random, specified(Int32) // might be negative
     
     public var debugDescription: String {

@@ -9,7 +9,7 @@ import Foundation
 import Util
 
 
-public struct Quest: Hashable, CustomDebugStringConvertible {
+public struct Quest: Hashable, CustomDebugStringConvertible, Codable {
     public let kind: Kind
     public let messages: Messages?
     
@@ -45,7 +45,7 @@ public extension Quest {
 // MARK: Identifier
 public extension Quest {
     /// An identifier identifying some object/entity relating to this quest, e.g. a quest identifier for an hero (not Hero.ID (?)) or for a wandering monster (not just a Creature.ID).
-    struct Identifier: Hashable {
+    struct Identifier: Hashable, Codable {
         public let id: UInt32
         public init(id: UInt32) {
             self.id = id
@@ -56,7 +56,7 @@ public extension Quest {
 
 // MARK: Messages
 public extension Quest {
-    struct Messages: Hashable, CustomDebugStringConvertible {
+    struct Messages: Hashable, CustomDebugStringConvertible, Codable {
         public let proposalMessage: String?
         public let progressMessage: String?
         public let completionMessage: String?
@@ -96,7 +96,7 @@ public extension Quest.Messages {
 public extension Quest {
     
     
-    enum Kind: Hashable, CustomDebugStringConvertible {
+    enum Kind: Hashable, CustomDebugStringConvertible, Codable {
         case archievePrimarySkillLevels(Hero.PrimarySkills)
         case archieveExperienceLevel(Int)
         case defeatHero(Identifier)

@@ -8,7 +8,7 @@
 import Foundation
 
 public extension Map {
-    struct Object: Hashable, CustomDebugStringConvertible {
+    struct Object: Hashable, CustomDebugStringConvertible, Codable {
         public let position: Position
         public let attributes: Map.Object.Attributes
         public let kind: Kind
@@ -48,7 +48,7 @@ public extension Map.Object {
         """
     }
     
-    enum Kind: Hashable {
+    enum Kind: Hashable, Codable {
         case generic
         case garrison(Map.Garrison)
         case artifact(Map.GuardedArtifact)

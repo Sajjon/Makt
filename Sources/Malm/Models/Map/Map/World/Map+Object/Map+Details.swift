@@ -9,7 +9,7 @@ import Foundation
 
 
 public extension Map {
-    struct DetailsAboutObjects: Hashable {
+    struct DetailsAboutObjects: Hashable, Codable {
         public let objects: [Object]
         
         public init(objects: [Object]) {

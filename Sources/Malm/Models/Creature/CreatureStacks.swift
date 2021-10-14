@@ -7,7 +7,7 @@
 
 import Foundation
 
-public struct CreatureStacks: Hashable, CustomDebugStringConvertible, ExpressibleByArrayLiteral {
+public struct CreatureStacks: Hashable, CustomDebugStringConvertible, ExpressibleByArrayLiteral, Codable {
     
     public let creatureStackAtSlot: [Slot: CreatureStack?]
   
@@ -40,7 +40,7 @@ public extension CreatureStacks {
 
 // MARK: Formation
 public extension CreatureStacks {
-    enum Formation: UInt8, Hashable, CaseIterable {
+    enum Formation: UInt8, Hashable, CaseIterable, Codable {
         /// Spread/Wide
         case spread
         /// Grouped/Tight
@@ -50,7 +50,7 @@ public extension CreatureStacks {
  
 // MARK: Slot
 public extension CreatureStacks {
-    enum Slot: UInt8, Hashable, CaseIterable {
+    enum Slot: UInt8, Hashable, CaseIterable, Codable {
         case one = 0
         case two
         case three

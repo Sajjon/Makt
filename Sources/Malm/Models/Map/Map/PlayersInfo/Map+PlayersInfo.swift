@@ -9,7 +9,7 @@ import Foundation
 
 // MARK: InformationAboutPlayers
 public extension Map {
-    struct InformationAboutPlayers: Hashable {
+    struct InformationAboutPlayers: Hashable, Codable {
         public let players: [PlayerInfo]
         
         public init(players: [PlayerInfo]) {
@@ -24,7 +24,7 @@ public extension Map.InformationAboutPlayers {
 
 // MARK: PlayerInfo
 public extension Map.InformationAboutPlayers {
-    struct PlayerInfo: Hashable, CustomDebugStringConvertible {
+    struct PlayerInfo: Hashable, CustomDebugStringConvertible, Codable {
 
         public let player: Player  // Not parsed, but set during for-loop
 
@@ -92,7 +92,7 @@ public extension Map.InformationAboutPlayers.PlayerInfo {
 public extension Map.InformationAboutPlayers.PlayerInfo {
     
     /// SOD only
-    enum AllowedAlignment: Hashable {
+    enum AllowedAlignment: Hashable, Codable {
         case random
         case followingFactions([Faction])
     }
@@ -100,7 +100,7 @@ public extension Map.InformationAboutPlayers.PlayerInfo {
 
 // MARK: MainTown
 public extension Map.InformationAboutPlayers.PlayerInfo {
-    struct MainTown: Hashable {
+    struct MainTown: Hashable, Codable {
         public let position: Position
         public let generateHeroInThisTown: Bool /// when format > .roe
 
@@ -126,7 +126,7 @@ public extension Map.InformationAboutPlayers.PlayerInfo {
 // MARK: MainHero
 public extension Map.InformationAboutPlayers.PlayerInfo {
     
-    struct MainHero: Hashable {
+    struct MainHero: Hashable, Codable {
         public let heroID: Hero.ID?
         public let portraitId: Hero.ID?
         public let name: String?
@@ -148,7 +148,7 @@ public extension Map.InformationAboutPlayers.PlayerInfo {
 public extension Map.InformationAboutPlayers.PlayerInfo {
 
     /// when format > .roe && startingHero.heroID != nil
-    struct AdditionalInfo: Hashable {
+    struct AdditionalInfo: Hashable, Codable {
         public let heroes: [SimpleHero] // of UInt32 `heroesCount` just read before
         
         public init(heroes: [SimpleHero]) {
@@ -159,7 +159,7 @@ public extension Map.InformationAboutPlayers.PlayerInfo {
 
 // MARK: Simple Hero
 public extension Map.InformationAboutPlayers.PlayerInfo.AdditionalInfo {
-    struct SimpleHero: Hashable {
+    struct SimpleHero: Hashable, Codable {
         public let portraitId: Hero.ID
         public let name: String?
         

@@ -8,7 +8,7 @@
 import Foundation
 
 public extension Map {
-    struct Rumor: Hashable, CustomDebugStringConvertible {
+    struct Rumor: Hashable, CustomDebugStringConvertible, Codable {
         public let name: String
         public let text: String
         

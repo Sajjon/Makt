@@ -204,13 +204,6 @@ struct TownTemplate<BuildingKind: BuildingIDForFaction>: Codable {
     let creatureBackground: String
 }
 
-extension Resource.Kind: Codable {}
-//extension Resource: Codable {}
-//extension Resources: Codable {}
-extension Building.ID.Common: Codable {}
-extension Creature.ID: Codable {}
-extension Artifact.ID: Codable {}
-
 extension TownTemplate where BuildingKind == Building.ID.Castle {
     static var castle: TownTemplate<Building.ID.Castle> {
         return TownTemplate<Building.ID.Castle>(

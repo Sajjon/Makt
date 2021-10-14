@@ -8,7 +8,7 @@
 import Foundation
 import Util
 
-public struct Size: Hashable, CaseIterable, CustomDebugStringConvertible, Comparable {
+public struct Size: Hashable, CaseIterable, CustomDebugStringConvertible, Comparable, Codable {
     
     public typealias Scalar = Int
     public let width: Scalar

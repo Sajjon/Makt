@@ -71,7 +71,6 @@ private extension AssetsProvider {
     
 //    func load(archiveFile: SimpleFile, inspector: AssetParsedInspector? = nil) throws -> LoadedArchive {
 //        if let cached = archiveCache[archiveFile.kind] {
-//            print("✅ Cache contains loaded archive: \(cached.fileName)")
 //            return cached
 //        }
 //        let loaded = try archiveLoader.load(archiveFile: archiveFile, inspector: inspector)
@@ -204,7 +203,6 @@ private extension AssetsProvider {
 //        }
 //
 //        let diff = CFAbsoluteTimeGetCurrent() - startTime
-//        print(String(format: "✨✅ Successfully loaded #\(loadedArchives.count) archives, took %.3f seconds", diff))
 //
 //        let imageLoader = ImageLoader(lodFiles: loadedArchives.compactMap { $0.lodArchive })
 //

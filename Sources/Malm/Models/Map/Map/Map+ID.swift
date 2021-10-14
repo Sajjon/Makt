@@ -10,7 +10,7 @@ import Foundation
 public extension Map {
     
     /// A stable identifier of a map.
-    struct ID: Hashable {
+    struct ID: Hashable, Codable {
         
         public let file: File
         
@@ -47,7 +47,7 @@ extension Map.ID: ExpressibleByStringLiteral {
 // MARK: Public
 public extension Map.ID {
     
-    enum File: Hashable {
+    enum File: Hashable, Codable {
         case absolute(path: String)
         case relative(name: String)
     }

@@ -11,7 +11,7 @@ import Foundation
 public extension Map.AdditionalInformation {
     
     // TODO use ArrayOf
-    struct CustomHeroes: Hashable {
+    struct CustomHeroes: Hashable, Codable {
         public let customHeroes: [CustomHero]
         
         public init(

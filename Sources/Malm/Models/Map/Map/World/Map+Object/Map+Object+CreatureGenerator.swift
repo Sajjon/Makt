@@ -12,7 +12,7 @@ public extension Map.Object {
 }
 
 public extension Map.Object.CreatureGenerator {
-    enum ID: UInt8, Hashable, CaseIterable, CustomDebugStringConvertible {
+    enum ID: UInt8, Hashable, CaseIterable, CustomDebugStringConvertible, Codable {
         /// For creature: "basilisk"
         case basiliskPit = 0
 

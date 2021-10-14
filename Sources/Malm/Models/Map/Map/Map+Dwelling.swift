@@ -9,7 +9,7 @@ import Foundation
 import Util
 
 public extension Map {
-    struct Dwelling: Hashable {
+    struct Dwelling: Hashable, Codable {
         public let kind: Kind
         public let owner: Player?
         
@@ -35,15 +35,15 @@ public extension Map.Dwelling {
 }
 
 public extension Map.Dwelling {
-    enum Kind: Hashable {
+    enum Kind: Hashable, Codable {
         case random(Random)
         case specific(Specific)
     }
 }
 
 public extension Map.Dwelling.Kind {
-    struct Random: Hashable {
-        public enum PossibleFaction: Hashable {
+    struct Random: Hashable, Codable {
+        public enum PossibleFaction: Hashable, Codable {
             case anyOf(Factions)
             case sameAsTown(Map.Town.ID)
         }
@@ -70,7 +70,7 @@ public extension Map.Dwelling.Kind {
         }
     }
     
-    enum Specific: Hashable {
+    enum Specific: Hashable, Codable {
         case specificGenerator(Map.Object.CreatureGenerator.ID)
         
         case creatureGenerator2
@@ -82,7 +82,7 @@ public extension Map.Dwelling.Kind {
 
 public extension Map.Dwelling.Kind.Random {
     
-    enum PossibleLevels: Hashable, CustomDebugStringConvertible {
+    enum PossibleLevels: Hashable, CustomDebugStringConvertible, Codable {
         case range(Range)
         case specific(Creature.Level)
         
@@ -102,7 +102,7 @@ public extension Map.Dwelling.Kind.Random {
 }
 
 public extension Map.Dwelling.Kind.Random.PossibleLevels {
-    struct Range: Hashable, CustomDebugStringConvertible {
+    struct Range: Hashable, CustomDebugStringConvertible, Codable {
         public let min: Creature.Level
         public let max: Creature.Level
         public init(min: Creature.Level, max: Creature.Level) {

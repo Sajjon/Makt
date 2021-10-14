@@ -8,7 +8,7 @@
 import Foundation
 
 public extension Map {
-    struct Shrine: Hashable {
+    struct Shrine: Hashable, Codable {
         public let spell: Spell.ID?
         
         public init(spell: Spell.ID?) {

@@ -8,7 +8,7 @@
 import Foundation
 
 public extension Map {
-    struct Seershut: Hashable {
+    struct Seershut: Hashable, Codable {
         public let quest: Quest?
         public let bounty: Bounty?
         
@@ -20,7 +20,7 @@ public extension Map {
         public static let empty: Self = .init(quest: nil, bounty: nil)
         
         
-        public enum Bounty: Hashable {
+        public enum Bounty: Hashable, Codable {
             case experience(UInt32)
             case spellPoints(UInt32)
             case moraleBonus(UInt8)
@@ -40,7 +40,7 @@ public extension Map {
 
 public extension Map.Seershut.Bounty {
     
-    enum Stripped: UInt8, Hashable, CaseIterable {
+    enum Stripped: UInt8, Hashable, CaseIterable, Codable {
         // 0 is none
         case experience = 1
         case spellPoints

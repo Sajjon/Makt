@@ -10,7 +10,7 @@ import Foundation
 
 public extension Map.Object {
     
-    enum TwoWayMonolith: UInt8, Hashable, CaseIterable, CustomDebugStringConvertible {
+    enum TwoWayMonolith: UInt8, Hashable, CaseIterable, CustomDebugStringConvertible, Codable {
         /// Green (lightning)
         case greenLighting,
              

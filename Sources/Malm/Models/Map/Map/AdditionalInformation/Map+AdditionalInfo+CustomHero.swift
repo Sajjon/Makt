@@ -8,7 +8,7 @@
 import Foundation
 
 public extension Map.AdditionalInformation {
-    struct CustomHero: Hashable, CustomDebugStringConvertible {
+    struct CustomHero: Hashable, CustomDebugStringConvertible, Codable {
         public let heroId: Hero.ID
         public let portraitID: Hero.ID?
         public let name: String?

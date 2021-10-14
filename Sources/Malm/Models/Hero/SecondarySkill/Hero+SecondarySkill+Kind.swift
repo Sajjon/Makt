@@ -8,7 +8,7 @@
 import Foundation
 
 public extension Hero.SecondarySkill {
-    enum Kind: UInt8, Hashable, CaseIterable, CustomDebugStringConvertible {
+    enum Kind: UInt8, Hashable, CaseIterable, CustomDebugStringConvertible, Codable {
         case pathfinding
         case archery
         case logistics

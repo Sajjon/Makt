@@ -8,7 +8,7 @@
 import Foundation
 
 public extension Map {
-    struct LossCondition: Hashable {
+    struct LossCondition: Hashable, Codable {
         public let kind: Kind
         
         public init(kind: Kind) {
@@ -22,7 +22,7 @@ public extension Map.LossCondition {
     
     static let standard = Self(kind: .standard)
     
-    enum Kind: Hashable, CustomDebugStringConvertible {
+    enum Kind: Hashable, CustomDebugStringConvertible, Codable {
         /// You lose if the specified hero is defeated.
         case loseSpecificHero(locatedAt: Position)
             

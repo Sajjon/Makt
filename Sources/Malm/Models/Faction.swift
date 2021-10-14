@@ -7,7 +7,7 @@
 
 import Foundation
 
-public enum Faction: UInt8, Equatable, CaseIterable, CustomDebugStringConvertible {
+public enum Faction: UInt8, Equatable, CaseIterable, CustomDebugStringConvertible, Codable {
     case castle, rampart, tower, inferno, necropolis, dungeon, stronghold, fortress, conflux, neutral, random = 0xff
 }
 

@@ -8,7 +8,7 @@
 import Foundation
 
 /// Position on adventure map, three dimensions (x: Int, y: Int, inUnderworld: Bool)
-public struct Position: Hashable, CustomDebugStringConvertible, Comparable {
+public struct Position: Hashable, CustomDebugStringConvertible, Comparable, Codable {
     public typealias Scalar = Int32
     public let x: Scalar
     public let y: Scalar

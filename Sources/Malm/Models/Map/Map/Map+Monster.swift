@@ -9,10 +9,9 @@ import Foundation
 
 public extension Map {
     
-    
-    struct Monster: Hashable, CustomDebugStringConvertible {
+    struct Monster: Hashable, CustomDebugStringConvertible, Codable {
         
-        public enum Kind: Hashable {
+        public enum Kind: Hashable, Codable {
             case specific(creatureID: Creature.ID)
             case random(level: Creature.Level? = .any)
         }
@@ -77,7 +76,7 @@ public extension Map {
 
 
 public extension Map.Monster {
-    struct Bounty: Hashable {
+    struct Bounty: Hashable, Codable {
         public let artifactID: Artifact.ID?
         public let resources: Resources?
         
@@ -88,7 +87,7 @@ public extension Map.Monster {
         }
     }
 
-    enum Disposition: UInt8, Hashable, CaseIterable {
+    enum Disposition: UInt8, Hashable, CaseIterable, Codable {
         
         /// Will **always** join hero
         case compliant

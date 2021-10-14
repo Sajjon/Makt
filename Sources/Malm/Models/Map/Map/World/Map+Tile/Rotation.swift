@@ -15,7 +15,7 @@ public protocol Flippable {
 
 public extension Map.Tile {
     /// The mirroring of road, river, and terrain surface tiles.
-    struct Mirroring: Hashable, CustomDebugStringConvertible, CaseIterable {
+    struct Mirroring: Hashable, CustomDebugStringConvertible, CaseIterable, Codable {
         public let flipVertical: Bool
         public let flipHorizontal: Bool
         

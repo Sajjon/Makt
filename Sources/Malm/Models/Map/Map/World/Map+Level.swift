@@ -10,7 +10,7 @@ import Foundation
 
 public extension Map {
     
-    struct Level: Hashable, CustomDebugStringConvertible {
+    struct Level: Hashable, CustomDebugStringConvertible, Codable {
         public let tiles: [Tile]
         public let isUnderworld: Bool
         

@@ -27,6 +27,8 @@ public struct ArrayOfValidatedElements<ElementsValidator: ElementsValidating>: C
     }
 }
 
+extension ArrayOfValidatedElements: Codable where ElementsValidator.Element: Codable {}
+
 // MARK: CustomDebugStringConvertible
 public extension ArrayOfValidatedElements {
     var debugDescription: String {

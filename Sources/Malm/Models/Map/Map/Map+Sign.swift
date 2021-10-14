@@ -8,7 +8,7 @@
 import Foundation
 public extension Map {
 
-    struct Sign: Hashable {
+    struct Sign: Hashable, Codable {
         public let message: String?
         
         public init(message: String?) {

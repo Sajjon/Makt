@@ -10,7 +10,7 @@ import Foundation
 public extension Spell {
     
     /// Source: http://heroescommunity.com/viewthread.php3?TID=46589&PID=1529922#focus
-    enum ID: UInt8, Hashable, Comparable, CaseIterable, CustomDebugStringConvertible {
+    enum ID: UInt8, Hashable, Comparable, CaseIterable, CustomDebugStringConvertible, Codable {
         
         public static let noneRawValue: RawValue = 0xff
         

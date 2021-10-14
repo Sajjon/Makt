@@ -8,7 +8,7 @@
 import Foundation
 
 public extension Map {
-    struct Scholar: Hashable, CustomDebugStringConvertible {
+    struct Scholar: Hashable, CustomDebugStringConvertible, Codable {
         public let bonus: Bonus
         public init(bonus: Bonus) {
             self.bonus = bonus
@@ -25,7 +25,7 @@ public extension Map.Scholar {
 
 // MARK: Bonus
 public extension Map.Scholar {
-    enum Bonus: Hashable, CustomDebugStringConvertible {
+    enum Bonus: Hashable, CustomDebugStringConvertible, Codable {
         case primarySkill(Hero.PrimarySkill.Kind)
         case secondarySkill(Hero.SecondarySkill.Kind)
         case spell(Spell.ID)
@@ -48,7 +48,7 @@ public extension Map.Scholar.Bonus {
 
 // MARK: Bonus + Stripped
 public extension Map.Scholar.Bonus {
-    enum Stripped: UInt8, Hashable, CaseIterable {
+    enum Stripped: UInt8, Hashable, CaseIterable, Codable {
         case primarySkill
         case secondarySkill
         case spell

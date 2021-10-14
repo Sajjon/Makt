@@ -8,7 +8,7 @@
 import Foundation
 
 public extension Map.Object {
-    enum OneWayMonolith: UInt8, Hashable, CaseIterable, CustomDebugStringConvertible {
+    enum OneWayMonolith: UInt8, Hashable, CaseIterable, CustomDebugStringConvertible, Codable {
         
         /// Blue (Starfield)
         case blue,

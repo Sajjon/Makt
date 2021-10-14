@@ -14,7 +14,7 @@ public extension Comparable where Self: RawRepresentable, Self.RawValue: Compara
 }
 
 
-public enum Player: UInt8, Comparable, CaseIterable, CustomDebugStringConvertible, ExpressibleByIntegerLiteral {
+public enum Player: UInt8, Comparable, CaseIterable, CustomDebugStringConvertible, ExpressibleByIntegerLiteral, Codable {
     
     public typealias IntegerLiteralType = UInt8
     

@@ -6,7 +6,7 @@
 //
 
 import Foundation
-public enum Behaviour: UInt8, Equatable {
+public enum Behaviour: UInt8, Equatable, Codable {
     case random, warrior, builder, explorer
 }
 

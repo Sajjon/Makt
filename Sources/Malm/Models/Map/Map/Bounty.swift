@@ -8,7 +8,7 @@
 import Foundation
 
 /// Used in `Map.PandorasBox` and `Map.GeoEvent`
-public struct Bounty: Hashable, CustomDebugStringConvertible {
+public struct Bounty: Hashable, CustomDebugStringConvertible, Codable {
     internal let experiencePointsToBeGained: UInt32?
     internal let spellPointsToBeGainedOrDrained: Int32?
     internal let moraleToBeGainedOrDrained: Int8?

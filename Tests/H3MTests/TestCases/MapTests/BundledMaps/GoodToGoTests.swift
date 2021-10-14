@@ -236,4 +236,29 @@ final class GoodToGoMapTest: BaseMapTest {
         try loadMap(id: .goodToGo, inspector: inspector)
         waitForExpectations(timeout: 1)
     }
+    
+    func testJSONRoundtrip() throws {
+        let mapID: Map.ID = .goodToGo
+        // Delete any earlier cached maps.
+        Map.loader.cache.__deleteMap(by: mapID)
+        
+        var start = CFAbsoluteTimeGetCurrent()
+        let mapFromBinary = try Map.load(mapID)
+        let timeBinary = CFAbsoluteTimeGetCurrent() - start
+        let jsonEncoder = JSONEncoder()
+        let jsonData = try jsonEncoder.encode(mapFromBinary)
+        let jsonDecoder = JSONDecoder()
+        start = CFAbsoluteTimeGetCurrent()
+        let mapFromJSON = try jsonDecoder.decode(Map.self, from: jsonData)
+        let timeJson = CFAbsoluteTimeGetCurrent() - start
+        XCTAssertEqual(mapFromBinary, mapFromJSON)
+        
+        XCTAssertEqual(timeBinary, timeJson, accuracy: 0.01)
+//        print(String(format: "timeBinary: %.3f seconds", timeBinary))
+//        print(String(format: "timeJson: %.3f seconds", timeJson))
+//        
+//        let jsonString = String(data: jsonData, encoding: .utf8)!
+//        
+//        print(jsonString)
+    }
 }

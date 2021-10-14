@@ -8,7 +8,7 @@
 import Foundation
 import Util
 
-public struct Resources: Hashable, CustomDebugStringConvertible, ExpressibleByArrayLiteral {
+public struct Resources: Hashable, CustomDebugStringConvertible, Codable, ExpressibleByArrayLiteral {
     
     public typealias ArrayLiteralElement = Resource
     

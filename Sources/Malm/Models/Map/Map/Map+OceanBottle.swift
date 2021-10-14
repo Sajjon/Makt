@@ -8,7 +8,7 @@
 import Foundation
 
 public extension Map {
-    struct OceanBottle: Hashable {
+    struct OceanBottle: Hashable, Codable {
         public let message: String? // yes indeed optional.
         
         public init(message: String?) {

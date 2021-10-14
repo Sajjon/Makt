@@ -9,7 +9,7 @@ import Foundation
 
 public extension Map.Object {
     /// From here: https://h3maparchives.celestialheavens.com/tools/wog/erm_help/format/format_ob.htm
-    enum ID: Hashable, CustomDebugStringConvertible {
+    enum ID: Hashable, CustomDebugStringConvertible, Codable {
         
         case decorativeTown, altarOfSacrifice,
              anchorPoint,

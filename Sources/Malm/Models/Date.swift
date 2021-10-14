@@ -7,7 +7,7 @@
 
 import Foundation
 
-public struct Date: Hashable, ExpressibleByIntegerLiteral {
+public struct Date: Hashable, ExpressibleByIntegerLiteral, Codable {
     public typealias IntegerLiteralType = UInt
     public init(integerLiteral daysPassed: IntegerLiteralType) {
         self.init(daysPassed: daysPassed)

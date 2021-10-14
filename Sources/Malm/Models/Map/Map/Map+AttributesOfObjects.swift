@@ -8,7 +8,7 @@
 import Foundation
 
 public extension Map {
-    struct AttributesOfObjects: Hashable {
+    struct AttributesOfObjects: Hashable, Codable {
         public let attributes: [Map.Object.Attributes]
         public init(attributes: [Map.Object.Attributes]) {
             self.attributes = attributes
@@ -26,7 +26,7 @@ public extension Map.Object {
         attributes.height
     }
     
-    struct Attributes: Hashable, CustomDebugStringConvertible {
+    struct Attributes: Hashable, CustomDebugStringConvertible, Codable {
         
         /// Name of sprite/animation file
         public let sprite: Sprite
@@ -79,7 +79,7 @@ public extension Map.Object.Attributes {
         "\(objectID)"
     }
     
-    struct Pathfinding: Hashable, CustomDebugStringConvertible {
+    struct Pathfinding: Hashable, CustomDebugStringConvertible, Codable {
         public let visitability: RelativePositionOfTiles
         public let passability: RelativePositionOfTiles
         
@@ -110,7 +110,7 @@ public extension Map.Object.Attributes {
     }
 
     
-     enum Group: UInt8, Hashable, CaseIterable, CustomDebugStringConvertible {
+     enum Group: UInt8, Hashable, CaseIterable, CustomDebugStringConvertible, Codable {
         case towns = 1
         case monsters
         case heroes
@@ -149,7 +149,7 @@ public extension Map.Object.Attributes.Pathfinding {
     static let rowCount = 6
     
     /// A relative position on adventure map, two dimensions (x: Int, y: Int)
-    struct RelativePosition: Hashable, Comparable, CustomDebugStringConvertible {
+    struct RelativePosition: Hashable, Comparable, CustomDebugStringConvertible, Codable {
         public static func < (lhs: Self, rhs: Self) -> Bool {
             guard lhs.y == rhs.y else {
                 return lhs.y < rhs.y

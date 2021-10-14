@@ -8,7 +8,7 @@
 import Foundation
 
 public extension Map {
-    struct Grail: Hashable, CustomDebugStringConvertible {
+    struct Grail: Hashable, CustomDebugStringConvertible, Codable {
         /// Map Editor "select allowable placement radius"
         public let radius: UInt32
         

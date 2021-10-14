@@ -8,7 +8,7 @@
 import Foundation
 
 public extension Map.Tile {
-    struct Ground: TileLayer, CustomDebugStringConvertible {
+    struct Ground: TileLayer, CustomDebugStringConvertible, Codable {
         public static let layerKind: TileLayerKind = .ground
         public let terrain: Map.Terrain
         

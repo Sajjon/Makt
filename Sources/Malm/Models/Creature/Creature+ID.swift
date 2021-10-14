@@ -751,7 +751,7 @@ public extension Creature.ID {
 public extension Creature {
     
     
-    enum ID: UInt8, Hashable, CaseIterable, CustomDebugStringConvertible {
+    enum ID: UInt8, Hashable, CaseIterable, CustomDebugStringConvertible, Codable {
         // MARK: Castle
         case pikeman = 0,
         halberdier = 1,

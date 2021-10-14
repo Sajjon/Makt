@@ -11,10 +11,10 @@ public extension Map {
     
     /// A global event that occurs at a certain time.
     /// Not to be confused with geo event, that is trigger when a player walks on a certain tile with a hero.
-    struct TimedEvent: Hashable, CustomDebugStringConvertible {
+    struct TimedEvent: Hashable, CustomDebugStringConvertible, Codable {
         
-        public struct Occurrences: Hashable {
-            public enum Subsequent: UInt8, Hashable, CaseIterable, CustomDebugStringConvertible {
+        public struct Occurrences: Hashable, Codable {
+            public enum Subsequent: UInt8, Hashable, CaseIterable, CustomDebugStringConvertible, Codable {
                 public static let neverRawValue = 0
                 public static let never: Self? = nil
                 case everyDay = 1
@@ -87,7 +87,7 @@ public extension Map {
         }
         
         // MARK: Availability
-        public struct Availability: Hashable, CustomDebugStringConvertible {
+        public struct Availability: Hashable, CustomDebugStringConvertible, Codable {
             
             /// MapEditor: "Players to which event applies"
             public let affectedPlayers: [Player]

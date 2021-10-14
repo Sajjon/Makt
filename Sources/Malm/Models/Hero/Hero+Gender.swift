@@ -8,7 +8,7 @@
 import Foundation
 
 public extension Hero {
-    enum Gender: UInt8, Hashable {
+    enum Gender: UInt8, Hashable, Codable {
         case male
              case female
         

@@ -9,7 +9,7 @@ import Foundation
 
 public extension Map {
     
-    struct SpellScroll: Hashable {
+    struct SpellScroll: Hashable, Codable {
         public let spell: Spell.ID
         public let message: String?
         public let guardians: CreatureStacks?

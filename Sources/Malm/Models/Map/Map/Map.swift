@@ -7,7 +7,7 @@
 
 import Foundation
 
-public struct Map: Hashable, Identifiable {
+public struct Map: Hashable, Identifiable, Codable {
     public let checksum: UInt32
     
     /// Name, description, size, difficulty etc.

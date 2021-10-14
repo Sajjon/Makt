@@ -9,7 +9,7 @@ import Foundation
 
 public extension Map.Tile {
     
-    struct Road: TileLayer, CustomDebugStringConvertible {
+    struct Road: TileLayer, CustomDebugStringConvertible, Codable {
         public static let layerKind: TileLayerKind = .road
         public let kind: Kind
         
@@ -36,7 +36,7 @@ public extension Map.Tile.Road {
     var zAxisIndex: Int { 2 }
     var frameIndex: Int { direction.frameIndex }
     
-    enum Kind: UInt8, Hashable, CaseIterable, CustomDebugStringConvertible {
+    enum Kind: UInt8, Hashable, CaseIterable, CustomDebugStringConvertible, Codable {
         // 0 means "no road", but we model it as `Optional<Road>.none` instead of Road.Kind having a specific case for it...
         case dirt = 1, gravel, cobbelStone
     }
@@ -135,7 +135,7 @@ public extension Map.Tile.Road {
     ///    (0x0F, EndHorz)
     ///    (0x10, Cross)
     ///
-    struct Direction: Hashable, DefinitionFileFrameIndexing {
+    struct Direction: Hashable, DefinitionFileFrameIndexing, Codable {
         public typealias RawValue = UInt8
         public let frameIndex: Int
         

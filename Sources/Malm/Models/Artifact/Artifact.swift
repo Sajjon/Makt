@@ -7,7 +7,7 @@
 
 import Foundation
 
-public struct Artifact: Hashable, CustomDebugStringConvertible {
+public struct Artifact: Hashable, CustomDebugStringConvertible, Codable {
     
     public let kind: Kind
     
@@ -24,7 +24,7 @@ public struct Artifact: Hashable, CustomDebugStringConvertible {
 
 // MARK: Kind
 public extension Artifact {
-    enum Kind: Hashable, CustomDebugStringConvertible {
+    enum Kind: Hashable, CustomDebugStringConvertible, Codable {
         case specific(artifactID: ID)
         case spell(Spell.ID)
         
@@ -45,7 +45,7 @@ public extension Artifact {
 
 // MARK: Class
 public extension Artifact {
-    enum Class: String, CaseIterable, Hashable, CustomDebugStringConvertible {
+    enum Class: String, CaseIterable, Hashable, CustomDebugStringConvertible, Codable {
         case treasure, minor, major, relic
     }
 }

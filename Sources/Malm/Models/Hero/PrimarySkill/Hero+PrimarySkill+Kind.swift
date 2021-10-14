@@ -8,7 +8,7 @@
 import Foundation
 
 public extension Hero.PrimarySkill {
-    enum Kind: UInt8, CaseIterable, Comparable, Hashable {
+    enum Kind: UInt8, CaseIterable, Comparable, Hashable, Codable {
         case attack, defense, power, knowledge
         
         public init?(rawValue: UInt8) {

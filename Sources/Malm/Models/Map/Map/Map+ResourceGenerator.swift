@@ -9,7 +9,7 @@ import Foundation
 import Util
 
 public extension Map {
-    struct ResourceGenerator: Hashable, CustomDebugStringConvertible {
+    struct ResourceGenerator: Hashable, CustomDebugStringConvertible, Codable {
         public let kind: Kind
         public let owner: Player?
         
@@ -36,7 +36,7 @@ public extension Map.ResourceGenerator {
 
 public extension Map.ResourceGenerator {
     
-    enum Kind: Hashable, CaseIterable, CustomDebugStringConvertible {
+    enum Kind: Hashable, CaseIterable, CustomDebugStringConvertible, Codable {
         case sawmill,
              alchemistsLab,
              orePit,
@@ -51,7 +51,7 @@ public extension Map.ResourceGenerator {
 public extension Map.ResourceGenerator.Kind {
     
     /// Placeholder kind that might be abandoned.
-    enum Placeholder: UInt8, Hashable, CaseIterable {
+    enum Placeholder: UInt8, Hashable, CaseIterable, Codable {
         case sawmill,
              alchemistsLab,
              orePit,

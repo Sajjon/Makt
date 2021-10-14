@@ -9,7 +9,7 @@ import Foundation
 
 public extension Map {
     
-    struct Garrison: Hashable, CustomDebugStringConvertible {
+    struct Garrison: Hashable, CustomDebugStringConvertible, Codable {
         
         public let areCreaturesRemovable: Bool
         public let owner: Player?

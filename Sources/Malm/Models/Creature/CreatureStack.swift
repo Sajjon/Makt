@@ -7,7 +7,7 @@
 
 import Foundation
 
-public struct CreatureStack: Hashable, CustomDebugStringConvertible {
+public struct CreatureStack: Hashable, CustomDebugStringConvertible, Codable {
     public let kind: Kind
     public let quantity: Quantity
     
@@ -45,7 +45,7 @@ public extension CreatureStack {
 // MARK: Kind
 public extension CreatureStack {
     
-    enum Kind: Hashable, CustomDebugStringConvertible {
+    enum Kind: Hashable, CustomDebugStringConvertible, Codable {
         case specific(creatureID: Creature.ID)
 
         /// Used in as garrison in e.g. Random Towns
