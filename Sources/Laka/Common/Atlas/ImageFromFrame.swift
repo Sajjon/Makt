@@ -8,6 +8,7 @@
 import Foundation
 import Malm
 import Packa
+import Guld
 
 struct ImageFromFrame: Hashable, File, Packable {
     let name: String
@@ -25,6 +26,10 @@ struct ImageFromFrame: Hashable, File, Packable {
         self.cgImage = cgImage
         self.fullSize = fullSize
         self.rect = rect
+    }
+    
+    init(frame: DefinitionFile.Frame, cgImage: CGImage) {
+        self.init(name: frame.fileName, cgImage: cgImage, fullSize: frame.fullSize, rect: frame.rect)
     }
 }
 
