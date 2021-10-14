@@ -79,16 +79,16 @@ private extension GrowingPacker {
         node.isUsed = true
         
         node.down = Node(
-            origin: .init(
-                x: node.x,
-                y: node.y + height),
-            size: .init(width: node.width,
-                        height: node.height - height)
+            x: node.x,
+            y: node.y + height,
+            width: node.width,
+            height: node.height - height
         )
         node.right = Node(
-            origin: .init(x: node.x + width, y: node.y),
-            size: .init(width: node.width - width,
-                        height: node.height)
+            x: node.x + width,
+            y: node.y,
+            width: node.width - width,
+            height: height
         )
         return node
     }
@@ -153,8 +153,8 @@ private extension GrowingPacker {
             return split(node: node, size: size)
         }
      
-        let canGrowDown = width <= rootNode.width
         let canGrowRight = height <= rootNode.height
+        let canGrowDown = width <= rootNode.width
         
         // attempt to keep square-ish by growing right when height is greater than width
         let shouldGrowRight = canGrowRight && rootNode.height >= (rootNode.width + width)

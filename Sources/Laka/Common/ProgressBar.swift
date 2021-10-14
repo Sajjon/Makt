@@ -23,19 +23,7 @@ import Foundation
 
 public protocol OutputBuffer {
     mutating func write(_ text: String)
-    mutating func clearLine(width: Int)
-}
-
-public class StringBuffer: OutputBuffer {
-    public private(set) var string: String = ""
-    
-    public func write(_ text: String) {
-        string.append(text)
-    }
-    
-    public func clearLine(width: Int) {
-        string = ""
-    }
+    mutating func clearLine(width: Int, final: Bool)
 }
 
 extension FileHandle: OutputBuffer {
@@ -44,10 +32,12 @@ extension FileHandle: OutputBuffer {
         write(data)
     }
     
-    public func clearLine(width: Int) {
+    public func clearLine(width: Int, final: Bool = false) {
         write("\r")
-        write(String(repeating: " ", count: width * 2))
-        write("\r")
+        if final {
+            write(String(repeating: " ", count: width * 2))
+            write("\r")
+        }
     }
 }
 
@@ -69,8 +59,8 @@ public struct ProgressBar {
         self.output.write("")
     }
     
-    private mutating func clearLine() {
-        output.clearLine(width: width)
+    private mutating func clearLine(final: Bool = false) {
+        output.clearLine(width: width, final: final)
     }
     
     public mutating func render(count: Int, total: Int) {
@@ -81,11 +71,11 @@ public struct ProgressBar {
         let ticks = "-" * numberOfTicks
         
         let percentage = Int(floor(progress * 100))
-        clearLine()
+        clearLine(final: false)
         output.write("[\(bars)\(ticks)] \(percentage)%")
         
         if count == total, clearOnCompletion {
-            clearLine()
+            clearLine(final: true)
         }
     }
 }
