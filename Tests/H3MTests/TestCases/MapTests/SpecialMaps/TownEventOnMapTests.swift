@@ -134,14 +134,14 @@ final class TownEventsOnMapTests: BaseMapTest {
                     )
                 case at(12, y: 5):
                     var day: UInt16 = 1
-                    func builtInTown(_ builtBuildings: [Map.Town.Building], _ nameOfBuilding: String) -> Map.Town.Event {
+                    func builtInTown(_ builtBuildings: [Building.ID.Common], _ nameOfBuilding: String) -> Map.Town.Event {
                         let name = "build \(nameOfBuilding)"
                         let event: Map.Town.Event = .build(name: name, day: day, builtBuildings: builtBuildings)
                         day += 1
                         return event
                     }
-                    func buildInTown(_ building: Map.Town.Building, _ nameOfBuilding: String? = nil) -> Map.Town.Event {
-                        let buildingName = nameOfBuilding ?? building.debugDescription.titlecased().lowercased()
+                    func buildInTown(_ building: Building.ID.Common, _ nameOfBuilding: String? = nil) -> Map.Town.Event {
+                        let buildingName = nameOfBuilding ?? String(describing: building).titlecased().lowercased()
                         return builtInTown([building], buildingName)
                     }
                     assertTown(
@@ -156,7 +156,7 @@ final class TownEventsOnMapTests: BaseMapTest {
                             buildInTown(.blacksmith),
                             buildInTown(.marketplace),
                             builtInTown([.marketplace, .resourceSilo], "risource silo"), // sic
-                            builtInTown([.marketplace, .artifactMerchants], "artifacts merchants"), // sic
+                            builtInTown([.marketplace, .special1_artifactMerchant], "artifacts merchants"), // sic
                             buildInTown(.mageGuildLevel1, "mage guild 1"),
                             builtInTown([.mageGuildLevel1, .mageGuildLevel2], "mage guild 2"),
                             builtInTown([.mageGuildLevel1, .mageGuildLevel2, .mageGuildLevel3], "mage guild 3"),
@@ -165,31 +165,31 @@ final class TownEventsOnMapTests: BaseMapTest {
                             buildInTown(.shipyard),
                             buildInTown(.grail),
                             
-                            buildInTown(.dwelling1, "creature 1"),
-                            builtInTown([.dwelling1, .upgradedDwelling1], "creature 1 up"),
-                            builtInTown([.dwelling1, .horde1], "creature 1 horde"),
+                            buildInTown(.dwellingLevel1, "creature 1"),
+                            builtInTown([.dwellingLevel1, .dwellingLevel1Upgraded], "creature 1 up"),
+                            builtInTown([.dwellingLevel1, .horde1], "creature 1 horde"),
                             
-                            buildInTown(.dwelling2, "creature 2"),
-                            builtInTown([.dwelling2, .upgradedDwelling2], "creature 2 up"),
-                            builtInTown([.dwelling2, .horde2], "creature 2 horde"),
+                            buildInTown(.dwellingLevel2, "creature 2"),
+                            builtInTown([.dwellingLevel2, .dwellingLevel2Upgraded], "creature 2 up"),
+                            builtInTown([.dwellingLevel2, .horde2], "creature 2 horde"),
                             
-                            buildInTown(.dwelling3, "creature 3"),
-                            builtInTown([.dwelling3, .upgradedDwelling3], "creature 3 up"),
-                            builtInTown([.dwelling3, .horde3], "creature 3 horde"),
+                            buildInTown(.dwellingLevel3, "creature 3"),
+                            builtInTown([.dwellingLevel3, .dwellingLevel3Upgraded], "creature 3 up"),
+                            builtInTown([.dwellingLevel3, .horde3], "creature 3 horde"),
                             
-                            buildInTown(.dwelling4, "creature 4"),
-                            builtInTown([.dwelling4, .upgradedDwelling4], "creature 4 up"),
-                            builtInTown([.dwelling4, .horde4], "creature 4 horde"),
+                            buildInTown(.dwellingLevel4, "creature 4"),
+                            builtInTown([.dwellingLevel4, .dwellingLevel4Upgraded], "creature 4 up"),
+                            builtInTown([.dwellingLevel4, .horde4], "creature 4 horde"),
                             
-                            buildInTown(.dwelling5, "creature 5"),
-                            builtInTown([.dwelling5, .upgradedDwelling5], "creature 5 up"),
-                            builtInTown([.dwelling5, .horde5], "creature 5 horde"),
+                            buildInTown(.dwellingLevel5, "creature 5"),
+                            builtInTown([.dwellingLevel5, .dwellingLevel5Upgraded], "creature 5 up"),
+                            builtInTown([.dwellingLevel5, .horde5], "creature 5 horde"),
                             
-                            buildInTown(.dwelling6, "creature 6"),
-                            builtInTown([.dwelling6, .upgradedDwelling6], "creature 6 up"),
+                            buildInTown(.dwellingLevel6, "creature 6"),
+                            builtInTown([.dwellingLevel6, .dwellingLevel6Upgraded], "creature 6 up"),
 
-                            buildInTown(.dwelling7, "creature 7"),
-                            builtInTown([.dwelling7, .upgradedDwelling7], "creature 7 up"),
+                            buildInTown(.dwellingLevel7, "creature 7"),
+                            builtInTown([.dwellingLevel7, .dwellingLevel7Upgraded], "creature 7 up"),
                         ]
                     )
                 default:
@@ -222,7 +222,7 @@ private extension Map.Town.Event {
     static func build(
         name: String,
         day: UInt16,
-        builtBuildings: [Map.Town.Building],
+        builtBuildings: [Building.ID.Common],
         appliesToHumanPlayers: Bool = true,
         appliesToComputerPlayers: Bool = false
     ) -> Self {
@@ -243,9 +243,3 @@ private extension Map.Town.Event {
     }
 }
 
-
-private extension Map.Town.Building {
-    
-    /// WRONG, just a placeholder
-    static let dwelling4Horde: Self = .grail
-}

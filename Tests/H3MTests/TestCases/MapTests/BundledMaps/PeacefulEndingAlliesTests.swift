@@ -40,7 +40,7 @@ final class PeacefulEndingAlliesTests: BaseMapTest {
                                                 .fort, .citadel, .castle,
                                                 .tavern, .blacksmith, .marketplace,
                                                 .mageGuildLevel1, .mageGuildLevel2, .mageGuildLevel3,
-                                                .dwelling1, .dwelling2, .dwelling3, .dwelling4
+                                                .dwellingLevel1, .dwellingLevel2, .dwellingLevel3, .dwellingLevel4
                                                 
                                             ], forbidden: []))), actual: object)
                     } else if object.objectID.stripped == .cactus {

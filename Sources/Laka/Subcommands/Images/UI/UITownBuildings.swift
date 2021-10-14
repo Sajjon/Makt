@@ -7,112 +7,14 @@
 
 import Foundation
 import Malm
-
-private enum Building: CustomDebugStringConvertible {
-    case normal(Map.Town.Building)
-    
-    enum Special: UInt8, Hashable, CaseIterable, CustomDebugStringConvertible {
-        case villageHall = 10
-        
-        var name: String {
-            switch self {
-            case .villageHall: return "villageHall"
-            }
-        }
-        
-        var debugDescription: String {
-            name
-        }
-    }
-    case special(Special)
-    
-    var name: String {
-        switch self {
-        case .normal(let normal): return normal.name
-        case .special(let special): return special.name
-        }
-    }
-    
-    var debugDescription: String { name }
-    
-}
-
-private func buildingIDFrom(frameIndex: Int) throws -> Building {
-    let placeholder: Map.Town.Building = .mageGuildLevel1
-    
-    /// UNKNOWN
-    let UNKNOWN: Map.Town.Building = .mageGuildLevel1 /* UNKNOWN */
-    
-    let placeholderVillageHall = placeholder
-    
-    let normal: [Map.Town.Building] = [
-        .mageGuildLevel1,
-        .mageGuildLevel2,
-        .mageGuildLevel3,
-        .mageGuildLevel4,
-        .mageGuildLevel5, // Castle: Mage guild 1 AGAIN (because lacks 5).
-       
-            .tavern,
-        .shipyard, // Tower: Mage guild 1 AGAIN (because lacks `shipyard`)
-        
-            .fort,
-        .citadel,
-        .castle,
-       
-        placeholderVillageHall,
-        .townHall,
-        .cityHall,
-        .capitol,
-        
-        .marketplace,
-        .resourceSilo,
-        .blacksmith,
-        
-        .special1,
-        .horde1,
-        .horde2,
-        UNKNOWN, // ?????
-        .special2,
-        .special3,
-        .special4,
-        .horde3,
-        .horde4,
-        .grail,
-        UNKNOWN, // ???
-        UNKNOWN, // ???
-        UNKNOWN, // ???
-        .dwelling1,
-        .dwelling2,
-        .dwelling3,
-        .dwelling4,
-        .dwelling5,
-        .dwelling6,
-        .dwelling7,
-        .upgradedDwelling1,
-        .upgradedDwelling2,
-        .upgradedDwelling3,
-        .upgradedDwelling4,
-        .upgradedDwelling5,
-        .upgradedDwelling6,
-        .upgradedDwelling7,
-    ]
-    
-//        let normalBuildings: [Building] = normal.map { Building.normal($0) }
-//        let specialBuildings = Building.Special.allCases.map { Building.special($0) }
-    
-    if let specialBuilding = Building.Special.allCases.first(where:  { $0.rawValue == frameIndex }) {
-        return .special(specialBuilding)
-    }
-    
-    return .normal(normal[frameIndex])
-}
+import Util
 
 extension Laka.UI {
 
     /// Images of buildings to chose to build from the build new buildings UI (in village/town/city HALL - hence the prefix `"hall"`).
     func exportHallBuildings() throws {
-        try exportHallCastleBuildings()
         try exportHallDungeonBuildings()
+        try exportHallCastleBuildings()
         try exportHallConfluxBuildings()
         try exportHallFortressBuildings()
         try exportHallInfernoBuildings()
@@ -121,6 +23,59 @@ extension Laka.UI {
         try exportHallTowerBuildings()
     }
 }
+
+private extension Building.ID.Castle {
+    init(frameName frameNameWithSuffix: String) throws {
+        let frameName = String(frameNameWithSuffix.split(separator: ".").first!)
+        switch frameName {
+        case "ThCsMag1": self = .mageGuildLevel1
+        case "ThCsMag2": self = .mageGuildLevel2
+        case "ThCsMag3": self = .mageGuildLevel3
+        case "ThCsMag4": self = .mageGuildLevel4
+        case "ThCsTav1": self = .tavern
+        case "ThCsDock": self = .shipyard
+        case "ThCsCas1": self = .fort
+        case "ThCsCas2": self = .citadel
+        case "ThCsCas3": self = .castle
+        case "ThCsHal1": self = .villageHall
+        case "ThCsHal2": self = .townHall
+        case "ThCsHal3": self = .cityHall
+        case "ThCsHal4": self = .capitol
+        case "ThCsMrk1": self = .marketplace
+        case "ThCsMrk2": self = .resourceSilo
+        case "ThCsBlak": self = .blacksmith
+        case "ThCsLite": self = .lighthouse
+        case "ThCsGr1H": self = .griffinBastion(isUpgraded: false)
+        case "ThCsGr2H": self = .griffinBastion(isUpgraded: true)
+        case "ThCsCv2S": self = .stables
+        case "ThCsTav2": self = .brotherhoodOfSword
+        case "ThCsHoly": self = .colossus
+        case "ThCsPik1": self = .guardhouse()
+        case "ThCsCrs1": self = .archersTower()
+        case "ThCsGr1": self = .griffinTower()
+        case "ThCsSwd1": self = .barracks()
+        case "ThCsMon1": self = .monastery()
+        case "ThCsCv1": self = .trainingGrounds()
+        case "ThCsAng1": self = .portalOfGlory()
+        case "ThCsPik2": self = .guardhouse(isUpgraded: true)
+        case "ThCsCrs2": self = .archersTower(isUpgraded: true)
+        case "ThCsGr2": self = .griffinTower(isUpgraded: true)
+        case "ThCsSwd2": self = .barracks(isUpgraded: true)
+        case "ThCsMon2": self = .monastery(isUpgraded: true)
+        case "ThCsCv2": self = .trainingGrounds(isUpgraded: true)
+        case "ThCsAng2": self = .portalOfGlory(isUpgraded: true)
+        default: incorrectImplementation(reason: "Unrecognized castle building: \(frameName)")
+        }
+    }
+}
+
+func buildingName(faction: Faction, frameName: String) throws -> String {
+    switch faction {
+    case .castle: return try Building.ID.Castle(frameName: frameName).name
+    default: return frameName
+    }
+}
+
 
 private extension Laka.UI {
     
@@ -159,7 +114,7 @@ private extension Laka.UI {
     func exportHallTowerBuildings() throws {
         try exportHallBuildings(faction: .tower, defFileName: "halltowr.def")
     }
-
+    
     func exportHallBuildings(
         faction: Faction,
         defFileName: String
@@ -167,12 +122,14 @@ private extension Laka.UI {
         let atlasName = "hall_\(faction.name)_buildings"
         return try generateTexture(
             atlasName: atlasName,
-            defFileName: defFileName
+            defFileName: defFileName,
+            skipImagesWithSameNameAndData: true
         ) { frame, frameIndex in
-            let buildingID = try buildingIDFrom(frameIndex: frameIndex)
+            let buildingName = try buildingName(faction: faction, frameName: frame.fileName)
             return [
                 atlasName,
-                String(describing: buildingID)
+                buildingName,
+                String(describing: frameIndex)
             ].joined(separator: "_")
         }
     }

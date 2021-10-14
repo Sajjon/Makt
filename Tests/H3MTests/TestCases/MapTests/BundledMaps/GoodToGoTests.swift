@@ -41,10 +41,10 @@ final class GoodToGoMapTest: BaseMapTest {
                                     .tavern, .blacksmith, .marketplace, .resourceSilo,
                                     .mageGuildLevel1, .mageGuildLevel2, .mageGuildLevel3,
                                     .special1, .special2, .special3,
-                                    .dwelling1, .upgradedDwelling1, .horde1,
-                                    .dwelling2, .upgradedDwelling2,
-                                    .dwelling3, .upgradedDwelling3,
-                                    .dwelling4, .upgradedDwelling4
+                                    .dwellingLevel1, .dwellingLevel1Upgraded, .horde1,
+                                    .dwellingLevel2, .dwellingLevel2Upgraded,
+                                    .dwellingLevel3, .dwellingLevel3Upgraded,
+                                    .dwellingLevel4, .dwellingLevel4Upgraded
                                 ]
                             )),
                             alignment: nil
@@ -56,7 +56,7 @@ final class GoodToGoMapTest: BaseMapTest {
                         assertObjectRandomTown(expected: .init(
                             id: .position(.init(x: 5, y: 5, inUnderworld: false)),
                             owner: .red,
-                            buildings: .custom(.init(built: Map.Town.Building.all(but: [.shipyard, .special1, .special2, .special3, .special4]), forbidden: [.shipyard])),
+                            buildings: .custom(.init(built: Building.ID.Common.all(but: [.shipyard, .special1, .special2, .special3, .special4]), forbidden: [.shipyard])),
                             spells: .init(
                                 possible: .init(
                                     values: Spell.ID.all(
@@ -92,10 +92,10 @@ final class GoodToGoMapTest: BaseMapTest {
                                     .tavern, .blacksmith, .marketplace, .resourceSilo,
                                     .mageGuildLevel1, .mageGuildLevel2, .mageGuildLevel3,
                                     .special1, .special2, .special3, .special4,
-                                    .dwelling1, .upgradedDwelling1, .horde1,
-                                    .dwelling2, .upgradedDwelling2,
-                                    .dwelling3, .upgradedDwelling3,
-                                    .dwelling4, .upgradedDwelling4
+                                    .dwellingLevel1, .dwellingLevel1Upgraded, .horde1,
+                                    .dwellingLevel2, .dwellingLevel2Upgraded,
+                                    .dwellingLevel3, .dwellingLevel3Upgraded,
+                                    .dwellingLevel4, .dwellingLevel4Upgraded
                                 ]
                             )),
                             alignment: nil
@@ -166,7 +166,7 @@ final class GoodToGoMapTest: BaseMapTest {
                         assertObjectRandomTown(expected: .init(
                             id: .position(.init(x: 34, y: 33, inUnderworld: false)),
                             owner: .blue,
-                            buildings: .custom(.init(built: Map.Town.Building.all(but: [.shipyard, .special1, .special2, .special3, .special4]), forbidden: [.shipyard])),
+                            buildings: .custom(.init(built: Building.ID.Common.all(but: [.shipyard, .special1, .special2, .special3, .special4]), forbidden: [.shipyard])),
                             spells: .init(
                                 possible: .init(
                                     values: Spell.ID.all(

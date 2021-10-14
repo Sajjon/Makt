@@ -21,8 +21,10 @@ protocol TextureGenerating {
     func generateTexture(
         name atlasName: String?,
         list fileList: [ImageExport],
+        usePaletteReplacementMap: Bool,
         skipImagesWithSameNameAndData: Bool,
-        maxImageCountPerDefFile: Int?
+        maxImageCountPerDefFile: Int?,
+        skipCalculateWorkload: Bool
     ) throws
 }
 
@@ -155,10 +157,10 @@ extension TextureGenerating {
         try generateTexture(
             name: atlasName,
             list: [
-                .init(
+                .def(.init(
                     defFileName: defFileName,
                     nameFromFrameAtIndexIndex: nameFromFrameAtIndexIndex
-                )
+                ))
             ],
             skipImagesWithSameNameAndData: skipImagesWithSameNameAndData,
             maxImageCountPerDefFile: maxImageCountPerDefFile
@@ -169,34 +171,74 @@ extension TextureGenerating {
     func generateTexture(
         name atlasName: String?,
         list fileList: [ImageExport],
+        usePaletteReplacementMap: Bool = true,
         skipImagesWithSameNameAndData: Bool = false,
-        maxImageCountPerDefFile: Int? = nil
+        maxImageCountPerDefFile: Int? = nil,
+        skipCalculateWorkload: Bool = false
     ) throws {
-        let defFileList = fileList.map{ $0.defFileName }
+        let fileNameList = fileList.map{ $0.fileName }
         print("⚙️ Generating \(atlasName.map{ "\($0) " } ?? "")texture.")
         
         let defParser = DefParser()
+        let defFileList = fileList.compactMap {
+            $0.asDef
+        }
+        let pcxFileList = fileList.compactMap {
+            $0.asPcx
+        }
+        
+        let defParseExporter = defParser.exporter(
+            fileList: defFileList,
+            maxImageCountPerDefFile: maxImageCountPerDefFile
+        )
+        
+        let lodParser = LodParser()
+        
+        let pcxImageExporter: Exporter<ImageFromFrame> = .exportingOne { toExport in
+            let pcx = try lodParser.parsePCX(from: toExport.data, named: toExport.name)
+            let cgImage = try ImageImporter.imageFrom(pcx: pcx, usePaletteReplacementMap: usePaletteReplacementMap)
+            
+            return ImageFromFrame(
+                name: atlasName!,
+                cgImage: cgImage,
+                fullSize: pcx.size,
+                rect: pcx.rect
+            )
+        }
+        
+        let maybeAggregator: Aggregator<ImageFromFrame>? = (defFileList.count > 0 || pcxFileList.count > 1) ? atlasName.map { makeAggregator(atlasName: $0, skipImagesWithSameNameAndData: skipImagesWithSameNameAndData) } : nil
+        
+        let maybeCalculateWorkload: ((_ filesToExport: [SimpleFile]) throws -> Int)? = skipCalculateWorkload ? nil : { unparsedFiles in
+            if let imageCountPerFile = maxImageCountPerDefFile{
+                return unparsedFiles.count * imageCountPerFile
+            } else if defFileList.count > 0 {
+                return try unparsedFiles.map { try defParser.peekFileEntryCount(of: $0) }.reduce(0, +)
+            } else {
+                return pcxFileList.count
+            }
+        }
         
         try fileManager.export(
-            target: .specificFileList(defFileList),
+            target: .specificFileList(fileNameList),
             at: inDataURL,
             to: outImagesURL,
             verbose: verbose,
             
-            calculateWorkload: { unparsedDefFles in
-                if let imageCountPerFile = maxImageCountPerDefFile{
-                    return unparsedDefFles.count * imageCountPerFile
+            calculateWorkload: maybeCalculateWorkload,
+            
+            exporter: .exportingMany { toExport in
+                
+                if toExport.name.hasSuffix(".pcx") {
+                    return try pcxImageExporter.export(toExport)
+                } else if toExport.name.hasSuffix(".def") {
+                    return try defParseExporter.export(toExport)
                 } else {
-                    return try unparsedDefFles.map { try defParser.peekFileEntryCount(of: $0) }.reduce(0, +)
+                    incorrectImplementation(reason: "Unsupported file format, file named: \(toExport.name)")
                 }
+                
             },
             
-            exporter: defParser.exporter(
-                fileList: fileList,
-                maxImageCountPerDefFile: maxImageCountPerDefFile
-            ),
-            
-            aggregator: atlasName.map { makeAggregator(atlasName: $0, skipImagesWithSameNameAndData: skipImagesWithSameNameAndData) }
+            aggregator: maybeAggregator
         )
         
     }
@@ -207,28 +249,11 @@ extension TextureGenerating {
         pcxImageName: String,
         usePaletteReplacementMap: Bool = true
     ) throws {
-        let lodParser = LodParser()
-        
-        let pcxImageExporter: Exporter<ImageFromFrame> = .exportingOne { toExport in
-            let pcx = try lodParser.parsePCX(from: toExport.data, named: toExport.name)
-            let cgImage = try ImageImporter.imageFrom(pcx: pcx, usePaletteReplacementMap: usePaletteReplacementMap)
-            
-            return ImageFromFrame(
-                name: imageName,
-                cgImage: cgImage,
-                fullSize: pcx.size,
-                rect: pcx.rect
-            )
-        }
-        
-        try fileManager.export(
-            target: .specificFileList([pcxImageName]),
-            at: inDataURL,
-            to: outImagesURL,
-            verbose: verbose,
-            exporter: pcxImageExporter
+        try generateTexture(
+            name: imageName,
+            list: [.pcx(.init(pcxImageName: pcxImageName))],
+            usePaletteReplacementMap: usePaletteReplacementMap
         )
     }
-    
-    
+
 }

@@ -9,7 +9,7 @@ import Foundation
 import Guld
 
 protocol Exportable {
-    static var listOfFilesToExport: [ImageExport] { get }
+    static var listOfFilesToExport: [DefImageExport] { get }
 }
 
 protocol DefFileNameConvertible {
@@ -29,7 +29,7 @@ extension PNGExportable {
 }
 
 extension PNGExportable where Self: CaseIterable, AllCases == [Self] {
-    var imageExport: ImageExport {
+    var imageExport: DefImageExport {
         .init(defFileName: defFileName) { _, frameIndex in
             [
                 [
@@ -43,12 +43,42 @@ extension PNGExportable where Self: CaseIterable, AllCases == [Self] {
         }
     }
     
-    static var listOfFilesToExport: [ImageExport]  { Self.allCases.map { $0.imageExport } }
+    static var listOfFilesToExport: [DefImageExport]  { Self.allCases.map { $0.imageExport } }
 }
 
-struct ImageExport {
+struct DefImageExport {
     let defFileName: String
     
     /// Returning `nil` means that the frame should be skipped
     let nameFromFrameAtIndexIndex: (_ frame: DefinitionFile.Frame, _ frameIndex: Int) throws -> String?
+}
+
+struct PCXImageExport {
+    let pcxImageName: String
+}
+
+enum ImageExport {
+    case def(DefImageExport)
+    case pcx(PCXImageExport)
+    
+    var fileName: String {
+        switch self {
+        case .def(let def): return def.defFileName
+        case .pcx(let pcx): return pcx.pcxImageName
+        }
+    }
+    
+    var asDef: DefImageExport? {
+        switch self {
+        case .def(let def): return def
+        case .pcx: return nil
+        }
+    }
+    
+    var asPcx: PCXImageExport? {
+        switch self {
+        case .def: return nil
+        case .pcx(let pcx): return pcx
+        }
+    }
 }

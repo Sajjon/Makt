@@ -13,7 +13,7 @@ import Util
 extension DefParser {
     
     func exporter(
-        fileList: [ImageExport],
+        fileList: [DefImageExport],
         maxImageCountPerDefFile: Int? = nil
     ) -> Exporter<ImageFromFrame> {
         

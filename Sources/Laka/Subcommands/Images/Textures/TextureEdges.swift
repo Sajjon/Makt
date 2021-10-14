@@ -13,10 +13,11 @@ extension Laka.Textures {
         
         try generateTexture(
             name: "edges",
-            list: [
+            list: [.def(
                 .init(
                     defFileName: "edg.def",
                     nameFromFrameAtIndexIndex: { _, frameIndex in "edge_\(frameIndex).png" })
+                )
             ]
         )
     }
