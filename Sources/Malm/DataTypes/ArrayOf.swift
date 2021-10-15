@@ -27,7 +27,18 @@ public struct ArrayOfValidatedElements<ElementsValidator: ElementsValidating>: C
     }
 }
 
-extension ArrayOfValidatedElements: Codable where ElementsValidator.Element: Codable {}
+extension ArrayOfValidatedElements: Codable where ElementsValidator.Element: Codable {
+    public func encode(to encoder: Encoder) throws {
+        var singleValueContainer = encoder.singleValueContainer()
+        try singleValueContainer.encode(values)
+    }
+    
+    public init(from decoder: Decoder) throws {
+        let singleValueContainer = try decoder.singleValueContainer()
+        let values = try singleValueContainer.decode([Element].self)
+        try self.init(checking: values)
+    }
+}
 
 // MARK: CustomDebugStringConvertible
 public extension ArrayOfValidatedElements {

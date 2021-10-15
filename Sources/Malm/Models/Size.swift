@@ -19,6 +19,14 @@ public struct Size: Hashable, CaseIterable, CustomDebugStringConvertible, Compar
         self.height = height
     }
     
+    public init(tilesPerSize: Scalar) {
+        self.init(width: tilesPerSize, height: tilesPerSize)
+    }
+    
+    public init(tileCount: Scalar) {
+        let tilesPerSize = Int(sqrt(Double(tileCount)))
+        self.init(tilesPerSize: tilesPerSize)
+    }
     
 }
 

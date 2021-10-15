@@ -7,15 +7,39 @@
 
 import Foundation
 
-
 public extension Map {
     
     struct Level: Hashable, CustomDebugStringConvertible, Codable {
         public let tiles: [Tile]
+        
         public let isUnderworld: Bool
         
-        public init(tiles: [Tile], isUnderworld: Bool = false) {
+        public init(from decoder: Decoder) throws {
+            let container = try decoder.container(keyedBy: CodingKeys.self)
+            let tileRawValues = try container.decode([Tile].self, forKey: .tiles)
+            
+            let tileCount = tileRawValues.count
+            let tiles: [Map.Tile] = tileRawValues.enumerated().map { (index, tile) in
+                let position = Position.fromTile(at: index, of: tileCount, inUnderworld: false) // will be fixed in `Map.Level`
+                let tileWithPosition = tile.withPosition(position)
+                assert(tileWithPosition._position == position)
+                assert(tileWithPosition.position == position)
+                return tileWithPosition
+            }
+            
+            
             self.tiles = tiles
+            self.isUnderworld = try container.decode(Bool.self, forKey: .isUnderworld)
+        }
+        
+        public init(tiles maybeWrongAboveOrUndergroundFlagTiles: [Tile], isUnderworld: Bool = false) {
+            let tileElements: [Tile] = maybeWrongAboveOrUndergroundFlagTiles.map { incorrectLevelTile in
+                let incorrectPosition = incorrectLevelTile.position
+                let correctedPosition = Position(x: incorrectPosition.x, y: incorrectPosition.y, inUnderworld: isUnderworld)
+                return incorrectLevelTile.withPosition(correctedPosition)
+            }
+            
+            self.tiles = tileElements
             self.isUnderworld = isUnderworld
         }
     }

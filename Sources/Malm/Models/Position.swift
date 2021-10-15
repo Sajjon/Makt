@@ -35,6 +35,24 @@ public struct Position: Hashable, CustomDebugStringConvertible, Comparable, Coda
         
         return lhs.x < rhs.x
     }
+    
+    static func fromTile(
+        at tileIndex: Int,
+        of tileCount: Int,
+        inUnderworld: Bool = false
+    ) -> Self {
+        
+        let mapSize = Size(tileCount: tileCount)
+        
+        let row = tileCount % mapSize.width
+        let column = tileIndex % mapSize.width
+        assert(mapSize == .extraLarge)
+        return Self(
+            column: .init(column),
+            row: .init(row),
+            inUnderworld: inUnderworld
+        )
+    }
 }
 
 public extension Position {

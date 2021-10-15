@@ -7,7 +7,7 @@
 
 import Foundation
 import XCTest
-import Malm
+@testable import Malm
 @testable import H3M
 
 final class UnholyQuestMapTest: BaseMapTest {
@@ -249,7 +249,13 @@ final class UnholyQuestMapTest: BaseMapTest {
         start = CFAbsoluteTimeGetCurrent()
         let mapFromJSON = try jsonDecoder.decode(Map.self, from: jsonData)
         let timeJson = CFAbsoluteTimeGetCurrent() - start
-        XCTAssertEqual(mapFromBinary, mapFromJSON)
+//        XCTAssertEqual(mapFromBinary, mapFromJSON)
+        XCTAssertEqual(mapFromBinary.basicInformation, mapFromJSON.basicInformation)
+        XCTAssertEqual(mapFromBinary.additionalInformation, mapFromJSON.additionalInformation)
+        XCTAssertEqual(mapFromBinary.playersInfo, mapFromJSON.playersInfo)
+        XCTAssertEqual(mapFromBinary.attributesOfObjects, mapFromJSON.attributesOfObjects)
+        XCTAssertEqual(mapFromBinary.detailsAboutObjects, mapFromJSON.detailsAboutObjects)
+        XCTAssertEqual(mapFromBinary.globalEvents, mapFromJSON.globalEvents)
         
         XCTAssertLessThan(timeJson, timeBinary)
         
