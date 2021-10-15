@@ -10,6 +10,7 @@ import Util
 
 public extension Map {
     struct Tile: Hashable, CustomDebugStringConvertible, Codable {
+
         public let position: Position
         public let ground: Ground 
         
@@ -17,10 +18,12 @@ public extension Map {
         public let road: Road?
         
         /// Whether tile is coastal (allows disembarking if land or block movement if water)
-        public let isCoastal: Bool
+        @SkipEncodingIfFalse
+        public private(set) var isCoastal: Bool
         
         /// If water tile, then we might have greater speed with our boats thanks to favourable winds.
-        public let hasFavourableWindEffect: Bool
+        @SkipEncodingIfFalse
+        public private(set) var hasFavourableWindEffect: Bool
         
         public init(
             position: Position,

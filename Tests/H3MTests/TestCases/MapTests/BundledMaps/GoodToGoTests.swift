@@ -246,6 +246,7 @@ final class GoodToGoMapTest: BaseMapTest {
         let mapFromBinary = try Map.load(mapID)
         let timeBinary = CFAbsoluteTimeGetCurrent() - start
         let jsonEncoder = JSONEncoder()
+        jsonEncoder.outputFormatting = .prettyPrinted
         let jsonData = try jsonEncoder.encode(mapFromBinary)
         let jsonDecoder = JSONDecoder()
         start = CFAbsoluteTimeGetCurrent()
@@ -253,7 +254,10 @@ final class GoodToGoMapTest: BaseMapTest {
         let timeJson = CFAbsoluteTimeGetCurrent() - start
         XCTAssertEqual(mapFromBinary, mapFromJSON)
         
-        XCTAssertEqual(timeBinary, timeJson, accuracy: 0.01)
+        XCTAssertEqual(timeBinary, timeJson, accuracy: 0.1)
+        
+        try jsonData.write(to: FileManager.default.homeDirectoryForCurrentUser.appendingPathComponent("Good to Go.json"))
+        
 //        print(String(format: "timeBinary: %.3f seconds", timeBinary))
 //        print(String(format: "timeJson: %.3f seconds", timeJson))
 //        
