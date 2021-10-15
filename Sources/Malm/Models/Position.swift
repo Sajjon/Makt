@@ -46,7 +46,6 @@ public struct Position: Hashable, CustomDebugStringConvertible, Comparable, Coda
         
         let row = tileCount % mapSize.width
         let column = tileIndex % mapSize.width
-        assert(mapSize == .extraLarge)
         return Self(
             column: .init(column),
             row: .init(row),
