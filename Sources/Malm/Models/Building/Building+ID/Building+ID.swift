@@ -385,7 +385,7 @@ public extension Building.ID.Castle {
 
 
 public extension Building.ID {
-    enum Common: UInt8, BuildingIDConvertible, Hashable, CaseIterable, Codable {
+    enum Common: UInt8, BuildingIDConvertible, Hashable, CaseIterable, Codable, CustomDebugStringConvertible {
         case townHall = 0
         case cityHall = 1
         case capitol = 2

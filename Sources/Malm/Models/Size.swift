@@ -24,6 +24,7 @@ public struct Size: Hashable, CaseIterable, CustomDebugStringConvertible, Compar
     }
     
     public init(tileCount: Scalar) {
+        // will ONLY work if all map sizes remain quadratic.
         let tilesPerSize = Int(sqrt(Double(tileCount)))
         self.init(tilesPerSize: tilesPerSize)
     }

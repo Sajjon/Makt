@@ -17,10 +17,10 @@ public extension Map {
         public init(from decoder: Decoder) throws {
             let container = try decoder.container(keyedBy: CodingKeys.self)
             let tileRawValues = try container.decode([Tile].self, forKey: .tiles)
-            
+            let isUnderworld = try container.decode(Bool.self, forKey: .isUnderworld)
             let tileCount = tileRawValues.count
             let tiles: [Map.Tile] = tileRawValues.enumerated().map { (index, tile) in
-                let position = Position.fromTile(at: index, of: tileCount, inUnderworld: false) // will be fixed in `Map.Level`
+                let position = Position.fromTile(at: index, of: tileCount, inUnderworld: isUnderworld)
                 let tileWithPosition = tile.withPosition(position)
                 assert(tileWithPosition._position == position)
                 assert(tileWithPosition.position == position)
@@ -29,7 +29,7 @@ public extension Map {
             
             
             self.tiles = tiles
-            self.isUnderworld = try container.decode(Bool.self, forKey: .isUnderworld)
+            self.isUnderworld = isUnderworld
         }
         
         public init(tiles maybeWrongAboveOrUndergroundFlagTiles: [Tile], isUnderworld: Bool = false) {
@@ -48,7 +48,8 @@ public extension Map {
 public extension Map.Level {
     
     var debugDescription: String {
-        tileEmojiString
+//        tileEmojiString
+        "tile count: \(tiles.count)"
     }
     
     var tileEmojiString: String {

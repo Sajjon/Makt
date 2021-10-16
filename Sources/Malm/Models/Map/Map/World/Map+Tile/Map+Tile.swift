@@ -56,8 +56,7 @@ public extension Map {
 public extension Map.Tile {
     var debugDescription: String {
         let optionalStrings: [String?] = [
-            "position.x: \(_position?.x ?? 1337)",
-            "position.y: \(_position?.y ?? 1337)",
+            "position: \(position)",
             "ground: \(ground)",
             river.map { "river: \($0)" },
             road.map { "road: \($0)" },

@@ -35,7 +35,7 @@ public struct Position: Hashable, CustomDebugStringConvertible, Comparable, Coda
         
         return lhs.x < rhs.x
     }
-    
+
     static func fromTile(
         at tileIndex: Int,
         of tileCount: Int,
@@ -43,9 +43,10 @@ public struct Position: Hashable, CustomDebugStringConvertible, Comparable, Coda
     ) -> Self {
         
         let mapSize = Size(tileCount: tileCount)
-        
-        let row = tileCount % mapSize.width
-        let column = tileIndex % mapSize.width
+        let width = mapSize.width
+        let qar = tileIndex.quotientAndRemainder(dividingBy: width)
+        let row = qar.quotient
+        let column = qar.remainder
         return Self(
             column: .init(column),
             row: .init(row),

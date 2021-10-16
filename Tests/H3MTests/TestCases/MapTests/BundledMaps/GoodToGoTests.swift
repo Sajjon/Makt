@@ -56,7 +56,7 @@ final class GoodToGoMapTest: BaseMapTest {
                         assertObjectRandomTown(expected: .init(
                             id: .position(.init(x: 5, y: 5, inUnderworld: false)),
                             owner: .red,
-                            buildings: .custom(.init(built: Building.ID.Common.all(but: [.shipyard, .special1, .special2, .special3, .special4]), forbidden: [.shipyard])),
+                            buildings: .custom(.init(built: Building.ID.Common.all(but: [.villageHall, .shipyard, .special1, .special2, .special3, .special4]), forbidden: [.shipyard])),
                             spells: .init(
                                 possible: .init(
                                     values: Spell.ID.all(
@@ -166,7 +166,7 @@ final class GoodToGoMapTest: BaseMapTest {
                         assertObjectRandomTown(expected: .init(
                             id: .position(.init(x: 34, y: 33, inUnderworld: false)),
                             owner: .blue,
-                            buildings: .custom(.init(built: Building.ID.Common.all(but: [.shipyard, .special1, .special2, .special3, .special4]), forbidden: [.shipyard])),
+                            buildings: .custom(.init(built: Building.ID.Common.all(but: [.villageHall, .shipyard, .special1, .special2, .special3, .special4]), forbidden: [.shipyard])),
                             spells: .init(
                                 possible: .init(
                                     values: Spell.ID.all(
@@ -254,15 +254,9 @@ final class GoodToGoMapTest: BaseMapTest {
         let timeJson = CFAbsoluteTimeGetCurrent() - start
         XCTAssertEqual(mapFromBinary, mapFromJSON)
         
-        XCTAssertEqual(timeBinary, timeJson, accuracy: 0.1)
         
         try jsonData.write(to: FileManager.default.homeDirectoryForCurrentUser.appendingPathComponent("Good to Go.json"))
-        
-//        print(String(format: "timeBinary: %.3f seconds", timeBinary))
-//        print(String(format: "timeJson: %.3f seconds", timeJson))
-//        
-//        let jsonString = String(data: jsonData, encoding: .utf8)!
-//        
-//        print(jsonString)
+        XCTAssertEqual(timeBinary, timeJson, accuracy: 0.1)
+
     }
 }
