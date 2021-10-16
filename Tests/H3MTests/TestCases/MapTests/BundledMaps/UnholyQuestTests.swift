@@ -244,6 +244,7 @@ final class UnholyQuestMapTest: BaseMapTest {
         let timeBinary = CFAbsoluteTimeGetCurrent() - start
         let jsonEncoder = JSONEncoder()
         jsonEncoder.outputFormatting = .prettyPrinted
+        
         let jsonData = try jsonEncoder.encode(mapFromBinary)
         let jsonDecoder = JSONDecoder()
         start = CFAbsoluteTimeGetCurrent()

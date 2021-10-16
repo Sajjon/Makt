@@ -11,21 +11,7 @@ import Util
 public extension DataReader {
     
     func readPathfindingMask() throws -> Map.Object.Attributes.Pathfinding.RelativePositionOfTiles {
-        
         let bitmask = try readBitArray(byteCount: Map.Object.Attributes.Pathfinding.rowCount)
-        
-        var index = 0
-        var array = [Map.Object.Attributes.Pathfinding.RelativePosition]()
-        for row in 0..<Map.Object.Attributes.Pathfinding.rowCount {
-            for column in 0..<Map.Object.Attributes.Pathfinding.columnCount {
-                defer { index += 1 }
-                let relativePosition: Map.Object.Attributes.Pathfinding.RelativePosition = .init(column: .init(column), row: .init(row))
-                let allowed = bitmask[index]
-                if allowed {
-                    array.append(relativePosition)
-                }
-            }
-        }
-        return .init(values: array)
+        return try .init(bitmask: bitmask)
     }
 }

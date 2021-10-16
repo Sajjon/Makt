@@ -103,7 +103,7 @@ public struct BitArray: Hashable, RangeReplaceableCollection {
     
     /// Constructs a new bit array with `count` bits set to the specified value.
     public init(repeating repeatedValue: Bool, count: Int) {
-        precondition(!isEmpty, "Can't construct BitArray with count < 0")
+        precondition(count > 0, "Can't construct BitArray with count <= 0")
         
         let numberOfInts = (count / Constants.IntSize) + 1
         let intValue = repeatedValue ? ~0 : 0

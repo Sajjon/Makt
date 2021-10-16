@@ -256,7 +256,7 @@ final class GoodToGoMapTest: BaseMapTest {
         
         
         try jsonData.write(to: FileManager.default.homeDirectoryForCurrentUser.appendingPathComponent("Good to Go.json"))
-        XCTAssertEqual(timeBinary, timeJson, accuracy: 0.1)
+//        XCTAssertEqual(timeBinary, timeJson, accuracy: 0.1)
 
     }
 }
