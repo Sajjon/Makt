@@ -243,7 +243,6 @@ final class UnholyQuestMapTest: BaseMapTest {
         let mapFromBinary = try Map.load(mapID)
         let timeBinary = CFAbsoluteTimeGetCurrent() - start
         let jsonEncoder = JSONEncoder()
-        jsonEncoder.outputFormatting = .prettyPrinted
         
         let jsonData = try jsonEncoder.encode(mapFromBinary)
         let jsonDecoder = JSONDecoder()
@@ -258,9 +257,13 @@ final class UnholyQuestMapTest: BaseMapTest {
         
         print(String(format: "timeBinary: %.3f seconds", timeBinary))
         print(String(format: "timeJson: %.3f seconds", timeJson))
-//
-//        let jsonString = String(data: jsonData, encoding: .utf8)!
-//
-//        print(jsonString)
+        
+        let mapConverter = MapConverter(
+            outputURL: FileManager.default.homeDirectoryForCurrentUser,
+            jsonEncoder: jsonEncoder
+        )
+        let scenario = try mapConverter.convert(map: mapFromBinary)
+        XCTAssertEqual(scenario.info.summary.name, mapFromBinary.basicInformation.name)
+        
     }
 }

@@ -36,7 +36,7 @@ public struct Position: Hashable, CustomDebugStringConvertible, Comparable, Coda
         return lhs.x < rhs.x
     }
 
-    static func fromTile(
+    public static func fromTile(
         at tileIndex: Int,
         of tileCount: Int,
         inUnderworld: Bool = false
