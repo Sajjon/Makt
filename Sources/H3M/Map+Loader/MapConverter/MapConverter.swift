@@ -7,6 +7,7 @@
 
 import Foundation
 import Malm
+import Util
 
 /// NOT USED (yet)
 /// Here follows some ides on how to more effectively represent a map, here called "Scenario"
@@ -41,7 +42,7 @@ public extension MapConverter {
     func convert(map: Map) throws -> Scenario {
         let info = infoFrom(map: map)
         let scenarioMap = scenarioMap(from: map)
-       
+        
         let converted = Scenario(
             info: info,
             map: scenarioMap
@@ -99,26 +100,21 @@ private extension MapConverter {
             }
         }
         
-        func objects(at position: Position) -> [Scenario.Map.Object]? {
+        func objects(at position: Position) -> [Scenario.Map.Object] {
             guard
-                let apa = positionToObjects[position],
-                !apa.objects.isEmpty,
-                case let malmObjects = apa.objects
-            else { return nil }
+                let objects = positionToObjects[position],
+                !objects.objects.isEmpty,
+                case let mapObjects = objects.objects
+            else { return [] }
             
-            let mapped: [Scenario.Map.Object ] = malmObjects.map { (malmObject) in
-                
-                switch malmObject.kind {
-                case .hero(let hero): return .hero(hero)
-                case .resource(let guardedResource): return .resource(guardedResource)
-                default:
-                    guard let entity = malmObject.kind.entity else {
-                        return .unsupported(nil)
-                    }
-                    return .unsupported(String(describing: entity))
+            let mapped: [Scenario.Map.Object ] = mapObjects.compactMap {
+                guard let object = convertMapObject($0) else {
+                    print("⚠️ WARNING discarding object: \(String(describing: $0))")
+                    return nil
                 }
+                return object
             }
-       
+            
             return mapped
         }
         
@@ -148,5 +144,58 @@ private extension MapConverter {
             upperLevel: level(in: { $0.above })!,
             lowerLevel: level(keyPath: \.underground)
         )
+    }
+    
+    func convertMapObject(_ mapObject: Map.Object) -> Scenario.Map.Object? {
+        switch mapObject.kind {
+        case .hero(let hero):
+            return .interactive(.mutable(.hero(hero)))
+        case .town(let town):
+            return .flaggable(.town(town))
+        case .abandonedMine(let abandonedMine):
+            return .flaggable(.abandonedMine(abandonedMine))
+        case .artifact(let guardedArtifact):
+            return .conditionallyPerishable(.artifact(guardedArtifact))
+        case .resourceGenerator(let resourceGenerator):
+            return .flaggable(.resourceGenerator(resourceGenerator))
+        case .dwelling(let dwelling):
+            return .flaggable(.dwelling(dwelling))
+        case .garrison(let garrison):
+            return .flaggable(.garrison(garrison))
+        case .geoEvent(let geoEvent):
+            return .conditionallyPerishable(.geoEvent(geoEvent))
+        case .grail(let grail):
+            return .immediatelyPerishable(.grail(grail))
+        case .lighthouse(let lighthouse):
+            return .flaggable(.lighthouse(lighthouse))
+        case .oceanBottle(let oceanBottle):
+            return .immediatelyPerishable(.oceanBottle(oceanBottle))
+        case .pandorasBox(let pandorasBox):
+            return .immediatelyPerishable(.pandorasBox(pandorasBox))
+        case .questGuard(let quest):
+            return .conditionallyPerishable(.questGuard(quest))
+        case .seershut(let seershut):
+            return .visitable(.onceUntil(.critteriaMet(.seershut(seershut))))
+        case .scholar(let scholar):
+            return .immediatelyPerishable(.scholar(scholar))
+        case .generic:
+            return nil // TODO: Implement me
+        case .resource(let resource):
+            return .conditionallyPerishable(.resource(resource))
+        case .placeholderHero(_):
+            return nil // TODO: Implement me
+        case .shipyard(let shipyard):
+            return .flaggable(.shipyard(shipyard))
+        case .shrine(let shrine):
+            return .visitable(.onceUntil(.critteriaMet(.shrine(shrine))))
+        case .sign(let sign):
+            return .immutable(.sign(sign))
+        case .monster(let monster):
+            return .conditionallyPerishable(.monster(monster))
+        case .witchHut(let witchhut):
+            return .visitableOncePerHero(.witchHut(witchhut))
+        case .spellScroll(let spellscroll):
+            return .immediatelyPerishable(.spellScroll(spellscroll))
+        }
     }
 }
