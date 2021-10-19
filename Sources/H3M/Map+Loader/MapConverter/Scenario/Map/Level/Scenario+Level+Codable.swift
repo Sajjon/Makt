@@ -49,10 +49,14 @@ private extension Scenario.Map.Level {
     struct SimpleTile: Codable {
         
         let ground: Ground?
-        let objects: [Scenario.Map.Object]?
+        let road: Road?
+        let river: River?
+        let objects: Scenario.Map.Level.Objects?
         
         init(tile: Tile, isLowerLevel: Bool) {
-            self.objects = tile.objects.isEmpty ? nil :  tile.objects
+            self.objects = tile.objects
+            self.road = tile.road
+            self.river = tile.river
             // Only encode non default terrain
             let defaultGround = Ground.default(isLowerLevel: isLowerLevel)
             self.ground = tile.ground != defaultGround ? tile.ground : nil
@@ -65,12 +69,18 @@ private extension Scenario.Map.Level {
             isLowerLevel: Bool
         ) -> Tile {
             
-            let position = Position.fromTile(at: tileIndex, of: totalCount, inUnderworld: isLowerLevel)
+            let position = Position.fromTile(
+                at: tileIndex,
+                of: totalCount,
+                inUnderworld: isLowerLevel
+            )
             
             return Tile(
                 position: position,
                 ground: ground ?? .default(isLowerLevel: isLowerLevel),
-                objects: objects ?? []
+                road: road,
+                river: river,
+                objects: objects
             )
         }
     }

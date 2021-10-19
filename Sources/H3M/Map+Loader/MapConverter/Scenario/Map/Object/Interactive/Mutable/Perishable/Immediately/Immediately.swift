@@ -8,7 +8,7 @@
 import Foundation
 import Malm
 
-public extension Scenario.Map.Object.Interactive.Mutable.Perishable {
+public extension Scenario.Map.Object.Kind.Interactive.Mutable.Perishable {
     
     /// An object which will always - unconditionally - perish, e.g.
     /// a `scholar` or a `treasure chest`.

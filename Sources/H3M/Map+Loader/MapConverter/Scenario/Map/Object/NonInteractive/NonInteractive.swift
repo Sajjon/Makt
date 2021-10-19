@@ -14,7 +14,7 @@ public extension Map {
     }
 }
 
-public extension Scenario.Map.Object {
+public extension Scenario.Map.Object.Kind {
 
     /// Non-interactive object, but potentially effectful, e.g. `magic plains`
     /// or `cursed ground` or entirely effectless and purely ornamental like
@@ -29,7 +29,7 @@ public extension Scenario.Map.Object {
     }
 }
 
-public extension Scenario.Map.Object.NonInteractive {
+public extension Scenario.Map.Object.Kind.NonInteractive {
     enum Effectful: Model {
         case magicalTerrain(MagicalTerrain)
     }
@@ -42,7 +42,7 @@ public extension Scenario.Map.Object.NonInteractive {
     }
 }
 
-public extension Scenario.Map.Object.NonInteractive.Effectful {
+public extension Scenario.Map.Object.Kind.NonInteractive.Effectful {
     enum MagicalTerrain: Model {
         
         /// Cause all spells to be cast at expert level, regardless of the heroes' skills. This includes both adventure spells and combat spells as well as spells cast by creatures and some of magic creature abilities.

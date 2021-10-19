@@ -6,16 +6,72 @@
 //
 
 import Foundation
+import Malm
+
+public typealias Pathfinding = Map.Object.Attributes.Pathfinding
 
 // MARK: Map Object
 public extension Scenario.Map {
     
-    /// An interactive or purely ornamental object on the adventure map. E.g. a
+    struct Object: Model, Comparable {
+        public let kind: Kind
+        
+        /// Z rending
+        private let zAxisIndex: Int
+        
+        /// Name of sprite/animation file
+        public let sprite: Sprite
+        
+        public let pathfinding: Pathfinding
+        
+        public init(
+            kind: Kind,
+            sprite: Sprite,
+            pathfinding: Pathfinding,
+            zAxisIndex: Int
+        ) {
+            self.kind = kind
+            self.sprite = sprite
+            self.pathfinding = pathfinding
+            self.zAxisIndex = zAxisIndex
+        }
+    }
+    
+}
+
+// MARK: Comparable
+public extension Scenario.Map.Object {
+    static func < (lhs: Self, rhs: Self) -> Bool {
+        if lhs.zAxisIndex != rhs.zAxisIndex {
+            return lhs.zAxisIndex > rhs.zAxisIndex
+        }
+
+        if rhs.kind.isHero && !lhs.kind.isHero {
+            return true
+        }
+        if !rhs.kind.isHero && lhs.kind.isHero {
+            return false
+        }
+        if !lhs.kind.isVisitable && rhs.kind.isVisitable {
+            return true
+        }
+        if !rhs.kind.isVisitable && lhs.kind.isVisitable {
+            return false
+        }
+
+        return false
+    }
+}
+
+// MARK: Map Object Kind
+public extension Scenario.Map.Object {
+    
+    /// An interactive or non-interactive object on the adventure map. E.g. a
     /// `Town`, `Hero`, `Monster`, `Gold Mine` or a `tree` or `cursed grounds`.
     ///
     /// https://heroes.thelazy.net/index.php/Adventure_Map#List_of_adventure_map_objects
     ///
-    enum Object: Model {
+    enum Kind: Model {
         
         /// An interactive object on the map, e.g. a `town`, `hero` or resources.
         case interactive(Interactive)
@@ -26,23 +82,49 @@ public extension Scenario.Map {
         case nonInteractive(NonInteractive)
     }
 }
+    
 
 // MARK: - Query
 // MARK: -
-public extension Scenario.Map.Object {
+public extension Scenario.Map.Object.Kind {
+    
+    var isHero: Bool { hero != nil }
+    var isVisitable: Bool { visitable != nil }
+    
+    var hero: Hero? {
+        guard
+            let mutable = `mutable`,
+            case .hero(let hero) = mutable
+        else { return nil }
+        return hero
+    }
+    
     var interactive: Interactive? {
         guard case .interactive(let value) = self else { return nil }
         return value
     }
+    
+    var visitable: Interactive.Mutable.Visitable? {
+        guard
+            let mutable = `mutable`,
+            case .visitable(let visitable) = mutable
+        else { return nil }
+        return visitable
+    }
+    
+    var `mutable`: Scenario.Map.Object.Kind.Interactive.Mutable? {
+        guard let mutable = interactive?.`mutable` else { return nil }
+        return mutable
+    }
 
 }
-public extension Scenario.Map.Object.Interactive {
-    var `mutable`: Scenario.Map.Object.Interactive.Mutable? {
+public extension Scenario.Map.Object.Kind.Interactive {
+    var `mutable`: Scenario.Map.Object.Kind.Interactive.Mutable? {
         guard case .mutable(let value) = self else { return nil }
         return value
     }
 
-    var immutable: Scenario.Map.Object.Interactive.Immutable? {
+    var immutable: Scenario.Map.Object.Kind.Interactive.Immutable? {
         guard case .immutable(let value) = self else { return nil }
         return value
     }
@@ -51,7 +133,7 @@ public extension Scenario.Map.Object.Interactive {
 
 // MARK: Factory
 // MARK: -
-internal extension Scenario.Map.Object {
+internal extension Scenario.Map.Object.Kind {
     
     static func mutable(_ mutable: Interactive.Mutable) -> Self {
         .interactive(.mutable(mutable))

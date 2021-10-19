@@ -41,31 +41,7 @@ public extension ProcessedMap {
         
         public init(tiles: [Tile], objects: [Object], isUnderground: Bool = false) {
             self.tiles = tiles
-            self.objects = objects.sorted(by: { (a, b) in
-                if a.zAxisIndex != b.zAxisIndex {
-                   return a.zAxisIndex > b.zAxisIndex
-                }
-                if a.position.y != b.position.y {
-                    return a.position.y < b.position.y
-                }
-                if b.mapObject.objectID.stripped == .hero && a.mapObject.objectID.stripped != .hero {
-                    return true
-                }
-                if b.mapObject.objectID.stripped != .hero && a.mapObject.objectID.stripped == .hero {
-                    return false
-                }
-                if !a.mapObject.isVisitable && b.mapObject.isVisitable {
-                    return true
-                }
-                if !b.mapObject.isVisitable && a.mapObject.isVisitable {
-                    return false
-                }
-                if a.position.x < b.position.x {
-                    return true
-                }
-                
-                return false
-            })
+            self.objects = objects // not sorted by Z
             self.isUnderground = isUnderground
         }
     }

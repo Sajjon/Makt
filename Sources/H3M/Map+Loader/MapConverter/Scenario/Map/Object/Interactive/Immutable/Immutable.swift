@@ -13,7 +13,7 @@ public extension Map {
 }
 
 // MARK: ImmutableObject
-public extension Scenario.Map.Object.Interactive {
+public extension Scenario.Map.Object.Kind.Interactive {
     
     /// An immutable interactive object on the map, e.g. a `sign`.
     enum Immutable: Model {

@@ -10,7 +10,7 @@ import Foundation
 
 // MARK: - Visitable + OncePerPeriod
 // MARK: -
-public extension Scenario.Map.Object.Interactive.Mutable.Visitable {
+public extension Scenario.Map.Object.Kind.Interactive.Mutable.Visitable {
     
     /// A periodically (game date) visitable object.
     enum OncePerPeriod: Model {
@@ -25,7 +25,7 @@ public extension Scenario.Map.Object.Interactive.Mutable.Visitable {
 
 // MARK: - OncePerPeriod + FirstVisitorOnly
 // MARK: -
-public extension Scenario.Map.Object.Interactive.Mutable.Visitable.OncePerPeriod {
+public extension Scenario.Map.Object.Kind.Interactive.Mutable.Visitable.OncePerPeriod {
     
     /// A periodically visitable object which will only benefit the first visiting
     /// hero during the given period.
@@ -36,7 +36,7 @@ public extension Scenario.Map.Object.Interactive.Mutable.Visitable.OncePerPeriod
 
 // MARK: - OncePerPeriod + PerHero
 // MARK: -
-public extension Scenario.Map.Object.Interactive.Mutable.Visitable.OncePerPeriod {
+public extension Scenario.Map.Object.Kind.Interactive.Mutable.Visitable.OncePerPeriod {
 
     /// A periodically visitable object which will benefit every hero once per
     /// period, disregarding if it has already been visited by another hero this

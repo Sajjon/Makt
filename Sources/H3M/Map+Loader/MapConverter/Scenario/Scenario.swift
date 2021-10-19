@@ -9,6 +9,8 @@ import Foundation
 import Malm
 
 public typealias Model = Hashable & Codable
+public typealias River = Map.Tile.River
+public typealias Road = Map.Tile.Road
 public typealias Ground = Map.Tile.Ground
 public typealias Terrain = Map.Terrain
 public typealias GuardedResource = Map.GuardedResource

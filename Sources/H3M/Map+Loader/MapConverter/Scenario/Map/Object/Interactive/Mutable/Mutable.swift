@@ -9,7 +9,7 @@ import Foundation
 import Malm
 
 // MARK: MutableObject
-public extension Scenario.Map.Object.Interactive {
+public extension Scenario.Map.Object.Kind.Interactive {
     
     enum Mutable: Model {
         

@@ -7,7 +7,7 @@
 
 import Foundation
 
-public extension Scenario.Map.Object.Interactive.Mutable.Visitable {
+public extension Scenario.Map.Object.Kind.Interactive.Mutable.Visitable {
 
     /// A *once* and only once per game visitable object, first come first served
     /// this game object, e.g. `lean to`.

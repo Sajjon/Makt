@@ -8,7 +8,7 @@
 import Foundation
 import Malm
 
-public extension Scenario.Map.Object.Interactive.Mutable.Perishable {
+public extension Scenario.Map.Object.Kind.Interactive.Mutable.Perishable {
     
     /// An object which might perish based on some condition, e.g. an artifact
     /// might be guarded and if player is prompted to avoid the fight the object

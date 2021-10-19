@@ -10,7 +10,7 @@ import Malm
 
 // MARK: - Visitable + OnceUntil
 // MARK: -
-public extension Scenario.Map.Object.Interactive.Mutable.Visitable {
+public extension Scenario.Map.Object.Kind.Interactive.Mutable.Visitable {
     
     /// A revisitable object if some conditional (non time) been met:
     /// `Fountain of fortune`, `Seers hut`, `Faerie Ring`,
@@ -22,7 +22,7 @@ public extension Scenario.Map.Object.Interactive.Mutable.Visitable {
 
 // MARK: - OnceUntil+FoughtBattle
 // MARK: -
-public extension Scenario.Map.Object.Interactive.Mutable.Visitable.OnceUntil {
+public extension Scenario.Map.Object.Kind.Interactive.Mutable.Visitable.OnceUntil {
     
     /// A conditionally visitable object which might will not benefit the hero
     /// to revisit if she has not fought a fight since last visit.
@@ -35,7 +35,7 @@ public extension Scenario.Map.Object.Interactive.Mutable.Visitable.OnceUntil {
 
 // MARK: - OnceUntil+CritteriaMet
 // MARK: -
-public extension Scenario.Map.Object.Interactive.Mutable.Visitable.OnceUntil {
+public extension Scenario.Map.Object.Kind.Interactive.Mutable.Visitable.OnceUntil {
     
     /// A conditionally visitable which is visitable once a quest
     enum CritteriaMet: Model {

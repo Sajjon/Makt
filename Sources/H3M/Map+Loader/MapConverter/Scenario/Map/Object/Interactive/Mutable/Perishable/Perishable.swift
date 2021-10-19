@@ -8,7 +8,7 @@
 import Foundation
 
 // MARK: Perishable
-public extension Scenario.Map.Object.Interactive.Mutable {
+public extension Scenario.Map.Object.Kind.Interactive.Mutable {
     /// A perishable object that will disappear from the map after it has been
     /// consumed, e.g. a resource or a monster, a scholar or an artifact.
     enum Perishable: Model {

@@ -9,7 +9,7 @@ import Foundation
 import Malm
 
 // MARK: FlaggableObject
-public extension Scenario.Map.Object.Interactive.Mutable {
+public extension Scenario.Map.Object.Kind.Interactive.Mutable {
     enum Flaggable: Model {
         case town(Map.Town)
         case resourceGenerator(Map.ResourceGenerator)

@@ -53,7 +53,6 @@ public extension MapConverter {
         let fileUrl = outputURL.appendingPathComponent(fileName)
         try jsonData.write(to: fileUrl)
         
-        
         return converted
     }
 }
@@ -116,11 +115,16 @@ private extension MapConverter {
             else { return [] }
             
             let mapped: [Scenario.Map.Object ] = mapObjects.compactMap {
-                guard let object = convertMapObject($0) else {
+                guard let kind = extractObjectKind(from: $0) else {
                     print("⚠️ WARNING discarding object: \(String(describing: $0))")
                     return nil
                 }
-                return object
+                return .init(
+                    kind: kind,
+                    sprite: $0.attributes.sprite,
+                    pathfinding: $0.attributes.pathfinding,
+                    zAxisIndex: $0.attributes.zAxisRenderingPriority
+                )
             }
             
             return mapped
@@ -137,7 +141,10 @@ private extension MapConverter {
                     .init(
                         position: $0.position,
                         ground: $0.ground,
-                        objects: objects(at: $0.position))
+                        road: $0.road,
+                        river: $0.river,
+                        objects: objects(at: $0.position)
+                    )
                 }
             )
         }
@@ -154,7 +161,7 @@ private extension MapConverter {
         )
     }
     
-    func convertMapObject(_ mapObject: Map.Object) -> Scenario.Map.Object? {
+    func extractObjectKind(from mapObject: Map.Object) -> Scenario.Map.Object.Kind? {
         switch mapObject.kind {
         case .hero(let hero):
             return .interactive(.mutable(.hero(hero)))
@@ -209,10 +216,10 @@ private extension MapConverter {
         }
     }
     
-    func passableTerrain(_ passableTerrain: Map.Object.Kind.PassableTerrain) -> Scenario.Map.Object? {
+    func passableTerrain(_ passableTerrain: Map.Object.Kind.PassableTerrain) -> Scenario.Map.Object.Kind? {
         
-        func magicalTerrain(_ magicalTerrain: Scenario.Map.Object.NonInteractive.Effectful.MagicalTerrain) -> Scenario.Map.Object {
-            Scenario.Map.Object.nonInteractive(.effectful(.magicalTerrain(magicalTerrain)))
+        func magicalTerrain(_ magicalTerrain: Scenario.Map.Object.Kind.NonInteractive.Effectful.MagicalTerrain) -> Scenario.Map.Object.Kind {
+            Scenario.Map.Object.Kind.nonInteractive(.effectful(.magicalTerrain(magicalTerrain)))
         }
         
         switch passableTerrain {
@@ -246,7 +253,7 @@ private extension MapConverter {
         }
     }
     
-    func otherObjects(mapObject: Map.Object) -> Scenario.Map.Object? {
+    func otherObjects(mapObject: Map.Object) -> Scenario.Map.Object.Kind? {
         return nil
     }
 }

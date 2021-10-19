@@ -8,7 +8,7 @@
 import Foundation
 import Malm
 
-public extension Scenario.Map.Object.Interactive.Mutable.Visitable {
+public extension Scenario.Map.Object.Kind.Interactive.Mutable.Visitable {
     
     /// A once per hero visitable object which bonus will not accumulate to the
     /// next visit nor at a later point in time, but which will benefit every

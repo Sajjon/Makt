@@ -8,7 +8,7 @@
 import Foundation
 
 // MARK: Visitable
-public extension Scenario.Map.Object.Interactive.Mutable {
+public extension Scenario.Map.Object.Kind.Interactive.Mutable {
     enum Visitable: Model {
         
         /// E.g. `Lean to`
