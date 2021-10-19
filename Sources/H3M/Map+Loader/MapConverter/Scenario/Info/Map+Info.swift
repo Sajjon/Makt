@@ -14,5 +14,6 @@ public extension Scenario {
     struct Info: Model {
         public let summary: Summary
         public let playersInfo: PlayersInfo
+        public let teamsInfo: TeamsInfo
     }
 }

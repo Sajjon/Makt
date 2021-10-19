@@ -9,7 +9,8 @@ import Foundation
 
 // MARK: Class
 public extension Map.Object {
-    enum Class: Hashable, CaseIterable {
+    enum Class: Hashable {
+
         
         case abandonedMine,
 
@@ -24,12 +25,12 @@ public extension Map.Object {
         // Armageddon's Blade and Shadow of Death variants.
         garrison,
         
-        genericBoat,
+        boat,
         
         // Armageddon's Blade and Shadow of Death variants.
         genericImpassableTerrain,
         
-        genericPassableTerrain,
+             passableTerrain(Map.Object.Kind.PassableTerrain),
         
         // Armageddon's Blade and Shadow of Death variants.
         genericTreasure,

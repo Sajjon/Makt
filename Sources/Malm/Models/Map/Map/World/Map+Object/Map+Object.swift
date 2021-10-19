@@ -50,6 +50,8 @@ public extension Map.Object {
     
     enum Kind: Hashable, Codable {
         case generic
+        case passableTerrain(Map.Object.Kind.PassableTerrain)
+        
         case garrison(Map.Garrison)
         case artifact(Map.GuardedArtifact)
         case resource(Map.GuardedResource)
@@ -80,32 +82,45 @@ public extension Map.Object {
 }
 
 public extension Map.Object.Kind {
-    var entity: Any? {
-        switch self {
-        case .generic: return nil
-        case .garrison(let entity): return entity
-        case .artifact(let entity): return entity
-        case .resource(let entity): return entity
-        case .geoEvent(let entity): return entity
-        case .dwelling(let entity): return entity
-        case .hero(let entity): return entity
-        case .placeholderHero(let entity): return entity
-        case .resourceGenerator(let entity): return entity
-        case .abandonedMine(let entity): return entity
-        case .town(let entity): return entity
-        case .shipyard(let entity): return entity
-        case .shrine(let entity): return entity
-        case .sign(let entity): return entity
-        case .oceanBottle(let entity): return entity
-        case .scholar(let entity): return entity
-        case .seershut(let entity): return entity
-        case .monster(let entity): return entity
-        case .pandorasBox(let entity): return entity
-        case .questGuard(let entity): return entity
-        case .witchHut(let entity): return entity
-        case .lighthouse(let entity): return entity
-        case .grail(let entity): return entity
-        case .spellScroll(let entity): return entity
-        }
+    enum PassableTerrain: Hashable, Codable {
+        
+        case hole, cursedGround, magicPlains, kelp, kelp2, hole2
+
+        // SOD
+        case cloverField, evilFog, favorableWinds, fieryFields, holyGround, lucidPools, magicClouds, rocklands, cursedGround2, magicPlains2
+        
+        /// Sub ID can have values: 139, 141, 142, 144, 145, 146
+        case generic(subID: Int)
     }
 }
+//
+//public extension Map.Object.Kind {
+//    var entity: Any? {
+//        switch self {
+//        case .generic: return nil
+//        case .garrison(let entity): return entity
+//        case .artifact(let entity): return entity
+//        case .resource(let entity): return entity
+//        case .geoEvent(let entity): return entity
+//        case .dwelling(let entity): return entity
+//        case .hero(let entity): return entity
+//        case .placeholderHero(let entity): return entity
+//        case .resourceGenerator(let entity): return entity
+//        case .abandonedMine(let entity): return entity
+//        case .town(let entity): return entity
+//        case .shipyard(let entity): return entity
+//        case .shrine(let entity): return entity
+//        case .sign(let entity): return entity
+//        case .oceanBottle(let entity): return entity
+//        case .scholar(let entity): return entity
+//        case .seershut(let entity): return entity
+//        case .monster(let entity): return entity
+//        case .pandorasBox(let entity): return entity
+//        case .questGuard(let entity): return entity
+//        case .witchHut(let entity): return entity
+//        case .lighthouse(let entity): return entity
+//        case .grail(let entity): return entity
+//        case .spellScroll(let entity): return entity
+//        }
+//    }
+//}

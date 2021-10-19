@@ -8,11 +8,16 @@
 import Foundation
 import Malm
 
+public extension Map {
+    struct AltarOfSacrifice: Model {}
+}
+
 // MARK: ImmutableObject
 public extension Scenario.Map.Object.Interactive {
     
     /// An immutable interactive object on the map, e.g. a `sign`.
     enum Immutable: Model {
         case sign(Map.Sign)
+        case altarOfSacrifice(Map.AltarOfSacrifice)
     }
 }

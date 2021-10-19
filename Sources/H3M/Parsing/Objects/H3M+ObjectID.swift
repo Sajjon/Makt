@@ -66,11 +66,13 @@ private extension Map.Object.ID {
             self = try .borderGate(.init(integer: subId))
         case .randomDwellingWithLevel:
             self = try .randomDwellingAtLevel(.init(integer: subId))
-        case .randomDwellingOfFaction
-:
+        case .randomDwellingOfFaction:
             self = try .randomDwellingOfFaction(.init(integer: subId))
         case .resource:
             self = try .resource(.init(integer: subId))
+            
+        case .decorativeTown:
+            self = try .decorativeTown(.init(integer: subId))
      
         case .abandonedMine:
             self = .abandonedMine
@@ -262,12 +264,6 @@ private extension Map.Object.ID {
         case .yuccaTrees2: self = .yuccaTrees2
         case .reef2: self = .reef2
             
-            
-            
-            
-            
-            
-            
         case .desertHills: self = .desertHills
         case .dirtHills: self = .dirtHills
         case .grassHills: self = .grassHills
@@ -291,8 +287,6 @@ private extension Map.Object.ID {
         case .magicPlains2: self = .magicPlains2
         case .rocklands: self = .rocklands
         case .dragonUtopia: self = .dragonUtopia
-        case .decorativeTown:
-            self = .decorativeTown
         case .passable139:
             self = .genericPassable(subID: 139)
         case .passable141:

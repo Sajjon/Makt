@@ -55,3 +55,6 @@ public extension Map {
     static let fileExtensionTutorialMap = "tut"
 }
 
+public extension Map {
+    var numberOfPlayersThatCanBeHuman: Int { playersInfo.numberOfPlayersThatCanBeHuman }
+}

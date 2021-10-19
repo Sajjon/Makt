@@ -64,13 +64,21 @@ private extension MapConverter {
         .init(
             
             summary: .init(
+                id: map.id,
+                version: map.basicInformation.format,
                 name: map.basicInformation.name,
-                size: map.basicInformation.size
+                size: map.basicInformation.size,
+                difficulty: map.basicInformation.difficulty,
+                numberOfPlayersThatCanBeHuman: map.numberOfPlayersThatCanBeHuman,
+                numberOfPlayers: map.playersInfo.availablePlayers.count,
+                victoryLossConditions: map.additionalInformation.victoryLossConditions
             ),
             
             playersInfo: .init(
                 players: map.playersInfo.availablePlayers
-            )
+            ),
+            
+            teamsInfo: map.additionalInformation.teamInfo
         )
     }
     
@@ -179,7 +187,7 @@ private extension MapConverter {
         case .scholar(let scholar):
             return .immediatelyPerishable(.scholar(scholar))
         case .generic:
-            return nil // TODO: Implement me
+            return otherObjects(mapObject: mapObject)
         case .resource(let resource):
             return .conditionallyPerishable(.resource(resource))
         case .placeholderHero(_):
@@ -196,6 +204,49 @@ private extension MapConverter {
             return .visitableOncePerHero(.witchHut(witchhut))
         case .spellScroll(let spellscroll):
             return .immediatelyPerishable(.spellScroll(spellscroll))
+        case .passableTerrain(let value):
+            return passableTerrain(value)
         }
+    }
+    
+    func passableTerrain(_ passableTerrain: Map.Object.Kind.PassableTerrain) -> Scenario.Map.Object? {
+        
+        func magicalTerrain(_ magicalTerrain: Scenario.Map.Object.NonInteractive.Effectful.MagicalTerrain) -> Scenario.Map.Object {
+            Scenario.Map.Object.nonInteractive(.effectful(.magicalTerrain(magicalTerrain)))
+        }
+        
+        switch passableTerrain {
+        case .magicPlains, .magicPlains2:
+            return magicalTerrain(.magicPlains)
+        case .cursedGround, .cursedGround2:
+            return magicalTerrain(.cursedGround)
+        case .rocklands:
+            return magicalTerrain(.rockland)
+        case .fieryFields:
+            return magicalTerrain(.fieryFields)
+        case .lucidPools:
+            return magicalTerrain(.lucidPools)
+        case .magicClouds:
+            return magicalTerrain(.magicClouds)
+        case .holyGround:
+            return magicalTerrain(.holyGround)
+        case .evilFog:
+            return magicalTerrain(.evilFog)
+        case .cloverField:
+            return magicalTerrain(.cloverField)
+        case .favorableWinds:
+            return magicalTerrain(.favourableWinds)
+            
+        case .kelp, .kelp2:
+            return .nonInteractive(effectless: .kelp)
+        case .hole, .hole2:
+            return .nonInteractive(effectless: .hole)
+        case .generic:
+            return .nonInteractive(effectless: .generic)
+        }
+    }
+    
+    func otherObjects(mapObject: Map.Object) -> Scenario.Map.Object? {
+        return nil
     }
 }

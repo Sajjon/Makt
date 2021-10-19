@@ -147,9 +147,13 @@ private extension H3M {
         case .placeholderHero:
             // Untested
             return try .placeholderHero(parsePlaceholderHero())
-        case .genericBoat, .genericImpassableTerrain, .genericPassableTerrain, .genericTreasure, .genericVisitable, .monolithTwoWay, .subterraneanGate:
+            
+        case .boat, .genericImpassableTerrain, .genericTreasure, .genericVisitable, .monolithTwoWay, .subterraneanGate:
             // Generic objects have no body, nothing to parse.
             return .generic
+//        case .passableTerrain(<#T##Map.Object.Class.PassableTerrain#>)
+        case .passableTerrain(let passable):
+            return .passableTerrain(passable)
         }
     }
 }

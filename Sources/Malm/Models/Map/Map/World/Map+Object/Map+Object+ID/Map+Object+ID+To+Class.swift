@@ -40,13 +40,44 @@ public extension Map.Object.ID {
             return .garrison
 
         case .boat:
-            return .genericBoat
-
-        case .cloverField, .evilFog, .favorableWinds, .fieryFields, .holyGround, .lucidPools, .magicClouds, .rocklands, .cursedGround2, .magicPlains2, .genericPassable:
-            return .genericPassableTerrain // SOD
-
-        case .hole, .cursedGround, .magicPlains, .kelp, .kelp2, .hole2:
-            return .genericPassableTerrain
+            return .boat
+            
+            // MARK: Passable Terrain
+        case .cloverField:
+            return .passableTerrain(.cloverField)
+        case .evilFog:
+            return .passableTerrain(.evilFog)
+        case .favorableWinds:
+            return .passableTerrain(.favorableWinds)
+        case .fieryFields:
+            return .passableTerrain(.fieryFields)
+        case .holyGround:
+            return .passableTerrain(.holyGround)
+        case .lucidPools:
+            return .passableTerrain(.lucidPools)
+        case .magicClouds:
+            return .passableTerrain(.magicClouds)
+        case .rocklands:
+            return .passableTerrain(.rocklands)
+        case .cursedGround2:
+            return .passableTerrain(.cursedGround2)
+        case .magicPlains2:
+            return .passableTerrain(.magicPlains2)
+        case .hole:
+            return .passableTerrain(.hole)
+        case .cursedGround:
+            return .passableTerrain(.cursedGround)
+        case .magicPlains:
+            return .passableTerrain(.magicPlains)
+        case .kelp:
+            return .passableTerrain(.kelp)
+        case .kelp2:
+            return .passableTerrain(.kelp2)
+        case .hole2:
+            return .passableTerrain(.hole2)
+            
+        case .genericPassable(let genericPassableID):
+            return .passableTerrain(.generic(subID: genericPassableID))
 
         case .pandorasBox:
             return .pandorasBox
@@ -127,7 +158,6 @@ public extension Map.Object.ID {
         
         case .campfire, .flotsam, .seaChest, .shipwreckSurvivor, .treasureChest:
             return .genericTreasure
-        
         }
     }
 }

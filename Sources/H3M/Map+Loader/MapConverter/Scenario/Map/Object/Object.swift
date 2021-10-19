@@ -20,8 +20,10 @@ public extension Scenario.Map {
         /// An interactive object on the map, e.g. a `town`, `hero` or resources.
         case interactive(Interactive)
         
-        /// Non-interactive, purely ornamental object of the map.
-        case ornamental(Ornamental)
+        /// Non-interactive object, but potentially effectful, e.g. `magic plains`
+        /// or `cursed ground` or entirely effectless and purely ornamental like
+        /// a `tree`
+        case nonInteractive(NonInteractive)
     }
 }
 
@@ -65,6 +67,18 @@ internal extension Scenario.Map.Object {
     
     static func perisable(_ perishable: Interactive.Mutable.Perishable) -> Self {
         .mutable(.perishable(perishable))
+    }
+    
+    static func nonInteractive(magicalTerrain: NonInteractive.Effectful.MagicalTerrain) -> Self {
+        .nonInteractive(.effectful(.magicalTerrain(magicalTerrain)))
+    }
+    
+    static func nonInteractive(effectful: NonInteractive.Effectful) -> Self {
+        .nonInteractive(.effectful(effectful))
+    }
+    
+    static func nonInteractive(effectless: NonInteractive.Effectless) -> Self {
+        .nonInteractive(.effectless(effectless))
     }
     
     static func conditionallyPerishable(

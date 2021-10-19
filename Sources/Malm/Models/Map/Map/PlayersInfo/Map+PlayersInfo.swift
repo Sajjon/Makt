@@ -19,6 +19,7 @@ public extension Map {
 }
 
 public extension Map.InformationAboutPlayers {
+    var numberOfPlayersThatCanBeHuman: Int { players.filter { $0.isPlayableByHuman }.count }
     var availablePlayers: [Player] { players.map { $0.player } }
 }
 
