@@ -183,7 +183,12 @@ extension Laka.Textures {
       ]
     }
     
+    var visitableDefsCount: Int {
+        visitable.count
+    }
+    
     func exportVisitable() throws {
+        defer { finishedExtractingEntries(count: visitableDefsCount) }
         let visitableFileList = visitable.map { defFileName in
             DefImageExport(defFileName: defFileName, nameFromFrameAtIndexIndex: { _, _ in defFileName })
         }

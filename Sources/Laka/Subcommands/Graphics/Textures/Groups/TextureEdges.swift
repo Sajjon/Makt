@@ -9,8 +9,12 @@ import Foundation
 
 extension Laka.Textures {
     
+    var edgesDefsCount: Int {
+        1
+    }
+    
     func exportEdges() throws {
-        
+        defer { finishedExtractingEntries(count: edgesDefsCount) }
         try generateTexture(
             name: "edges",
             list: [.def(

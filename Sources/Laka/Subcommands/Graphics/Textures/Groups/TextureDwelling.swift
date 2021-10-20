@@ -114,7 +114,12 @@ extension Laka.Textures {
           ]
     }
     
+    var dwellingDefsCount: Int {
+        dwelling.count
+    }
+    
     func exportDwelling() throws {
+        defer { finishedExtractingEntries(count: dwellingDefsCount) }
         let dwellingFileList = dwelling.map { defFileName in
             DefImageExport(defFileName: defFileName, nameFromFrameAtIndexIndex: { _, _ in defFileName })
         }

@@ -11,14 +11,24 @@ import Malm
 // MARK: - TERRAIN
 // MARK: -
 internal extension Laka.Textures {
-    func exportTerrain() throws {
+    
+    private var defFiles: [DefImageExport] {
         let roadFiles = Map.Tile.Road.Kind.listOfFilesToExport
         let groundFiles = Map.Terrain.listOfFilesToExport
         let riverFiles = Map.Tile.River.Kind.listOfFilesToExport
         
+        return roadFiles + riverFiles + groundFiles
+    }
+    
+    var terrainDefsCount: Int {
+        defFiles.count
+    }
+    
+    func exportTerrain() throws {
+        defer { finishedExtractingEntries(count: terrainDefsCount) }
         try generateTexture(
             name: "terrain",
-            list: (roadFiles + riverFiles + groundFiles).map { .def($0) }
+            list: defFiles.map { .def($0) }
         )
     }
 }

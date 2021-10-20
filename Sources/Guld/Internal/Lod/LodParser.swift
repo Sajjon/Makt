@@ -14,15 +14,15 @@ import H3C
 
 public final class LodParser: ArchiveFileCountParser {
     
-    fileprivate let inspector: AssetParsedInspector?
     fileprivate let decompressor: Decompressor
+    fileprivate let inspector: AssetParsedInspector?
     
     public init(
-        inspector: AssetParsedInspector? = nil,
-        decompressor: Decompressor = GzipDecompressor()
+        decompressor: Decompressor = GzipDecompressor(),
+        inspector: AssetParsedInspector? = nil
     ) {
-        self.inspector = inspector
         self.decompressor = decompressor
+        self.inspector = inspector
     }
 }
 

@@ -11,6 +11,7 @@ import Malm
 import Common
 import Foundation
 
+
 extension Laka {
     
     /// A command to extract all `*.def`, `*.pcx`, `*.msk`, `*.txt` etc files from all `*.lod` archive files.
@@ -29,15 +30,22 @@ extension Laka {
         
         /// Requires `Laka lod` to have been run first.
         func extract() throws {
-            let lodParser = LodParser()
+            
+            let lodParser = LodParser(inspector: .init(onParseFileEntry: { [self] _ in
+                finishedExtractingEntry()
+            }))
             
             try fileManager.export(
                 target: .allFilesMatching(extension: "lod"),
                 at: inDataURL,
                 to: outEntryURL,
                 nameOfWorkflow: "exporting LOD archives",
-                calculateWorkload: { lodArchives in
-                    try lodArchives.map { try lodParser.peekFileEntryCount(of: $0) }.reduce(0, +)
+                filesToExportHaveBeenRead: { [self] lodArchivesReadFromDisk in
+                    let numberOfEntriesToExport = try lodArchivesReadFromDisk.map {
+                        try lodParser.peekFileEntryCount(of: $0)
+                    }.reduce(0, +)
+                    report(numberOfEntriesToExtract: numberOfEntriesToExport)
+                    return numberOfEntriesToExport
                 },
                 exporter: lodParser.exporter
             )

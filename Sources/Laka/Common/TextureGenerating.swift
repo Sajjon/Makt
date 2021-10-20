@@ -221,7 +221,7 @@ extension TextureGenerating {
             target: .specificFileList(fileNameList),
             at: inDataURL,
             to: outImagesURL,
-            calculateWorkload: maybeCalculateWorkload,
+            filesToExportHaveBeenRead: maybeCalculateWorkload,
             exporter: .exportingMany { toExport in
                 
                 if toExport.name.hasSuffix(".pcx") {

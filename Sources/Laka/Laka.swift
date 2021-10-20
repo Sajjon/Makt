@@ -26,9 +26,40 @@ protocol CMD: ParsableCommand {
     func extract() throws
 }
 
-
+private var progressBar: ProgressBar? = nil
 
 extension CMD {
+    
+    var terminalWidth: Int { 60 }
+    
+    var progressMode: ProgressMode {
+        options.progressMode
+    }
+    
+    /// Reporting number of entires to extract
+    func report(numberOfEntriesToExtract: Int) {
+//        switch progressMode {
+//        case .aggregated:
+//        case .task:
+//        }
+        progressBar = .init(
+            output: FileHandle.standardOutput,
+            totalWork: numberOfEntriesToExtract,
+            clearOnCompletion: true,
+            width: terminalWidth
+        )
+    }
+    
+    func finishedExtractingEntry() {
+        progressBar?.progress()
+    }
+    
+    func finishedExtractingEntries(count: Int) {
+        count.nTimes {
+            finishedExtractingEntry()
+        }
+    }
+    
     
     var executionTimeFormatted: String {
         let durationInSeconds = Int(Self.optimisticEstimatedRunTime)
@@ -40,6 +71,7 @@ extension CMD {
     }
 
     mutating func run() throws {
+        progressBar = nil
         setLogLevel(options.logLevel)
 
         logger.notice(

@@ -45,14 +45,18 @@ extension FileHandle: OutputBuffer {
 public struct ProgressBar {
     
     public let width: Int
+    private var count: Int = 0
     private var output: OutputBuffer
     private let clearOnCompletion: Bool
+    private let total: Int
     
     public init(
         output: OutputBuffer = FileHandle.standardOutput,
+        totalWork: Int,
         clearOnCompletion: Bool = true,
         width: Int = 80
     ) {
+        self.total = totalWork
         self.output = output
         self.width = width
         self.clearOnCompletion = clearOnCompletion
@@ -64,7 +68,8 @@ public struct ProgressBar {
         output.clearLine(width: width, final: final)
     }
     
-    public mutating func render(count: Int, total: Int) {
+    public mutating func progress() {
+        count += 1
         guard count <= total else {
             logger.debug("⚠️ internal error, reporting progress: \(count)/\(total)")
             return

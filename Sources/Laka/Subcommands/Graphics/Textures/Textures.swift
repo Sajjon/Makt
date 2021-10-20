@@ -31,18 +31,43 @@ extension Laka {
         
         /// Requires `Laka lod` to have been run first.
         func extract() throws {
-            try exportTerrain()
-            try exportTowns()
-            try exportMonsters()
-            try exportImpassableTerrain()
-            try exportPassableTerrain()
-            try exportVisitable()
-            try exportDwelling()
-            try exportArtifact()
-            try exportHero()
-            try exportResource()
-            try exportEdges()
+            try extractAllTextures()
         }
+    }
+}
+
+extension Laka.Textures {
+    
+    var numberOfEntriesToExtract: Int {
+        [
+            townsDefsCount,
+            terrainDefsCount,
+            monstersDefsCount,
+            impassableTerrainDefsCount,
+            passableTerrainDefsCount,
+            visitableDefsCount,
+            dwellingDefsCount,
+            artifactsDefsCount,
+            heroesDefsCount,
+            resourcesDefsCount,
+            edgesDefsCount
+        ].reduce(0, +)
+    }
+    
+    func extractAllTextures() throws {
+        report(numberOfEntriesToExtract: numberOfEntriesToExtract)
+        
+        try exportTerrain()
+        try exportTowns()
+        try exportMonsters()
+        try exportImpassableTerrain()
+        try exportPassableTerrain()
+        try exportVisitable()
+        try exportDwelling()
+        try exportArtifact()
+        try exportHero()
+        try exportResource()
+        try exportEdges()
     }
 }
 

@@ -45,7 +45,11 @@ private extension Laka.ConvertMaps {
             at: inDataURL,
             to: outEntryURL,
             nameOfWorkflow: "converting maps to JSON format",
-            calculateWorkload: { mapFilesFound in mapFilesFound.count * 2 /* 2x since we export a summary JSON map for each map. */ },
+            filesToExportHaveBeenRead: { mapFilesFound in
+                // 2x since we export a summary JSON map for each map.
+                let numberOfEntriesToExport = mapFilesFound.count * 2
+                return numberOfEntriesToExport
+            },
             exporter: mapConverter.exporter { [inDataURL] fileExport in
                 let absolutePath = inDataURL.appendingPathComponent(fileExport.name)
                 return Map.ID.init(absolutePath: absolutePath.path)

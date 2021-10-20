@@ -99,25 +99,18 @@ extension FileManager {
         to destination: URL,
         nameOfWorkflow: String? = nil,
         fileWritingOptions: Data.WritingOptions = .noFileProtection,
-        calculateWorkload: ((_ filesToExport: [SimpleFile]) throws -> Int)? = nil,
+        filesToExportHaveBeenRead: ((_ filesToExport: [SimpleFile]) throws -> Int)? = nil,
+        finishedExportingOneEntry: (() -> Void)? = nil,
         exporter: Exporter<Output>,
         aggregator: Aggregator<Output>? = nil
     ) throws {
 
         var totalStepCount = 4
-        if calculateWorkload != nil {
-            totalStepCount += 1
-        }
         if aggregator != nil {
             totalStepCount += 1
         }
-        var stepper = Stepper(totalStepCount: totalStepCount)
         
-        var exporterProgress = 0
-        var exporterWorkload: Int?
-        
-        var progressBar = ProgressBar()
-        
+        var stepper = Stepper(totalStepCount: totalStepCount, logLevel: .info)
         
         try createOutputDirectoryIfNeeded(path: destination.path)
         
@@ -158,21 +151,14 @@ extension FileManager {
             return .init(name: file.lastPathComponent, data: data)
         }
         
-        
-        if let calculateWorkload = calculateWorkload {
-            stepper.step("💡 Calculating workload")
-            exporterWorkload = try calculateWorkload(filesRead)
-            logger.debug("✨ found workload of #\(exporterWorkload!).")
+        if let filesToExportHaveBeenRead = filesToExportHaveBeenRead {
+            _ = try filesToExportHaveBeenRead(filesRead)
         }
         
         stepper.start("⚙️ Exporting files", note: "(takes some time)")
         let exportedFiles: [Output] = try filesRead.flatMap { (toExport: File) throws -> [Output] in
-            let exported = try exporter.export(toExport)
-            exporterProgress += exported.count
-            if let exporterWorkload = exporterWorkload {
-                progressBar.render(count: exporterProgress, total: exporterWorkload)
-            }
-            return exported
+            defer { finishedExportingOneEntry?() }
+            return try exporter.export(toExport)
         }
         stepper.finishedStep()
         

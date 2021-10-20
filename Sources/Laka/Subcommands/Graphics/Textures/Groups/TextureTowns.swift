@@ -47,7 +47,13 @@ extension Laka.Textures {
         ]
     }
     
+    var townsDefsCount: Int {
+        townDefFiles.count
+    }
+    
     func exportTowns() throws {
+        defer { finishedExtractingEntries(count: townsDefsCount) }
+        
         let townFiles: [DefImageExport] = townDefFiles.map { defFileName in
             DefImageExport(defFileName: defFileName, nameFromFrameAtIndexIndex: { _, _ in defFileName })
         }

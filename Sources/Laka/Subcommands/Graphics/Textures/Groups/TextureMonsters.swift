@@ -163,7 +163,12 @@ extension Laka.Textures {
     ]
     }
     
+    var monstersDefsCount: Int {
+        monsters.count
+    }
+    
     func exportMonsters() throws {
+        defer { finishedExtractingEntries(count: monstersDefsCount) }
         let monsterFiles: [DefImageExport] = monsters.map { defFileName in
             DefImageExport(defFileName: defFileName, nameFromFrameAtIndexIndex: { _, _ in defFileName })
         }

@@ -605,7 +605,12 @@ extension Laka.Textures {
     ]
     }
     
+    var impassableTerrainDefsCount: Int {
+        impassableTerrain.count
+    }
+    
     func exportImpassableTerrain() throws {
+        defer { finishedExtractingEntries(count: impassableTerrainDefsCount) }
         let impassableTerrainFiles = impassableTerrain.map { defFileName in
             DefImageExport(defFileName: defFileName, nameFromFrameAtIndexIndex: { _, _ in defFileName })
         }

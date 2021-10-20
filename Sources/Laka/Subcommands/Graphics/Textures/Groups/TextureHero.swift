@@ -9,7 +9,7 @@ import Foundation
 
 extension Laka.Textures {
     
-    var heroes: [String] {
+    private var heroes: [String] {
         [
             "ah00_e.def",
             "ah01_e.def",
@@ -34,7 +34,12 @@ extension Laka.Textures {
           ]
     }
     
+    var heroesDefsCount: Int {
+        heroes.count
+    }
+    
     func exportHero() throws {
+        defer { finishedExtractingEntries(count: heroesDefsCount) }
         let heroFileList = heroes.map { defFileName in
             DefImageExport(defFileName: defFileName, nameFromFrameAtIndexIndex: { _, _ in defFileName })
         }

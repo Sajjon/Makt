@@ -103,8 +103,13 @@ extension Laka.Textures {
     ]
     }
     
+    var passableTerrainDefsCount: Int {
+        passableTerrain.count
+    }
+    
     
     func exportPassableTerrain() throws {
+        defer { finishedExtractingEntries(count: passableTerrainDefsCount) }
         let passableTerrainFiles = passableTerrain.map { defFileName in
             DefImageExport(defFileName: defFileName, nameFromFrameAtIndexIndex: { _, _ in defFileName })
         }

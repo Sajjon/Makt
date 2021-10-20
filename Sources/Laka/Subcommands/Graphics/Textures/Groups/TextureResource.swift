@@ -9,7 +9,7 @@ import Foundation
 
 extension Laka.Textures {
     
-    var resource: [String] {
+    private var resource: [String] {
         [
             "avtcrys0.def",
             "avtgems0.def",
@@ -71,7 +71,12 @@ extension Laka.Textures {
           ]
     }
     
+    var resourcesDefsCount: Int {
+        resource.count
+    }
+    
     func exportResource() throws {
+        defer { finishedExtractingEntries(count: resourcesDefsCount) }
         let resourceFileList = resource.map { defFileName in
             DefImageExport(defFileName: defFileName, nameFromFrameAtIndexIndex: { _, _ in defFileName })
         }
