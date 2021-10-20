@@ -8,6 +8,9 @@
 import Foundation
 
 enum ExportTarget {
-    case anyFileWithExtension(String)
+    case allFilesMatchingAnyOfExtensions(`in`: [String])
+    static func allFilesMatching(`extension`: String) -> Self {
+        return .allFilesMatchingAnyOfExtensions(in: [`extension`])
+    }
     case specificFileList([String])
 }

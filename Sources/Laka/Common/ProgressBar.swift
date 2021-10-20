@@ -64,6 +64,11 @@ public struct ProgressBar {
     }
     
     public mutating func render(count: Int, total: Int) {
+        guard count <= total else {
+            print("⚠️ internal error, reporting progress: \(count)/\(total)")
+            return
+            
+        }
         let progress = Float(count) / Float(total)
         let numberOfBars = Int(floor(progress * Float(width)))
         let numberOfTicks = width - numberOfBars

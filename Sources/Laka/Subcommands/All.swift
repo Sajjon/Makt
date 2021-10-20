@@ -21,8 +21,12 @@ extension Laka {
         // arguments defined by another `ParsableArguments` type.
         @OptionGroup var options: Options
         
-        mutating func run() {
-            print("About to extract/export/convert ALL original game resources. This will take a couple of minutes. ☕️")
+        mutating func run() throws {
+            print("🔮📦💾 Extracting ALL game assets, run time: ~6 minutes")
+            try Laka.specificCommands.forEach { commandType in
+                var command = commandType.init(options: _options)
+                try command.run()
+            }
         }
     }
 }

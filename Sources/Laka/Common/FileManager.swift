@@ -135,7 +135,7 @@ extension FileManager {
         
         let targetFileExtensions: [String] = {
             switch target {
-            case .anyFileWithExtension(let targetFileExtension): return [targetFileExtension]
+            case .allFilesMatchingAnyOfExtensions(let targetFileExtension): return targetFileExtension
             case .specificFileList(let targetFiles): return targetFiles.compactMap { $0.fileExtension }
             }
         }()
@@ -149,12 +149,13 @@ extension FileManager {
         )
         
         let files: [URL] = {
-            switch target {
-            case .anyFileWithExtension: return urlsOfFoundFiles
-            case .specificFileList(let targetFileList):
-                let targetFiles = Set(targetFileList)
-                return urlsOfFoundFiles.filter { targetFiles.contains($0.lastPathComponent) }
+            guard case .specificFileList(let targetFileList) = target else {
+                return urlsOfFoundFiles
             }
+            
+            let targetFiles = Set(targetFileList)
+            return urlsOfFoundFiles.filter { targetFiles.contains($0.lastPathComponent) }
+            
         }()
         
         guard !files.isEmpty else {
@@ -179,7 +180,7 @@ extension FileManager {
             }
         }
         
-        stepper.start("⚙️  Exporting files", note: "(takes some time)")
+        stepper.start("⚙️ Exporting files", note: "(takes some time)")
         let exportedFiles: [Output] = try filesRead.flatMap { (toExport: File) throws -> [Output] in
             let exported = try exporter.export(toExport)
             exporterProgress += exported.count

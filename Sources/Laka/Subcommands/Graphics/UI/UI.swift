@@ -16,52 +16,43 @@ extension Laka {
     /// A command to extract all images used to render UI of original game,
     /// which includes game menus, and all in game menus, except for in town
     /// UI.
-    struct UI: ParsableCommand, TextureGenerating {
+    struct UI: CMD, TextureGenerating {
         
         static var configuration = CommandConfiguration(
             abstract: "Extract images used to render UI of original game."
         )
         
-        @OptionGroup var parentOptions: Options
+        @OptionGroup var options: Options
+        
+        /// Requires `Laka lod` to have been run first.
+        mutating func run() throws {
+            print("🖼 Extracting all menu UI, run time: ~10s")
+            try exportAllUIAssets()
+        }
     }
 }
 
 // MARK: Computed props
 extension Laka.UI {
     
-    var verbose: Bool { parentOptions.printDebugInformation }
-
+    var verbose: Bool { options.printDebugInformation }
     
     var inDataURL: URL {
-        .init(fileURLWithPath: parentOptions.outputPath).appendingPathComponent("Raw")
+        .init(fileURLWithPath: options.outputPath).appendingPathComponent("Raw")
     }
     
     var outImagesURL: URL {
-        .init(fileURLWithPath: parentOptions.outputPath)
+        .init(fileURLWithPath: options.outputPath)
             .appendingPathComponent("Converted")
+            .appendingPathComponent("Graphics")
             .appendingPathComponent("UI")
     }
 }
 
-
-
-// MARK: Run
-extension Laka.UI {
     
-    mutating func run() throws {
-        print(
-            """
-            
-            🔮
-            About to extract all images used to render UI of original game, from entries exported by the `Laka LOD` command.
-            Located at: \(inDataURL.path)
-            To folder: \(outImagesURL.path)
-            This will take about 12 seconds on a fast machine (Macbook Pro 2019 - Intel CPU)
-            ☕️
-            
-            """
-        )
-        
+// MARK: Private
+private extension Laka.UI {
+    func exportAllUIAssets() throws {
         try exportArmyIcons()
         try exportArmyIconsSmall()
         try exportArtifacts()
@@ -87,7 +78,10 @@ extension Laka.UI {
         try exportLogo()
         try exportButtons()
     }
-    
+}
+
+// MARK: Helpers
+private extension Laka.UI {
     func exportArtifacts() throws {
         try generateTexture(
             atlasName: "artifacts",
@@ -263,4 +257,3 @@ extension Laka.UI {
     }
    
 }
-

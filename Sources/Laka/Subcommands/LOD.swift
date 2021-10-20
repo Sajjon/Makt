@@ -16,37 +16,28 @@ extension Laka {
     /// A command to extract all `*.def`, `*.pcx`, `*.msk`, `*.txt` etc files from all `*.lod` archive files.
     /// Note that these extract files are saved as raw data, they are not yet parsed, only extracted from
     /// their source archive.
-    struct LOD: ParsableCommand {
+    struct LOD: CMD {
         
         static var configuration = CommandConfiguration(
             abstract: "Extract all '*.def' files from all '*.lod' archive files."
         )
         
         @OptionGroup var options: Options
+        
+        mutating func run() throws {
+            print("📦 Unarchiving assets from LOD archives, run time: ~10s")
+            try unarchiveLODArchives()
+        }
     }
 }
 
-// MARK: Run
-extension Laka.LOD {
-    mutating func run() throws {
-        print(
-            """
-            
-            🔮
-            About to files from all '*.lod' archives
-            Located at: \(options.inputPath)
-            To folder: \(options.outputPath)
-            This will take about 10 seconds on a fast machine (Macbook Pro 2019 - Intel CPU)
-            ☕️
-            
-            """
-        )
-
+private extension Laka.LOD {
+    func unarchiveLODArchives() throws {
         let verbose = options.printDebugInformation
         let lodParser = LodParser()
         
         try fileManager.export(
-            target: .anyFileWithExtension("lod"),
+            target: .allFilesMatching(extension: "lod"),
             at: inDataURL,
             to: outEntryURL,
             nameOfWorkflow: "exporting LOD archives",

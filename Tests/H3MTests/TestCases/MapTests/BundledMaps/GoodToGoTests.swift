@@ -242,16 +242,16 @@ final class GoodToGoMapTest: BaseMapTest {
         // Delete any earlier cached maps.
         Map.loader.cache.__deleteMap(by: mapID)
         
-        var start = CFAbsoluteTimeGetCurrent()
+//        var start = CFAbsoluteTimeGetCurrent()
         let mapFromBinary = try Map.load(mapID)
-        let timeBinary = CFAbsoluteTimeGetCurrent() - start
+//        let timeBinary = CFAbsoluteTimeGetCurrent() - start
         let jsonEncoder = JSONEncoder()
         jsonEncoder.outputFormatting = .prettyPrinted
         let jsonData = try jsonEncoder.encode(mapFromBinary)
         let jsonDecoder = JSONDecoder()
-        start = CFAbsoluteTimeGetCurrent()
+//        start = CFAbsoluteTimeGetCurrent()
         let mapFromJSON = try jsonDecoder.decode(Map.self, from: jsonData)
-        let timeJson = CFAbsoluteTimeGetCurrent() - start
+//        let timeJson = CFAbsoluteTimeGetCurrent() - start
         XCTAssertEqual(mapFromBinary, mapFromJSON)
         
         

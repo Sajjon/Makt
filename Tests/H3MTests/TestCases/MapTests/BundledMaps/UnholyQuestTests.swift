@@ -258,12 +258,12 @@ final class UnholyQuestMapTest: BaseMapTest {
         print(String(format: "timeBinary: %.3f seconds", timeBinary))
         print(String(format: "timeJson: %.3f seconds", timeJson))
         
-        let mapConverter = MapConverter(
-            outputURL: FileManager.default.homeDirectoryForCurrentUser,
-            jsonEncoder: jsonEncoder
-        )
-        let scenario = try mapConverter.convert(map: mapFromBinary)
+        let mapConverter = MapConverter()
+        let scenario = try mapConverter.convertToScenario(mapID: mapID)
         XCTAssertEqual(scenario.info.summary.name, mapFromBinary.basicInformation.name)
+        let scenarioJSONData = try jsonEncoder.encode(scenario)
+        try scenarioJSONData.write(to: FileManager.default.homeDirectoryForCurrentUser.appendingPathComponent("\(mapFromBinary.basicInformation.name).scenario.json"))
+      
         
     }
 }

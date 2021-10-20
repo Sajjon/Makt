@@ -19,41 +19,36 @@ import Util
 /// and the model is more attractive than the Malm.Map one.
 public final class MapConverter {
     
+    private let loadMap: (Map.ID) throws -> Map
     private let jsonEncoder: JSONEncoder
-    private let outputURL: URL
     
     public init(
-        outputURL: URL,
-        jsonEncoder: JSONEncoder? = nil
+        jsonEncoder: JSONEncoder = .init(),
+        loadMap: @escaping ((Map.ID) throws -> Map) = { try Map.load($0, inspector: nil) }
     ) {
-        self.outputURL = outputURL
-        
-        self.jsonEncoder = jsonEncoder ?? {
-            let jsonEncoder = JSONEncoder()
-            jsonEncoder.outputFormatting = .withoutEscapingSlashes
-            return jsonEncoder
-        }()
+        self.jsonEncoder = jsonEncoder
+        self.loadMap = loadMap
     }
 }
 
 public extension MapConverter {
     
     @discardableResult
-    func convert(map: Map) throws -> Scenario {
-        let info = infoFrom(map: map)
-        let scenarioMap = scenarioMap(from: map)
+    func convert(mapID: Map.ID) throws -> [SimpleFile] {
+        let scenario = try convertToScenario(mapID: mapID)
         
-        let converted = Scenario(
-            info: info,
-            map: scenarioMap
-        )
+        let scenarioJsonData = try jsonEncoder.encode(scenario)
+        let scenarioFileName = "\(scenario.info.summary.name).scenario.json"
+        let scenarioJSONFile = SimpleFile(name: scenarioFileName, data: scenarioJsonData)
         
-        let jsonData = try jsonEncoder.encode(converted)
-        let fileName = "\(converted.info.summary.name).scenario.json"
-        let fileUrl = outputURL.appendingPathComponent(fileName)
-        try jsonData.write(to: fileUrl)
+        let scenarioSummaryJsonData = try jsonEncoder.encode(scenario.info.summary)
+        let scenarioSummaryFileName = "\(scenario.info.summary.name).scenario.summary.json"
+        let scenarioSummaryJSONFile = SimpleFile(name: scenarioSummaryFileName, data: scenarioSummaryJsonData)
         
-        return converted
+        return [
+            scenarioSummaryJSONFile,
+            scenarioJSONFile
+        ]
     }
 }
 
@@ -61,8 +56,29 @@ private extension Map.Object {
     var zAxisIndex: Int { attributes.zAxisRenderingPriority }
 }
 
+// MARK: Internal
+internal extension MapConverter {
+    func convertToScenario(mapID: Map.ID) throws -> Scenario {
+        let map = try loadMap(id: mapID)
+        
+        let info = infoFrom(map: map)
+        let scenarioMap = scenarioMap(from: map)
+        
+        return Scenario(
+            info: info,
+            map: scenarioMap
+        )
+        
+    }
+}
+
 // MARK: Private
 private extension MapConverter {
+    
+    func loadMap(id: Map.ID) throws -> Map {
+        return try Map.load(id, inspector: nil)
+    }
+    
     func infoFrom(map: Map) -> Scenario.Info {
         .init(
             
@@ -131,8 +147,6 @@ private extension MapConverter {
             return false
         })
         
-        
-        
         sortedObjects.enumerated().forEach { (globalZ, mapObject) in
              let objectWithZ = MapObjectWithGlobalZ(mapObject: mapObject, globalZ: globalZ)
             let position = mapObject.position
@@ -153,7 +167,7 @@ private extension MapConverter {
             let mapped: [Scenario.Map.Object ] = mapObjectsWithZ.compactMap { objectWithZ in
                 let mapObject = objectWithZ.mapObject
                 guard let kind = extractObjectKind(from: mapObject) else {
-                    print("⚠️ WARNING discarding object: \(String(describing: mapObject))")
+//                    print("⚠️ WARNING discarding object: \(String(describing: mapObject))")
                     return nil
                 }
                 return .init(

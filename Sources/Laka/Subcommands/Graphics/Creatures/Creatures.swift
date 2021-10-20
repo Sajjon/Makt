@@ -15,51 +15,23 @@ import Util
 extension Laka {
     
     /// A command to extract in combat sprites of creatures, but not on map monster icons.
-    struct Creatures: ParsableCommand, TextureGenerating {
+    struct Creatures: CMD, TextureGenerating {
         
         static var configuration = CommandConfiguration(
             abstract: "Extract in combat sprites of creatures, but not on map monster icons."
         )
         
-        @OptionGroup var parentOptions: Options
-    }
-}
-
-// MARK: Run
-extension Laka.Creatures {
-    
-    mutating func run() throws {
-        print(
-            """
-            
-            🔮
-            About to extract all animiations for all creatures in town original game, from entries exported by the `Laka LOD` command.
-            Located at: \(inDataURL.path)
-            To folder: \(outImagesURL.path)
-            This will take about 1 minute and 10 seconds on a fast machine (Macbook Pro 2019 - Intel CPU)
-            ☕️
-            
-            """
-        )
+        @OptionGroup var options: Options
         
-        try exportGraphics()
+        /// Requires `Laka lod` to have been run first.
+        mutating func run() throws {
+            print("🐉 Extracting creature sprites/animations, run time: ~1 minute 10 seconds")
+            try exportGraphics()
+        }
     }
 }
 
-extension Laka.Creatures {
-    var verbose: Bool { parentOptions.printDebugInformation }
-    
-    var inDataURL: URL {
-        .init(fileURLWithPath: parentOptions.outputPath).appendingPathComponent("Raw")
-    }
-    
-    var outImagesURL: URL {
-        .init(fileURLWithPath: parentOptions.outputPath)
-        .appendingPathComponent("Converted")
-        .appendingPathComponent("Creatures")
-    }
-}
-
+// MARK: Private
 private extension Laka.Creatures {
     func exportGraphics() throws {
         var progressBar = ProgressBar()
@@ -308,9 +280,23 @@ private extension Laka.Creatures {
             "CRSDGN.DEF",
             "CADRGN.DEF"
         ])
-        
+    }
+}
 
-        
+
+// MARK: Computed Props
+extension Laka.Creatures {
+    var verbose: Bool { options.printDebugInformation }
+    
+    var inDataURL: URL {
+        .init(fileURLWithPath: options.outputPath).appendingPathComponent("Raw")
+    }
+    
+    var outImagesURL: URL {
+        .init(fileURLWithPath: options.outputPath)
+        .appendingPathComponent("Converted")
+        .appendingPathComponent("Graphics")
+        .appendingPathComponent("Creatures")
     }
 }
 
@@ -321,7 +307,6 @@ extension Block {
     var onlyContent: OnlyContent {
         .init(onlyContentFrames: Set(self.frames.map { $0.onlyContent }))
     }
-    
 }
 
 struct OnlyContentFrame: Hashable {
@@ -335,9 +320,6 @@ extension DefinitionFile.Frame {
         var hasher = SHA256()
         hasher.update(data: pixelData)
         let hash = Data(hasher.finalize())
-//        return OnlyContentFrame(frameName: self.fileName, pixelDataHash: hash.hexEncodedString())
-//        .init(frameName: self.fileName)
- 
         return .init(pixelDataHash: hash.hexEncodedString())
     }
 }
