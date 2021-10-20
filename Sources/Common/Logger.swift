@@ -11,7 +11,7 @@ import Foundation
 @_exported import Logging
 
 
-public var logger = Logger(label: "com.github.sajjon/Makt/Common")
+public var logger = Logger.init(label: "Makt")
 
 public func setLogLevel(_ logLevel: Logger.Level) {
     logger.logLevel = logLevel

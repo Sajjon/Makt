@@ -24,31 +24,28 @@ extension Laka {
         
         @OptionGroup var options: Options
         
-        mutating func run() throws {
-            logger.debug("📦 Unarchiving assets from LOD archives, run time: ~10s")
-            try unarchiveLODArchives()
+        static let executionOneLinerDescription = "📦 Unarchiving assets from LOD archives"
+        static let optimisticEstimatedRunTime: TimeInterval = 10
+        
+        /// Requires `Laka lod` to have been run first.
+        func extract() throws {
+            let lodParser = LodParser()
+            
+            try fileManager.export(
+                target: .allFilesMatching(extension: "lod"),
+                at: inDataURL,
+                to: outEntryURL,
+                nameOfWorkflow: "exporting LOD archives",
+                calculateWorkload: { lodArchives in
+                    try lodArchives.map { try lodParser.peekFileEntryCount(of: $0) }.reduce(0, +)
+                },
+                exporter: lodParser.exporter
+            )
         }
+   
     }
 }
 
-private extension Laka.LOD {
-    func unarchiveLODArchives() throws {
-        let verbose = options.printDebugInformation
-        let lodParser = LodParser()
-        
-        try fileManager.export(
-            target: .allFilesMatching(extension: "lod"),
-            at: inDataURL,
-            to: outEntryURL,
-            nameOfWorkflow: "exporting LOD archives",
-            verbose: verbose,
-            calculateWorkload: { lodArchives in
-                try lodArchives.map { try lodParser.peekFileEntryCount(of: $0) }.reduce(0, +)
-            },
-            exporter: lodParser.exporter
-        )
-    }
-}
 
 // MARK: Computed props
 extension Laka.LOD {

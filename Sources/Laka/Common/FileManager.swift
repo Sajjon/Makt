@@ -26,8 +26,7 @@ extension FileManager {
     func findFiles(
         extensions targetFileExtensions: Set<String>,
         at urlToSearch: URL,
-        failOnEmpty: Bool = true,
-        verbose: Bool = false
+        failOnEmpty: Bool = true
     ) throws -> [URL] {
         targetFileExtensions.forEach {
             assert($0.lowercased() == $0)
@@ -58,36 +57,26 @@ extension FileManager {
                   let isDirectory = resourceValues.isDirectory,
                   let name = resourceValues.name
             else {
-                if verbose {
-                    logger.debug("⚠️ Skipped: '\(fileURL.path)' since failed to retrieve info about it.")
-                }
+                logger.debug("⚠️ Skipped: '\(fileURL.path)' since failed to retrieve info about it.")
                 continue
             }
             
             guard !isDirectory else {
-//                if verbose {
-//                    logger.debug("💡 Skipped: '\(fileURL.path)' since it is a directory.")
-//                }
+                logger.trace("💡 Skipped: '\(fileURL.path)' since it is a directory.")
                 continue
             }
             
             guard let fileExtensionCased = name.fileExtension else {
-//                if verbose {
-//                    logger.debug("💡 Skipped: '\(fileURL.path)' since we failed to read its fileextension.")
-//                }
+                logger.trace("💡 Skipped: '\(fileURL.path)' since we failed to read its fileextension.")
                 continue
             }
             
             guard targetFileExtensions.contains(fileExtensionCased.lowercased()) else {
-//                if verbose {
-//                    logger.debug("💡 Skipped: '\(fileURL.path)' since it is not in our target file extension set.")
-//                }
+                logger.trace("💡 Skipped: '\(fileURL.path)' since it is not in our target file extension set.")
                 continue
             }
             
-//            if verbose {
-//                logger.debug("Found relevant file at: \(fileURL.path)")
-//            }
+            logger.trace("Found relevant file at: \(fileURL.path)")
             
             fileURLs.append(fileURL)
             
@@ -109,7 +98,6 @@ extension FileManager {
         at source: URL,
         to destination: URL,
         nameOfWorkflow: String? = nil,
-        verbose: Bool = false,
         fileWritingOptions: Data.WritingOptions = .noFileProtection,
         calculateWorkload: ((_ filesToExport: [SimpleFile]) throws -> Int)? = nil,
         exporter: Exporter<Output>,
@@ -144,8 +132,7 @@ extension FileManager {
         
         let urlsOfFoundFiles = try findFiles(
             extensions: Set(targetFileExtensions),
-            at: source,
-            verbose: verbose
+            at: source
         )
         
         let files: [URL] = {
@@ -175,9 +162,7 @@ extension FileManager {
         if let calculateWorkload = calculateWorkload {
             stepper.step("💡 Calculating workload")
             exporterWorkload = try calculateWorkload(filesRead)
-            if verbose {
-                logger.debug("✨ found workload of #\(exporterWorkload!).")
-            }
+            logger.debug("✨ found workload of #\(exporterWorkload!).")
         }
         
         stepper.start("⚙️ Exporting files", note: "(takes some time)")
@@ -203,9 +188,7 @@ extension FileManager {
         stepper.step("💾 Saving files")
         for fileToSave in filesToSave {
             let fileURL = destination.appendingPathComponent(fileToSave.name)
-            if verbose {
-                logger.debug("Writing file: to '\(fileURL.path)' (#\(fileToSave.data.count) bytes)")
-            }
+            logger.debug("Writing file: to '\(fileURL.path)' (#\(fileToSave.data.count) bytes)")
             try fileToSave.data.write(to: fileURL, options: fileWritingOptions)
         }
         stepper.done("✨ Done\(nameOfWorkflow.map { " with \($0)" } ?? "")")

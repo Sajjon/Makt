@@ -15,7 +15,6 @@ import Common
 protocol TextureGenerating {
     var inDataURL: URL { get }
     var outImagesURL: URL { get }
-    var verbose: Bool { get }
     var fileManager: FileManager { get }
     
     func generateTexture(
@@ -222,10 +221,7 @@ extension TextureGenerating {
             target: .specificFileList(fileNameList),
             at: inDataURL,
             to: outImagesURL,
-            verbose: verbose,
-            
             calculateWorkload: maybeCalculateWorkload,
-            
             exporter: .exportingMany { toExport in
                 
                 if toExport.name.hasSuffix(".pcx") {

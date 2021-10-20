@@ -29,7 +29,7 @@ swift run Laka --help
 
 ### All
 ```sh
-swift run all -i <inputPath> -o <outputPath>
+swift run all -i <inputPath> -o <outputPath> -l info
 ```
 
 For example:

@@ -23,11 +23,14 @@ extension Laka {
         
         @OptionGroup var options: Options
         
+        static let executionOneLinerDescription = "🗺  Converting all maps to JSON format"
+        static let optimisticEstimatedRunTime: TimeInterval = 250
+        
         /// Requires `Laka lod` to have been run first.
-        mutating func run() throws {
-            logger.debug("🗺 Converting all maps to JSON format, run time: ~4 minutes")
+        func extract() throws {
             try convertAllMapsToJSON()
         }
+        
     }
 }
 
@@ -35,8 +38,6 @@ extension Laka {
 // MARK: Private
 private extension Laka.ConvertMaps {
     func convertAllMapsToJSON() throws {
-        let verbose = options.printDebugInformation
-        
         let mapConverter = MapConverter()
         
         try fileManager.export(
@@ -44,8 +45,7 @@ private extension Laka.ConvertMaps {
             at: inDataURL,
             to: outEntryURL,
             nameOfWorkflow: "converting maps to JSON format",
-            verbose: verbose,
-            calculateWorkload: { mapFilesFound in mapFilesFound.count * 2 /* 2x since we export a summar JSON map for each map. */ },
+            calculateWorkload: { mapFilesFound in mapFilesFound.count * 2 /* 2x since we export a summary JSON map for each map. */ },
             exporter: mapConverter.exporter { [inDataURL] fileExport in
                 let absolutePath = inDataURL.appendingPathComponent(fileExport.name)
                 return Map.ID.init(absolutePath: absolutePath.path)

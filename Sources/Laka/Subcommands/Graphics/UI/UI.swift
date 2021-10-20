@@ -24,18 +24,44 @@ extension Laka {
         
         @OptionGroup var options: Options
         
+        static let executionOneLinerDescription = "🖼  Extracting all menu UI"
+        static let optimisticEstimatedRunTime: TimeInterval = 10
+      
+        
         /// Requires `Laka lod` to have been run first.
-        mutating func run() throws {
-            logger.debug("🖼 Extracting all menu UI, run time: ~10s")
-            try exportAllUIAssets()
+        func extract() throws {
+            try exportArmyIcons()
+            try exportArmyIconsSmall()
+            try exportArtifacts()
+            try exportFlags()
+            try exportHallBuildings()
+            try exportPrimarySkill()
+            try exportSecondarySkill()
+            try exportSpells()
+            try exportSpellScrolls()
+            try exportSpellTabs()
+            try exportMagicSchools()
+            try exportResource()
+            try exportDialogBorder()
+            try exportArmyBackgrounds()
+            try exportMageGuild()
+            try exportSpellBookBackground()
+            try exportSpellBookCornerRight()
+            try exportSpellBookCornerLeft()
+            try exportHeroStatsSummaryBackground()
+            try exportDialogBoxBackground()
+            try exportDialogBoxBackgroundSmall()
+            try exportCreatureStatsSummaryBackground()
+            try exportLogo()
+            try exportButtons()
         }
+        
+        
     }
 }
 
 // MARK: Computed props
 extension Laka.UI {
-    
-    var verbose: Bool { options.printDebugInformation }
     
     var inDataURL: URL {
         .init(fileURLWithPath: options.outputPath).appendingPathComponent("Raw")
@@ -49,36 +75,6 @@ extension Laka.UI {
     }
 }
 
-    
-// MARK: Private
-private extension Laka.UI {
-    func exportAllUIAssets() throws {
-        try exportArmyIcons()
-        try exportArmyIconsSmall()
-        try exportArtifacts()
-        try exportFlags()
-        try exportHallBuildings()
-        try exportPrimarySkill()
-        try exportSecondarySkill()
-        try exportSpells()
-        try exportSpellScrolls()
-        try exportSpellTabs()
-        try exportMagicSchools()
-        try exportResource()
-        try exportDialogBorder()
-        try exportArmyBackgrounds()
-        try exportMageGuild()
-        try exportSpellBookBackground()
-        try exportSpellBookCornerRight()
-        try exportSpellBookCornerLeft()
-        try exportHeroStatsSummaryBackground()
-        try exportDialogBoxBackground()
-        try exportDialogBoxBackgroundSmall()
-        try exportCreatureStatsSummaryBackground()
-        try exportLogo()
-        try exportButtons()
-    }
-}
 
 // MARK: Helpers
 private extension Laka.UI {

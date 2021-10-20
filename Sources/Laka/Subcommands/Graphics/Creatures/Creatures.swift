@@ -23,9 +23,12 @@ extension Laka {
         
         @OptionGroup var options: Options
         
+        static let executionOneLinerDescription = "🐉 Extracting creature sprites/animations"
+        static let optimisticEstimatedRunTime: TimeInterval = 70
+        
+        
         /// Requires `Laka lod` to have been run first.
-        mutating func run() throws {
-            logger.debug("🐉 Extracting creature sprites/animations, run time: ~1 minute 10 seconds")
+        func extract() throws {
             try exportGraphics()
         }
     }
@@ -35,6 +38,7 @@ extension Laka {
 private extension Laka.Creatures {
     func exportGraphics() throws {
         var progressBar = ProgressBar()
+        
         func extractGraphics(faction: Faction, defList: [String]) throws {
             logger.debug("✨ Extracting graphics for all creatures from faction: \(faction.name)")
             let creaturesOfFaction = Creature.ID.of(faction: faction)
@@ -286,7 +290,6 @@ private extension Laka.Creatures {
 
 // MARK: Computed Props
 extension Laka.Creatures {
-    var verbose: Bool { options.printDebugInformation }
     
     var inDataURL: URL {
         .init(fileURLWithPath: options.outputPath).appendingPathComponent("Raw")

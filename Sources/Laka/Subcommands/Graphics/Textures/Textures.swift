@@ -26,18 +26,28 @@ extension Laka {
         
         @OptionGroup var options: Options
         
+        static let executionOneLinerDescription = "👘 Extracting sprites (terrain, monsters, artifacts)"
+        static let optimisticEstimatedRunTime: TimeInterval = 15
+        
         /// Requires `Laka lod` to have been run first.
-        mutating func run() throws {
-            logger.debug("👘 Extracting sprites (terrain, monsters, artifacts), run time: ~15s")
-            try extractAllTextures()
+        func extract() throws {
+            try exportTerrain()
+            try exportTowns()
+            try exportMonsters()
+            try exportImpassableTerrain()
+            try exportPassableTerrain()
+            try exportVisitable()
+            try exportDwelling()
+            try exportArtifact()
+            try exportHero()
+            try exportResource()
+            try exportEdges()
         }
     }
 }
 
 // MARK: Computed props
 extension Laka.Textures {
-    
-    var verbose: Bool { options.printDebugInformation }
     
     var inDataURL: URL {
         .init(fileURLWithPath: options.outputPath).appendingPathComponent("Raw")
@@ -48,23 +58,5 @@ extension Laka.Textures {
             .appendingPathComponent("Converted")
             .appendingPathComponent("Graphics")
             .appendingPathComponent("Texture")
-    }
-}
-
-
-// MARK: Private
-private extension Laka.Textures {
-    func extractAllTextures() throws {
-        try exportTerrain()
-        try exportTowns()
-        try exportMonsters()
-        try exportImpassableTerrain()
-        try exportPassableTerrain()
-        try exportVisitable()
-        try exportDwelling()
-        try exportArtifact()
-        try exportHero()
-        try exportResource()
-        try exportEdges()
     }
 }

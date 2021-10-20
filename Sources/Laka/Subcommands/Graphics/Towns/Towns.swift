@@ -23,18 +23,19 @@ extension Laka {
         
         @OptionGroup var options: Options
         
+        
+        static let executionOneLinerDescription = "🏘  Extracting all town UI"
+        static let optimisticEstimatedRunTime: TimeInterval = 10
+        
         /// Requires `Laka lod` to have been run first.
-        mutating func run() throws {
-            logger.debug("🏘 Extracting all town UI, run time: ~10s")
-            try exportAllUIForAllTowns()
+        func extract() throws {
+            try exportTown(template: .castle)
         }
     }
 }
 
 // MARK: Computed Props
 internal extension Laka.Towns {
-    
-    var verbose: Bool { options.printDebugInformation }
     
     var inDataURL: URL {
         .init(fileURLWithPath: options.outputPath).appendingPathComponent("Raw")
@@ -52,9 +53,6 @@ internal extension Laka.Towns {
  
 // MARK: Private
 private extension Laka.Towns {
-    func exportAllUIForAllTowns() throws {
-        try exportTown(template: .castle)
-    }
     
     func exportTown<BuildingKind: BuildingIDForFaction>(template: TownTemplate<BuildingKind>) throws {
         let fileMatrix: [[ImageExport]] = [

@@ -52,9 +52,7 @@ private extension Laka.UI {
                 
                 return [namePrefix, String(describing: creatureID)].joined(separator: "_")
             } else {
-                if verbose {
-                    logger.debug("⚠️ Ignoring image for frame with index: \(frameIndex), since no creature with that ID exists. Probably some empty placeholder value.")
-                }
+                logger.trace("⚠️ Ignoring image for frame with index: \(frameIndex), since no creature with that ID exists. Probably some empty placeholder value.")
                 return nil
             }
         }

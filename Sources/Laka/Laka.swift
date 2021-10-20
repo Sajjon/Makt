@@ -5,12 +5,49 @@
 //  Created by Alexander Cyon on 2021-10-05.
 //
 
+import Foundation
 import ArgumentParser
 import Foundation
-import Logging
+import Common
 
 protocol CMD: ParsableCommand {
+    
     init(options: OptionGroup<Options>)
+    
+    var options: Options { get }
+    
+    /// Short description printed once this command starts executing.
+    static var executionOneLinerDescription: String { get  }
+    
+    /// Rought optimistic estimation of rune time in seconds.
+    static var optimisticEstimatedRunTime: TimeInterval { get }
+    
+    /// Entry point for this sub command
+    func extract() throws
+}
+
+
+
+extension CMD {
+    
+    var executionTimeFormatted: String {
+        let durationInSeconds = Int(Self.optimisticEstimatedRunTime)
+        let (minutes, seconds) = durationInSeconds.quotientAndRemainder(dividingBy: 60)
+        guard minutes > 0 else {
+            return "\(seconds)s"
+        }
+        return "\(minutes)min \(seconds)s"
+    }
+
+    mutating func run() throws {
+        setLogLevel(options.logLevel)
+
+        logger.notice(
+            "\(Self.executionOneLinerDescription) ⏳ ~\(executionTimeFormatted)"
+        )
+        
+        try extract()
+    }
 }
 
 /// A set of CLI tools for extracting/exporting/converting orignal game resources
