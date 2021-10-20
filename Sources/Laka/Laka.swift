@@ -43,7 +43,7 @@ extension CMD {
         setLogLevel(options.logLevel)
 
         logger.notice(
-            "\(Self.executionOneLinerDescription) ⏳ ~\(executionTimeFormatted)"
+            "\(Self.executionOneLinerDescription) ⏳ ~ \(executionTimeFormatted)"
         )
         
         try extract()

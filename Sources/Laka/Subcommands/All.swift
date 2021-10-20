@@ -12,7 +12,7 @@ import Common
 extension Laka {
     
     /// A command to extract/export/convert ALL original resources from HoMM3 needed to play the rewrite of the game named 'Tritium'.
-    struct All: ParsableCommand {
+    struct All: CMD {
         
         static var configuration = CommandConfiguration(
             abstract: "Extract/export/convert ALL original resources from HoMM3 needed to play the rewrite of the game named 'Tritium'."
@@ -22,12 +22,30 @@ extension Laka {
         // arguments defined by another `ParsableArguments` type.
         @OptionGroup var options: Options
         
-        mutating func run() throws {
-            logger.notice("🔮📦💾 Extracting ALL game assets, run time: ~6 minutes")
+        /// Short description printed once this command starts executing.
+        static let executionOneLinerDescription = "🔮 Extracting ALL game assets"
+        
+        /// Rought optimistic estimation of rune time in seconds.
+        static let optimisticEstimatedRunTime = Laka.specificCommands.map({ $0.optimisticEstimatedRunTime }).reduce(0, +)
+        
+        /// Entry point for this sub command
+        func extract() throws {
+            
+            func logDivisor(character: String = "=") {
+                let divisor = Logger.Message(stringLiteral: .init(repeating: character, count: 60))
+                logger.notice(divisor)
+            }
+            
+            logDivisor()
+            
             try Laka.specificCommands.forEach { commandType in
                 var command = commandType.init(options: _options)
                 try command.run()
             }
+            
+            logDivisor()
+            logger.notice("✅ Finished extracting all game assets. Enjoy the game ♘♕♖")
+            logDivisor()
         }
     }
 }
