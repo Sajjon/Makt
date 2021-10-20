@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import Util
+import Common
 
 
 public struct Quest: Hashable, CustomDebugStringConvertible, Codable {

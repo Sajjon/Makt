@@ -7,7 +7,7 @@
 
 import Foundation
 import Malm
-import Util
+import Common
 import Decompressor
 
 public extension Map.Loader {

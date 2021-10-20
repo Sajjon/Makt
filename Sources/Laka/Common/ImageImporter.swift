@@ -8,7 +8,7 @@
 import Foundation
 import Guld
 import Malm
-import Util
+import Common
 import CoreGraphics
 
 enum ImageImporter {}

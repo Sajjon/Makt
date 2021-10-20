@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import Util
+import Common
 
 internal extension DataReader {
     func readPalette() throws -> Palette {

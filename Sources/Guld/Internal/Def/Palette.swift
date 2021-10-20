@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import Util
+import Common
 
 public struct Palette: Hashable {
     public let colors: [RGB]
@@ -20,7 +20,7 @@ public struct Palette: Hashable {
     public init(data: Data, name: String) throws {
         
 //        guard data.count.isMultiple(of: Self.expectedSize) else {
-//            print("🚨 failed to parse palette named: '\(name)', byte count: \(data.count)")
+//            logger.debug("🚨 failed to parse palette named: '\(name)', byte count: \(data.count)")
 //            throw Error.expectedPaletteToHave(
 //                expectedSize: Self.expectedSize,
 //                butByteCountIsNotAMultipleOfThatSizeGotByteCount: data.count
@@ -38,7 +38,7 @@ public struct Palette: Hashable {
             }
             self.init(colors: colors)
         } else {
-            print("🚨 WARNING skipping font named: '\(name)', since it has strange length: \(data.count) bytes, expected multiple of 3 or 4. Trying to ASCII print this, to see if it contains any relevant text (probbly not): ASCII: \(String.init(bytes: data, encoding: .ascii) ?? "FAILED")")
+            logger.debug("🚨 WARNING skipping font named: '\(name)', since it has strange length: \(data.count) bytes, expected multiple of 3 or 4. Trying to ASCII logger.debug this, to see if it contains any relevant text (probbly not): ASCII: \(String.init(bytes: data, encoding: .ascii) ?? "FAILED")")
             self.init(colors: [])
         }
     }

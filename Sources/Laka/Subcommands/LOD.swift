@@ -8,7 +8,7 @@
 import ArgumentParser
 import Guld
 import Malm
-import Util
+import Common
 import Foundation
 
 extension Laka {
@@ -25,7 +25,7 @@ extension Laka {
         @OptionGroup var options: Options
         
         mutating func run() throws {
-            print("📦 Unarchiving assets from LOD archives, run time: ~10s")
+            logger.debug("📦 Unarchiving assets from LOD archives, run time: ~10s")
             try unarchiveLODArchives()
         }
     }

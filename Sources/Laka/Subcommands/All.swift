@@ -6,6 +6,7 @@
 //
 
 import ArgumentParser
+import Common
 
 // MARK: All
 extension Laka {
@@ -22,7 +23,7 @@ extension Laka {
         @OptionGroup var options: Options
         
         mutating func run() throws {
-            print("🔮📦💾 Extracting ALL game assets, run time: ~6 minutes")
+            logger.notice("🔮📦💾 Extracting ALL game assets, run time: ~6 minutes")
             try Laka.specificCommands.forEach { commandType in
                 var command = commandType.init(options: _options)
                 try command.run()

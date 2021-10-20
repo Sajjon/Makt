@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import Common
 
 struct Stepper {
     
@@ -29,7 +30,7 @@ extension Stepper {
     mutating func step(_ stepName: String) {
         assert(inProgresStep == nil)
      
-        print(startNewStep(stepName), terminator: "")
+        logger.debug(.init(stringLiteral: String(startNewStep(stepName))))
     }
     
     private mutating func startNewStep(_ stepName: String) -> String {
@@ -41,7 +42,7 @@ extension Stepper {
     
     mutating func start(_ stepName: String, note: String? = nil) {
         let newStep = startNewStep(stepName)
-        print("\(newStep)\(note.map { " \($0)" } ?? "")")
+        logger.debug("\(newStep)\(note.map { " \($0)" } ?? "")")
         inProgresStep = newStep
     }
     
@@ -58,13 +59,13 @@ extension Stepper {
             self.startOfLast = nil
         }
         guard let inProgresStep = inProgresStep else { return }
-        print("\(inProgresStep)\(elapsedString()!)")
+        logger.debug("\(inProgresStep)\(elapsedString()!)")
     }
     
     private mutating func finishedStepIfNeeded() {
         if inProgresStep == nil {
             if let elapsed = elapsedString() {
-                print(elapsed)
+                logger.debug(.init(stringLiteral: elapsed))
             }
         }
     }
@@ -72,6 +73,6 @@ extension Stepper {
     mutating func done(_ message: String) {
         finishedStepIfNeeded()
         let diff = CFAbsoluteTimeGetCurrent() - startOfAll
-        print(String(format: "\n%@ - took %.2f seconds.", message, diff))
+        logger.debug(.init(stringLiteral: String(format: "\n%@ - took %.2f seconds.", message, diff)))
     }
 }

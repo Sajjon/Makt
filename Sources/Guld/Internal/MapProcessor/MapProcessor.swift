@@ -8,6 +8,7 @@
 import Foundation
 import Combine
 import Malm
+import Common
 
 public final class MapProcessor {
     private let assets: Assets
@@ -19,7 +20,7 @@ public final class MapProcessor {
 // MARK: Public
 public extension MapProcessor {
     func process(map: Map) throws -> ProcessedMap {
-        print("✨ Processing map \"\(map.basicInformation.name)\"")
+        logger.debug("✨ Processing map \"\(map.basicInformation.name)\"")
         let start = CFAbsoluteTimeGetCurrent()
 //        let groundImagesForTiles = try loadGroundImagesForTiles(in: map)
         let riverImagesForTiles = try loadRiverImagesForTiles(in: map)
@@ -97,7 +98,7 @@ public extension MapProcessor {
         )
         
         let diff = CFAbsoluteTimeGetCurrent() - start
-        print(String(format: "✨✅ Successfully processed for map '%@', took %.1f seconds", map.basicInformation.name, diff))
+        logger.debug(.init(stringLiteral: String(format: "✨✅ Successfully processed for map '%@', took %.1f seconds", map.basicInformation.name, diff)))
         
         return processedMap
     }

@@ -7,7 +7,7 @@
 
 import Foundation
 import Malm
-import Util
+import Common
 
 extension FileManager {
     
@@ -17,7 +17,7 @@ extension FileManager {
             try createDirectory(atPath: outputPath, withIntermediateDirectories: true, attributes: nil)
         } catch {
             let createOutputPathError = Fail(description: "Failed to create output directory at: '\(outputPath)'")
-            print("❌ Error: \(String(describing: createOutputPathError))")
+            logger.debug("❌ Error: \(String(describing: createOutputPathError))")
             throw createOutputPathError
         }
     }
@@ -59,34 +59,34 @@ extension FileManager {
                   let name = resourceValues.name
             else {
                 if verbose {
-                    print("⚠️ Skipped: '\(fileURL.path)' since failed to retrieve info about it.")
+                    logger.debug("⚠️ Skipped: '\(fileURL.path)' since failed to retrieve info about it.")
                 }
                 continue
             }
             
             guard !isDirectory else {
 //                if verbose {
-//                    print("💡 Skipped: '\(fileURL.path)' since it is a directory.")
+//                    logger.debug("💡 Skipped: '\(fileURL.path)' since it is a directory.")
 //                }
                 continue
             }
             
             guard let fileExtensionCased = name.fileExtension else {
 //                if verbose {
-//                    print("💡 Skipped: '\(fileURL.path)' since we failed to read its fileextension.")
+//                    logger.debug("💡 Skipped: '\(fileURL.path)' since we failed to read its fileextension.")
 //                }
                 continue
             }
             
             guard targetFileExtensions.contains(fileExtensionCased.lowercased()) else {
 //                if verbose {
-//                    print("💡 Skipped: '\(fileURL.path)' since it is not in our target file extension set.")
+//                    logger.debug("💡 Skipped: '\(fileURL.path)' since it is not in our target file extension set.")
 //                }
                 continue
             }
             
 //            if verbose {
-//                print("Found relevant file at: \(fileURL.path)")
+//                logger.debug("Found relevant file at: \(fileURL.path)")
 //            }
             
             fileURLs.append(fileURL)
@@ -176,7 +176,7 @@ extension FileManager {
             stepper.step("💡 Calculating workload")
             exporterWorkload = try calculateWorkload(filesRead)
             if verbose {
-                print("✨ found workload of #\(exporterWorkload!).")
+                logger.debug("✨ found workload of #\(exporterWorkload!).")
             }
         }
         
@@ -204,7 +204,7 @@ extension FileManager {
         for fileToSave in filesToSave {
             let fileURL = destination.appendingPathComponent(fileToSave.name)
             if verbose {
-                print("Writing file: to '\(fileURL.path)' (#\(fileToSave.data.count) bytes)")
+                logger.debug("Writing file: to '\(fileURL.path)' (#\(fileToSave.data.count) bytes)")
             }
             try fileToSave.data.write(to: fileURL, options: fileWritingOptions)
         }

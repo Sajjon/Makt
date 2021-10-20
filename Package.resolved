@@ -18,6 +18,15 @@
           "revision": "d2930e8fcf9c33162b9fcc1d522bc975e2d4179b",
           "version": "1.0.1"
         }
+      },
+      {
+        "package": "swift-log",
+        "repositoryURL": "https://github.com/apple/swift-log.git",
+        "state": {
+          "branch": null,
+          "revision": "5d66f7ba25daf4f94100e7022febf3c75e37a6c7",
+          "version": "1.4.2"
+        }
       }
     ]
   },

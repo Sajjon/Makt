@@ -7,7 +7,7 @@
 
 import Foundation
 import Malm
-import Util
+import Common
 
 extension H3M {
     func parseScholar() throws -> Map.Scholar {

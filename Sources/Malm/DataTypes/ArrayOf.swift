@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import Util
+import Common
 
 public protocol ElementsValidating {
     associatedtype Error: Swift.Error & Equatable

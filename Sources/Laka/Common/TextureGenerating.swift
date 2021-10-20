@@ -10,7 +10,7 @@ import Malm
 import Guld
 import Packa
 import Combine
-import Util
+import Common
 
 protocol TextureGenerating {
     var inDataURL: URL { get }
@@ -43,14 +43,14 @@ extension TextureGenerating {
                 for image in possiblyDuplicatedImages {
                     if let prev = images.first(where: { $0.name == image.name }) {
                         if prev.data == image.data {
-                            print("💡 Avoding image duplicate named: '\(image.name)' in atlas: '\(atlasName)' (same data too)")
+                            logger.debug("💡 Avoding image duplicate named: '\(image.name)' in atlas: '\(atlasName)' (same data too)")
                             // Avoid duplicate
                             continue
                         } else {
                             let duplicateCount = images.filter({ $0.name.contains(image.name) }).count
                             // Retain, but rename
                             let newUniqueName = "duplicate_\(duplicateCount)_\(image.name)"
-                            print("⚠️ WARNING image with duplicate name, but unique data, retaining it, but renaming it\nfrom: '\(image.name)'\nto: '\(newUniqueName)'")
+                            logger.debug("⚠️ WARNING image with duplicate name, but unique data, retaining it, but renaming it\nfrom: '\(image.name)'\nto: '\(newUniqueName)'")
                             let modifiedName = ImageFromFrame(name: newUniqueName, cgImage: image.cgImage, fullSize: image.fullSize, rect: image.rect)
                             images.append(modifiedName)
                         }
@@ -177,7 +177,7 @@ extension TextureGenerating {
         skipCalculateWorkload: Bool = false
     ) throws {
         let fileNameList = fileList.map{ $0.fileName }
-        print("⚙️ Generating \(atlasName.map{ "\($0) " } ?? "")texture.")
+        logger.debug("⚙️ Generating \(atlasName.map{ "\($0) " } ?? "")texture.")
         
         let defParser = DefParser()
         let defFileList = fileList.compactMap {

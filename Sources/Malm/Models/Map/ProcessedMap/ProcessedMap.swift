@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import Util
+import Common
 
 public struct ProcessedMap: Hashable {
     private let map: Map

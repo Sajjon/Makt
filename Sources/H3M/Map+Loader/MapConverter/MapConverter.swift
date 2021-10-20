@@ -7,7 +7,7 @@
 
 import Foundation
 import Malm
-import Util
+import Common
 
 /// NOT USED (yet)
 /// Here follows some ides on how to more effectively represent a map, here called "Scenario"
@@ -167,7 +167,7 @@ private extension MapConverter {
             let mapped: [Scenario.Map.Object ] = mapObjectsWithZ.compactMap { objectWithZ in
                 let mapObject = objectWithZ.mapObject
                 guard let kind = extractObjectKind(from: mapObject) else {
-//                    print("⚠️ WARNING discarding object: \(String(describing: mapObject))")
+//                    logger.debug("⚠️ WARNING discarding object: \(String(describing: mapObject))")
                     return nil
                 }
                 return .init(

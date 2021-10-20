@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import Util
+import Common
 
 public extension Map {
     struct Town: Hashable, CustomDebugStringConvertible, Codable {

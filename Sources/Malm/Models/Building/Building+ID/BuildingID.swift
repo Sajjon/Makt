@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import Util
+import Common
 
 public protocol BuildingIDConvertible {
     static var villageHall: Self { get }

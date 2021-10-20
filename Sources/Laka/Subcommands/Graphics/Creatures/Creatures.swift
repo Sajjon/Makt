@@ -10,7 +10,7 @@ import Foundation
 import ArgumentParser
 import Guld
 import Malm
-import Util
+import Common
 
 extension Laka {
     
@@ -25,7 +25,7 @@ extension Laka {
         
         /// Requires `Laka lod` to have been run first.
         mutating func run() throws {
-            print("🐉 Extracting creature sprites/animations, run time: ~1 minute 10 seconds")
+            logger.debug("🐉 Extracting creature sprites/animations, run time: ~1 minute 10 seconds")
             try exportGraphics()
         }
     }
@@ -36,7 +36,7 @@ private extension Laka.Creatures {
     func exportGraphics() throws {
         var progressBar = ProgressBar()
         func extractGraphics(faction: Faction, defList: [String]) throws {
-            print("✨ Extracting graphics for all creatures from faction: \(faction.name)")
+            logger.debug("✨ Extracting graphics for all creatures from faction: \(faction.name)")
             let creaturesOfFaction = Creature.ID.of(faction: faction)
             
             assert(creaturesOfFaction.count == defList.count)
@@ -60,7 +60,7 @@ private extension Laka.Creatures {
                 let defFile = try defParser.parse(data: defFileData, definitionFileName: defFilename)
                 let palette = defFile.palette
                 var exportedUniqueBlocks = Set<Block.OnlyContent>()
-                //print("\(creatureID.name) has #\(defFile.blocks.count) of which #\(Set(defFile.blocks.map { $0.onlyContent }).count) are unique")
+                //logger.debug("\(creatureID.name) has #\(defFile.blocks.count) of which #\(Set(defFile.blocks.map { $0.onlyContent }).count) are unique")
                 
                 let creatureURL = factionURL.appendingPathComponent(creatureID.name, isDirectory: true)
                 try fileManager.createDirectory(at: creatureURL, withIntermediateDirectories: true)

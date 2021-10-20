@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import Util
+import Common
 import Malm
 
 extension Laka.UI {
@@ -53,7 +53,7 @@ private extension Laka.UI {
                 return [namePrefix, String(describing: creatureID)].joined(separator: "_")
             } else {
                 if verbose {
-                    print("⚠️ Ignoring image for frame with index: \(frameIndex), since no creature with that ID exists. Probably some empty placeholder value.")
+                    logger.debug("⚠️ Ignoring image for frame with index: \(frameIndex), since no creature with that ID exists. Probably some empty placeholder value.")
                 }
                 return nil
             }

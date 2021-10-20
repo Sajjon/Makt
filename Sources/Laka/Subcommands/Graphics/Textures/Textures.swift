@@ -8,7 +8,7 @@
 import Foundation
 import ArgumentParser
 
-import Util
+import Common
 import Malm
 import Guld
 
@@ -28,7 +28,7 @@ extension Laka {
         
         /// Requires `Laka lod` to have been run first.
         mutating func run() throws {
-            print("👘 Extracting sprites (terrain, monsters, artifacts), run time: ~15s")
+            logger.debug("👘 Extracting sprites (terrain, monsters, artifacts), run time: ~15s")
             try extractAllTextures()
         }
     }

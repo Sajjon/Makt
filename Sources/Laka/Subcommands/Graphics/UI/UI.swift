@@ -9,7 +9,7 @@ import Foundation
 import ArgumentParser
 import Guld
 import Malm
-import Util
+import Common
 
 extension Laka {
     
@@ -26,7 +26,7 @@ extension Laka {
         
         /// Requires `Laka lod` to have been run first.
         mutating func run() throws {
-            print("🖼 Extracting all menu UI, run time: ~10s")
+            logger.debug("🖼 Extracting all menu UI, run time: ~10s")
             try exportAllUIAssets()
         }
     }

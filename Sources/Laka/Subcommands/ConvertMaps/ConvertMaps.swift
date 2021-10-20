@@ -9,7 +9,7 @@ import Foundation
 import ArgumentParser
 import Guld
 import Malm
-import Util
+import Common
 import H3M
 
 extension Laka {
@@ -25,7 +25,7 @@ extension Laka {
         
         /// Requires `Laka lod` to have been run first.
         mutating func run() throws {
-            print("🗺 Converting all maps to JSON format, run time: ~4 minutes")
+            logger.debug("🗺 Converting all maps to JSON format, run time: ~4 minutes")
             try convertAllMapsToJSON()
         }
     }

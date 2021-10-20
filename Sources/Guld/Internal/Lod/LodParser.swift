@@ -8,7 +8,7 @@
 import Foundation
 
 import Decompressor
-import Util
+import Common
 import Malm
 import H3C
 

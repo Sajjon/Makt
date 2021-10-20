@@ -14,12 +14,16 @@ let package = Package(
     dependencies: [
         .package(url: "https://github.com/1024jp/GzipSwift", .upToNextMajor(from: "5.1.1")),
         .package(url: "https://github.com/apple/swift-argument-parser", from: "1.0.1"),
+        .package(url: "https://github.com/apple/swift-log.git", from: "1.4.2"),
+
         // Commented out because it does not work in RELEASE mode.
 //        .package(url: "https://github.com/sunlubo/SwiftFFmpeg", .upToNextMajor("1.5.0")),
     ],
     targets: [
         .target(
-            name: "Util", dependencies: []
+            name: "Common", dependencies: [
+                .product(name: "Logging", package: "swift-log")
+            ]
         ),
         .target(
             name: "Decompressor",
@@ -30,43 +34,44 @@ let package = Package(
         .target(
             name: "Video",
             dependencies: [
-              /* "SwiftFFmpeg", */ "Util", "Guld"
+              /* "SwiftFFmpeg", */ "Common", "Guld"
             ]
         ),
         .target(
             name: "Malm",
             dependencies: [
-                "Util"
+                "Common"
             ]
         ),
         .target(
             name: "Packa",
             dependencies: [
-                "Util"
+                "Common"
             ],
             exclude: excludedFilenames
         ),
         .target(
             name: "Guld",
             dependencies: [
-                "Util", "Malm", "Decompressor", "H3C", "H3M"
+                "Common", "Malm", "Decompressor", "H3C", "H3M"
             ]
         ),
         .executableTarget(
             name: "Laka",
             dependencies: [
-                "Util",
+                "Common",
                 "Malm",
                 "Guld",
                 "Packa",
                 .product(name: "ArgumentParser", package: "swift-argument-parser"),
+                .product(name: "Logging", package: "swift-log"),
             ],
             exclude: excludedFilenames
         ),
         .target(
             name: "H3M",
             dependencies: [
-                "Util",
+                "Common",
                 "Malm",
                 "Decompressor",
             ],
@@ -75,22 +80,22 @@ let package = Package(
         .target(
             name: "H3C",
             dependencies: [
-            "Util",
+            "Common",
             "Malm",
             "Decompressor",
             ]
         ),
         .target(
             name: "Makt",
-            dependencies: ["Util", "Malm", "H3M", "Guld", "Video"]
+            dependencies: ["Common", "Malm", "H3M", "Guld", "Video"]
         ),
         .testTarget(
             name: "MalmTests",
             dependencies: ["Malm"]
         ),
         .testTarget(
-            name: "UtilTests",
-            dependencies: ["Util"]
+            name: "CommonTests",
+            dependencies: ["Common"]
         ),
     
         .testTarget(

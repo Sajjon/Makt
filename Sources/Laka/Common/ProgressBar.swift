@@ -20,6 +20,7 @@
 //  Created by Ben Scheirman on 12/4/20.
 //
 import Foundation
+import Common
 
 public protocol OutputBuffer {
     mutating func write(_ text: String)
@@ -65,7 +66,7 @@ public struct ProgressBar {
     
     public mutating func render(count: Int, total: Int) {
         guard count <= total else {
-            print("⚠️ internal error, reporting progress: \(count)/\(total)")
+            logger.debug("⚠️ internal error, reporting progress: \(count)/\(total)")
             return
             
         }

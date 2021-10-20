@@ -7,6 +7,7 @@
 
 import ArgumentParser
 import Foundation
+import Logging
 
 protocol CMD: ParsableCommand {
     init(options: OptionGroup<Options>)
@@ -29,11 +30,8 @@ struct Laka: ParsableCommand {
     
     static var configuration = CommandConfiguration(
         abstract: "A toolset for extracting/exporting/converting orignal game resources from Heroes of Might and Magic III.",
-
         version: "0.0.0",
-        
         subcommands: [All.self] + Self.specificCommands,
-
         defaultSubcommand: All.self
     )
 }

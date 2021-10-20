@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import Util
+import Common
 
 public extension Hero {
     struct PrimarySkills: Hashable, CustomDebugStringConvertible, ExpressibleByArrayLiteral, Codable {

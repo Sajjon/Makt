@@ -7,7 +7,7 @@
 
 import Foundation
 import XCTest
-import Util
+import Common
 
 final class IntegerDivisionTests: XCTestCase {
     

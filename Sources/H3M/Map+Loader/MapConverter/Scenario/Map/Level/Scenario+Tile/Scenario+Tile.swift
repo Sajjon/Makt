@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import Util
+import Common
 import Malm
 
 public extension Scenario.Map.Level {

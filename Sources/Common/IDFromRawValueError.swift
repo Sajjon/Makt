@@ -11,6 +11,7 @@ public enum IDFromRawValueError<Model>: Swift.Error where Model: RawRepresentabl
     case genericUnrecognizedRawValue(Model.RawValue, tryingToInit: Model.Type = Model.self)
     case genericInteger(tooLarge: Int, tryingPassAsRawValueWhenInit: Model.Type = Model.self)
 }
+
 public extension RawRepresentable where RawValue: FixedWidthInteger {
     init(id rawValue: RawValue) throws {
         guard let selfValue = Self(rawValue: rawValue) else {

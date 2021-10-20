@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import Util
+import Common
 import Malm
 
 public final class H3CParser {
@@ -18,7 +18,7 @@ public final class H3CParser {
 
 public extension H3CParser {
     func parse() throws -> Campaign {
-        print("⚠️ Warning, not parsing campaign yet.")
+        logger.debug("⚠️ Warning, not parsing campaign yet.")
         return Campaign()
     }
 }
