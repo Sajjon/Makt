@@ -13,7 +13,7 @@ public typealias Pathfinding = Map.Object.Attributes.Pathfinding
 // MARK: Map Object
 public extension Scenario.Map {
     
-    struct Object: Model, Comparable {
+    struct Object: Model {
         public let kind: Kind
         
         /// Z rending
@@ -37,30 +37,6 @@ public extension Scenario.Map {
         }
     }
     
-}
-
-// MARK: Comparable
-public extension Scenario.Map.Object {
-    static func < (lhs: Self, rhs: Self) -> Bool {
-        if lhs.zAxisIndex != rhs.zAxisIndex {
-            return lhs.zAxisIndex > rhs.zAxisIndex
-        }
-
-        if rhs.kind.isHero && !lhs.kind.isHero {
-            return true
-        }
-        if !rhs.kind.isHero && lhs.kind.isHero {
-            return false
-        }
-        if !lhs.kind.isVisitable && rhs.kind.isVisitable {
-            return true
-        }
-        if !rhs.kind.isVisitable && lhs.kind.isVisitable {
-            return false
-        }
-
-        return false
-    }
 }
 
 // MARK: Map Object Kind

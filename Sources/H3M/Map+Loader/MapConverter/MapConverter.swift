@@ -57,6 +57,10 @@ public extension MapConverter {
     }
 }
 
+private extension Map.Object {
+    var zAxisIndex: Int { attributes.zAxisRenderingPriority }
+}
+
 // MARK: Private
 private extension MapConverter {
     func infoFrom(map: Map) -> Scenario.Info {
@@ -82,15 +86,19 @@ private extension MapConverter {
     }
     
     // MARK: Objects Storage
+    struct MapObjectWithGlobalZ {
+        let mapObject: Map.Object
+        let globalZ: Int
+    }
     
     /// Helper class to construct a list of objects at a certain position,
     /// reference semantics makes this easier.
     final class Objects {
-        internal private(set) var objects = [Map.Object]()
-        init(object: Map.Object) {
+        internal private(set) var objects = [MapObjectWithGlobalZ]()
+        init(object: MapObjectWithGlobalZ) {
             self.objects = [object]
         }
-        func add(object: Map.Object) {
+        func add(object: MapObjectWithGlobalZ) {
             objects.append(object)
         }
     }
@@ -98,12 +106,40 @@ private extension MapConverter {
     func scenarioMap(from map: Malm.Map) -> Scenario.Map {
         var positionToObjects: [Position: Objects] = [:]
         
-        map.detailsAboutObjects.objects.forEach { object in
-            let position = object.position
+        let sortedObjects = map.detailsAboutObjects.objects.sorted(by: { a, b in
+            if a.zAxisIndex != b.zAxisIndex {
+                return a.zAxisIndex > b.zAxisIndex
+            }
+            if a.position.y != b.position.y {
+                return a.position.y < b.position.y
+            }
+            if b.objectID.stripped == .hero && a.objectID.stripped != .hero {
+                return true
+            }
+            if b.objectID.stripped != .hero && a.objectID.stripped == .hero {
+                return false
+            }
+            if !a.isVisitable && b.isVisitable {
+                return true
+            }
+            if !b.isVisitable && a.isVisitable {
+                return false
+            }
+            if a.position.x < b.position.x {
+                return true
+            }
+            return false
+        })
+        
+        
+        
+        sortedObjects.enumerated().forEach { (globalZ, mapObject) in
+             let objectWithZ = MapObjectWithGlobalZ(mapObject: mapObject, globalZ: globalZ)
+            let position = mapObject.position
             if let objects = positionToObjects[position] {
-                objects.add(object: object)
+                objects.add(object: objectWithZ)
             } else {
-                positionToObjects[position] = .init(object: object)
+                positionToObjects[position] = .init(object: objectWithZ)
             }
         }
         
@@ -111,19 +147,20 @@ private extension MapConverter {
             guard
                 let objects = positionToObjects[position],
                 !objects.objects.isEmpty,
-                case let mapObjects = objects.objects
+                case let mapObjectsWithZ = objects.objects
             else { return [] }
             
-            let mapped: [Scenario.Map.Object ] = mapObjects.compactMap {
-                guard let kind = extractObjectKind(from: $0) else {
-                    print("⚠️ WARNING discarding object: \(String(describing: $0))")
+            let mapped: [Scenario.Map.Object ] = mapObjectsWithZ.compactMap { objectWithZ in
+                let mapObject = objectWithZ.mapObject
+                guard let kind = extractObjectKind(from: mapObject) else {
+                    print("⚠️ WARNING discarding object: \(String(describing: mapObject))")
                     return nil
                 }
                 return .init(
                     kind: kind,
-                    sprite: $0.attributes.sprite,
-                    pathfinding: $0.attributes.pathfinding,
-                    zAxisIndex: $0.attributes.zAxisRenderingPriority
+                    sprite: mapObject.attributes.sprite,
+                    pathfinding: mapObject.attributes.pathfinding,
+                    zAxisIndex: objectWithZ.globalZ //$0.attributes.zAxisRenderingPriority
                 )
             }
             
@@ -219,7 +256,7 @@ private extension MapConverter {
     func passableTerrain(_ passableTerrain: Map.Object.Kind.PassableTerrain) -> Scenario.Map.Object.Kind? {
         
         func magicalTerrain(_ magicalTerrain: Scenario.Map.Object.Kind.NonInteractive.Effectful.MagicalTerrain) -> Scenario.Map.Object.Kind {
-            Scenario.Map.Object.Kind.nonInteractive(.effectful(.magicalTerrain(magicalTerrain)))
+            .nonInteractive(.effectful(.magicalTerrain(magicalTerrain)))
         }
         
         switch passableTerrain {

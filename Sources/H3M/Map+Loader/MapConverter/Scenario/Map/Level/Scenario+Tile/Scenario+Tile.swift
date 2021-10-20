@@ -24,17 +24,15 @@ public extension Scenario.Map.Level {
             ground: Ground,
             road: Road? = nil,
             river: River? = nil,
-            objects nonSortedObjects: Scenario.Map.Level.Objects? = nil
+            objects: Scenario.Map.Level.Objects? = nil
         ) {
             self.position = position
             self.ground = ground
             self.road = road
             self.river = river
-            if let nonSortedObjects = nonSortedObjects, !nonSortedObjects.isEmpty {
-                self.objects = .init(values: nonSortedObjects.values.sorted())
-            } else {
-                self.objects = nil
-            }
+            if let objects = objects, !objects.isEmpty {
+                self.objects = objects
+            } 
         }
     }
     
