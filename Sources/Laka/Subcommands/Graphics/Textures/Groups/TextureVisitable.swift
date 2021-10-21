@@ -9,7 +9,7 @@ import Foundation
 
 extension Laka.Textures {
     
-    private var visitable: [String] {
+    private static let visitable: [String] =
         [
         "avxsndg0.def",
         "avxsnlv0.def",
@@ -181,22 +181,10 @@ extension Laka.Textures {
         "adcfra.def",
         "avtchst0.def"
       ]
-    }
-    
-    var visitableDefsCount: Int {
-        visitable.count
-    }
-    
-    func exportVisitable() throws {
-        let visitableFileList = visitable.map { defFileName in
-            DefImageExport(defFileName: defFileName, nameFromFrameAtIndexIndex: { _, _ in defFileName })
-        }
-        
-        try generateTexture(
-            name: "visitable",
-            list: visitableFileList.map { .def($0) },
-            maxImageCountPerDefFile: 1,
-            finishedExportingOneEntry: self.finishedExtractingEntry
-        )
-    }
+
+    static let visitableTask = Task(
+        atlasName: "visitable",
+        defList: visitable,
+        maxImageCountPerDefFile: 1
+    )
 }

@@ -10,7 +10,7 @@ import Foundation
 // MARK: - Monsters
 // MARK: -
 extension Laka.Textures {
-    private var monsters: [String] { [
+    private static let monsters: [String] = [
         "avwpike.def",
         "avwpikx0.def",
         "avwlcrs.def",
@@ -161,23 +161,9 @@ extension Laka.Textures {
         "avwmon6.def",
         "avwmon7.def"
     ]
-    }
     
-    var monstersDefsCount: Int {
-        monsters.count
-    }
-    
-    func exportMonsters() throws {
-        let monsterFiles: [DefImageExport] = monsters.map { defFileName in
-            DefImageExport(defFileName: defFileName, nameFromFrameAtIndexIndex: { _, _ in defFileName })
-        }
-        try generateTexture(
-            name: "monsters",
-            list: monsterFiles.map { .def($0) },
-            maxImageCountPerDefFile: 1,
-//            didCalculateWorkLoad: { self.report(numberOfEntriesToExtract: $0) },
-            finishedExportingOneEntry: self.finishedExtractingEntry
-        )
-    }
-    
+    static let monstersTask = Task(
+        atlasName: "monsters",
+        defList: monsters
+    )
 }

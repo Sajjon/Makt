@@ -12,7 +12,7 @@ import Foundation
 extension Laka.Textures {
     
     // MARK: Town + Files
-    private var townDefFiles: [String] {
+    private static let townDefFiles: [String] =
         [
             "avccasx0.def",
             "avccast0.def",
@@ -45,21 +45,9 @@ extension Laka.Textures {
             "avctowr0.def",
             "avctowz0.def"
         ]
-    }
-    
-    var townsDefsCount: Int {
-        townDefFiles.count
-    }
-    
-    func exportTowns() throws {
-        let townFiles: [DefImageExport] = townDefFiles.map { defFileName in
-            DefImageExport(defFileName: defFileName, nameFromFrameAtIndexIndex: { _, _ in defFileName })
-        }
-        try generateTexture(
-            name: "towns",
-            list: townFiles.map { .def($0) },
-//            didCalculateWorkLoad: { self.report(numberOfEntriesToExtract: $0) },
-            finishedExportingOneEntry: self.finishedExtractingEntry
-        )
-    }
+
+    static let townsTask = Task(
+        atlasName: "towns",
+        defList: townDefFiles
+    )
 }

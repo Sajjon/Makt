@@ -9,7 +9,7 @@ import Foundation
 
 extension Laka.Textures {
     
-    private var passableTerrain: [String] { [
+    private static let passableTerrain: [String] = [
         "avlhold0.def",
         "avlklp10.def",
         "avlklp20.def",
@@ -101,24 +101,10 @@ extension Laka.Textures {
         "avxrk6.def",
         "avxrk7.def"
     ]
-    }
-    
-    var passableTerrainDefsCount: Int {
-        passableTerrain.count
-    }
-    
-    
-    func exportPassableTerrain() throws {
-        let passableTerrainFiles = passableTerrain.map { defFileName in
-            DefImageExport(defFileName: defFileName, nameFromFrameAtIndexIndex: { _, _ in defFileName })
-        }
-        
-        try generateTexture(
-            name: "passable_terrain",
-            list: passableTerrainFiles.map { .def($0) },
-            maxImageCountPerDefFile: 1,
-//            didCalculateWorkLoad: { self.report(numberOfEntriesToExtract: $0) },
-            finishedExportingOneEntry: self.finishedExtractingEntry
-        )
-    }
+
+    static let passableTerrainTask = Task(
+        name: "Passable Terrain",
+        atlasName: "passable_terrain",
+        defList: passableTerrain
+    )
 }

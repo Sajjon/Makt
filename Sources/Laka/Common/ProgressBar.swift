@@ -68,6 +68,12 @@ public struct ProgressBar {
         output.clearLine(width: width, final: final)
     }
     
+    public mutating func clear() {
+        clearLine(final: true)
+    }
+    
+    
+    
     public mutating func progress() {
         count += 1
         guard count <= total else {

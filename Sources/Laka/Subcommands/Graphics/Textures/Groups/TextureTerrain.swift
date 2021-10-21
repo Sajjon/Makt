@@ -8,30 +8,37 @@
 import Foundation
 import Malm
 
+
+
 // MARK: - TERRAIN
 // MARK: -
 internal extension Laka.Textures {
+
+    static let terrainTask = Task(
+        atlasName: "terrain",
+        defFileList: Map.Tile.Road.Kind.listOfFilesToExport + Map.Tile.River.Kind.listOfFilesToExport + Map.Terrain.listOfFilesToExport
+    )
     
-    private var defFiles: [DefImageExport] {
-        let roadFiles = Map.Tile.Road.Kind.listOfFilesToExport
-        let groundFiles = Map.Terrain.listOfFilesToExport
-        let riverFiles = Map.Tile.River.Kind.listOfFilesToExport
-        
-        return roadFiles + riverFiles + groundFiles
-    }
-    
-    var terrainDefsCount: Int {
-        defFiles.count
-    }
-    
-    func exportTerrain() throws {
-        try generateTexture(
-            name: "terrain",
-            list: defFiles.map { .def($0) },
-//            didCalculateWorkLoad: { self.report(numberOfEntriesToExtract: $0) },
-            finishedExportingOneEntry: self.finishedExtractingEntry
-        )
-    }
+//    private var defFiles: [DefImageExport] {
+//        let roadFiles = Map.Tile.Road.Kind.listOfFilesToExport
+//        let groundFiles = Map.Terrain.listOfFilesToExport
+//        let riverFiles = Map.Tile.River.Kind.listOfFilesToExport
+//
+//        return roadFiles + riverFiles + groundFiles
+//    }
+//
+//    var terrainDefsCount: Int {
+//        defFiles.count
+//    }
+//
+//    func exportTerrain() throws {
+//        try generateTexture(
+//            name: "terrain",
+//            list: defFiles.map { .def($0) },
+////            didCalculateWorkLoad: { self.report(numberOfEntriesToExtract: $0) },
+//            finishedExportingOneEntry: self.finishedExtractingEntry
+//        )
+//    }
 }
 
 // MARK: Ground Files

@@ -9,7 +9,7 @@ import Foundation
 
 extension Laka.Textures {
     
-    private var artifacts: [String] {
+    private static let artifacts: [String] =
         [
            "ava0001.def",
            "ava0007.def",
@@ -154,23 +154,9 @@ extension Laka.Textures {
            "avarnd4.def",
            "avzgrail.def"
          ]
-    }
     
-    var artifactsDefsCount: Int {
-        artifacts.count
-    }
-    
-    func exportArtifact() throws {
-        let artifactFileList = artifacts.map { defFileName in
-            DefImageExport(defFileName: defFileName, nameFromFrameAtIndexIndex: { _, _ in defFileName })
-        }
-        
-        try generateTexture(
-            name: "artifact",
-            list: artifactFileList.map { .def($0) },
-            maxImageCountPerDefFile: 1,
-//            didCalculateWorkLoad: { self.report(numberOfEntriesToExtract: $0) },
-            finishedExportingOneEntry: self.finishedExtractingEntry
-        )
-    }
+    static let artifactsTask = Task(
+        atlasName: "artifacts",
+        defList: artifacts
+    )
 }

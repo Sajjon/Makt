@@ -54,6 +54,39 @@ extension CMD {
         progressBar?.progress()
     }
     
+    
+    /// Log a message passing the log level as a parameter.
+    ///
+    /// - parameters:
+    ///    - message: The message to be logged. `message` can be used with any string interpolation literal.
+    ///    - metadata: One-off metadata to attach to this log message.
+    ///    - source: The source this log messages originates to. Currently, it defaults to the folder containing the
+    ///              file that is emitting the log message, which usually is the module.
+    ///    - function: The function this log message originates from (there's usually no need to pass it explicitly as
+    ///                it defaults to `#function`).
+    ///    - line: The line this log message originates from (there's usually no need to pass it explicitly as it
+    ///            defaults to `#line`).
+    func log(
+        level: Logger.Level = .notice,
+        _ message: @autoclosure () -> Logger.Message,
+        metadata: @autoclosure () -> Logger.Metadata? = nil,
+        source: @autoclosure () -> String? = nil,
+        file: String = #file,
+        function: String = #function,
+        line: UInt = #line
+    ) {
+        progressBar?.clear()
+        logger.log(
+            level: level,
+            message(),
+            metadata: metadata(),
+            source: source(),
+            file: file,
+            function: function,
+            line: line
+        )
+    }
+    
     var executionTimeFormatted: String {
         let durationInSeconds = Int(Self.optimisticEstimatedRunTime)
         let (minutes, seconds) = durationInSeconds.quotientAndRemainder(dividingBy: 60)

@@ -9,7 +9,7 @@ import Foundation
 
 extension Laka.Textures {
     
-    private var dwelling: [String] {
+    private static let dwellings: [String] =
         [
             "avgpike0.def",
             "avgcros0.def",
@@ -112,23 +112,9 @@ extension Laka.Textures {
             "avrcgen7.def",
             "avgnoll.def"
           ]
-    }
-    
-    var dwellingDefsCount: Int {
-        dwelling.count
-    }
-    
-    func exportDwelling() throws {
-        let dwellingFileList = dwelling.map { defFileName in
-            DefImageExport(defFileName: defFileName, nameFromFrameAtIndexIndex: { _, _ in defFileName })
-        }
-        
-        try generateTexture(
-            name: "dwelling",
-            list: dwellingFileList.map { .def($0) },
-            maxImageCountPerDefFile: 1,
-//            didCalculateWorkLoad: { self.report(numberOfEntriesToExtract: $0) },
-            finishedExportingOneEntry: self.finishedExtractingEntry
-        )
-    }
+
+    static let dwellingsTask = Task(
+        atlasName: "dwelling",
+        defList: dwellings
+    )
 }

@@ -13,7 +13,7 @@ import Foundation
 extension Laka.Textures {
     
     // MARK: Impassable Files
-    private var impassableTerrain: [String] { [
+    private static let impassableTerrain: [String] = [
         "avlautr0.def",
         "avlautr1.def",
         "avlautr2.def",
@@ -603,24 +603,10 @@ extension Laka.Textures {
         "avlxsu11.def",
         "avlxsu12.def"
     ]
-    }
     
-    var impassableTerrainDefsCount: Int {
-        impassableTerrain.count
-    }
-    
-    func exportImpassableTerrain() throws {
-        let impassableTerrainFiles = impassableTerrain.map { defFileName in
-            DefImageExport(defFileName: defFileName, nameFromFrameAtIndexIndex: { _, _ in defFileName })
-        }
-        
-        try generateTexture(
-            name: "impassable_terrain",
-            list: impassableTerrainFiles.map { .def($0) },
-            maxImageCountPerDefFile: 1,
-//            didCalculateWorkLoad: { self.report(numberOfEntriesToExtract: $0) },
-            finishedExportingOneEntry: self.finishedExtractingEntry
-        )
-    }
-    
+    static let impassableTerrainTask = Task(
+        name: "Impassable Terrain",
+        atlasName: "impassable_terrain",
+        defList: impassableTerrain
+    )
 }
