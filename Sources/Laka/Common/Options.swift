@@ -55,7 +55,7 @@ struct Options: ParsableArguments {
     @Option(
         name: [.customShort("p"), .long],
         help: "Progress mode of commmands.")
-    var progressMode: ProgressMode = .aggregated
+    var progressMode: ProgressMode = .task
     
     @Option(
         name: [.customShort("l"), .long],

@@ -113,7 +113,7 @@ extension Laka.Textures {
             "avgnoll.def"
           ]
 
-    static let dwellingsTask = Task(
+    static let dwellingsTask = GenerateAtlasTask(
         atlasName: "dwelling",
         defList: dwellings
     )

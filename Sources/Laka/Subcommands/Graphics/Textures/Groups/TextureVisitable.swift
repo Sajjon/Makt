@@ -182,7 +182,7 @@ extension Laka.Textures {
         "avtchst0.def"
       ]
 
-    static let visitableTask = Task(
+    static let visitableTask = GenerateAtlasTask(
         atlasName: "visitable",
         defList: visitable,
         maxImageCountPerDefFile: 1

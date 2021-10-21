@@ -18,7 +18,7 @@ extension Laka {
     /// A command to extract all textures, such as terrain, monsters, artifacts,
     /// heroes and towns on the map etc. But not game menu UI, neither
     /// in combat/battle creature sprites nor in town UI.
-    struct Textures: CMD, TextureGenerating {
+    struct Textures: CMD, TextureGenerating, TaskExecuting {
         
         static var configuration = CommandConfiguration(
             abstract: "Extract texture images such as terrain, artifacts, monsters etc. But not game menu UI."
@@ -29,16 +29,55 @@ extension Laka {
         static let executionOneLinerDescription = "👘 Extracting textues (sprites)"
         static let optimisticEstimatedRunTime: TimeInterval = 15
         
-        /// Requires `Laka lod` to have been run first.
-        func extract() throws {
-            try extractAllTextures()
+     
+    }
+}
+
+extension TaskExecuting where Self: CMD {
+    
+    func runAllTasks() throws {
+        switch progressMode {
+        case .aggregated:
+            report(numberOfEntriesToExtract:  Self.tasks.map { $0.entryCount }.reduce(0, +))
+        case .task: break
         }
+        try Self.tasks.forEach { task in
+            
+            switch progressMode {
+            case .task:
+                report(numberOfEntriesToExtract: task.entryCount)
+                let subtaskLogLevel: Logger.Level = .info
+                assert(self.options.logLevel >= subtaskLogLevel)
+                log(level: subtaskLogLevel, "Task: export '\(task.taskName)'")
+            case .aggregated: break
+            }
+            
+            try run(task: task)
+        }
+    }
+}
+
+extension CMD where Self: TaskExecuting {
+    func extract() throws {
+        try runAllTasks()
+    }
+}
+
+extension TaskExecuting where Self: CMD, Self: TextureGenerating, Task == GenerateAtlasTask {
+    
+    func run(task: Task) throws {
+        try generateTexture(
+            name: task.atlasName,
+            list: task.filelist,
+            maxImageCountPerDefFile: task.maxImageCountPerDefFile,
+            finishedExportingOneEntry: finishedExtractingEntry
+        )
     }
 }
 
 extension Laka.Textures {
     
-    static let tasks: [Task] = [
+    static let tasks: [GenerateAtlasTask] = [
         terrainTask,
         townsTask,
         monstersTask,
@@ -51,28 +90,12 @@ extension Laka.Textures {
         resourcesTask,
         edgesTask
     ]
-    
-    var numberOfEntriesToExtract: Int {
-        Self.tasks.map { $0.entryCount }.reduce(0, +)
-    }
-    
-    func extractAllTextures() throws {
-        
-        report(numberOfEntriesToExtract: numberOfEntriesToExtract)
-        try Self.tasks.forEach {
-            try run(task: $0)
-        }
-    }
-    
-    private func run(task: Task) throws {
-        log(level: .info, "Task: export '\(task.taskName)'")
-        try generateTexture(
-            name: task.atlasName,
-            list: task.filelist,
-            maxImageCountPerDefFile: task.maxImageCountPerDefFile,
-            finishedExportingOneEntry: finishedExtractingEntry
-        )
-    }
+}
+
+public protocol TaskExecuting {
+    associatedtype Task: SubTask
+    static var tasks: [Task] { get }
+    func run(task: Task) throws
 }
 
 // MARK: Computed props
@@ -90,31 +113,34 @@ extension Laka.Textures {
     }
 }
 
-// MARK: Task
-extension Laka.Textures {
-    struct Task {
-       
-        let taskName: String
-        let filelist: [ImageExport]
-        let atlasName: String
-        let maxImageCountPerDefFile: Int?
-        
-        init(
-            name: String? = nil,
-            atlasName: String,
-            filelist: [ImageExport],
-            maxImageCountPerDefFile: Int? = nil
-        ) {
-            self.taskName = name ?? atlasName
-            self.atlasName = atlasName
-            self.filelist = filelist
-            self.maxImageCountPerDefFile = maxImageCountPerDefFile
-        }
-    }
-    
+public protocol SubTask {
+    var taskName: String { get }
+    var entryCount: Int { get }
 }
 
-extension Laka.Textures.Task {
+
+// MARK: Task
+struct GenerateAtlasTask: SubTask {
+   
+    let taskName: String
+    let filelist: [ImageExport]
+    let atlasName: String
+    let maxImageCountPerDefFile: Int?
+    
+    init(
+        name: String? = nil,
+        atlasName: String,
+        filelist: [ImageExport],
+        maxImageCountPerDefFile: Int? = nil
+    ) {
+        self.taskName = name ?? atlasName
+        self.atlasName = atlasName
+        self.filelist = filelist
+        self.maxImageCountPerDefFile = maxImageCountPerDefFile
+    }
+}
+
+extension GenerateAtlasTask {
     
     var entryCount: Int { filelist.count }
     

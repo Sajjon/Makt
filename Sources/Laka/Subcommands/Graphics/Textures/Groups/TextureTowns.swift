@@ -46,7 +46,7 @@ extension Laka.Textures {
             "avctowz0.def"
         ]
 
-    static let townsTask = Task(
+    static let townsTask = GenerateAtlasTask(
         atlasName: "towns",
         defList: townDefFiles
     )

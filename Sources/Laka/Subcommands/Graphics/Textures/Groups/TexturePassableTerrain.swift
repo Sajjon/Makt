@@ -102,7 +102,7 @@ extension Laka.Textures {
         "avxrk7.def"
     ]
 
-    static let passableTerrainTask = Task(
+    static let passableTerrainTask = GenerateAtlasTask(
         name: "Passable Terrain",
         atlasName: "passable_terrain",
         defList: passableTerrain

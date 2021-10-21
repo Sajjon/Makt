@@ -14,7 +14,7 @@ import Malm
 // MARK: -
 internal extension Laka.Textures {
 
-    static let terrainTask = Task(
+    static let terrainTask = GenerateAtlasTask(
         atlasName: "terrain",
         defFileList: Map.Tile.Road.Kind.listOfFilesToExport + Map.Tile.River.Kind.listOfFilesToExport + Map.Terrain.listOfFilesToExport
     )

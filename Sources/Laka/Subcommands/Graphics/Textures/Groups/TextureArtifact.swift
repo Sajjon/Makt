@@ -155,7 +155,7 @@ extension Laka.Textures {
            "avzgrail.def"
          ]
     
-    static let artifactsTask = Task(
+    static let artifactsTask = GenerateAtlasTask(
         atlasName: "artifacts",
         defList: artifacts
     )

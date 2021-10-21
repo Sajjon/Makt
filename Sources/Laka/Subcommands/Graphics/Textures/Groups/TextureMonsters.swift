@@ -162,7 +162,7 @@ extension Laka.Textures {
         "avwmon7.def"
     ]
     
-    static let monstersTask = Task(
+    static let monstersTask = GenerateAtlasTask(
         atlasName: "monsters",
         defList: monsters
     )

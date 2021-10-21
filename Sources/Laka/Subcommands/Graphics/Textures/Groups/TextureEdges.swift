@@ -9,7 +9,7 @@ import Foundation
 
 extension Laka.Textures {
 
-    static let edgesTask = Task(
+    static let edgesTask = GenerateAtlasTask(
         atlasName: "edges",
         defFileList: [.init(
             defFileName: "edg.def",

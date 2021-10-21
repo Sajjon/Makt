@@ -604,7 +604,7 @@ extension Laka.Textures {
         "avlxsu12.def"
     ]
     
-    static let impassableTerrainTask = Task(
+    static let impassableTerrainTask = GenerateAtlasTask(
         name: "Impassable Terrain",
         atlasName: "impassable_terrain",
         defList: impassableTerrain

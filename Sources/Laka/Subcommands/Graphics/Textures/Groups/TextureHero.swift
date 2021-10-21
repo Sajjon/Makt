@@ -32,7 +32,7 @@ extension Laka.Textures {
         "ahrandom.def"
     ]
     
-    static let heroesTask = Task(
+    static let heroesTask = GenerateAtlasTask(
         atlasName: "heroes",
         defList: heroes
     )

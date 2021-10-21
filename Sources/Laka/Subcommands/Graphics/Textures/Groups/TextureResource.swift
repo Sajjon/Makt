@@ -69,7 +69,7 @@ extension Laka.Textures {
             "avxamsu.def"
           ]
     
-    static let resourcesTask = Task(
+    static let resourcesTask = GenerateAtlasTask(
         atlasName: "resources",
         defList: resources
     )
