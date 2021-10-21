@@ -14,7 +14,6 @@ extension Laka.Textures {
     }
     
     func exportEdges() throws {
-        defer { finishedExtractingEntries(count: edgesDefsCount) }
         try generateTexture(
             name: "edges",
             list: [.def(
@@ -22,7 +21,9 @@ extension Laka.Textures {
                     defFileName: "edg.def",
                     nameFromFrameAtIndexIndex: { _, frameIndex in "edge_\(frameIndex).png" })
                 )
-            ]
+            ],
+//            didCalculateWorkLoad: { self.report(numberOfEntriesToExtract: $0) },
+            finishedExportingOneEntry: self.finishedExtractingEntry
         )
     }
 }

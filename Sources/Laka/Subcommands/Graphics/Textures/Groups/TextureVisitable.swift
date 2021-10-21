@@ -188,7 +188,6 @@ extension Laka.Textures {
     }
     
     func exportVisitable() throws {
-        defer { finishedExtractingEntries(count: visitableDefsCount) }
         let visitableFileList = visitable.map { defFileName in
             DefImageExport(defFileName: defFileName, nameFromFrameAtIndexIndex: { _, _ in defFileName })
         }
@@ -196,7 +195,8 @@ extension Laka.Textures {
         try generateTexture(
             name: "visitable",
             list: visitableFileList.map { .def($0) },
-            maxImageCountPerDefFile: 1
+            maxImageCountPerDefFile: 1,
+            finishedExportingOneEntry: self.finishedExtractingEntry
         )
     }
 }

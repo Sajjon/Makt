@@ -39,7 +39,6 @@ extension Laka.Textures {
     }
     
     func exportHero() throws {
-        defer { finishedExtractingEntries(count: heroesDefsCount) }
         let heroFileList = heroes.map { defFileName in
             DefImageExport(defFileName: defFileName, nameFromFrameAtIndexIndex: { _, _ in defFileName })
         }
@@ -47,7 +46,9 @@ extension Laka.Textures {
         try generateTexture(
             name: "hero",
             list: heroFileList.map { .def($0) },
-            maxImageCountPerDefFile: 1
+            maxImageCountPerDefFile: 1,
+//            didCalculateWorkLoad: { self.report(numberOfEntriesToExtract: $0) },
+            finishedExportingOneEntry: self.finishedExtractingEntry
         )
     }
 }

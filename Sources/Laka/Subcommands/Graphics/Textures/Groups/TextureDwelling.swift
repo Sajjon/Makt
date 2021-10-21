@@ -119,7 +119,6 @@ extension Laka.Textures {
     }
     
     func exportDwelling() throws {
-        defer { finishedExtractingEntries(count: dwellingDefsCount) }
         let dwellingFileList = dwelling.map { defFileName in
             DefImageExport(defFileName: defFileName, nameFromFrameAtIndexIndex: { _, _ in defFileName })
         }
@@ -127,7 +126,9 @@ extension Laka.Textures {
         try generateTexture(
             name: "dwelling",
             list: dwellingFileList.map { .def($0) },
-            maxImageCountPerDefFile: 1
+            maxImageCountPerDefFile: 1,
+//            didCalculateWorkLoad: { self.report(numberOfEntriesToExtract: $0) },
+            finishedExportingOneEntry: self.finishedExtractingEntry
         )
     }
 }

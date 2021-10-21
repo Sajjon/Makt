@@ -168,14 +168,15 @@ extension Laka.Textures {
     }
     
     func exportMonsters() throws {
-        defer { finishedExtractingEntries(count: monstersDefsCount) }
         let monsterFiles: [DefImageExport] = monsters.map { defFileName in
             DefImageExport(defFileName: defFileName, nameFromFrameAtIndexIndex: { _, _ in defFileName })
         }
         try generateTexture(
             name: "monsters",
             list: monsterFiles.map { .def($0) },
-            maxImageCountPerDefFile: 1
+            maxImageCountPerDefFile: 1,
+//            didCalculateWorkLoad: { self.report(numberOfEntriesToExtract: $0) },
+            finishedExportingOneEntry: self.finishedExtractingEntry
         )
     }
     

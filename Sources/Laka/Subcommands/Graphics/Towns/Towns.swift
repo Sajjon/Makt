@@ -86,7 +86,8 @@ private extension Laka.Towns {
         return try generateTexture(
             name: "town_\(template.faction)",
             list: fileList,
-            skipCalculateWorkload: true
+//            didCalculateWorkLoad: { self.report(numberOfEntriesToExtract: $0) },
+            finishedExportingOneEntry: self.finishedExtractingEntry
         )
         
     }

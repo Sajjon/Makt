@@ -32,7 +32,7 @@ extension Laka {
         func extract() throws {
             
             func logDivisor(character: String = "=") {
-                let divisor = Logger.Message(stringLiteral: .init(repeating: character, count: terminalWidth))
+                let divisor = Logger.Message(stringLiteral: .init(repeating: character, count: Int(Double(terminalWidth) * 0.6)))
                 logger.notice(divisor)
             }
             

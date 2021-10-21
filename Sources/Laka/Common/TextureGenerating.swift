@@ -23,7 +23,8 @@ protocol TextureGenerating {
         usePaletteReplacementMap: Bool,
         skipImagesWithSameNameAndData: Bool,
         maxImageCountPerDefFile: Int?,
-        skipCalculateWorkload: Bool
+        didCalculateWorkLoad: ((Int) -> Void)?,
+        finishedExportingOneEntry: (() -> Void)?
     ) throws
 }
 
@@ -173,7 +174,9 @@ extension TextureGenerating {
         usePaletteReplacementMap: Bool = true,
         skipImagesWithSameNameAndData: Bool = false,
         maxImageCountPerDefFile: Int? = nil,
-        skipCalculateWorkload: Bool = false
+        
+        didCalculateWorkLoad: ((Int) -> Void)? = nil,
+        finishedExportingOneEntry: (() -> Void)? = nil
     ) throws {
         let fileNameList = fileList.map{ $0.fileName }
         logger.debug("⚙️ Generating \(atlasName.map{ "\($0) " } ?? "")texture.")
@@ -207,27 +210,40 @@ extension TextureGenerating {
         
         let maybeAggregator: Aggregator<ImageFromFrame>? = (defFileList.count > 0 || pcxFileList.count > 1) ? atlasName.map { makeAggregator(atlasName: $0, skipImagesWithSameNameAndData: skipImagesWithSameNameAndData) } : nil
         
-        let maybeCalculateWorkload: ((_ filesToExport: [SimpleFile]) throws -> Int)? = skipCalculateWorkload ? nil : { unparsedFiles in
-            if let imageCountPerFile = maxImageCountPerDefFile{
-                return unparsedFiles.count * imageCountPerFile
-            } else if defFileList.count > 0 {
-                return try unparsedFiles.map { try defParser.peekFileEntryCount(of: $0) }.reduce(0, +)
-            } else {
-                return pcxFileList.count
-            }
-        }
-        
+     
         try fileManager.export(
             target: .specificFileList(fileNameList),
             at: inDataURL,
             to: outImagesURL,
-            filesToExportHaveBeenRead: maybeCalculateWorkload,
+//            filesToExportHaveBeenRead: { unparsedFiles in
+//                let count: Int = {
+//                    if let imageCountPerFile = maxImageCountPerDefFile {
+//                        return unparsedFiles.count * imageCountPerFile
+//                    } else if defFileList.count > 0 {
+//                        return unparsedFiles.map { unparseFile -> Int in
+//                            let entryCount: Int = (try? defParser.peekFileEntryCount(of: unparseFile)) ?? 0
+//                            return entryCount
+//                        }.reduce(0, +)
+//                    } else {
+//                        return pcxFileList.count
+//                    }
+//                }()
+//                didCalculateWorkLoad?(count)
+//                return count
+//            },
             exporter: .exportingMany { toExport in
-                
                 if toExport.name.hasSuffix(".pcx") {
-                    return try pcxImageExporter.export(toExport)
+                    let exported = try pcxImageExporter.export(toExport)
+//                    _  = exported.count.nTimes {
+                        finishedExportingOneEntry?()
+//                    }
+                    return exported
                 } else if toExport.name.hasSuffix(".def") {
-                    return try defParseExporter.export(toExport)
+                    let exported = try defParseExporter.export(toExport)
+//                    _  = exported.count.nTimes {
+                        finishedExportingOneEntry?()
+//                    }
+                    return exported
                 } else {
                     incorrectImplementation(reason: "Unsupported file format, file named: \(toExport.name)")
                 }

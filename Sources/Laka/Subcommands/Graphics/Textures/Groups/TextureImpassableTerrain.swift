@@ -610,7 +610,6 @@ extension Laka.Textures {
     }
     
     func exportImpassableTerrain() throws {
-        defer { finishedExtractingEntries(count: impassableTerrainDefsCount) }
         let impassableTerrainFiles = impassableTerrain.map { defFileName in
             DefImageExport(defFileName: defFileName, nameFromFrameAtIndexIndex: { _, _ in defFileName })
         }
@@ -618,7 +617,9 @@ extension Laka.Textures {
         try generateTexture(
             name: "impassable_terrain",
             list: impassableTerrainFiles.map { .def($0) },
-            maxImageCountPerDefFile: 1
+            maxImageCountPerDefFile: 1,
+//            didCalculateWorkLoad: { self.report(numberOfEntriesToExtract: $0) },
+            finishedExportingOneEntry: self.finishedExtractingEntry
         )
     }
     

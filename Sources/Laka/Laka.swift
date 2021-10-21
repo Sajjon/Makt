@@ -30,7 +30,7 @@ private var progressBar: ProgressBar? = nil
 
 extension CMD {
     
-    var terminalWidth: Int { 60 }
+    var terminalWidth: Int { 80 }
     
     var progressMode: ProgressMode {
         options.progressMode
@@ -53,13 +53,6 @@ extension CMD {
     func finishedExtractingEntry() {
         progressBar?.progress()
     }
-    
-    func finishedExtractingEntries(count: Int) {
-        count.nTimes {
-            finishedExtractingEntry()
-        }
-    }
-    
     
     var executionTimeFormatted: String {
         let durationInSeconds = Int(Self.optimisticEstimatedRunTime)

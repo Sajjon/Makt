@@ -52,14 +52,14 @@ extension Laka.Textures {
     }
     
     func exportTowns() throws {
-        defer { finishedExtractingEntries(count: townsDefsCount) }
-        
         let townFiles: [DefImageExport] = townDefFiles.map { defFileName in
             DefImageExport(defFileName: defFileName, nameFromFrameAtIndexIndex: { _, _ in defFileName })
         }
         try generateTexture(
             name: "towns",
-            list: townFiles.map { .def($0) }
+            list: townFiles.map { .def($0) },
+//            didCalculateWorkLoad: { self.report(numberOfEntriesToExtract: $0) },
+            finishedExportingOneEntry: self.finishedExtractingEntry
         )
     }
 }

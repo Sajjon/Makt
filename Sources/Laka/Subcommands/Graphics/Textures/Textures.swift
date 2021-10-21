@@ -26,7 +26,7 @@ extension Laka {
         
         @OptionGroup var options: Options
         
-        static let executionOneLinerDescription = "👘 Extracting sprites (terrain, monsters, artifacts)"
+        static let executionOneLinerDescription = "👘 Extracting textues (sprites)"
         static let optimisticEstimatedRunTime: TimeInterval = 15
         
         /// Requires `Laka lod` to have been run first.
@@ -40,8 +40,8 @@ extension Laka.Textures {
     
     var numberOfEntriesToExtract: Int {
         [
-            townsDefsCount,
             terrainDefsCount,
+            townsDefsCount,
             monstersDefsCount,
             impassableTerrainDefsCount,
             passableTerrainDefsCount,
@@ -56,7 +56,7 @@ extension Laka.Textures {
     
     func extractAllTextures() throws {
         report(numberOfEntriesToExtract: numberOfEntriesToExtract)
-        
+            
         try exportTerrain()
         try exportTowns()
         try exportMonsters()

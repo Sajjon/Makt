@@ -25,10 +25,11 @@ internal extension Laka.Textures {
     }
     
     func exportTerrain() throws {
-        defer { finishedExtractingEntries(count: terrainDefsCount) }
         try generateTexture(
             name: "terrain",
-            list: defFiles.map { .def($0) }
+            list: defFiles.map { .def($0) },
+//            didCalculateWorkLoad: { self.report(numberOfEntriesToExtract: $0) },
+            finishedExportingOneEntry: self.finishedExtractingEntry
         )
     }
 }

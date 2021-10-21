@@ -155,28 +155,47 @@ extension FileManager {
             _ = try filesToExportHaveBeenRead(filesRead)
         }
         
-        stepper.start("⚙️ Exporting files", note: "(takes some time)")
-        let exportedFiles: [Output] = try filesRead.flatMap { (toExport: File) throws -> [Output] in
-            defer { finishedExportingOneEntry?() }
-            return try exporter.export(toExport)
-        }
-        stepper.finishedStep()
-        
-        let filesToSave: [File]
-        if let aggregator = aggregator {
-            stepper.step("💡 Aggregating files")
-            let aggregatedFiles = try aggregator.aggregate(files: exportedFiles)
-            filesToSave = aggregatedFiles
-        } else {
-            filesToSave = exportedFiles
-        }
-        
-        stepper.step("💾 Saving files")
-        for fileToSave in filesToSave {
+        func saveFile(fileToSave: File) throws {
             let fileURL = destination.appendingPathComponent(fileToSave.name)
             logger.debug("Writing file: to '\(fileURL.path)' (#\(fileToSave.data.count) bytes)")
             try fileToSave.data.write(to: fileURL, options: fileWritingOptions)
         }
-        stepper.done("✨ Done\(nameOfWorkflow.map { " with \($0)" } ?? "")")
+        
+//        stepper.start("⚙️ Exporting files", note: "(takes some time)")
+        let exportedFiles: [Output] = try filesRead.flatMap { (toExport: File) throws -> [Output] in
+            defer { finishedExportingOneEntry?() }
+            let exportedFiles = try exporter.export(toExport)
+            
+            guard aggregator == nil else {
+                return exportedFiles
+            }
+            // If we are NOT aggregating exported file => save it to disk directly.
+            // The advantage of this is that we can get some work saved if we error
+            // out later and ALSO we save a lot of memory,
+     
+            try exportedFiles.forEach {
+                try saveFile(fileToSave: $0)
+            }
+            return exportedFiles
+        }
+//        stepper.finishedStep()
+        
+        defer {
+            stepper.done("✨ Done\(nameOfWorkflow.map { " with \($0)" } ?? "")")
+        }
+        
+        guard let aggregator = aggregator else {
+            return
+        }
+        
+
+            stepper.step("💡 Aggregating files")
+            let filesToSave = try aggregator.aggregate(files: exportedFiles)
+   
+        stepper.step("💾 Saving files")
+        try filesToSave.forEach {
+            try saveFile(fileToSave: $0)
+        }
+       
     }
 }

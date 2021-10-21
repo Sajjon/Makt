@@ -108,12 +108,17 @@ public extension LodParser {
             }
         }()
         
-        return PCXImage(
+        
+        let pcx = PCXImage(
             name: named,
             width: width,
             height: height,
             contents: contents
         )
+        
+        inspector?.didParsePCXImage(pcx)
+        
+        return pcx
     }
 }
    
