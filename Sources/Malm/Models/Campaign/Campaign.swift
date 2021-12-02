@@ -10,6 +10,7 @@ import Common
 
 public struct Campaign: Hashable, CustomDebugStringConvertible {
 //    public let header: Header
+    public let scenarios: [Scenario]
     
     public init() {}
     
@@ -54,4 +55,26 @@ public extension Campaign {
     }
 }
 
+public extension Campaign {
+    
+    struct Scenario: Hashable, CustomDebugStringConvertible {
+        
+        public let id: ID
+        /// TODO: Replace `String` with `Malm.Scenario.Summary`?
+        public let summary: String
+        /// Collection of scenarios that we must have compelted in order to be able to play this one
+        public let preConditionedScenarios: Set<ID>
+        public
+        
+        public var debugDescription: String {
+            implementMe()
+        }
+        
+    }
+    
+}
 
+
+public extension Campaign.Scenario {
+    typealias ID = Map.ID
+}
