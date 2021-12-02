@@ -164,6 +164,7 @@ extension Laka.Textures {
     
     static let monstersTask = GenerateAtlasTask(
         atlasName: "monsters",
-        defList: monsters
+        defList: monsters,
+        maxImageCountPerDefFile: 1
     )
 }

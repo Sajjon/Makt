@@ -157,6 +157,7 @@ extension Laka.Textures {
     
     static let artifactsTask = GenerateAtlasTask(
         atlasName: "artifacts",
-        defList: artifacts
+        defList: artifacts,
+        maxImageCountPerDefFile: 1
     )
 }

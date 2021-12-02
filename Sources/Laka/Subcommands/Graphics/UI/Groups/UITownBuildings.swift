@@ -12,16 +12,17 @@ import Common
 extension Laka.UI {
 
     /// Images of buildings to chose to build from the build new buildings UI (in village/town/city HALL - hence the prefix `"hall"`).
-    func exportHallBuildings() throws {
-        try exportHallDungeonBuildings()
-        try exportHallCastleBuildings()
-        try exportHallConfluxBuildings()
-        try exportHallFortressBuildings()
-        try exportHallInfernoBuildings()
-        try exportHallNecropolisBuildings()
-        try exportHallRampartBuildings()
-        try exportHallTowerBuildings()
-    }
+    static let hallBuildingsTasks: [GenerateAtlasTask] = [
+        hallBuildingsTask(faction: .castle, defFileName: "hallcstl.def"),
+        hallBuildingsTask(faction: .dungeon, defFileName: "halldung.def"),
+        hallBuildingsTask(faction: .conflux, defFileName: "hallelem.def"),
+        hallBuildingsTask(faction: .fortress, defFileName: "hallfort.def"),
+        hallBuildingsTask(faction: .inferno, defFileName: "hallinfr.def"),
+        hallBuildingsTask(faction: .necropolis, defFileName: "hallnecr.def"),
+        hallBuildingsTask(faction: .rampart, defFileName: "hallramp.def"),
+        hallBuildingsTask(faction: .stronghold, defFileName: "hallstrn.def"),
+        hallBuildingsTask(faction: .tower, defFileName: "halltowr.def")
+    ]
 }
 
 private extension Building.ID.Castle {
@@ -79,59 +80,25 @@ func buildingName(faction: Faction, frameName: String) throws -> String {
 
 private extension Laka.UI {
     
-    func exportHallCastleBuildings() throws {
-        try exportHallBuildings(faction: .castle, defFileName: "hallcstl.def")
-    }
-
-    func exportHallDungeonBuildings() throws {
-        try exportHallBuildings(faction: .dungeon, defFileName: "halldung.def")
-    }
-
-    func exportHallConfluxBuildings() throws {
-        try exportHallBuildings(faction: .conflux, defFileName: "hallelem.def")
-    }
-
-    func exportHallFortressBuildings() throws {
-        try exportHallBuildings(faction: .fortress, defFileName: "hallfort.def")
-    }
-
-    func exportHallInfernoBuildings() throws {
-        try exportHallBuildings(faction: .inferno, defFileName: "hallinfr.def")
-    }
-
-    func exportHallNecropolisBuildings() throws {
-        try exportHallBuildings(faction: .necropolis, defFileName: "hallnecr.def")
-    }
-
-    func exportHallRampartBuildings() throws {
-        try exportHallBuildings(faction: .rampart, defFileName: "hallramp.def")
-    }
-
-    func exportHallStrongholdBuildings() throws {
-        try exportHallBuildings(faction: .stronghold, defFileName: "hallstrn.def")
-    }
-
-    func exportHallTowerBuildings() throws {
-        try exportHallBuildings(faction: .tower, defFileName: "halltowr.def")
-    }
-    
-    func exportHallBuildings(
+    static func hallBuildingsTask(
         faction: Faction,
         defFileName: String
-    ) throws {
+    ) -> GenerateAtlasTask {
         let atlasName = "hall_\(faction.name)_buildings"
-        return try generateTexture(
+
+        return .init(
             atlasName: atlasName,
-            defFileName: defFileName,
-            skipImagesWithSameNameAndData: true
-        ) { frame, frameIndex in
-            let buildingName = try buildingName(faction: faction, frameName: frame.fileName)
-            return [
-                atlasName,
-                buildingName,
-                String(describing: frameIndex)
-            ].joined(separator: "_")
-        }
+            defFile: .init(
+                defFileName: defFileName
+            )  { frame, frameIndex in
+                let buildingName = try buildingName(faction: faction, frameName: frame.fileName)
+                return [
+                    atlasName,
+                    buildingName,
+                    String(describing: frameIndex)
+                ].joined(separator: "_")
+            }
+        )
     }
 
 }

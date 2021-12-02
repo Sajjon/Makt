@@ -98,7 +98,10 @@ extension TextureGenerating {
             for image in packedImages {
                 let sourceRect = image.content.rect
                 
-                let rectInAtlas = CGRect(origin: image.positionOnCanvas, size: sourceRect.size)
+                let rectInAtlas = CGRect(
+                    origin: image.positionOnCanvas,
+                    size: sourceRect.size
+                )
                 
                 let cropToRect: CGRect? = image.content.rect.size == image.content.fullSize ? nil : image.content.rect
                 
@@ -197,8 +200,16 @@ extension TextureGenerating {
         let lodParser = LodParser()
         
         let pcxImageExporter: Exporter<ImageFromFrame> = .exportingOne { toExport in
-            let pcx = try lodParser.parsePCX(from: toExport.data, named: toExport.name)
-            let cgImage = try ImageImporter.imageFrom(pcx: pcx, usePaletteReplacementMap: usePaletteReplacementMap)
+            
+            let pcx = try lodParser.parsePCX(
+                from: toExport.data,
+                named: toExport.name
+            )
+            
+            let cgImage = try ImageImporter.imageFrom(
+                pcx: pcx,
+                usePaletteReplacementMap: usePaletteReplacementMap
+            )
             
             return ImageFromFrame(
                 name: atlasName!,
@@ -208,7 +219,12 @@ extension TextureGenerating {
             )
         }
         
-        let maybeAggregator: Aggregator<ImageFromFrame>? = (defFileList.count > 0 || pcxFileList.count > 1) ? atlasName.map { makeAggregator(atlasName: $0, skipImagesWithSameNameAndData: skipImagesWithSameNameAndData) } : nil
+        let maybeAggregator: Aggregator<ImageFromFrame>? = (defFileList.count > 0 || pcxFileList.count > 1) ? atlasName.map {
+            makeAggregator(
+                atlasName: $0,
+                skipImagesWithSameNameAndData: skipImagesWithSameNameAndData
+            )
+        } : nil
         
      
         try fileManager.export(
@@ -235,8 +251,8 @@ extension TextureGenerating {
                 if toExport.name.hasSuffix(".pcx") {
                     let exported = try pcxImageExporter.export(toExport)
 //                    _  = exported.count.nTimes {
-                        finishedExportingOneEntry?()
 //                    }
+                    finishedExportingOneEntry?()
                     return exported
                 } else if toExport.name.hasSuffix(".def") {
                     let exported = try defParseExporter.export(toExport)

@@ -19,7 +19,7 @@ protocol CMD: ParsableCommand {
     /// Short description printed once this command starts executing.
     static var executionOneLinerDescription: String { get  }
     
-    /// Rought optimistic estimation of rune time in seconds.
+    /// Rough optimistic estimation of run time in seconds.
     static var optimisticEstimatedRunTime: TimeInterval { get }
     
     /// Entry point for this sub command
@@ -38,10 +38,6 @@ extension CMD {
     
     /// Reporting number of entires to extract
     func report(numberOfEntriesToExtract: Int) {
-//        switch progressMode {
-//        case .aggregated:
-//        case .task:
-//        }
         progressBar = .init(
             output: FileHandle.standardOutput,
             totalWork: numberOfEntriesToExtract,
@@ -108,7 +104,7 @@ extension CMD {
     }
 }
 
-/// A set of CLI tools for extracting/exporting/converting orignal game resources
+/// A set of CLI tools for extracting/exporting/converting original game resources
 /// from Heroes of Might and Magic III Complete - "HoMM3 -  needed to play the
 /// Swift rewrite of the game named [Tritium](https://github.com/Sajjon/Tritium)
 @main
@@ -124,7 +120,7 @@ struct Laka: ParsableCommand {
     ]
     
     static var configuration = CommandConfiguration(
-        abstract: "A toolset for extracting/exporting/converting orignal game resources from Heroes of Might and Magic III.",
+        abstract: "A toolset for extracting/exporting/converting original game resources from Heroes of Might and Magic III.",
         version: "0.0.0",
         subcommands: [All.self] + Self.specificCommands,
         defaultSubcommand: All.self

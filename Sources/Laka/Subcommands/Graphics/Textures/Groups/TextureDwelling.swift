@@ -115,6 +115,7 @@ extension Laka.Textures {
 
     static let dwellingsTask = GenerateAtlasTask(
         atlasName: "dwelling",
-        defList: dwellings
+        defList: dwellings,
+        maxImageCountPerDefFile: 1
     )
 }

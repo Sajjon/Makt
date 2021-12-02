@@ -9,106 +9,106 @@ import Foundation
 import Common
 
 extension Laka.UI {
-    func exportButtons() throws {
-        try exportFormatArmageddonsBlade()
-        try exportFormatRestorationOfErathia()
-        try exportFormatShadowOfDeath()
-        try exportHeroButton()
-        try exportUndergroundButton()
-        try exportCancelButton()
-        try exportOKButton()
-        try exportMainMenuLoadGameButton()
-        try exportSizeSmallButton()
-        try exportSizeMediumButton()
-        try exportSizeLargeButton()
-        try exportSizeExtraLargeButton()
-    }
+    static let buttonsTasks: [GenerateAtlasTask] = [
+        taskFormatArmageddonsBlade(),
+        taskFormatRestorationOfErathia(),
+        taskFormatShadowOfDeath(),
+        taskHeroButton(),
+        taskUndergroundButton(),
+        taskCancelButton(),
+        taskOKButton(),
+        taskMainMenuLoadGameButton(),
+        taskSizeSmallButton(),
+        taskSizeMediumButton(),
+        taskSizeLargeButton(),
+        taskSizeExtraLargeButton()
+    ]
 
 }
 
 
 private extension Laka.UI {
     
-    func exportFormatArmageddonsBlade() throws {
-        try exportButton(
+    static func taskFormatArmageddonsBlade() -> GenerateAtlasTask {
+        buttonTask(
             name: "main_menu_campaign_armageddons_blade",
             defFileName: "cssarm.def"
         )
     }
     
-    func exportFormatRestorationOfErathia() throws {
-        try exportButton(
+    static func taskFormatRestorationOfErathia() -> GenerateAtlasTask {
+        buttonTask(
             name: "main_menu_campaign_restoration_of_erathia",
             defFileName: "cssroe.def"
         )
     }
     
-    func exportFormatShadowOfDeath() throws {
-        try exportButton(
+    static func taskFormatShadowOfDeath() -> GenerateAtlasTask {
+        buttonTask(
             name: "main_menu_campaign_shadow_of_death",
             defFileName: "csssod.def"
         )
     }
     
-    func exportHeroButton() throws {
-        try exportButton(
+    static func taskHeroButton() -> GenerateAtlasTask {
+        buttonTask(
             name: "hero",
             defFileName: "iam000.def"
         )
     }
     
-    func exportUndergroundButton() throws {
-        try exportButton(
+    static func taskUndergroundButton() -> GenerateAtlasTask {
+        buttonTask(
             name: "underground",
             defFileName: "ranundr.def"
         )
     }
     
-    func exportCancelButton() throws {
-        try exportButton(
+    static func taskCancelButton() -> GenerateAtlasTask {
+        buttonTask(
             name: "cancel",
             defFileName: "icancel.def"
         )
     }
     
-    func exportOKButton() throws {
-        try exportButton(
+    static func taskOKButton() -> GenerateAtlasTask {
+        buttonTask(
             name: "ok",
             defFileName: "iokay.def"
         )
     }
     
-    func exportMainMenuLoadGameButton() throws {
-        try exportButton(
+    static func taskMainMenuLoadGameButton() -> GenerateAtlasTask {
+        buttonTask(
             name: "main_menu_load_game",
             defFileName: "mmenulg.def"
         )
     }
     
-    func exportSizeLargeButton() throws {
-        try exportButton(
+    static func taskSizeLargeButton() -> GenerateAtlasTask {
+        buttonTask(
             name: "size_large",
             defFileName: "ransizl.def"
         )
     }
     
     
-    func exportSizeMediumButton() throws {
-        try exportButton(
+    static func taskSizeMediumButton() -> GenerateAtlasTask {
+        buttonTask(
             name: "size_medium",
             defFileName: "ransizm.def"
         )
     }
     
-    func exportSizeSmallButton() throws {
-        try exportButton(
+    static func taskSizeSmallButton() -> GenerateAtlasTask {
+        buttonTask(
             name: "size_small",
             defFileName: "ransizs.def"
         )
     }
     
-    func exportSizeExtraLargeButton() throws {
-        try exportButton(
+    static func taskSizeExtraLargeButton() -> GenerateAtlasTask {
+        buttonTask(
             name: "size_extra_large",
             defFileName: "ransizx.def"
         )
@@ -119,50 +119,46 @@ private extension Laka.UI {
 
 private extension Laka.UI {
     
-    
-    
-    func exportButton(
+    static func buttonTask(
         name buttonName: String,
-        defFileName: String,
-        maxImageCountPerDefFile: Int? = nil
-    ) throws {
+        defFileName: String
+    ) -> GenerateAtlasTask {
         let button = "button"
         let atlasName = [
             buttonName,
             button
         ].joined(separator: "_")
         
-        try generateTexture(
+        return .init(
             atlasName: atlasName,
-            defFileName: defFileName,
-            skipImagesWithSameNameAndData: true,
-            maxImageCountPerDefFile: maxImageCountPerDefFile
-        ) { frame, frameIndex in
-            let frameName = String(frame.fileName.lowercased().split(separator: ".").first!)
-            let normal = frameName.hasSuffix("n")
-            let disabled = frameName.hasSuffix("d")
-            let selected = frameName.hasSuffix("s")
-            let highlighted = frameName.hasSuffix("h")
-            
-            let buttonStateName: String
-            if normal {
-                buttonStateName = "normal"
-            } else if disabled {
-                buttonStateName = "disabled"
-            } else  if selected {
-                buttonStateName = "selected"
-            } else  if highlighted {
-                buttonStateName = "highlighted"
-            } else {
-                incorrectImplementation(reason: "Non supported button state, frame name: '\(frame.fileName)'")
-            }
-            
-            return [
-                buttonName,
-               button,
-                buttonStateName
-            ].joined(separator: "_")
-        }
+            defFile: .init(defFileName: defFileName) { frame, frameIndex in
+                let frameName = String(frame.fileName.lowercased().split(separator: ".").first!)
+                let normal = frameName.hasSuffix("n")
+                let disabled = frameName.hasSuffix("d")
+                let selected = frameName.hasSuffix("s")
+                let highlighted = frameName.hasSuffix("h")
+                
+                let buttonStateName: String
+                if normal {
+                    buttonStateName = "normal"
+                } else if disabled {
+                    buttonStateName = "disabled"
+                } else  if selected {
+                    buttonStateName = "selected"
+                } else  if highlighted {
+                    buttonStateName = "highlighted"
+                } else {
+                    incorrectImplementation(reason: "Non supported button state, frame name: '\(frame.fileName)'")
+                }
+                
+                return [
+                    buttonName,
+                   button,
+                    buttonStateName
+                ].joined(separator: "_")
+            },
+            skipImagesWithSameNameAndData: true
+        )
     }
     
 }

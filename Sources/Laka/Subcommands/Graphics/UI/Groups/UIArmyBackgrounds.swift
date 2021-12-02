@@ -9,68 +9,31 @@ import Foundation
 import Malm
 
 extension Laka.UI {
-    func exportArmyBackgrounds() throws {
-        try exportCastleArmyBackground()
-        try exportDungeonArmyBackground()
-        try exportConfluxArmyBackground()
-        try exportFortressArmyBackground()
-        try exportInfernoArmyBackground()
-        try exportNecropolisArmyBackground()
-        try exportRampartArmyBackground()
-        try exportStrongholdArmyBackground()
-        try exportTowerArmyBackground()
-        try exportNeutralArmyBackground()
-    }
+    
+    static let armyBackgroundImagaeTasks: [GenerateAtlasTask] = [
+        armyBGImageTask(faction: .castle, pcxImageName: "tpcascas.pcx"),
+        armyBGImageTask(faction: .dungeon, pcxImageName: "tpcasdun.pcx"),
+        armyBGImageTask(faction: .conflux, pcxImageName: "tpcasele.pcx"),
+        armyBGImageTask(faction: .fortress, pcxImageName: "tpcasfor.pcx"),
+        armyBGImageTask(faction: .inferno, pcxImageName: "tpcasinf.pcx"),
+        armyBGImageTask(faction: .necropolis, pcxImageName: "tpcasnec.pcx"),
+        armyBGImageTask(faction: .rampart, pcxImageName: "tpcasram.pcx"),
+        armyBGImageTask(faction: .stronghold, pcxImageName: "tpcasstr.pcx"),
+        armyBGImageTask(faction: .tower, pcxImageName: "tpcastow.pcx"),
+        armyBGImageTask(faction: .neutral, pcxImageName: "tpcasneu.pcx")
+    ]
+    
 }
 
 private extension Laka.UI {
-    func exportCastleArmyBackground() throws {
-        try exportArmyBackground(faction: .castle, pcxImageName: "tpcascas.pcx")
-    }
-    
-    func exportDungeonArmyBackground() throws {
-        try exportArmyBackground(faction: .dungeon, pcxImageName: "tpcasdun.pcx")
-    }
-    
-    func exportConfluxArmyBackground() throws {
-        try exportArmyBackground(faction: .conflux, pcxImageName: "tpcasele.pcx")
-    }
-    
-    func exportFortressArmyBackground() throws {
-        try exportArmyBackground(faction: .fortress, pcxImageName: "tpcasfor.pcx")
-    }
-    
-    func exportInfernoArmyBackground() throws {
-        try exportArmyBackground(faction: .inferno, pcxImageName: "tpcasinf.pcx")
-    }
 
-    func exportNecropolisArmyBackground() throws {
-        try exportArmyBackground(faction: .necropolis, pcxImageName: "tpcasnec.pcx")
-    }
-
-    func exportRampartArmyBackground() throws {
-        try exportArmyBackground(faction: .rampart, pcxImageName: "tpcasram.pcx")
-    }
-    
-    func exportStrongholdArmyBackground() throws {
-        try exportArmyBackground(faction: .stronghold, pcxImageName: "tpcasstr.pcx")
-    }
-    
-    func exportTowerArmyBackground() throws {
-        try exportArmyBackground(faction: .tower, pcxImageName: "tpcastow.pcx")
-    }
-    
-    func exportNeutralArmyBackground() throws {
-        try exportArmyBackground(faction: .neutral, pcxImageName: "tpcasneu.pcx")
-    }
-    
-    func exportArmyBackground(
+    static func armyBGImageTask(
         faction: Faction,
         pcxImageName: String
-    ) throws {
-        try generateTexture(
-            imageName: "army_background_\(faction.name).png",
-            pcxImageName: pcxImageName
+    ) -> GenerateAtlasTask {
+        GenerateAtlasTask(
+            atlasName: "army_background_\(faction.name).png",
+            pcxFileName: pcxImageName
         )
     }
 }

@@ -105,6 +105,7 @@ extension Laka.Textures {
     static let passableTerrainTask = GenerateAtlasTask(
         name: "Passable Terrain",
         atlasName: "passable_terrain",
-        defList: passableTerrain
+        defList: passableTerrain,
+        maxImageCountPerDefFile: 1
     )
 }
