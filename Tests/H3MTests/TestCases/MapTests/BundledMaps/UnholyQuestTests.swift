@@ -7,7 +7,7 @@
 
 import Foundation
 import XCTest
-import Malm
+@testable import Malm
 @testable import H3M
 
 final class UnholyQuestMapTest: BaseMapTest {
@@ -233,4 +233,37 @@ final class UnholyQuestMapTest: BaseMapTest {
         waitForExpectations(timeout: 1)
     }
 
+    
+    func testJSONRoundtrip() throws {
+        let mapID: Map.ID = .unholyQuest
+        // Delete any earlier cached maps.
+        Map.loader.cache.__deleteMap(by: mapID)
+        
+        var start = CFAbsoluteTimeGetCurrent()
+        let mapFromBinary = try Map.load(mapID)
+        let timeBinary = CFAbsoluteTimeGetCurrent() - start
+        let jsonEncoder = JSONEncoder()
+        
+        let jsonData = try jsonEncoder.encode(mapFromBinary)
+        let jsonDecoder = JSONDecoder()
+        start = CFAbsoluteTimeGetCurrent()
+        let mapFromJSON = try jsonDecoder.decode(Map.self, from: jsonData)
+        let timeJson = CFAbsoluteTimeGetCurrent() - start
+        XCTAssertEqual(mapFromBinary, mapFromJSON)
+        
+        XCTAssertLessThan(timeJson, timeBinary)
+        
+        try jsonData.write(to: FileManager.default.homeDirectoryForCurrentUser.appendingPathComponent("\(mapFromBinary.basicInformation.name).json"))
+        
+        print(String(format: "timeBinary: %.3f seconds", timeBinary))
+        print(String(format: "timeJson: %.3f seconds", timeJson))
+        
+        let mapConverter = MapConverter()
+        let scenario = try mapConverter.convertToScenario(mapID: mapID)
+        XCTAssertEqual(scenario.info.summary.name, mapFromBinary.basicInformation.name)
+        let scenarioJSONData = try jsonEncoder.encode(scenario)
+        try scenarioJSONData.write(to: FileManager.default.homeDirectoryForCurrentUser.appendingPathComponent("\(mapFromBinary.basicInformation.name).scenario.json"))
+      
+        
+    }
 }

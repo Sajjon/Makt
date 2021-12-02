@@ -7,7 +7,7 @@
 
 import Foundation
 
-public enum Version: String, Hashable, Comparable {
+public enum Version: String, Hashable, Comparable, Codable {
     /// The original game, without any expansion pack, aka "ROE"
     case restorationOfErathia
     

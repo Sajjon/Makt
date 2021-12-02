@@ -6,10 +6,10 @@
 //
 
 import Foundation
-import Util
+import Common
 
 public extension Map {
-    struct GuardedArtifact: Hashable, CustomDebugStringConvertible {
+    struct GuardedArtifact: Hashable, CustomDebugStringConvertible, Codable {
         public let artifact: Artifact
         public let message: String?
         public let guardians: CreatureStacks?

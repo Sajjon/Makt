@@ -9,7 +9,7 @@ import Foundation
 
 public extension Map {
     
-    struct Lighthouse: Hashable {
+    struct Lighthouse: Hashable, Codable {
         public let owner: Player?
         
         public init(owner: Player?) {

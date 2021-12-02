@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import Util
+import Common
 
 public struct BitmapFont: Hashable {
     public static let charCount = 256
@@ -44,7 +44,7 @@ internal final class BitmapFontParser {
 
 extension BitmapFontParser {
     func parse(data: Data, name: String) throws -> BitmapFont {
-        print("BitmapFontParser, #\(data.count) bytes of data, named: \(name)")
+        logger.debug("BitmapFontParser, #\(data.count) bytes of data, named: \(name)")
         if let _ = cgFontFromData(data) {
             fantasticUseThisSolution(insteadOf: "BitmapFont below.")
         }

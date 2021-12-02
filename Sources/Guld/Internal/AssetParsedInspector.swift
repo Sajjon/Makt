@@ -9,12 +9,16 @@ import Foundation
 
 public final class AssetParsedInspector {
     public typealias OnParseFileEntry = (ArchiveFileEntry) -> Void
-    private let onParseFileEntry: OnParseFileEntry
+    public typealias OnParsePCXImage = (PCXImage) -> Void
+    private let onParseFileEntry: OnParseFileEntry?
+    private let onParsePCXImage: OnParsePCXImage?
     
     public init(
-        onParseFileEntry: @escaping OnParseFileEntry
+        onParseFileEntry: OnParseFileEntry? = nil,
+        onParsePCXImage: OnParsePCXImage? = nil
     ) {
         self.onParseFileEntry = onParseFileEntry
+        self.onParsePCXImage = onParsePCXImage
     }
     
 }
@@ -22,8 +26,11 @@ public final class AssetParsedInspector {
 internal extension AssetParsedInspector {
     
     
-    func didParseFileEntry(_ fileEntry: ArchiveFileEntry) -> Void {
-        onParseFileEntry(fileEntry)
+    func didParseFileEntry(_ fileEntry: ArchiveFileEntry) {
+        onParseFileEntry?(fileEntry)
     }
     
+    func didParsePCXImage(_ pcx: PCXImage) {
+        onParsePCXImage?(pcx)
+    }
 }

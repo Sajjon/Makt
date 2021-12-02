@@ -7,13 +7,13 @@
 
 import Foundation
 
-public struct Hero: Hashable, CustomDebugStringConvertible {
-    public enum IdentifierKind: Hashable {
+public struct Hero: Hashable, CustomDebugStringConvertible, Codable {
+    public enum IdentifierKind: Hashable, Codable {
         case randomHero
         case specificHeroWithID(Hero.ID)
     }
     
-    public enum Patrol: UInt8, CaseIterable, Hashable {
+    public enum Patrol: UInt8, CaseIterable, Hashable, Codable {
         case standstill = 0
         case oneSquare
         case twoSquares
@@ -109,7 +109,7 @@ public extension Hero {
     
     typealias ArtifactsInSlots = ArrayOf<ArtifactInSlot>
     
-    struct ArtifactInSlot: Hashable, CustomDebugStringConvertible {
+    struct ArtifactInSlot: Hashable, CustomDebugStringConvertible, Codable {
         public let slot: Artifact.Slot
         public let artifactID: Artifact.ID
         
@@ -133,7 +133,7 @@ public extension Hero {
 }
 
 public extension Hero {
-    enum Class: UInt8, Hashable, CaseIterable, CustomDebugStringConvertible {
+    enum Class: UInt8, Hashable, CaseIterable, CustomDebugStringConvertible, Codable {
         case
         knight,
         cleric,

@@ -6,12 +6,12 @@
 //
 
 import Foundation
-import Util
+import Common
 
 public extension Map {
-    struct GuardedResource: Hashable, CustomDebugStringConvertible {
+    struct GuardedResource: Hashable, CustomDebugStringConvertible, Codable {
      
-        public enum Kind: Hashable, CustomDebugStringConvertible {
+        public enum Kind: Hashable, CustomDebugStringConvertible, Codable {
             case specific(Resource.Kind)
             case random
             

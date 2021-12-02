@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import Common
 
 struct Stepper {
     
@@ -16,10 +17,12 @@ struct Stepper {
     private let startOfAll: CFAbsoluteTime
     
     let totalStepCount: Int
+    private let logLevel: Logger.Level
     
-    init(totalStepCount: Int) {
+    init(totalStepCount: Int, logLevel: Logger.Level) {
         self.totalStepCount = totalStepCount
         self.startOfAll = CFAbsoluteTimeGetCurrent()
+        self.logLevel = logLevel
     }
 
 }
@@ -29,7 +32,7 @@ extension Stepper {
     mutating func step(_ stepName: String) {
         assert(inProgresStep == nil)
      
-        print(startNewStep(stepName), terminator: "")
+        logger.debug(.init(stringLiteral: String(startNewStep(stepName))))
     }
     
     private mutating func startNewStep(_ stepName: String) -> String {
@@ -41,7 +44,7 @@ extension Stepper {
     
     mutating func start(_ stepName: String, note: String? = nil) {
         let newStep = startNewStep(stepName)
-        print("\(newStep)\(note.map { " \($0)" } ?? "")")
+        log("\(newStep)\(note.map { " \($0)" } ?? "")")
         inProgresStep = newStep
     }
     
@@ -58,20 +61,40 @@ extension Stepper {
             self.startOfLast = nil
         }
         guard let inProgresStep = inProgresStep else { return }
-        print("\(inProgresStep)\(elapsedString()!)")
+        log("\(inProgresStep)\(elapsedString()!)")
     }
     
     private mutating func finishedStepIfNeeded() {
-        if inProgresStep == nil {
-            if let elapsed = elapsedString() {
-                print(elapsed)
-            }
+        if inProgresStep == nil, let elapsed = elapsedString() {
+            log(.init(stringLiteral: elapsed))
         }
     }
     
     mutating func done(_ message: String) {
         finishedStepIfNeeded()
-        let diff = CFAbsoluteTimeGetCurrent() - startOfAll
-        print(String(format: "\n%@ - took %.2f seconds.", message, diff))
+//        let diff = CFAbsoluteTimeGetCurrent() - startOfAll
+//        log(.init(stringLiteral: String(format: "\n%@ - took %.2f seconds.", message, diff)))
     }
+}
+
+private extension Stepper {
+    
+    /// Log a message passing the log level as a parameter.
+    ///
+    /// - parameters:
+    ///    - message: The message to be logged. `message` can be used with any string interpolation literal.
+    ///    - metadata: One-off metadata to attach to this log message.
+    ///    - source: The source this log messages originates to. Currently, it defaults to the folder containing the
+    ///              file that is emitting the log message, which usually is the module.
+    ///    - function: The function this log message originates from (there's usually no need to pass it explicitly as
+    ///                it defaults to `#function`).
+    ///    - line: The line this log message originates from (there's usually no need to pass it explicitly as it
+    ///            defaults to `#line`).
+    func log(
+        _ message: @autoclosure () -> Logger.Message,
+        metadata: @autoclosure () -> Logger.Metadata? = nil,
+        source: @autoclosure () -> String? = nil,
+        function: String = #function, line: UInt = #line) {
+            logger.log(level: self.logLevel, message(), metadata: metadata(), source: source(), function: function, line: line)
+        }
 }

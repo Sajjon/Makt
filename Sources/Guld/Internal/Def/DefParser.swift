@@ -7,7 +7,7 @@
 
 import Foundation
 import Malm
-import Util
+import Common
 
 public final class DefParser: ArchiveFileCountParser {
     private let inspector: Inspector?
@@ -199,7 +199,7 @@ private extension DefParser {
                 firstFrameFullHeight = fullHeight
             } else {
                 if firstFrameFullWidth > fullWidth {
-                    print("must enlarge width")
+                    logger.debug("must enlarge width")
                     fullWidth = firstFrameFullWidth
                 }
                 if firstFrameFullWidth < fullWidth {
@@ -207,7 +207,7 @@ private extension DefParser {
                 }
                 
                 if firstFrameFullHeight > fullHeight {
-                    print("must enlarge height")
+                    logger.debug("must enlarge height")
                     fullHeight = firstFrameFullHeight
                 }
                 if firstFrameFullHeight < fullHeight {
@@ -279,7 +279,7 @@ private extension DefParser {
         
         // These two sprites seems unused and they fail top margin checks.
         guard !(frameName.starts(with: "SgTwMt") && frameName.hasSuffix(".pcx")) else {
-            print("⚠️ Skipping sprite named: \(frameName), since they have too large margin.")
+            logger.debug("⚠️ Skipping sprite named: \(frameName), since they have too large margin.")
             return nil
         }
         

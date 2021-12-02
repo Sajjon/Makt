@@ -2,7 +2,7 @@
 import Foundation
 import CoreGraphics
 import Combine
-import Util
+import Common
 import Malm
 import CryptoKit
 
@@ -61,7 +61,7 @@ internal extension ImageLoader {
 //        let block = defFile.blocks.first!
 //
 //        if block.frames.count > 1 {
-//            print("WARNING hardcoded to use frame at index 0, even though there are \(block.frames.count) frames. Which should we use?")
+//            logger.debug("WARNING hardcoded to use frame at index 0, even though there are \(block.frames.count) frames. Which should we use?")
 //        }
 //        let frame = block.frames.first!
 //
@@ -192,7 +192,7 @@ internal extension ImageLoader {
 //        let defFile = loadDefinitionFile(nil) // no inspector
 //
 //        definitionFileCache[targetDefinitionFileName] = defFile
-//        //        print("🗂✅ loaded definition file, contents:\n\n\(String(describing: defFile))\n\n")
+//        //        logger.debug("🗂✅ loaded definition file, contents:\n\n\(String(describing: defFile))\n\n")
 //        return defFile
 //    }
 

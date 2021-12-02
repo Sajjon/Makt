@@ -8,7 +8,7 @@
 import Foundation
 
 /// Position on adventure map, three dimensions (x: Int, y: Int, inUnderworld: Bool)
-public struct Position: Hashable, CustomDebugStringConvertible, Comparable {
+public struct Position: Hashable, CustomDebugStringConvertible, Comparable, Codable {
     public typealias Scalar = Int32
     public let x: Scalar
     public let y: Scalar
@@ -34,6 +34,24 @@ public struct Position: Hashable, CustomDebugStringConvertible, Comparable {
         }
         
         return lhs.x < rhs.x
+    }
+
+    public static func fromTile(
+        at tileIndex: Int,
+        of tileCount: Int,
+        inUnderworld: Bool = false
+    ) -> Self {
+        
+        let mapSize = Size(tileCount: tileCount)
+        let width = mapSize.width
+        let qar = tileIndex.quotientAndRemainder(dividingBy: width)
+        let row = qar.quotient
+        let column = qar.remainder
+        return Self(
+            column: .init(column),
+            row: .init(row),
+            inUnderworld: inUnderworld
+        )
     }
 }
 

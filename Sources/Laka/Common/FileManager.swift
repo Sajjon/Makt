@@ -7,7 +7,7 @@
 
 import Foundation
 import Malm
-import Util
+import Common
 
 extension FileManager {
     
@@ -17,7 +17,7 @@ extension FileManager {
             try createDirectory(atPath: outputPath, withIntermediateDirectories: true, attributes: nil)
         } catch {
             let createOutputPathError = Fail(description: "Failed to create output directory at: '\(outputPath)'")
-            print("❌ Error: \(String(describing: createOutputPathError))")
+            logger.debug("❌ Error: \(String(describing: createOutputPathError))")
             throw createOutputPathError
         }
     }
@@ -26,8 +26,7 @@ extension FileManager {
     func findFiles(
         extensions targetFileExtensions: Set<String>,
         at urlToSearch: URL,
-        failOnEmpty: Bool = true,
-        verbose: Bool = false
+        failOnEmpty: Bool = true
     ) throws -> [URL] {
         targetFileExtensions.forEach {
             assert($0.lowercased() == $0)
@@ -58,36 +57,26 @@ extension FileManager {
                   let isDirectory = resourceValues.isDirectory,
                   let name = resourceValues.name
             else {
-                if verbose {
-                    print("⚠️ Skipped: '\(fileURL.path)' since failed to retrieve info about it.")
-                }
+                logger.debug("⚠️ Skipped: '\(fileURL.path)' since failed to retrieve info about it.")
                 continue
             }
             
             guard !isDirectory else {
-//                if verbose {
-//                    print("💡 Skipped: '\(fileURL.path)' since it is a directory.")
-//                }
+                logger.trace("💡 Skipped: '\(fileURL.path)' since it is a directory.")
                 continue
             }
             
             guard let fileExtensionCased = name.fileExtension else {
-//                if verbose {
-//                    print("💡 Skipped: '\(fileURL.path)' since we failed to read its fileextension.")
-//                }
+                logger.trace("💡 Skipped: '\(fileURL.path)' since we failed to read its fileextension.")
                 continue
             }
             
             guard targetFileExtensions.contains(fileExtensionCased.lowercased()) else {
-//                if verbose {
-//                    print("💡 Skipped: '\(fileURL.path)' since it is not in our target file extension set.")
-//                }
+                logger.trace("💡 Skipped: '\(fileURL.path)' since it is not in our target file extension set.")
                 continue
             }
             
-//            if verbose {
-//                print("Found relevant file at: \(fileURL.path)")
-//            }
+            logger.trace("Found relevant file at: \(fileURL.path)")
             
             fileURLs.append(fileURL)
             
@@ -109,33 +98,25 @@ extension FileManager {
         at source: URL,
         to destination: URL,
         nameOfWorkflow: String? = nil,
-        verbose: Bool = false,
         fileWritingOptions: Data.WritingOptions = .noFileProtection,
-        calculateWorkload: ((_ filesToExport: [SimpleFile]) throws -> Int)? = nil,
+        filesToExportHaveBeenRead: ((_ filesToExport: [SimpleFile]) throws -> Int)? = nil,
+        finishedExportingOneEntry: (() -> Void)? = nil,
         exporter: Exporter<Output>,
         aggregator: Aggregator<Output>? = nil
     ) throws {
 
         var totalStepCount = 4
-        if calculateWorkload != nil {
-            totalStepCount += 1
-        }
         if aggregator != nil {
             totalStepCount += 1
         }
-        var stepper = Stepper(totalStepCount: totalStepCount)
         
-        var exporterProgress = 0
-        var exporterWorkload: Int?
-        
-        var progressBar = ProgressBar()
-        
+        var stepper = Stepper(totalStepCount: totalStepCount, logLevel: .info)
         
         try createOutputDirectoryIfNeeded(path: destination.path)
         
         let targetFileExtensions: [String] = {
             switch target {
-            case .anyFileWithExtension(let targetFileExtension): return [targetFileExtension]
+            case .allFilesMatchingAnyOfExtensions(let targetFileExtension): return targetFileExtension
             case .specificFileList(let targetFiles): return targetFiles.compactMap { $0.fileExtension }
             }
         }()
@@ -144,17 +125,17 @@ extension FileManager {
         
         let urlsOfFoundFiles = try findFiles(
             extensions: Set(targetFileExtensions),
-            at: source,
-            verbose: verbose
+            at: source
         )
         
         let files: [URL] = {
-            switch target {
-            case .anyFileWithExtension: return urlsOfFoundFiles
-            case .specificFileList(let targetFileList):
-                let targetFiles = Set(targetFileList)
-                return urlsOfFoundFiles.filter { targetFiles.contains($0.lastPathComponent) }
+            guard case .specificFileList(let targetFileList) = target else {
+                return urlsOfFoundFiles
             }
+            
+            let targetFiles = Set(targetFileList)
+            return urlsOfFoundFiles.filter { targetFiles.contains($0.lastPathComponent) }
+            
         }()
         
         guard !files.isEmpty else {
@@ -170,43 +151,51 @@ extension FileManager {
             return .init(name: file.lastPathComponent, data: data)
         }
         
-        
-        if let calculateWorkload = calculateWorkload {
-            stepper.step("💡 Calculating workload")
-            exporterWorkload = try calculateWorkload(filesRead)
-            if verbose {
-                print("✨ found workload of #\(exporterWorkload!).")
-            }
+        if let filesToExportHaveBeenRead = filesToExportHaveBeenRead {
+            _ = try filesToExportHaveBeenRead(filesRead)
         }
         
-        stepper.start("⚙️  Exporting files", note: "(takes some time)")
-        let exportedFiles: [Output] = try filesRead.flatMap { (toExport: File) throws -> [Output] in
-            let exported = try exporter.export(toExport)
-            exporterProgress += exported.count
-            if let exporterWorkload = exporterWorkload {
-                progressBar.render(count: exporterProgress, total: exporterWorkload)
-            }
-            return exported
-        }
-        stepper.finishedStep()
-        
-        let filesToSave: [File]
-        if let aggregator = aggregator {
-            stepper.step("💡 Aggregating files")
-            let aggregatedFiles = try aggregator.aggregate(files: exportedFiles)
-            filesToSave = aggregatedFiles
-        } else {
-            filesToSave = exportedFiles
-        }
-        
-        stepper.step("💾 Saving files")
-        for fileToSave in filesToSave {
+        func saveFile(fileToSave: File) throws {
             let fileURL = destination.appendingPathComponent(fileToSave.name)
-            if verbose {
-                print("Writing file: to '\(fileURL.path)' (#\(fileToSave.data.count) bytes)")
-            }
+            logger.debug("Writing file: to '\(fileURL.path)' (#\(fileToSave.data.count) bytes)")
             try fileToSave.data.write(to: fileURL, options: fileWritingOptions)
         }
-        stepper.done("✨ Done\(nameOfWorkflow.map { " with \($0)" } ?? "")")
+        
+//        stepper.start("⚙️ Exporting files", note: "(takes some time)")
+        let exportedFiles: [Output] = try filesRead.flatMap { (toExport: File) throws -> [Output] in
+            defer { finishedExportingOneEntry?() }
+            let exportedFiles = try exporter.export(toExport)
+            
+            guard aggregator == nil else {
+                return exportedFiles
+            }
+            // If we are NOT aggregating exported file => save it to disk directly.
+            // The advantage of this is that we can get some work saved if we error
+            // out later and ALSO we save a lot of memory,
+     
+            try exportedFiles.forEach {
+                try saveFile(fileToSave: $0)
+            }
+            return exportedFiles
+        }
+//        stepper.finishedStep()
+        
+        defer {
+            stepper.done("✨ Done\(nameOfWorkflow.map { " with \($0)" } ?? "")")
+        }
+        
+        guard let aggregator = aggregator else {
+            return
+        }
+        
+
+            stepper.step("💡 Aggregating files")
+            let filesToSave = try aggregator.aggregate(files: exportedFiles)
+   
+        stepper.step("💾 Saving files")
+        try filesToSave.forEach {
+            try saveFile(fileToSave: $0)
+        }
+       
     }
 }

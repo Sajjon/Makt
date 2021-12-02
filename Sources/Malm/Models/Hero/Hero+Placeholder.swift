@@ -10,7 +10,7 @@ import Foundation
 public extension Hero {
     ///  "Hero Placeholders are essential when creating campaign scenarios, but completely useless in normal scenarios (maps)."
     ///  source: http://www.heroesofmightandmagic.com/heroes3ab/mapeditors.shtml
-    struct Placeholder: Hashable {
+    struct Placeholder: Hashable, Codable {
         public let owner: Player
         public let identity: Identity
         
@@ -19,7 +19,7 @@ public extension Hero {
             self.identity = identity
         }
         
-        public enum Identity: Hashable {
+        public enum Identity: Hashable, Codable {
             case anyHero(powerRating: PowerRating)
             case specificHero(Hero.ID)
         }
@@ -29,7 +29,7 @@ public extension Hero {
 public extension Hero.Placeholder.Identity {
     /// "You can customize power rating of Hero Placeholder, this way you may have the most powerful (or second/third...eigth most powerful)"
     /// source: http://www.heroesofmightandmagic.com/heroes3ab/mapeditors.shtml
-    enum PowerRating: UInt8, Hashable, CaseIterable {
+    enum PowerRating: UInt8, Hashable, CaseIterable, Codable {
         case strongest
         case secondStrongest
         case thirdStrongest

@@ -8,7 +8,7 @@
 import Foundation
 
 public extension Map {
-    struct World: Hashable {
+    struct World: Hashable, Codable {
         public let above: Level
         /// Underworld
         public let underground: Level?

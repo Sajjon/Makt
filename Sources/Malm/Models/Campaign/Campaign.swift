@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import Util
+import Common
 
 public struct Campaign: Hashable, CustomDebugStringConvertible {
 //    public let header: Header

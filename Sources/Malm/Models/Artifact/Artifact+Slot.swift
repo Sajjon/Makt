@@ -8,7 +8,7 @@
 import Foundation
 
 public extension Artifact {
-    enum Slot: Hashable, CustomDebugStringConvertible {
+    enum Slot: Hashable, CustomDebugStringConvertible, Codable {
         case body(Body)
         /// Fits 64 unused artifacts
         case backpack(BackpackSlot)
@@ -44,7 +44,7 @@ public extension Artifact.Slot {
         }
     }
     
-    struct BackpackSlot: Hashable, CustomDebugStringConvertible {
+    struct BackpackSlot: Hashable, CustomDebugStringConvertible, Codable {
         public let slot: UInt8
         public init?(_ slot: UInt8) {
             guard slot < 64 else { return nil }
@@ -59,7 +59,7 @@ public extension Artifact.Slot {
 
 public extension Artifact.Slot {
     
-    enum Body: RawValue, Hashable, Comparable, CaseIterable, CustomDebugStringConvertible {
+    enum Body: RawValue, Hashable, Comparable, CaseIterable, CustomDebugStringConvertible, Codable {
         /// Helmet
         case head
         

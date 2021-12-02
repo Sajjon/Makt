@@ -56,7 +56,7 @@ final class GoodToGoMapTest: BaseMapTest {
                         assertObjectRandomTown(expected: .init(
                             id: .position(.init(x: 5, y: 5, inUnderworld: false)),
                             owner: .red,
-                            buildings: .custom(.init(built: Building.ID.Common.all(but: [.shipyard, .special1, .special2, .special3, .special4]), forbidden: [.shipyard])),
+                            buildings: .custom(.init(built: Building.ID.Common.all(but: [.villageHall, .shipyard, .special1, .special2, .special3, .special4]), forbidden: [.shipyard])),
                             spells: .init(
                                 possible: .init(
                                     values: Spell.ID.all(
@@ -166,7 +166,7 @@ final class GoodToGoMapTest: BaseMapTest {
                         assertObjectRandomTown(expected: .init(
                             id: .position(.init(x: 34, y: 33, inUnderworld: false)),
                             owner: .blue,
-                            buildings: .custom(.init(built: Building.ID.Common.all(but: [.shipyard, .special1, .special2, .special3, .special4]), forbidden: [.shipyard])),
+                            buildings: .custom(.init(built: Building.ID.Common.all(but: [.villageHall, .shipyard, .special1, .special2, .special3, .special4]), forbidden: [.shipyard])),
                             spells: .init(
                                 possible: .init(
                                     values: Spell.ID.all(
@@ -235,5 +235,28 @@ final class GoodToGoMapTest: BaseMapTest {
         )
         try loadMap(id: .goodToGo, inspector: inspector)
         waitForExpectations(timeout: 1)
+    }
+    
+    func testJSONRoundtrip() throws {
+        let mapID: Map.ID = .goodToGo
+        // Delete any earlier cached maps.
+        Map.loader.cache.__deleteMap(by: mapID)
+        
+//        var start = CFAbsoluteTimeGetCurrent()
+        let mapFromBinary = try Map.load(mapID)
+//        let timeBinary = CFAbsoluteTimeGetCurrent() - start
+        let jsonEncoder = JSONEncoder()
+        jsonEncoder.outputFormatting = .prettyPrinted
+        let jsonData = try jsonEncoder.encode(mapFromBinary)
+        let jsonDecoder = JSONDecoder()
+//        start = CFAbsoluteTimeGetCurrent()
+        let mapFromJSON = try jsonDecoder.decode(Map.self, from: jsonData)
+//        let timeJson = CFAbsoluteTimeGetCurrent() - start
+        XCTAssertEqual(mapFromBinary, mapFromJSON)
+        
+        
+        try jsonData.write(to: FileManager.default.homeDirectoryForCurrentUser.appendingPathComponent("Good to Go.json"))
+//        XCTAssertEqual(timeBinary, timeJson, accuracy: 0.1)
+
     }
 }

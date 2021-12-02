@@ -8,7 +8,7 @@
 import Foundation
 
 public extension Hero {
-    struct SecondarySkill: CategorizedByKind, CustomDebugStringConvertible {
+    struct SecondarySkill: CategorizedByKind, CustomDebugStringConvertible, Codable {
         public let kind: Kind
         public let level: Level
         

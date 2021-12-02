@@ -11,7 +11,7 @@ public extension Map {
     
     /// An event that is positioned at a certain place and that will be trigger when you walk on that position with a hero.
     /// Not to be confused with time based global events (that has no location and is not triggered by the player).
-    struct GeoEvent: Hashable, CustomDebugStringConvertible {
+    struct GeoEvent: Hashable, CustomDebugStringConvertible, Codable {
         
         public let message: String?
         
@@ -53,7 +53,7 @@ public extension Map {
     }
     
     // MARK: Availability
-    struct Availability: Hashable, CustomDebugStringConvertible {
+    struct Availability: Hashable, CustomDebugStringConvertible, Codable {
         
         /// MapEditor: "Players allowed to trigger event"
         internal let playersAllowedToTriggerEvent: [Player]

@@ -24,7 +24,7 @@ public protocol TileLayer: DefinitionFileFrameIndexing, Flippable, RenderZAxisIn
 }
 
 public extension Map.Tile {
-    struct River: TileLayer, CustomDebugStringConvertible {
+    struct River: TileLayer, CustomDebugStringConvertible, Codable {
         public static let layerKind: TileLayerKind = .river
         public let kind: Kind
         
@@ -101,7 +101,7 @@ public extension Map.Tile.River {
     ///
     /// 
     ///
-    struct Direction: Hashable, DefinitionFileFrameIndexing {
+    struct Direction: Hashable, DefinitionFileFrameIndexing, Codable {
         public typealias RawValue = UInt8
         public let frameIndex: Int
         
@@ -121,7 +121,7 @@ public extension Map.Tile.River {
 
 // MARK: Kind
 public extension Map.Tile.River {
-    enum Kind: UInt8, Hashable, CaseIterable, CustomDebugStringConvertible {
+    enum Kind: UInt8, Hashable, CaseIterable, CustomDebugStringConvertible, Codable {
         // 0 means "no river", but we model it as `Optional<River>.none` instead of River.Kind having a specific case for it...
         case clear = 1, icy, muddy, lava
     }

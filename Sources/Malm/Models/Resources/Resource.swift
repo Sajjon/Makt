@@ -7,7 +7,7 @@
 
 import Foundation
 
-public struct Resource: Hashable, CustomDebugStringConvertible {
+public struct Resource: Hashable, CustomDebugStringConvertible, Codable {
     public typealias Quantity = Int
     public let kind: Kind
     public let quantity: Quantity
@@ -59,7 +59,7 @@ public extension Resource {
 
 // MARK: Knid
 public extension Resource {
-    enum Kind: UInt8, Hashable, CaseIterable, CustomDebugStringConvertible {
+    enum Kind: UInt8, Hashable, CaseIterable, CustomDebugStringConvertible, Codable {
 
         case wood
         case mercury

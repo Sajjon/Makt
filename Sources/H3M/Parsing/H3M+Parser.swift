@@ -7,7 +7,7 @@
 
 import Foundation
 import Malm
-import Util
+import Common
 
 // MARK: H3M Parser
 public extension Map.Loader.Parser {

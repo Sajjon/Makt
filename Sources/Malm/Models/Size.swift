@@ -6,9 +6,9 @@
 //
 
 import Foundation
-import Util
+import Common
 
-public struct Size: Hashable, CaseIterable, CustomDebugStringConvertible, Comparable {
+public struct Size: Hashable, CaseIterable, CustomDebugStringConvertible, Comparable, Codable {
     
     public typealias Scalar = Int
     public let width: Scalar
@@ -19,6 +19,15 @@ public struct Size: Hashable, CaseIterable, CustomDebugStringConvertible, Compar
         self.height = height
     }
     
+    public init(tilesPerSize: Scalar) {
+        self.init(width: tilesPerSize, height: tilesPerSize)
+    }
+    
+    public init(tileCount: Scalar) {
+        // will ONLY work if all map sizes remain quadratic.
+        let tilesPerSize = Int(sqrt(Double(tileCount)))
+        self.init(tilesPerSize: tilesPerSize)
+    }
     
 }
 

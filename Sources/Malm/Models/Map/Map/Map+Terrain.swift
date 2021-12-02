@@ -9,7 +9,7 @@ import Foundation
 
 /// MARK: Terrain
 public extension Map {
-    enum Terrain: UInt8, Hashable, CustomDebugStringConvertible, CaseIterable {
+    enum Terrain: UInt8, Hashable, CustomDebugStringConvertible, CaseIterable, Codable {
         case dirt, sand, grass, snow, swamp, rough, subterranean, lava, water, rock
     }
 }

@@ -10,7 +10,7 @@ import Foundation
 public extension Artifact {
     
     /// From: http://heroescommunity.com/viewthread.php3?TID=46589&PID=1529923#focus
-    enum ID: UInt8, Hashable, CaseIterable, CustomDebugStringConvertible {
+    enum ID: UInt8, Hashable, CaseIterable, CustomDebugStringConvertible, Codable {
         case spellBook,
         spellScroll,
         grail,

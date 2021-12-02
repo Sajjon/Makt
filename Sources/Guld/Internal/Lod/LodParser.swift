@@ -8,21 +8,21 @@
 import Foundation
 
 import Decompressor
-import Util
+import Common
 import Malm
 import H3C
 
 public final class LodParser: ArchiveFileCountParser {
     
-    fileprivate let inspector: AssetParsedInspector?
     fileprivate let decompressor: Decompressor
+    fileprivate let inspector: AssetParsedInspector?
     
     public init(
-        inspector: AssetParsedInspector? = nil,
-        decompressor: Decompressor = GzipDecompressor()
+        decompressor: Decompressor = GzipDecompressor(),
+        inspector: AssetParsedInspector? = nil
     ) {
-        self.inspector = inspector
         self.decompressor = decompressor
+        self.inspector = inspector
     }
 }
 
@@ -108,12 +108,17 @@ public extension LodParser {
             }
         }()
         
-        return PCXImage(
+        
+        let pcx = PCXImage(
             name: named,
             width: width,
             height: height,
             contents: contents
         )
+        
+        inspector?.didParsePCXImage(pcx)
+        
+        return pcx
     }
 }
    

@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import Util
+import Common
 
 public protocol ElementsValidating {
     associatedtype Error: Swift.Error & Equatable
@@ -24,6 +24,19 @@ public struct ArrayOfValidatedElements<ElementsValidator: ElementsValidating>: C
             incorrectImplementation(reason: "Elements are invalid.")
         }
         self.values = values
+    }
+}
+
+extension ArrayOfValidatedElements: Codable where ElementsValidator.Element: Codable {
+    public func encode(to encoder: Encoder) throws {
+        var singleValueContainer = encoder.singleValueContainer()
+        try singleValueContainer.encode(values)
+    }
+    
+    public init(from decoder: Decoder) throws {
+        let singleValueContainer = try decoder.singleValueContainer()
+        let values = try singleValueContainer.decode([Element].self)
+        try self.init(checking: values)
     }
 }
 

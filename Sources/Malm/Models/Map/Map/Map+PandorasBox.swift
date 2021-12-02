@@ -8,7 +8,7 @@
 import Foundation
 
 public extension Map {
-    struct PandorasBox: Hashable {
+    struct PandorasBox: Hashable, Codable {
         public let message: String?
         public let guardians: CreatureStacks?
         public let bounty: Bounty?

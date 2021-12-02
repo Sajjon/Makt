@@ -13,7 +13,7 @@ public extension Map.Object {
 
 
 public extension Map.Object.CreatureBank {
-    enum ID: UInt8, Equatable, CaseIterable, CustomDebugStringConvertible {
+    enum ID: UInt8, Equatable, CaseIterable, CustomDebugStringConvertible, Codable {
         case cyclopsStockpile = 0,
              dwarvenTreasury,
              griffinConservatory,

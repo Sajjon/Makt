@@ -6,11 +6,11 @@
 //
 
 import Foundation
-import Util
+import Common
 
 public extension Map {
     
-    struct AbandonedMine: Hashable, CustomDebugStringConvertible {
+    struct AbandonedMine: Hashable, CustomDebugStringConvertible, Codable {
         public let potentialResources: Set<Resource.Kind>
         
         public init(potentialResources: [Resource.Kind]) {

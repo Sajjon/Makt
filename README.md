@@ -6,8 +6,8 @@ This is an open source implementation of classic game *Heroes of Might and Magic
 
 # Packages
 
-## Package *Util* 🛠
-Unintersting utility code stuff.
+## Package *Common* 🛠
+Unintersting shared utility code stuff.
 
 ## Package *Decompressor* 📖
 GZip decompressor package.

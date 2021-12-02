@@ -8,7 +8,7 @@
 import Foundation
 
 public extension Map {
-    struct AdditionalInformation: Hashable {
+    struct AdditionalInformation: Hashable, Codable {
         
         public let victoryLossConditions: VictoryLossConditions
         

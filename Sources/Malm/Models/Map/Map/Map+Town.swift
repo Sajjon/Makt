@@ -6,11 +6,11 @@
 //
 
 import Foundation
-import Util
+import Common
 
 public extension Map {
-    struct Town: Hashable, CustomDebugStringConvertible {
-        public enum ID: Hashable {
+    struct Town: Hashable, CustomDebugStringConvertible, Codable {
+        public enum ID: Hashable, Codable {
             
             /// Parsed from h3m map file
             /// Only present in version later than ROE
@@ -31,7 +31,7 @@ public extension Map {
         public let formation: CreatureStacks.Formation
         public let buildings: Map.Town.Buildings
         
-        public struct Spells: Hashable {
+        public struct Spells: Hashable, Codable {
             
             /// Map Editor: "Spells which MAY appear in the mage guild"
             public let possible: SpellIDs
@@ -56,7 +56,7 @@ public extension Map {
         
         public let events: Events?
         
-        public enum Alignment: Hashable {
+        public enum Alignment: Hashable, Codable {
             case sameAsOwnerOrRandom
             case sameAs(player: Player)
         }
@@ -113,12 +113,12 @@ public extension Map.Town {
         return optionalStrings.compactMap({ $0 }).joined(separator: "\n")
     }
     
-    enum Buildings: Hashable {
+    enum Buildings: Hashable, Codable {
         case simple(hasFort: Bool)
         case custom(CustomBuildings)
     }
     
-    struct CustomBuildings: Hashable {
+    struct CustomBuildings: Hashable, Codable {
         public let built: [Building.ID.Common]
         public let forbidden: [Building.ID.Common]
         
@@ -135,7 +135,7 @@ public extension Map.Town {
 // MARK: Town Event
 public extension Map.Town {
     
-    struct Event: Hashable, CustomDebugStringConvertible {
+    struct Event: Hashable, CustomDebugStringConvertible, Codable {
         public let townID: Map.Town.ID
         
         /// private because ugly that we piggyback on this TownEvent having the same properties as a timed event. Make use of public computed properties to extract info from this private stored property.

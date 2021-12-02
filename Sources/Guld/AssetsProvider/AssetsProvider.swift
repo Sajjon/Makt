@@ -7,7 +7,7 @@
 
 import Foundation
 import Malm
-import Util
+import Common
 import H3M
 
 public enum LoadingProgress: Hashable, CustomStringConvertible {
@@ -71,7 +71,6 @@ private extension AssetsProvider {
     
 //    func load(archiveFile: SimpleFile, inspector: AssetParsedInspector? = nil) throws -> LoadedArchive {
 //        if let cached = archiveCache[archiveFile.kind] {
-//            print("✅ Cache contains loaded archive: \(cached.fileName)")
 //            return cached
 //        }
 //        let loaded = try archiveLoader.load(archiveFile: archiveFile, inspector: inspector)
@@ -107,11 +106,11 @@ private extension AssetsProvider {
     }
     
     func loadBasicInfoForAllMaps() throws -> [Map.BasicInformation] {
-        print("✨ Loading basic info for all maps...")
+        logger.debug("✨ Loading basic info for all maps...")
         let start = CFAbsoluteTimeGetCurrent()
         let basicInfos = try loadMapIDs().map { try loadBasicInfoForMap(id: $0) }
         let diff = CFAbsoluteTimeGetCurrent() - start
-        print(String(format: "✨✅ Successfully loaded basic info for #\(basicInfos.count) maps, took %.3f seconds", diff))
+        logger.debug(.init(stringLiteral: String(format: "✨✅ Successfully loaded basic info for #\(basicInfos.count) maps, took %.3f seconds", diff)))
         return basicInfos
     }
     
@@ -124,10 +123,10 @@ internal extension AssetsProvider {
 //    func open(archive: Archive, skipCache: Bool = false) throws -> SimpleFile {
 //        let useCache = !skipCache
 //        if useCache, let cached = archiveFileCache[archive] {
-//            print("✅ Cache contains archive file: \(archive.fileName)")
+//            logger.debug("✅ Cache contains archive file: \(archive.fileName)")
 //            return cached
 //        }
-//        print("✨ Opening contents of archive named: \(archive.fileName)")
+//        logger.debug("✨ Opening contents of archive named: \(archive.fileName)")
 //        let data = try loadContentsOfDataFile(name: archive.fileName)
 //        let archiveFile = SimpleFile(kind: archive, data: data)
 //        archiveFileCache[archive] = archiveFile
@@ -198,13 +197,12 @@ private extension AssetsProvider {
 //        let loadedArchives:  [LoadedArchive] = try archiveFiles.map { archiveFile in
 //            let loadedArchive = try load(archiveFile: archiveFile, inspector: assetParsedInspector)
 //            let loadingProgress: LoadingProgress = .namedProgress("Load archive \(String(describing: archiveFile.name))", step: numberOfLoadedItems, of: numberOfItemsToLoad)
-//            print(loadingProgress)
+//            logger.debug(loadingProgress)
 //            onLoadingProgress?(loadingProgress)
 //            return loadedArchive
 //        }
 //
 //        let diff = CFAbsoluteTimeGetCurrent() - startTime
-//        print(String(format: "✨✅ Successfully loaded #\(loadedArchives.count) archives, took %.3f seconds", diff))
 //
 //        let imageLoader = ImageLoader(lodFiles: loadedArchives.compactMap { $0.lodArchive })
 //
@@ -268,11 +266,11 @@ public extension Assets {
         id mapID: Map.ID,
         inspector: Map.Loader.Parser.Inspector? = nil
     ) throws -> Map {
-        print("✨ Loading map...")
+        logger.debug("✨ Loading map...")
         let start = CFAbsoluteTimeGetCurrent()
         let map = try Map.load(mapID, inspector: inspector)
         let diff = CFAbsoluteTimeGetCurrent() - start
-        print(String(format: "✨✅ Successfully loaded map '%@', took %.1f seconds", map.basicInformation.name, diff))
+        logger.debug(.init(stringLiteral: String(format: "✨✅ Successfully loaded map '%@', took %.1f seconds", map.basicInformation.name, diff)))
         return map
     }
     

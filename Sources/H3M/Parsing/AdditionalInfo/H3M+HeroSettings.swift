@@ -194,7 +194,7 @@ private extension  H3M {
         // This is seen in bundled Armageddons Blade map `Freedom`
         if artifactId == .spellBook && slot == .body(.misc5) {
             slot = .body(.spellbook)
-            print("Warning: Spellbook found in misc5. We will put it in the 'spellbook slot' instead. This strange state has been observed in the following bundled maps: \"Freedom\", \"Faeries!\" and \"Pandora's Box\".")
+//            logger.debug("Warning: Spellbook found in misc5. We will put it in the 'spellbook slot' instead. This strange state has been observed in the following bundled maps: \"Freedom\", \"Faeries!\" and \"Pandora's Box\".")
         }
         
         return .init(slot: slot, artifactID: artifactId)

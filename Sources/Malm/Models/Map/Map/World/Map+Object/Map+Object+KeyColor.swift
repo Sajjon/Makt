@@ -7,7 +7,7 @@
 
 import Foundation
 
-public enum KeyColor: UInt8, Equatable, CaseIterable, CustomDebugStringConvertible {
+public enum KeyColor: UInt8, Equatable, CaseIterable, CustomDebugStringConvertible, Codable {
    case lightBlue
    case playerFour
    case playerOne

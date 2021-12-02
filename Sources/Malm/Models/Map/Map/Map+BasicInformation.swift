@@ -9,7 +9,7 @@ import Foundation
 
 public extension Map {
     
-    struct BasicInformation: Hashable, Identifiable {
+    struct BasicInformation: Hashable, Identifiable, Codable {
         
         /// A stable id that uniquely identifies this map. This is not part of the map file and is created by me (Cyon) in this Swift code base.
         public let id: ID

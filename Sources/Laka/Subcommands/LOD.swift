@@ -8,56 +8,52 @@
 import ArgumentParser
 import Guld
 import Malm
-import Util
+import Common
 import Foundation
+
 
 extension Laka {
     
     /// A command to extract all `*.def`, `*.pcx`, `*.msk`, `*.txt` etc files from all `*.lod` archive files.
     /// Note that these extract files are saved as raw data, they are not yet parsed, only extracted from
     /// their source archive.
-    struct LOD: ParsableCommand {
+    struct LOD: CMD {
         
         static var configuration = CommandConfiguration(
             abstract: "Extract all '*.def' files from all '*.lod' archive files."
         )
         
         @OptionGroup var options: Options
-    }
-}
-
-// MARK: Run
-extension Laka.LOD {
-    mutating func run() throws {
-        print(
-            """
-            
-            🔮
-            About to files from all '*.lod' archives
-            Located at: \(options.inputPath)
-            To folder: \(options.outputPath)
-            This will take about 10 seconds on a fast machine (Macbook Pro 2019 - Intel CPU)
-            ☕️
-            
-            """
-        )
-
-        let verbose = options.printDebugInformation
-        let lodParser = LodParser()
         
-        try fileManager.export(
-            target: .anyFileWithExtension("lod"),
-            at: inDataURL,
-            to: outEntryURL,
-            nameOfWorkflow: "exporting LOD archives",
-            verbose: verbose,
-            calculateWorkload: { lodArchives in
-                try lodArchives.map { try lodParser.peekFileEntryCount(of: $0) }.reduce(0, +)
-            },
-            exporter: lodParser.exporter
-        )
+        static let executionOneLinerDescription = "📦 Unarchiving assets from LOD archives"
+        static let optimisticEstimatedRunTime: TimeInterval = 10
+        
+        /// Requires `Laka lod` to have been run first.
+        func extract() throws {
+            
+            let lodParser = LodParser(inspector: .init(onParseFileEntry: { [self] _ in
+                finishedExtractingEntry()
+            }))
+            
+            try fileManager.export(
+                target: .allFilesMatching(extension: "lod"),
+                at: inDataURL,
+                to: outEntryURL,
+                nameOfWorkflow: "exporting LOD archives",
+                filesToExportHaveBeenRead: { [self] lodArchivesReadFromDisk in
+                    let numberOfEntriesToExport = try lodArchivesReadFromDisk.map {
+                        try lodParser.peekFileEntryCount(of: $0)
+                    }.reduce(0, +)
+                    report(numberOfEntriesToExtract: numberOfEntriesToExport)
+                    return numberOfEntriesToExport
+                },
+                exporter: lodParser.exporter
+            )
+        }
+   
     }
 }
+
 
 // MARK: Computed props
 extension Laka.LOD {

@@ -8,7 +8,7 @@
 import Foundation
 public extension Map {
     
-    struct WitchHut: Hashable {
+    struct WitchHut: Hashable, Codable {
         public let learnableSkills: [Hero.SecondarySkill.Kind]
         
         public init(learnableSkills: [Hero.SecondarySkill.Kind]) {

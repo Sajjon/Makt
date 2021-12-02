@@ -14,7 +14,7 @@ public extension Sprite {
     }
 }
 
-public enum Sprite: String, Hashable, CaseIterable, ExpressibleByStringLiteral {
+public enum Sprite: String, Hashable, CaseIterable, ExpressibleByStringLiteral, Codable {
     
     /// riverDelta
     /// Terrain kind: snow

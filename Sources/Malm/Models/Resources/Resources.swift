@@ -6,9 +6,9 @@
 //
 
 import Foundation
-import Util
+import Common
 
-public struct Resources: Hashable, CustomDebugStringConvertible, ExpressibleByArrayLiteral {
+public struct Resources: Hashable, CustomDebugStringConvertible, Codable, ExpressibleByArrayLiteral {
     
     public typealias ArrayLiteralElement = Resource
     

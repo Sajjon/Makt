@@ -8,7 +8,7 @@
 import Foundation
 
 public extension Map {
-    enum TeamInfo: Hashable, CustomDebugStringConvertible {
+    enum TeamInfo: Hashable, CustomDebugStringConvertible, Codable {
        case teams([Team])
         case noTeams
         
@@ -17,7 +17,7 @@ public extension Map {
 
 // MARK: Team
 public extension Map.TeamInfo {
-    struct Team: Hashable, CustomDebugStringConvertible {
+    struct Team: Hashable, CustomDebugStringConvertible, Codable {
         public let id: Int
         public let players: [Player]
         

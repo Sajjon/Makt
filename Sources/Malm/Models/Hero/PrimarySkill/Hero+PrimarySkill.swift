@@ -8,7 +8,7 @@
 import Foundation
 
 public extension Hero {
-    struct PrimarySkill: Hashable, CustomDebugStringConvertible {
+    struct PrimarySkill: Hashable, CustomDebugStringConvertible, Codable {
         
         public typealias Level = Int
         
