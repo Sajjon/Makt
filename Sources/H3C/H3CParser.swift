@@ -19,6 +19,7 @@ public final class H3CParser {
 public extension H3CParser {
     func parse() throws -> Campaign {
         logger.debug("⚠️ Warning, not parsing campaign yet.")
-        return Campaign()
+//        return Campaign()
+    implementMe()
     }
 }
