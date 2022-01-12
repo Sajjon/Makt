@@ -84,6 +84,68 @@ public extension Campaign {
     }
 }
 
+//public extension Campaign.Scenario {
+//    struct DataPersistedBetweenScenarios: Hashable, Codable {
+//
+//        // vcmi: If 4th bit of bitfield `whatHeroKeeps` is `0`, then this property should be nil
+//        public let artifactsKeptByHero: Set<Artifact.ID>?
+//        public let creatureStacksKeptByHero: CreatureStacks?
+//    }
+//}
+
+public extension Campaign.Scenario {
+    struct Config: Hashable, Codable {
+        public let startingBonus: StartingBonus
+        public let heroFromPreviousScenario: Hero?
+    }
+}
+  
+public extension Campaign.Scenario {
+    enum StartingBonus: Hashable, Codable {
+        case spell(Spell.ID)
+        case creature(CreatureStack)
+        case building(Building.ID)
+        case artifact(Artifact.ID)
+        case primarySkill(Hero.PrimarySkill.Kind)
+        case secondarySkill(Hero.SecondarySkill.Kind)
+        case resource(Resource)
+    }
+}
+
+public extension Campaign.Scenario.StartingBonus {
+    enum Stripped: UInt8, Hashable, Codable {
+        case spell = 0
+        case creature
+        case building
+        case artifact = 3
+        // case spellScroll = 4 // handle like arttifact.
+        case primarySkill = 5
+        case secondarySkill
+        case resource
+    }
+}
+    
+//    struct HeroAttributesPersistedBetweenScenarios: OptionSet {
+//        public let rawValue: Int
+//
+//        public init(rawValue: Int) {
+//            precondition(rawValue < Self.all.rawValue, "Passed bitfield contains too many bits")
+//            self.rawValue = rawValue
+//        }
+//    }
+
+//public extension Campaign.Scenario.HeroAttributesPersistedBetweenScenarios {
+//    static let experience    = Self(rawValue: 1 << 0)
+//    static let primarySkills  = Self(rawValue: 1 << 1)
+//    static let secondarySkills   = Self(rawValue: 1 << 2)
+//    static let spells   = Self(rawValue: 1 << 3)
+//    static let artifacts   = Self(rawValue: 1 << 4)
+//}
+//
+//public extension Campaign.Scenario.HeroAttributesPersistedBetweenScenarios {
+//    static let all: Self = [.experience, .primarySkills, .secondarySkills, .spells, .artifacts]
+//}
+
 public protocol StoryEpisode {
     var videoID: Campaign.Scenario.VideoID { get }
     var musicID: Campaign.Scenario.MusicID { get }
