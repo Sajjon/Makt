@@ -26,20 +26,44 @@ public struct Campaign: Hashable, CustomDebugStringConvertible {
 }
 
 public extension Campaign {
+    
     struct Header: Hashable, CustomDebugStringConvertible {
+        
+        // Not parsed from data
+        public let fileName: String
+        
         public let format: Format
         
         /// VCMI comment "CampText.txt's format"
         /// We belive this to be an index to a map name in the CampText.txt file which is located in the archive H3bitmap.lod
-        public let indexToMapName: UInt8
+        /// However that file contained only 14 different text sections, but VCMI believes there are 20.
+        public let regionIndex: UInt8
+        
         public let name: String
         public let description: String
         public let difficultyChosenByPlayer: Difficulty
-        
         ///VCMI comment "CmpMusic.txt, start from 0"
         ///We believe this to be an index to a music file in the CmpMusic.txt file which is located in the archive H3bitmap.lod
-        public let indexToMusicFile: UInt8
-        public let fileName: String
+        public let lineNumberOfMusicID: UInt8
+        
+            public init(
+                fileName: String, // Not parsed from data
+                
+                format: Format,
+                regionIndex: UInt8,
+                name: String,
+                description: String,
+                difficultyChosenByPlayer: Difficulty,
+                lineNumberOfMusicID: UInt8
+            ) {
+                self.fileName = fileName
+                self.format = format
+                self.regionIndex = regionIndex
+                self.name = name
+                self.description = description
+                self.difficultyChosenByPlayer = difficultyChosenByPlayer
+                self.lineNumberOfMusicID = lineNumberOfMusicID
+            }
         
         public var debugDescription: String {
             implementMe()
@@ -50,7 +74,7 @@ public extension Campaign {
 
 public extension Campaign {
     /// Not to be confused with `Map.Format`
-    enum Format: UInt8, Hashable, CustomDebugStringConvertible {
+    enum Format: UInt8, Hashable, CustomDebugStringConvertible, Comparable {
         case restorationOfErathia = 4
         case armageddonsBlade
         case shadowOfDeath
@@ -75,8 +99,7 @@ public extension Campaign {
         public let hasBeenCompleted: Bool
         public let prolog: Prolog?
         public let epilog: Epilog?
-        
-        
+        public let config: Config
         
         public var debugDescription: String {
             implementMe()
@@ -104,7 +127,7 @@ public extension Campaign.Scenario {
     enum StartingBonus: Hashable, Codable {
         case spell(Spell.ID)
         case creature(CreatureStack)
-        case building(Building.ID)
+        case building(Int) //Should be Building.ID?
         case artifact(Artifact.ID)
         case primarySkill(Hero.PrimarySkill.Kind)
         case secondarySkill(Hero.SecondarySkill.Kind)
@@ -169,7 +192,7 @@ public extension Campaign.Scenario {
 }
 
 public extension Campaign.Scenario {
-    /// This is the exact content of `CmpMusic.txt` from `h3bitmap.lod`
+    /// This is the exact content of `CmpMovie.txt` from `h3bitmap.lod`
     enum VideoID: String, Hashable, Codable {
         case good1A = "Good1_a"
         case good1B = "Good1_b"

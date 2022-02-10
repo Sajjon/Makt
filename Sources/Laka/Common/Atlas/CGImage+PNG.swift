@@ -6,6 +6,8 @@
 //
 
 import Foundation
+import CoreGraphics
+import CoreImage
 
 extension CGImage {
     var png: Data? {
